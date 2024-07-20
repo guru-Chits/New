@@ -1,0 +1,52 @@
+import { INavigationMenu } from '../interface/navigation-menus';
+
+export const NavigationMenus: INavigationMenu[] = [
+  {
+    path: '/dashboard',
+    title: 'Dashboard',
+    img: '/assets/sidebar/inactive/dashboard.svg',
+    activeImg:'/assets/sidebar/active/dashboard selected.svg',
+    class: ''
+  },
+  { path:'/subscriber',
+    title: 'Subscriber Management',
+    img: '/assets/sidebar/inactive/subscriber.svg',
+    activeImg:'/assets/sidebar/active/subscriber selected.svg',
+    class: '',
+  },
+  { 
+    path:'/chit',
+    title: 'Chit Management',
+    img: '/assets/sidebar/inactive/chitgroup.svg',
+    activeImg:'/assets/sidebar/active/chit selected.svg',
+    class: '',
+  },
+  { 
+    path:'/payment',
+    title: 'Payments',
+    img: '/assets/sidebar/inactive/payment.svg',
+    activeImg:'/assets/sidebar/active/payment selected.svg',
+    class: '',
+  },
+  {
+    path: '/area',
+    title: 'Area Manager',
+    img: '/assets/sidebar/inactive/area.svg',
+    activeImg: '/assets/sidebar/active/area selected.svg',
+    class: ''
+  },
+  {
+    path: '/staffs',
+    title: 'Staffs',
+    img: '/assets/sidebar/inactive/staff.svg',
+    activeImg: '/assets/sidebar/active/staff selected.svg',
+    class: ''
+  },
+  {
+    path: '/settings',
+    title: 'Settings',
+    img: '/assets/sidebar/inactive/settings.svg',
+    activeImg: '/assets/sidebar/active/settings selected.svg',
+    class: ''
+  },
+];

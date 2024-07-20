@@ -1,0 +1,17 @@
+<!-- sidebar.component.html -->
+<div class="sidebar">
+  <div class="sidebar-logo">
+    <img src="../../../assets/navbar/brand.svg" alt="Logo">
+  </div>
+  <ul class="sidebar-menu">
+    <li *ngFor="let menuItem of menuItems" [routerLink]="menuItem.path" routerLinkActive="active" class="sidebar-menu-item" (click)="setActiveMenu(menuItem)">
+      <img [src]="isActive(menuItem) ? menuItem.activeImg : menuItem.img" class="sidebar-menu-icon">
+      <span class="sidebar-menu-text">{{ menuItem.title }}</span>
+      <div *ngIf="isActive(menuItem)" class="active-line"></div>
+    </li>    <li class="sidebar-menu-item">
+      <img src="../../../assets/navbar/log-out.svg" class="sidebar-menu-icon">
+      <span class="sidebar-menu-text">Logout</span>
+    </li>
+  </ul>
+
+</div>

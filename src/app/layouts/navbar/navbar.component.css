@@ -1,8 +1,8 @@
 /* navbar.component.scss */
 
 .navbar {
-  height: 100px; /* Increased height */
-  width: calc(100% - 300px); /* Adjust this based on sidebar width */
+  height: 60px; /* Increased height */
+  width: 100% ; /* Adjust this based on sidebar width */
   background-color: #ffffff;
   display: flex;
   justify-content: space-between;
@@ -11,7 +11,6 @@
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   position: fixed;
   top: 0;
-  left: 300px; /* Adjust this based on sidebar width */
   z-index: 1000;
 }
 
@@ -31,7 +30,6 @@
 .navbar-right {
   display: flex;
   align-items: center;
-  margin-right: 50px;
 }
 
 .navbar-user {

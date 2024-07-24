@@ -32,10 +32,10 @@
   
                 <div class="invalid-feedback">
                   <span *ngIf="verifyCodeControl.hasError('required')">Please Enter the code</span>
-                  <!-- <span *ngIf="verifyCodeControl.hasError('pattern')">verifyCode must be an official verifyCode id</span> -->
+                  <!-- <span *ngIf="verifyCodeControl.hasError('pattern')">Please Enter the correct code</span> -->
                 </div>
               </div>
-              <button type="submit" [disabled]="!verifyForm.valid" class="btn btn-primary col-lg-12 col-md-12 mb-3 mt-3" (click)="onSubmit()">Verify</button>
+              <button type="submit" [disabled]="!verifyForm.valid" class="btn button col-lg-12 col-md-12 mb-3 mt-3" (click)="onSubmit()">Verify</button>
               <div class="mb-2 text-center back">
                 <div routerLink="/login">Back to Login</div>
               </div>

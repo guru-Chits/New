@@ -1,0 +1,53 @@
+<div class="container-fluid">
+    <div class="row d-flex">
+      <div class="col-lg-1 col-md-1 align-self-center">
+        
+      </div>
+
+        <div class="col-lg-4 col-md-4 align-self-center">
+            <img src="../../../assets/login/Forgot password.svg" alt="" class="img-fluid  clipart">
+         </div>
+         
+         <div class="col-lg-7 col-md-7 align-self-center">
+            <div class="d-flex flex-column gap-4 align-items-center ">
+
+          <div class="card-title">
+            <img src="\assets\login\login logo.svg" alt=""  class="img-fluid logo">
+        </div>
+          <div class="card col-lg-6 col-md-7  d-flex p-0 flex-column">
+            <div class="card-body">
+            <form [formGroup]="verifyForm" class="col-lg-12 col-md-12 d-flex flex-column px-4">
+              <div class="mt-1 mb-3 pl-0 sign-in-label">Verify it's you?</div>
+              <div class="mt-1 mb-3 pl-0 sign-in-text">We,ve sent a 6-digit confirmation code to xxxxxxx989. Make sure you enter correct code.</div>
+
+              <div class="form-group mb-4 mt-2">
+                <!-- <label for="verifyCode" class="form-control-label">verifyCode</label> -->
+                <input  type="verifyCode"
+                        class="form-control"
+                        id="verifyCode"
+                        placeholder="Enter Code"
+                        name="verifyCode"
+                        formControlName="verifyCode"
+                        [ngClass]="{ 'is-invalid': verifyCodeControl.touched && verifyCodeControl.invalid}">
+  
+                <div class="invalid-feedback">
+                  <span *ngIf="verifyCodeControl.hasError('required')">Please Enter the code</span>
+                  <!-- <span *ngIf="verifyCodeControl.hasError('pattern')">verifyCode must be an official verifyCode id</span> -->
+                </div>
+              </div>
+              <button type="submit" [disabled]="!verifyForm.valid" class="btn btn-primary col-lg-12 col-md-12 mb-3 mt-3" (click)="onSubmit()">Verify</button>
+              <div class="mb-2 text-center back">
+                <div routerLink="/login">Back to Login</div>
+              </div>
+              <div class="mt-2 text-center">
+                <div class="otp-title">Didn’t receive any OTP?</div>
+                <div class="otp">Resend OTP</div>
+              </div>
+            </form>
+          </div>
+         </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  

@@ -48,3 +48,5 @@ Thumbs.db
 *.mov
 *.wmv
 
+# Ignore Angular cache directory
+.angular/cache/

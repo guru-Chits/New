@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { NavigationEnd, Router } from '@angular/router';
 import { NavigationMenus } from '../shared/constants/navigation-menus';
 import { INavigationMenu } from '../shared/interface/navigation-menus';
 
@@ -12,22 +12,40 @@ export class SidebarComponent implements OnInit {
   constructor(private router: Router) { }
   public menuItems: INavigationMenu[] = NavigationMenus;
   activeMenu: INavigationMenu;
+
   ngOnInit() {
-    this.router.events.subscribe(() => {
-      this.setActiveMenu();
+    this.router.events.subscribe(event => {
+      if (event instanceof NavigationEnd) {
+        this.setActiveMenu();
+      }
     });
+     this.setActiveMenu();
   }
 
   setActiveMenu(menuItem?: INavigationMenu) {
     if (menuItem) {
       this.activeMenu = menuItem;
     } else {
-      this.activeMenu = this.menuItems.find(menu => this.router.url.includes(menu.path));
+      this.activeMenu = this.findActiveMenu(this.menuItems, this.router.url);
     }
   }
 
+  findActiveMenu(menuItems: INavigationMenu[], url: string): INavigationMenu | null {
+    for (const menu of menuItems) {
+      if (url.includes(menu.path)) {
+        return menu;
+      } else if (menu.children) {
+        const activeChild = this.findActiveMenu(menu.children, url);
+        if (activeChild) {
+          return activeChild;
+        }
+      }
+    }
+    return null;
+  }
+
   isActive(menuItem: INavigationMenu): boolean {
-    return this.activeMenu === menuItem;
+    return this.activeMenu === menuItem || (this.activeMenu?.children && this.activeMenu.children.includes(menuItem));
   }
 }
   // public menuItems: INavigationMenu[] = NavigationMenus;

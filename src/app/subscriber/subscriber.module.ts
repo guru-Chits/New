@@ -5,6 +5,7 @@ import { SubscriberRoutingModule } from './subscriber-routing.module';
 import { SubscriberComponent } from './subscriber.component';
 import { SubscriberCreateComponent } from './subscriber-create/subscriber-create.component';
 import { SubscriberViewComponent } from './subscriber-view/subscriber-view.component';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 
 @NgModule({
@@ -15,7 +16,9 @@ import { SubscriberViewComponent } from './subscriber-view/subscriber-view.compo
   ],
   imports: [
     CommonModule,
-    SubscriberRoutingModule
+    SubscriberRoutingModule,
+    FormsModule,
+    ReactiveFormsModule
   ]
 })
 export class SubscriberModule { }

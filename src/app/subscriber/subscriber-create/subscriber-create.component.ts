@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { FormGroup } from '@angular/forms';
 
 @Component({
   selector: 'app-subscriber-create',
@@ -6,5 +7,7 @@ import { Component } from '@angular/core';
   styleUrl: './subscriber-create.component.css'
 })
 export class SubscriberCreateComponent {
+subscriberForm: FormGroup;
+
 
 }

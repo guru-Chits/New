@@ -1,0 +1,84 @@
+.container {
+    max-width: 1200px;
+  }
+  
+  .card {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  .header{
+   font-size: 20px;
+   font-weight: 700; 
+  }
+  .line{
+    border-left: 6px solid #3E3A97;
+    /* width:200px; */
+    padding: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    background-color: white;
+    border-radius: 6px;
+  }
+  .title{
+    font-size: 18px;
+    font-weight: 800;
+  }
+
+  .card-title {
+    font-size: 16px;
+    padding-top: 14px;
+    padding-bottom: 10px;
+    font-weight: 500;
+  }
+
+  .card-text {
+    font-size:24px;
+    font-weight: 600;
+  }
+  
+
+  
+  .table thead th {
+    border-bottom: 2px solid #dee2e6;
+  }
+  
+  .table tbody tr td {
+    vertical-align: middle;
+  }
+  
+  .table tbody tr td a {
+    color: #007bff;
+  }
+  
+  .rounded-circle {
+    border: 2px solid #dee2e6;
+  }
+  
+
+  .create{
+  background-color: #3E3A97;
+  border: none;
+  float:right;
+  }
+
+  .details{
+    
+    td{
+      font-size: 15px;
+    }
+     a{
+      text-decoration: none;
+     }
+    tr{
+    height: 15px;
+    }
+padding-left: 3px;
+width: 300px;
+margin-left: 30px;
+/* margin-bottom: 10px; */
+  }
+
+  .view{
+    border-color: #3E3A97;
+    color:#3E3A97;
+    border-radius: 5px;
+    font-size: 13px;
+  }

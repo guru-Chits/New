@@ -1,10 +1,20 @@
 <div class="container">
     <div class="row">
     <div class="col-lg-8">
-        <div class="">Subscriber Management</div>
+        <div class="mt-2 mb-3">Subscriber Management</div>
         <div class="card-wrapper">
-        <div class="card p-5">
-            <form [formGroup]="subscriberForm">
+        <div class="card mb-5 form-card">
+            <div class="profile-picture-container">
+                <div class="profile-picture">
+                  <img [src]="profileImageUrl || defaultImageUrl" alt="Profile Picture" class="profile-img">
+                  <input type="file" (change)="onFileSelected($event)" hidden #fileInput>
+                  <button class="upload-button" (click)="fileInput.click()">
+                    <img src="assets/subscriber/Profile edit.svg " alt="Upload Icon">
+                  </button>
+                </div>
+              </div>
+              <h6 class="text-center">Subscriber Details</h6>
+            <form class="ps-5 pe-5 " [formGroup]="subscriberForm">
                 <div class="row justify-content-around">
                     <div class="col-lg-4">
                         <div class="form-group">
@@ -96,52 +106,32 @@
                     </div>
                 </div>
  
-                <div class="row">
+                <div class="row  justify-content-center">
                     <div class="col-lg-4">
                         <div class="form-group">
                             <label for="panNo" class="form-control-label">PAN Card Number</label>
                             <input type="text" placeholder="Pan Card Number" class="form-control form-control-sm" formControlName="panNo"/>
                         </div>
                     </div>
-                    <!-- <div class="col-lg-4">
-                        <div class="form-group">
-                            <label for="contactNumber" class="form-control-label">Contact Number</label>
-                            <input type="text" placeholder="Contact Number" class="form-control form-control-sm" formControlName="contactNumber"/>
-                        </div>
-                    </div>
                     <div class="col-lg-4">
                         <div class="form-group">
-                            <label for="address" class="form-control-label">Place/Address</label>
-                            <input type="text" placeholder="Place/Address" class="form-control form-control-sm" formControlName="address"/>
+                            <label for="panCard" class="form-control-label">Pan Card</label>
+                            <input type="file" placeholder="choose file to upload" class="form-control form-control-sm file-upload" formControlName="panCard"/>
                         </div>
-                    </div> -->
+                    </div>
+                    <div class="col-lg-4 mt-4">
+                        <button class="viewBtn">View File</button>
+                        <button class="removeBtn">Remove File</button>
+                    </div>  
+                  
+
                 </div>
 
-                <div class="row">
+                <div class="row  justify-content-center">
                     <div class="col-lg-4">
                         <div class="form-group">
                             <label for="aadharNo" class="form-control-label">Aadhar Card Number</label>
                             <input type="text" placeholder="Aadhar Card Number" class="form-control form-control-sm" formControlName="aadharCard"/>
-                        </div>
-                    </div>
-                    <!-- <div class="col-lg-4">
-                        <div class="form-group">
-                            <label for="aadharCard" class="form-control-label">Aadhar Card</label>
-                            <input type="upload" placeholder="choose file to upload" class="form-control form-control-sm" formControlName="aadharCard"/>
-                        </div>
-                    </div>
-                    <div class="col-lg-4">
-                        <div class="form-group">
-                            <label for="address" class="form-control-label">Place/Address</label>
-                            <input type="text" placeholder="Place/Address" class="form-control form-control-sm" formControlName="address"/>
-                        </div>
-                    </div>  -->
-                </div>
-                <div class="row">
-                    <div class="col-lg-4">
-                        <div class="form-group">
-                            <label for="bankName" class="form-control-label">Bank Name</label>
-                            <input type="text" placeholder="Bank Name" class="form-control form-control-sm" formControlName="bankName"/>
                         </div>
                     </div>
                     <div class="col-lg-4">
@@ -150,13 +140,32 @@
                             <input type="file" placeholder="choose file to upload" class="form-control form-control-sm file-upload" formControlName="aadharCard"/>
                         </div>
                     </div>
-                    <div class="col-lg-2">
-                        <button>View File</button>
-                    </div>  
-                    <div class="col-lg-2">
-                        <button>Remove File</button>
-                    </div>  
+                    <div class="col-lg-4 mt-4">
+                        <button class="viewBtn">View File</button>
+                        <button class="removeBtn">Remove File</button>
 
+                    <!-- </div>   -->
+                    <!-- <div class="col-lg-2"> -->
+                    <!-- </div>   -->
+                </div>
+                </div>
+                <div class="row  justify-content-center">
+                    <div class="col-lg-4">
+                        <div class="form-group">
+                            <label for="bankName" class="form-control-label">Bank Name</label>
+                            <input type="text" placeholder="Bank Name" class="form-control form-control-sm" formControlName="bankName"/>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="form-group">
+                            <label for="passbook" class="form-control-label">Passbook</label>
+                            <input type="file" placeholder="choose file to upload" class="form-control form-control-sm file-upload" formControlName="passbook"/>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 mt-4">
+                        <button class="viewBtn">View File</button>
+                        <button class="removeBtn">Remove File</button>
+                    </div>
                 </div>
                 <div class="row">
                     <div class="col-lg-4">
@@ -167,10 +176,62 @@
                     </div>
                 </div>
 
+                <h5>Nominee Details</h5>
+                <div class="row justify-content-around">
+                    <div class="col-lg-4">
+                        <div class="form-group">
+                            <label for="nomineeName" class="form-control-label">Nominee Name</label>
+                            <input type="text" placeholder="Nominee Name" class="form-control form-control-sm" formControlName="nomineeName"/>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="form-group">
+                            <label for="nomieeRelation" class="form-control-label">Nominee Reltionship</label>
+                            <input type="text" placeholder="Nominee Relationship" class="form-control form-control-sm" formControlName="nomieeRelation"/>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="form-group">
+                            <label for="nomineeAddress" class="form-control-label">Nominee Address</label>
+                            <input type="text" placeholder="Nominee Address" class="form-control form-control-sm" formControlName="nomineeAddress"/>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-lg-4">
+                        <div class="form-group">
+                            <label for="nomineeOccupation" class="form-control-label">Nominee Occupation</label>
+                            <input type="text" placeholder="Nominee Occupation" class="form-control form-control-sm" formControlName="nomineeOccupation"/>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="form-group">
+                            <label for="nomineeGender" class="form-control-label">Nominee Gender</label>
+                            <select type="text" class="form-control form-control-sm" formControlName="nomineeGender">
+                                <option>Male</option>
+                                <option>Female</option>
+                                <option>Others</option>
+                            </select>                        
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="form-group">
+                            <label for="nAadharNo" class="form-control-label">Nominee Aadhar Number</label>
+                            <input type="text" placeholder="Nominee Aadhar Number" class="form-control form-control-sm" formControlName="nAadharNo"/>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="form-group">
+                            <label for="ndob" class="form-control-label">Nominee DOB</label>
+                            <input type="date" placeholder="Nominee DOB" class="form-control form-control-sm" formControlName="ndob"/>
+                        </div>
+                    </div>
+                </div>
                 <div class="row justify-content-center">
-                    <div class="col-lg-12 d-flex justify-content-end py-3">
-                        <button class="btn btn-outline-secondary" routerLink="/projects/project">Back</button>
-                        <button class="btn next-btn" [disabled]="!subscriberForm.valid">Save</button>
+                    <div class="col-lg-12 d-flex justify-content-end mb-2">
+                        <button class="btn nxt-btn btn-outline-secondary" routerLink="/projects/project">Cancel</button>
+                        <button class="btn save-btn" [disabled]="!subscriberForm.valid">Submit</button>
                     </div>
                 </div>
 
@@ -180,11 +241,57 @@
     </div>
     </div>
     <div class="col-lg-4">
-        <div class="card">
-            <div class="card-body">
-                
+ 
+                <div class="col-md-4 col-lg-4">
+                    <div class="card details">
+                    <div class="title align-self-center py-2">Subscriber Details</div>
+                    <img src="assets/subscriber/men.svg" class="rounded-circle  align-self-center mb-2" width="75" height="75" alt="Subscriber Image">
+                    <table class="table">
+                        <tbody>
+                          <tr>
+                            <td><strong>Subscriber ID:</strong></td>
+                            <td><a href="#">KNG-C10001</a></td>
+                          </tr>
+                          <tr>
+                            <td><strong>First Name:</strong></td>
+                            <td>John</td>
+                          </tr>
+                          <tr>
+                            <td><strong>Last Name:</strong></td>
+                            <td>Doe</td>
+                          </tr>
+                          <tr>
+                            <td><strong>Contact No:</strong></td>
+                            <td>9876543210</td>
+                          </tr>
+                          <tr>
+                            <td><strong>Address/Place:</strong></td>
+                            <td>JP Nagar</td>
+                          </tr>
+                          <tr>
+                            <td><strong>Occupation:</strong></td>
+                            <td>Engineer</td>
+                          </tr>
+                          <tr>
+                            <td><strong>Referral Client:</strong></td>
+                            <td>Shiva</td>
+                          </tr>
+                          <tr>
+                            <td><strong>Enrollments:</strong></td>
+                            <td>2</td>
+                          </tr>
+                          <tr>
+                            <td><strong>Region/Route:</strong></td>
+                            <td>Coimbatore</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                      <div class="text-center mb-3">
+                        <button class="btn  view">Add Referral</button>
+                    </div>
+                  <!-- </div> -->
+                </div>
+                    </div>
             </div>
         </div>
     </div>
-    </div>
-</div>

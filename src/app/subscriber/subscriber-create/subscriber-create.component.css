@@ -60,3 +60,107 @@
       color: red;
     }
   }
+
+  .viewBtn{
+    height: 25px;
+    width:90px;
+    font-size: 12px;
+    border: 2px solid #B8B8B8; 
+    text-align: center; 
+    margin-top:4px;
+    background-color: #E8E8E8;
+    border-radius: 5px;
+  }
+  .removeBtn{
+    height: 25px;
+    width:90px;
+    border-radius: 5px;
+    font-size: 11px;
+    border: 2px solid red;
+    text-align: center; 
+    margin-left: 10px;
+    background-color: #FAC5C1;
+    margin-top:4px;
+  }
+
+  .form-card{
+border-top: 100px solid #3E3A97;
+  }
+
+  /* profile-picture-upload.component.css */
+.profile-picture-container {
+  border-radius: 50%;
+  align-items: left;
+  margin-top: -50px;
+  margin-left: 30px;
+}
+
+.profile-picture {
+  position: relative;
+  display: inline-block;
+  border-radius: 50%;
+  border: none;
+  background-color: #E8E8E8;
+}
+
+.profile-img {
+  width: 100px;
+  height: 100px;
+  /* border: 2px solid #ccc; */
+  background: transparent;
+  border-radius: 50%;
+}
+
+.upload-button {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  border: none;
+  cursor: pointer;
+  background: transparent;
+
+}
+
+.upload-button img {
+  width: 24px;
+  height: 24px;
+}
+
+h2 {
+  margin-top: 20px;
+}
+
+
+.nxt-btn{
+  border-color: #3E3A97;
+  color:#3E3A97;
+}
+.save-btn{
+  background-color: #3E3A97;
+  color:white;
+  border: none;
+  margin-left: 10px;
+}
+.details{
+    
+  td{
+    font-size: 15px;
+  }
+   a{
+    text-decoration: none;
+   }
+  tr{
+  height: 15px;
+  }
+padding-left: 3px;
+width: 300px;
+margin-left: 30px;
+/* margin-bottom: 10px; */
+}
+
+.view{
+  border-color: #3E3A97;
+  color:#3E3A97;
+  border-radius: 5px;
+  font-size: 13px;
+}/* Form styles can be added here */

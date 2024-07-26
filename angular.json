@@ -107,14 +107,10 @@
     }
   },
   "cli": {
-<<<<<<< HEAD
     "analytics": false,
     "cache": {
       "enabled": false
     }
-=======
-    "analytics": false
->>>>>>> d268cbebf1b018278c981a41646250751fc2f77c
   }
 
 }

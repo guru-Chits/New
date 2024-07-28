@@ -1,0 +1,59 @@
+<!-- ag-grid.component.html -->
+
+<div class="container">
+
+ <div class="search-filter-container">
+
+      <div class="search-box">
+        <input  width="20" height="20" type="text"   
+        id="filter-text-box"
+        placeholder="Search"
+        (input)="onFilterTextBoxChanged()"
+        />
+        <span class="search-icon"><img src="assets/table/search.svg"></span>
+      </div>
+        <button class="filter-button">
+        <img src="assets/table/Icon.svg">
+       </button>
+    </div>
+
+  <ag-grid-angular 
+    class="ag-theme-balham custom-grid"
+    style="height: 300px;width: 700px;"
+    [rowData]="rowData"
+    [columnDefs]="columns"
+    [defaultColDef]="defaultColDef"
+    (gridReady)="onGridReady($event)"
+    [pagination]="true"
+    [paginationPageSize]="5"
+    (paginationChanged)="onPaginationChanged($event)">
+  </ag-grid-angular>
+
+  <div class="custom-pagination">
+    <button (click)="onBtFirst()">First</button>
+    <button (click)="onBtPrevious()">Previous</button>
+    
+    <button 
+      *ngFor="let page of visiblePages"
+      [class.active]="currentPage === page"
+      (click)="goToPage(page)">
+      {{ page }}
+    </button>
+    
+    <span *ngIf="showLeftDots">...</span>
+    <button 
+      *ngIf="!isPageInVisibleRange(1)"
+      (click)="goToPage(1)">
+      1
+    </button>
+    
+    <span *ngIf="showRightDots">...</span>
+    <button 
+      *ngIf="!isPageInVisibleRange(totalPages)"
+      (click)="goToPage(totalPages)">
+      {{ totalPages }}
+    </button>
+  
+    <button (click)="onBtNext()">Next</button>
+    <button (click)="onBtLast()">Last</button>
+  </div>

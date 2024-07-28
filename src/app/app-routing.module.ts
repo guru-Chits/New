@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { AgGridComponent } from './shared/table/ag-grid/ag-grid.component';
 
 const loginRoutes: Routes = [
   {
@@ -10,6 +11,11 @@ const loginRoutes: Routes = [
     path: '',
     loadChildren: () => import('./main/main.module').then(m => m.MainModule)
   },
+  {
+    path: 'ag-grid',
+    component:AgGridComponent
+  },
+  
   
 ];
 

@@ -6,6 +6,7 @@ import { SubscriberComponent } from './subscriber.component';
 import { SubscriberCreateComponent } from './subscriber-create/subscriber-create.component';
 import { SubscriberViewComponent } from './subscriber-view/subscriber-view.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { SharedModule } from '../shared/shared.module';
 
 
 @NgModule({
@@ -18,7 +19,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     CommonModule,
     SubscriberRoutingModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    SharedModule
   ]
 })
 export class SubscriberModule { }

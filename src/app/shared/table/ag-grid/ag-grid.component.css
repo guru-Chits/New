@@ -1,0 +1,122 @@
+/* subscriber-table.component.css */
+/* .container {
+    width: 100%;
+    padding: 20px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  } */
+  .search-filter-container {
+    display: flex;
+    align-items: center;
+    background-color:none; /* Adjust background color */
+    padding: 10px;
+    border-radius: 5px;
+  }
+ .search-box {
+    display: flex;
+    align-items: center;
+    background-color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 5px;
+    width:250px;
+  }
+  
+  .search-box input {
+    border: none;
+    outline: none;
+    padding: 5px;
+    flex-grow: 1;
+    height: 20px;
+    width: 100px;
+  } 
+  
+.filter-button {
+  background: white;
+  margin-left: 10px;
+  padding:5px;
+  border: none;
+  cursor: pointer;
+}
+
+  .ag-theme-balham {
+    width: 100%;
+    height: 500px;
+    border:2px solid white;
+    overflow: hidden;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+  }
+  
+  
+  .ag-theme-balham{
+    /* Changes the color of the grid text */
+      --ag-foreground-color: black;
+      /* Changes the color of the grid background */
+      --ag-background-color: white;
+      /* Changes the header color of the top row */
+      --ag-header-background-color:#EEF6F6;
+      /* Changes the hover color of the row*/
+      --ag-row-hover-color: white;
+      --ag-font-size: 16px;
+      --ag-grid-size: 7px; 
+      --ag-header-foreground-color:black;
+      --ag-header-foreground-font-weight:700;
+        --ag-header-height:60px;
+      --ag-paging-panel-display:none;
+}
+.ag-theme-balham .ag-paging-panel {
+  display: none;
+}
+
+.custom-grid {
+  border: none;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.ag-theme-balham .ag-root-wrapper {
+  border: none;
+}
+
+.custom-pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.custom-pagination button {
+  margin: 0 5px;
+  padding: 5px 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: #fff;
+  cursor: pointer;
+  outline: none;
+}
+
+.custom-pagination button.active {
+  background-color:#3E3A97; /* Active button color */
+  color: white;
+}
+
+.custom-pagination button:hover {
+  background-color: #f0f0f0; /* Hover color */
+}
+
+.custom-pagination span {
+  margin: 0 5px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.ag-body-horizontal-scroll-viewport{
+  height: 3px;
+  max-height: 3px;
+  min-height: 3px;
+}
+

@@ -35,34 +35,8 @@
 
       </div>
 
-<!-- <div class="card">
-  <div class="card-header">
-    <div class="d-flex justify-content-between">
-      <input type="text" class="form-control w-75" placeholder="Search">
-      <button class="btn btn-primary ml-2">Filter</button>
-    </div>
-  </div>
-  <div class="card-body p-0">
-    <table class="table table-striped mb-0">
-      <thead>
-        <tr>
-          <th>Subscriber ID</th>
-          <th>Display Name</th>
-          <th>Location</th>
-          <th>Occupation</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td><a href="#">KING-C10001</a></td>
-          <td>John Doe - Entrinz</td>
-          <td>JP Nagar</td>
-          <td>Engineer</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-</div> -->
+      <app-ag-grid [columns]="columns" [rowData]="rowData"></app-ag-grid>
+
     </div>
     <div class="col-md-4 col-lg-4">
     <div class="card details">

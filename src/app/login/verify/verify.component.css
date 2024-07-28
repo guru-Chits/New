@@ -48,8 +48,11 @@
         opacity: 0.3;
       }
     }
-    button{
+
+
+    .button{
       background-color:#3E3A97;
+      color:white;
       width: 280px;
       height: 37px;
       border-radius: 5px;
@@ -58,8 +61,10 @@
       text-align: center;
       cursor: pointer;
       }
-  
-  
+      .button:active{
+        background-color:#3E3A97;
+        color:white
+      }
   .logo{
     width: 180px;
     height:140.01px;

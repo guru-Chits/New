@@ -12,6 +12,7 @@ interface IForgotPassword {
 })
 export class VerifyComponent implements OnInit{
 verifyForm:FormGroup<IForgotPassword>
+verifyPattern:RegExp=/^[0-9]$/;
 constructor(private fb:FormBuilder,private router :Router){}
 get verifyCodeControl() { return this.verifyForm.get('verifyCode'); };
 

@@ -1,0 +1,11 @@
+<nav class="navbar navbar-expand d-flex" >
+    <div class="container-fluid mx-3 row "  >
+      <div class="d-flex col-12" id="navbarNav" >
+        <ul class="navbar-nav d-flex flex-wrap  w-100 justify-content-around" >
+          <li *ngFor="let tab of tabs; let i = index" class="{{tabs.class}}  nav-item" [ngClass]="{'active': tab.active}">
+            <a class="nav-link" (click)="onTabSelect(tab, i)">{{ tab.title }}</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+</nav>

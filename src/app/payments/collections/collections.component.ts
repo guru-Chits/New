@@ -6,5 +6,10 @@ import { Component } from '@angular/core';
   styleUrl: './collections.component.css'
 })
 export class CollectionsComponent {
+  Staffs: string[];
+  Areas: string[];
 
+  onSubmit(){
+
+  }
 }

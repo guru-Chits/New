@@ -1,0 +1,36 @@
+<div class="col-6 pl-0 mx-0 row">
+    <div class="form-group mb-0">
+      <div class="input-group input-group-merge" *ngIf="privileges?.search">
+          <div class=" input-group-prepend">
+            <span class=" input-group-text">
+              <img width="20" height="20" src="\assets\img\navbar\Search.png" alt="">
+            </span>
+          </div>
+          <input type="search" class="form-control" placeholder="Search..." (input)="onQuickFilterChanged($event)">
+      </div>
+    </div>
+    <button class="ml-4 btn btn-secondary btn-icon-only" *ngIf="privileges?.filter">
+        <span class="btn-inner--icon">
+          <img src="\assets\img\users\Filter.png" alt="" class="filter" (click)="filterTableData($event)">
+        </span>
+    </button>
+    <div class="d-flex ml-4 mt-1" *ngIf="showActiveToggle && privileges?.status">
+      <p class="mr-2 font-weight-bold">Active</p>
+      <label class="custom-toggle custom-toggle-success">
+          <input type="checkbox" [(ngModel)]="isActiveFilter" [checked]="isActiveFilter" (change)="handleActiveFilterChange($event)">
+          <span class="custom-toggle-slider rounded-circle"></span>
+      </label>
+  </div>
+  </div>
+<ag-grid-angular
+  class="ag-theme-quartz"
+  style="height: 500px;width: 100%;"
+  [rowData]="tableData"
+  [columnDefs]="columns"
+  [pagination]="true"
+  [paginationPageSize]="paginationPageSize"
+  [paginationPageSizeSelector]="paginationPageSizeSelector"
+  [gridOptions]="gridOptions"
+>
+
+</ag-grid-angular>

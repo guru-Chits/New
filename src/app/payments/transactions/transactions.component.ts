@@ -6,5 +6,10 @@ import { Component } from '@angular/core';
   styleUrl: './transactions.component.css'
 })
 export class TransactionsComponent {
+  Routes: string[];
+  Collections: string[];
 
+  onSubmit(){
+
+  }
 }

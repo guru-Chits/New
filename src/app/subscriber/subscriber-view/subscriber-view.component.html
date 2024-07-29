@@ -1,1 +1,37 @@
-<p>subscriber-view works!</p>
+<div class="container">
+    <div class="row">
+      <div class="col-lg-9">
+        <div class="mt-2 mb-3">Subscriber Management</div>
+        <div class="card-wrapper">
+            <div class="card mb-5 details-card">
+                <div class="profile-picture-container">
+                    <div class="profile-picture">
+                      <img [src]="profileImageUrl || defaultImageUrl" alt="Profile Picture" class="profile-img">
+                      <input type="file" (change)="onFileSelected($event)" hidden #fileInput>
+                      <button class="upload-button" (click)="fileInput.click()">
+                        <img src="assets/subscriber/Profile edit.svg " alt="Upload Icon">
+                      </button>
+                    </div>
+                    <h6 class="text-center">Subscriber Details</h6>
+                    <div class="row justify-content-around">
+                        <div class="col-lg-4">
+                            <label>Subscriber ID:</label>
+                            <span>KING-C10001</span>
+                        </div>
+                        <div class="col-lg-4">
+                            <label>First Name:</label>
+                            <span>John</span>
+                        </div>                        
+                        <div class="col-lg-4">
+                            <label>Last Name:</label>
+                            <span>Doe</span>
+                        </div>
+                  </div>
+           </div>
+        </div>
+      </div>
+      <div class="col-lg-3">
+        
+      </div>
+   </div>
+</div>

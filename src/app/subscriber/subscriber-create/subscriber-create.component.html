@@ -1,6 +1,6 @@
 <div class="container">
     <div class="row">
-    <div class="col-lg-8">
+    <div class="col-lg-9">
         <div class="mt-2 mb-3">Subscriber Management</div>
         <div class="card-wrapper">
         <div class="card mb-5 form-card">
@@ -240,58 +240,92 @@
         </div>
     </div>
     </div>
-    <div class="col-lg-4">
- 
-                <div class="col-md-4 col-lg-4">
-                    <div class="card details">
-                    <div class="title align-self-center py-2">Subscriber Details</div>
-                    <img src="assets/subscriber/men.svg" class="rounded-circle  align-self-center mb-2" width="75" height="75" alt="Subscriber Image">
-                    <table class="table">
-                        <tbody>
-                          <tr>
-                            <td><strong>Subscriber ID:</strong></td>
-                            <td><a href="#">KNG-C10001</a></td>
-                          </tr>
-                          <tr>
-                            <td><strong>First Name:</strong></td>
-                            <td>John</td>
-                          </tr>
-                          <tr>
-                            <td><strong>Last Name:</strong></td>
-                            <td>Doe</td>
-                          </tr>
-                          <tr>
-                            <td><strong>Contact No:</strong></td>
-                            <td>9876543210</td>
-                          </tr>
-                          <tr>
-                            <td><strong>Address/Place:</strong></td>
-                            <td>JP Nagar</td>
-                          </tr>
-                          <tr>
-                            <td><strong>Occupation:</strong></td>
-                            <td>Engineer</td>
-                          </tr>
-                          <tr>
-                            <td><strong>Referral Client:</strong></td>
-                            <td>Shiva</td>
-                          </tr>
-                          <tr>
-                            <td><strong>Enrollments:</strong></td>
-                            <td>2</td>
-                          </tr>
-                          <tr>
-                            <td><strong>Region/Route:</strong></td>
-                            <td>Coimbatore</td>
-                          </tr>
-                        </tbody>
-                      </table>
-                      <div class="text-center mb-3">
-                        <button class="btn  view">Add Referral</button>
+                <div class="col-md-3 col-lg-3">
+                    <div class="card details mb-3">
+                    <h5 class="text-center my-2">Referral</h5>
+                        <div class="search-bar align-self-center">
+                          <span class="search-icon"><img src="assets/subscriber/search-icon.svg"></span>
+                          <input width="20" height="20" type="text" placeholder="Search Subscriber ID, Name, Email" (input)="applyFilter($event.target.value)">
+                        </div>
+                        
+                        <table class="subscriber-table">
+                          <tbody>
+                            <tr *ngFor="let subscriber of filteredSubscribers">
+                           <div class="card view-all mx-3">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-2">
+                                        <img class="profile-list-img" src="assets/subscriber/men.svg">                       
+                                    </div>
+                                    <div class="col-5 text">
+                                        <strong>{{ subscriber.firstName }} {{ subscriber.lastName }}</strong>
+                                        {{ subscriber.id }}
+                                        </div>
+                                    <div class="col-5">
+                                        <button  class="viewbtn" (click)="selectSubscriber(subscriber)">View Details</button>
+                                    </div>
+                                </div>
+                            </div>
+                           </div>
+                            </tr>
+                          </tbody>
+                        </table>
+                      
+                      <div class="subscriber-details">
+                        <div *ngIf="selectedSubscriber">
+                            <h5 class="title  text-center">Subscriber Details</h5>
+                            <div class="text-center">
+                                <img src="assets/subscriber/men.svg" class="img-fluid" alt="Subscriber Image">
+                            </div>
+                            <table class="table px-4">
+                                <tbody>
+                                  <tr>
+                                    <td><strong>Subscriber ID </strong></td>
+                                    <td><a href="#">{{subscriber.id }}</a></td>
+                                  </tr>
+                                  <tr>
+                                    <td><strong>First Name </strong></td>
+                                    <td>Sangeetha </td>
+                                  </tr>
+                                  <tr>
+                                    <td><strong>Last Name </strong></td>
+                                    <td>{{ subscriber.lastName }}</td>
+                                  </tr>
+                                  <tr>
+                                    <td><strong>Contact No </strong></td>
+                                    <td>{{ subscriber.contact }}</td>
+                                  </tr>
+                                  <tr>
+                                    <td><strong>Address/Place </strong></td>
+                                    <td>{{ subscriber.address }}</td>
+                                  </tr>
+                                  <tr>
+                                    <td><strong>Occupation </strong></td>
+                                    <td>{{ subscriber.occupation }}</td>
+                                  </tr>
+                                  <tr>
+                                    <td><strong>Referral Client </strong></td>
+                                    <td>{{ subscriber.referredBy }}</td>
+                                  </tr>
+                                  <tr>
+                                    <td><strong>Enrollments </strong></td>
+                                    <td>{{ subscriber.enrollments }}</td>
+                                  </tr>
+                                  <tr>
+                                    <td><strong>Region/Route </strong></td>
+                                    <td>{{ subscriber.region }}</td>
+                                  </tr>
+                                </tbody>
+                              </table>
+                              <div class="text-center mb-2">
+                                <button class="btn  view">Add Referral</button>
+                            </div>
+                   
+                        </div>
+                            </div>
                     </div>
-                  <!-- </div> -->
-                </div>
-                    </div>
+             </div>
+                                            
             </div>
         </div>
-    </div>
+    

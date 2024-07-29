@@ -1,24 +1,20 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ListTableComponent } from './components/list-table/list-table.component';
-import { AgGridTableComponent } from './components/ag-grid-table/ag-grid-table.component';
 import { AgGridAngular } from 'ag-grid-angular';
-import { TabsComponent } from './components/tabs/tabs.component';
+import { AgGridComponent } from './table/ag-grid/ag-grid.component';
 
 
 @NgModule({
   declarations: [
-    ListTableComponent,
-    AgGridTableComponent,
-    TabsComponent
+AgGridComponent
   ],
   imports: [
     CommonModule, 
     AgGridAngular
   ],
   exports: [
-    ListTableComponent,
-    AgGridTableComponent
+    AgGridComponent
+
   ]
 })
 export class SharedModule { }

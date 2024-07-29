@@ -37,9 +37,8 @@
             "styles": [
               "src/styles.css",
               "node_modules/bootstrap/dist/css/bootstrap.css",   
-              "ag-grid-community/styles/ag-grid.css",
-              "ag-grid-community/styles/ag-theme-quartz.css"
-              
+              "node_modules/ag-grid-community/styles/ag-grid.css",
+              "node_modules/ag-grid-community/styles/ag-theme-balham.css"              
             ],
             "scripts": [
               "node_modules/bootstrap/dist/js/bootstrap.js"

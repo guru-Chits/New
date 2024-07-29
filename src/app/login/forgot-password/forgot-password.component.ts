@@ -14,7 +14,7 @@ interface IForgotPassword {
 export class ForgotPasswordComponent implements OnInit{
   forgotPasswordForm:FormGroup<IForgotPassword>;
 
-
+ employeePattern:RegExp= /^KNG-E\d{3,9}$/;
   employeeId: string;
   isemployeeIdEmpty: boolean = false;
   isRegisteredemployeeId: boolean = true;
@@ -24,7 +24,7 @@ export class ForgotPasswordComponent implements OnInit{
  ngOnInit(): void {
   
   this.forgotPasswordForm=this.fb.group({
-    employeeId:['',[Validators.required]]
+    employeeId:['',[Validators.required, Validators.pattern(this.employeePattern)]]
   })
 }
 

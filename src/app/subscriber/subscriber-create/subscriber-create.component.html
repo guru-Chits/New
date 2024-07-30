@@ -1,1 +1,331 @@
-<app-ag-grid [columns]="columns" [rowData]="rowData"   width="500px" height="200px"></app-ag-grid>
+<div class="container">
+    <div class="row">
+    <div class="col-lg-9">
+        <div class="mt-2 mb-3">Subscriber Management</div>
+        <div class="card-wrapper">
+        <div class="card mb-5 form-card">
+            <div class="profile-picture-container">
+                <div class="profile-picture">
+                  <img [src]="profileImageUrl || defaultImageUrl" alt="Profile Picture" class="profile-img">
+                  <input type="file" (change)="onFileSelected($event)" hidden #fileInput>
+                  <button class="upload-button" (click)="fileInput.click()">
+                    <img src="assets/subscriber/Profile edit.svg " alt="Upload Icon">
+                  </button>
+                </div>
+              </div>
+              <h6 class="text-center">Subscriber Details</h6>
+            <form class="ps-5 pe-5 " [formGroup]="subscriberForm">
+                <div class="row justify-content-around">
+                    <div class="col-lg-4">
+                        <div class="form-group">
+                            <label for="subscriberId" class="form-control-label">Subscriber Id</label>
+                            <input type="text" placeholder="Subscriber Id" class="form-control form-control-sm" formControlName="subscriberId"/>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="form-group">
+                            <label for="firstName" class="form-control-label">First Name</label>
+                            <input type="text" placeholder="First Name" class="form-control form-control-sm" formControlName="firstName"/>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="form-group">
+                            <label for="lastName" class="form-control-label">Last Name</label>
+                            <input type="text" placeholder="Last Name" class="form-control form-control-sm" formControlName="lastName"/>
+                        </div>
+                    </div>
+                </div> 
+                <div class="row justify-content-around">
+                    <div class="col-lg-4">
+                        <div class="form-group">
+                            <label for="aliasName" class="form-control-label">Alias Name</label>
+                            <input type="text" placeholder="Alias Name" class="form-control form-control-sm" formControlName="aliasName"/>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="form-group">
+                            <label for="contactNumber" class="form-control-label">Contact Number</label>
+                            <input type="text" placeholder="Contact Number" class="form-control form-control-sm" formControlName="contactNumber"/>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="form-group">
+                            <label for="address" class="form-control-label">Place/Address</label>
+                            <input type="text" placeholder="Place/Address" class="form-control form-control-sm" formControlName="address"/>
+                        </div>
+                    </div>
+                </div>
+                <div class="row justify-content-around">
+                    <div class="col-lg-4">
+                        <div class="form-group">
+                            <label for="gender" class="form-control-label">Gender</label>
+                            <select type="text" class="form-control form-control-sm" formControlName="gender">
+                                <option>Male</option>
+                                <option>Female</option>
+                                <option>Others</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="form-group">
+                            <label for="dob" class="form-control-label">DOB</label>
+                            <input type="date" class="form-control form-control-sm" formControlName="dob"/>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="form-group">
+                            <label for="occupation" class="form-control-label">Occupation</label>
+                            <input type="text" placeholder="Occupation" class="form-control form-control-sm" formControlName="occupation"/>
+                        </div>
+                    </div>
+                </div>
+                <div class="row" >
+                    <div class="col-lg-4">
+                        <div class="form-group">
+                            <label for="areaId" class="form-control-label">Area Id</label>
+                            <input type="text" placeholder="Area Id" class="form-control form-control-sm" formControlName="areaId"/>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="form-group">
+                            <label for="accountNumber" class="form-control-label">Account Number</label>
+                            <input type="text" placeholder="Account Number" class="form-control form-control-sm" formControlName="accountNumber"/>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="form-group">
+                            <label for="ifsc" class="form-control-label">IFSC Code</label>
+                            <input type="text"placeholder="IFSC Code" class="form-control form-control-sm" formControlName="address"/>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="form-group">
+                            <label for="upi" class="form-control-label">UPI ID/Number</label>
+                            <input type="text" placeholder="UPI ID/Number" class="form-control form-control-sm" formControlName="upi"/>
+                        </div>
+                    </div>
+                </div>
+ 
+                <div class="row  justify-content-center">
+                    <div class="col-lg-4">
+                        <div class="form-group">
+                            <label for="panNo" class="form-control-label">PAN Card Number</label>
+                            <input type="text" placeholder="Pan Card Number" class="form-control form-control-sm" formControlName="panNo"/>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="form-group">
+                            <label for="panCard" class="form-control-label">Pan Card</label>
+                            <input type="file" placeholder="choose file to upload" class="form-control form-control-sm file-upload" formControlName="panCard"/>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 mt-4">
+                        <button class="viewBtn">View File</button>
+                        <button class="removeBtn">Remove File</button>
+                    </div>  
+                  
+
+                </div>
+
+                <div class="row  justify-content-center">
+                    <div class="col-lg-4">
+                        <div class="form-group">
+                            <label for="aadharNo" class="form-control-label">Aadhar Card Number</label>
+                            <input type="text" placeholder="Aadhar Card Number" class="form-control form-control-sm" formControlName="aadharCard"/>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="form-group">
+                            <label for="aadharCard" class="form-control-label">Aadhar Card</label>
+                            <input type="file" placeholder="choose file to upload" class="form-control form-control-sm file-upload" formControlName="aadharCard"/>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 mt-4">
+                        <button class="viewBtn">View File</button>
+                        <button class="removeBtn">Remove File</button>
+
+                    <!-- </div>   -->
+                    <!-- <div class="col-lg-2"> -->
+                    <!-- </div>   -->
+                </div>
+                </div>
+                <div class="row  justify-content-center">
+                    <div class="col-lg-4">
+                        <div class="form-group">
+                            <label for="bankName" class="form-control-label">Bank Name</label>
+                            <input type="text" placeholder="Bank Name" class="form-control form-control-sm" formControlName="bankName"/>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="form-group">
+                            <label for="passbook" class="form-control-label">Passbook</label>
+                            <input type="file" placeholder="choose file to upload" class="form-control form-control-sm file-upload" formControlName="passbook"/>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 mt-4">
+                        <button class="viewBtn">View File</button>
+                        <button class="removeBtn">Remove File</button>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-4">
+                        <div class="form-group">
+                            <label for="referralClient" class="form-control-label">Referral Clinet</label>
+                            <input type="text" placeholder="Referral Client" class="form-control form-control-sm" formControlName="referralClient"/>
+                        </div>
+                    </div>
+                </div>
+
+                <h5>Nominee Details</h5>
+                <div class="row justify-content-around">
+                    <div class="col-lg-4">
+                        <div class="form-group">
+                            <label for="nomineeName" class="form-control-label">Nominee Name</label>
+                            <input type="text" placeholder="Nominee Name" class="form-control form-control-sm" formControlName="nomineeName"/>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="form-group">
+                            <label for="nomieeRelation" class="form-control-label">Nominee Reltionship</label>
+                            <input type="text" placeholder="Nominee Relationship" class="form-control form-control-sm" formControlName="nomieeRelation"/>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="form-group">
+                            <label for="nomineeAddress" class="form-control-label">Nominee Address</label>
+                            <input type="text" placeholder="Nominee Address" class="form-control form-control-sm" formControlName="nomineeAddress"/>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-lg-4">
+                        <div class="form-group">
+                            <label for="nomineeOccupation" class="form-control-label">Nominee Occupation</label>
+                            <input type="text" placeholder="Nominee Occupation" class="form-control form-control-sm" formControlName="nomineeOccupation"/>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="form-group">
+                            <label for="nomineeGender" class="form-control-label">Nominee Gender</label>
+                            <select type="text" class="form-control form-control-sm" formControlName="nomineeGender">
+                                <option>Male</option>
+                                <option>Female</option>
+                                <option>Others</option>
+                            </select>                        
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="form-group">
+                            <label for="nAadharNo" class="form-control-label">Nominee Aadhar Number</label>
+                            <input type="text" placeholder="Nominee Aadhar Number" class="form-control form-control-sm" formControlName="nAadharNo"/>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="form-group">
+                            <label for="ndob" class="form-control-label">Nominee DOB</label>
+                            <input type="date" placeholder="Nominee DOB" class="form-control form-control-sm" formControlName="ndob"/>
+                        </div>
+                    </div>
+                </div>
+                <div class="row justify-content-center">
+                    <div class="col-lg-12 d-flex justify-content-end mb-2">
+                        <button class="btn nxt-btn btn-outline-secondary" routerLink="/projects/project">Cancel</button>
+                        <button class="btn save-btn" [disabled]="!subscriberForm.valid">Submit</button>
+                    </div>
+                </div>
+
+                
+            </form>
+        </div>
+    </div>
+    </div>
+                <div class="col-md-3 col-lg-3">
+                    <div class="card details mb-3">
+                    <h5 class="text-center my-2">Referral</h5>
+                        <div class="search-bar align-self-center">
+                          <span class="search-icon"><img src="assets/subscriber/search-icon.svg"></span>
+                          <input width="20" height="20" type="text" placeholder="Search Subscriber ID, Name, Email" (input)="applyFilter($event.target.value)">
+                        </div>
+                        
+                        <table class="subscriber-table ">
+                          <tbody>
+                            <tr *ngFor="let subscriber of filteredSubscribers">
+                           <div class="card view-all mx-3">
+                            <div class="card-body align-self-center">
+                                <div class="row">
+                                    <div class="col-2">
+                                        <img class="profile-list-img" src="assets/subscriber/men.svg">                       
+                                    </div>
+                                    <div class="col-5 text">
+                                        <strong>{{ subscriber.firstName }} {{ subscriber.lastName }}</strong>
+                                        {{ subscriber.id }}
+                                        </div>
+                                    <div class="col-5">
+                                        <button  class="viewbtn align-left" (click)="selectSubscriber(subscriber)">View Details</button>
+                                    </div>
+                                </div>
+                            </div>
+                           </div>
+                            </tr>
+                          </tbody>
+                        </table>
+                      
+                      <div class="subscriber-details">
+                        <div *ngIf="selectedSubscriber">
+                            <h5 class="title  text-center">Subscriber Details</h5>
+                            <div class="text-center">
+                                <img src="assets/subscriber/men.svg" class="img-fluid" alt="Subscriber Image">
+                            </div>
+                            <table class="table px-3">
+                                <tbody>
+                                  <tr>
+                                    <td><strong>Subscriber ID </strong></td>
+                                    <td><a href="#">{{subscriber.id }}</a></td>
+                                  </tr>
+                                  <tr>
+                                    <td><strong>First Name </strong></td>
+                                    <td>Sangeetha </td>
+                                  </tr>
+                                  <tr>
+                                    <td><strong>Last Name </strong></td>
+                                    <td>{{ subscriber.lastName }}</td>
+                                  </tr>
+                                  <tr>
+                                    <td><strong>Contact No </strong></td>
+                                    <td>{{ subscriber.contact }}</td>
+                                  </tr>
+                                  <tr>
+                                    <td><strong>Address/Place </strong></td>
+                                    <td>{{ subscriber.address }}</td>
+                                  </tr>
+                                  <tr>
+                                    <td><strong>Occupation </strong></td>
+                                    <td>{{ subscriber.occupation }}</td>
+                                  </tr>
+                                  <tr>
+                                    <td><strong>Referral Client </strong></td>
+                                    <td>{{ subscriber.referredBy }}</td>
+                                  </tr>
+                                  <tr>
+                                    <td><strong>Enrollments </strong></td>
+                                    <td>{{ subscriber.enrollments }}</td>
+                                  </tr>
+                                  <tr>
+                                    <td><strong>Region/Route </strong></td>
+                                    <td>{{ subscriber.region }}</td>
+                                  </tr>
+                                </tbody>
+                              </table>
+                              <div class="text-center mb-2">
+                                <button class="btn  view">Add Referral</button>
+                            </div>
+                   
+                        </div>
+                            </div>
+                    </div>
+             </div>
+                                            
+            </div>
+        </div>
+    

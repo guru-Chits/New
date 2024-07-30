@@ -1,4 +1,5 @@
 <!-- sidebar.component.html -->
+<div class="container-fluid">
 <div class="sidebar">
   <div class="sidebar-logo">
     <img src="../../../assets/navbar/brand.svg" alt="Logo">
@@ -8,10 +9,12 @@
       <img [src]="isActive(menuItem) ? menuItem.activeImg : menuItem.img" class="sidebar-menu-icon">
       <span class="sidebar-menu-text">{{ menuItem.title }}</span>
       <div *ngIf="isActive(menuItem)" class="active-line"></div>
-    </li>    <li class="sidebar-menu-item">
+    </li>    
+    <li class="sidebar-menu-item">
       <img src="../../../assets/navbar/log-out.svg" class="sidebar-menu-icon">
       <span class="sidebar-menu-text">Logout</span>
     </li>
   </ul>
+</div>
 
 </div>

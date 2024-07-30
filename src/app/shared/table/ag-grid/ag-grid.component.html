@@ -17,11 +17,12 @@
        </button>
     </div>
 
+
   <ag-grid-angular 
-    class="ag-theme-balham custom-grid"
-    style="height: 300px;width: 700px;"
     [rowData]="rowData"
     [columnDefs]="columns"
+    class="ag-theme-balham custom-grid"
+    [ngStyle]="{ 'width': width, 'height': height }"
     [defaultColDef]="defaultColDef"
     (gridReady)="onGridReady($event)"
     [pagination]="true"

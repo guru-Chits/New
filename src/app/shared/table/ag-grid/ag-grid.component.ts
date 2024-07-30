@@ -9,7 +9,9 @@ import { ITableColumn } from '../../interface/list-table';
   styleUrl: './ag-grid.component.css'
 })
 export class AgGridComponent {
-
+  
+  @Input() width: string;
+  @Input() height: string;
   private gridApi!: GridApi;
   currentPage: number = 1;
   totalPages: number = 1;

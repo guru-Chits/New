@@ -248,11 +248,11 @@
                           <input width="20" height="20" type="text" placeholder="Search Subscriber ID, Name, Email" (input)="applyFilter($event.target.value)">
                         </div>
                         
-                        <table class="subscriber-table">
+                        <table class="subscriber-table ">
                           <tbody>
                             <tr *ngFor="let subscriber of filteredSubscribers">
                            <div class="card view-all mx-3">
-                            <div class="card-body">
+                            <div class="card-body align-self-center">
                                 <div class="row">
                                     <div class="col-2">
                                         <img class="profile-list-img" src="assets/subscriber/men.svg">                       
@@ -262,7 +262,7 @@
                                         {{ subscriber.id }}
                                         </div>
                                     <div class="col-5">
-                                        <button  class="viewbtn" (click)="selectSubscriber(subscriber)">View Details</button>
+                                        <button  class="viewbtn align-left" (click)="selectSubscriber(subscriber)">View Details</button>
                                     </div>
                                 </div>
                             </div>
@@ -277,7 +277,7 @@
                             <div class="text-center">
                                 <img src="assets/subscriber/men.svg" class="img-fluid" alt="Subscriber Image">
                             </div>
-                            <table class="table px-4">
+                            <table class="table px-3">
                                 <tbody>
                                   <tr>
                                     <td><strong>Subscriber ID </strong></td>

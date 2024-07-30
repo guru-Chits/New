@@ -18,11 +18,6 @@ subscribers = [
   { id: 'KNG-C10001', firstName: 'John', lastName: 'Doe', alias: 'Entrans', contact: '970543210', address: 'JP Nagar', occupation: 'Engineer', referredBy: 'Shiva', enrollments: 2 },
   { id: 'KNG-C10002', firstName: 'Jane', lastName: 'Smith', alias: 'Techie', contact: '970543211', address: 'MG Road', occupation: 'Doctor', referredBy: 'Krishna', enrollments: 1 },
   { id: 'KNG-C10002', firstName: 'Jane', lastName: 'Smith', alias: 'Techie', contact: '970543211', address: 'MG Road', occupation: 'Doctor', referredBy: 'Krishna', enrollments: 1 },
-  { id: 'KNG-C10002', firstName: 'Jane', lastName: 'Smith', alias: 'Techie', contact: '970543211', address: 'MG Road', occupation: 'Doctor', referredBy: 'Krishna', enrollments: 1 },
-  { id: 'KNG-C10002', firstName: 'Jane', lastName: 'Smith', alias: 'Techie', contact: '970543211', address: 'MG Road', occupation: 'Doctor', referredBy: 'Krishna', enrollments: 1 },
-  { id: 'KNG-C10002', firstName: 'Jane', lastName: 'Smith', alias: 'Techie', contact: '970543211', address: 'MG Road', occupation: 'Doctor', referredBy: 'Krishna', enrollments: 1 },
-  { id: 'KNG-C10002', firstName: 'Jane', lastName: 'Smith', alias: 'Techie', contact: '970543211', address: 'MG Road', occupation: 'Doctor', referredBy: 'Krishna', enrollments: 1 },
-
 ];
 
 filteredSubscribers = [...this.subscribers];

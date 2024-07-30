@@ -1,1 +1,71 @@
-<p>collections works!</p>
+<!-- <form [formGroup]="paymentForm" (ngSubmit)="onSubmit()"> -->
+<form (ngSubmit)="onSubmit()">
+    <div class="row justify-content-around">
+        <div class="col-lg-4">
+            <div class="form-group">
+                <label for="datetime" class="form-control-label">Date/Timestamp</label>
+                <input type="date" class="form-control p-2 form-control-sm" id="datetime" formControlName="datetime"/>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="form-group">
+                <label class="form-control-label">Area ID</label>
+                <select class="form-control p-2 form-control-sm " formControlName="staff" placeholder="Area ID">
+                <option value="" disabled selected>Area ID</option>
+                <option *ngFor="let area of Areas" [value]="area">{{area}}</option>
+                </select>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="form-group">
+                <label class="form-control-label">Select Staff</label>
+                <select class="form-control p-2 form-control-sm " formControlName="staff">
+                <option value="" disabled selected>Staffs</option>
+                <option *ngFor="let staff of Staffs" [value]="staff">{{staff}}</option>
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="row justify-content-around">
+        <div class="col-lg-4">
+            <div class="form-group">
+                <label for="collectionAmount" class="form-control-label">Collection Amount</label>
+                <input class="form-control p-2 form-control-sm" id="collectionAmount" formControlName="collectionAmount" placeholder="Collection Amount"/>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="form-group">
+                <label for="amountCollected" class="form-control-label">Amount Collected</label>
+                <input class="form-control p-2 form-control-sm" id="amountCollected" formControlName="amountCollected" placeholder="Amount Collected"/>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="form-group">
+                <label for="balanace" class="form-control-label">Balance</label>
+                <input class="form-control p-2 form-control-sm" id="balance" formControlName="balance" placeholder="Balance"/>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-4">
+            <div class="form-group">
+                <label for="serialNumCount" class="form-control-label">Serial Number Count</label>
+                <input class="form-control p-2 form-control-sm" id="serialNumCount" formControlName="serialNumCount" placeholder="Serial Number Count"/>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="form-group">
+                <label class="form-control-label">Verified By</label>
+                <select class="form-control p-2 form-control-sm " formControlName="staff">
+                <option value="" disabled selected> Select staffs</option>
+                <option *ngFor="let staff of Staffs" [value]="staff">{{staff}}</option>
+                </select>
+            </div>
+        </div>   
+    </div>
+    <div class="row">
+        <div class="col-lg-12 d-flex justify-content-end py-3">
+            <button class="btn next-btn px-4 py-3 fw-bold" >Verify and Submit</button>
+        </div>
+    </div>
+</form>

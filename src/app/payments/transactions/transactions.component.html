@@ -1,1 +1,63 @@
-<p>transactions works!</p>
+<!-- <form [formGroup]="paymentForm" (ngSubmit)="onSubmit()"> -->
+<form (ngSubmit)="onSubmit()">
+    <div class="row justify-content-around">
+        <div class="col-lg-4">
+            <div class="form-group">
+                <label for="datetime" class="form-control-label">Date/Timestamp</label>
+                <input type="date" class="form-control p-2 form-control-sm" id="datetime" formControlName="datetime"/>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="form-group">
+                <label class="form-control-label">Route ID</label>
+                <select class="form-control p-2 form-control-sm " formControlName="staff">
+                <option value="" disabled selected>Route ID</option>
+                <option *ngFor="let route of Routes" [value]="route">{{route}}</option>
+                </select>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="form-group">
+                <label class="form-control-label">Collection Type</label>
+                <select class="form-control p-2 form-control-sm " formControlName="staff">
+                <option value="" disabled selected>Collection Type</option>
+                <option *ngFor="let collection of Collections" [value]="collection">{{collection}}</option>
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="row justify-content-around">
+        <div class="col-lg-4">
+            <div class="form-group">
+                <label for="collectionAmount" class="form-control-label">Collection Type Count</label>
+                <input class="form-control p-2 form-control-sm" id="collectionAmount" formControlName="collectionAmount" placeholder="Collection Type Count"/>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="form-group">
+                <label for="amountCollected" class="form-control-label"> Collection Type Amount</label>
+                <input class="form-control p-2 form-control-sm" id="amountCollected" formControlName="amountCollected" placeholder="Collection Type Amount"/>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="form-group">
+                <label for="balanace" class="form-control-label">Total Serial Number Count </label>
+                <input class="form-control p-2 form-control-sm" id="balance" formControlName="balance" placeholder="Total Serial Number Count"/>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-4">
+            <div class="form-group">
+                <label for="serialNumCount" class="form-control-label">Grand Total Amount</label>
+                <input class="form-control p-2 form-control-sm" id="serialNumCount" formControlName="serialNumCount" placeholder="Grnad Total Amount"/>
+            </div>
+        </div>  
+    </div>
+    <div class="row">
+        <div class="col-lg-12 d-flex justify-content-end py-3">
+            <button class="btn clear-btn px-4 py-3 me-4" >Clear Filter</button>
+            <button class="btn next-btn px-4 py-3 fw-bold" >Download Summary</button>
+        </div>
+    </div>
+</form>

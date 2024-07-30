@@ -208,13 +208,12 @@ padding-left: 3px;
 }
 .viewbtn{
   border:none;
-  font-size: 10px;
+  font-size: 9px;
   color:#50A1A5;
-  background: transparent
-  ;
+  background: transparent;
 }
 .text{
-  font-size: 12px;
+  font-size: 10px;
 }
 .view-all{
   background-color: #ECEBF5;
@@ -227,7 +226,7 @@ padding-left: 3px;
   background-color: #ECEBF5;
   border: none;
   padding: 5px;
-  width:260px;
+  width:220px;
 }
 
 .search-bar input {

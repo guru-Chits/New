@@ -1,0 +1,24 @@
+<div class="card d-flex p-3">
+    <h5 class="text-center my-2">Staffs</h5>
+
+    <table class="table-card mx-3">
+      <tbody>
+        <tr *ngFor="let staff of filteredStaffs">
+       <div class="view-all my-2">
+        <div class="align-items-center">
+            <div class="row">
+                <div class="col-2 text-center">
+                    <img class="rounded-circle  align-self-center mb-2" width="30" height="30" src="assets/subscriber/men.svg">                       
+                </div>
+                <div class="col-5 text">
+                    <h6><strong>{{ staff.firstName }} {{ staff.lastName }}</strong></h6>
+                    <p>{{ staff.id }}</p>
+                    </div>
+            </div>
+        </div>
+       </div>
+        </tr>
+      </tbody>
+    </table>
+    <button class="btn align-self-center  view">View More</button>
+  </div>

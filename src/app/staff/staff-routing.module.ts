@@ -10,7 +10,7 @@ const routes: Routes = [
     component: StaffComponent, 
   },
   {
-    path: 'crete',
+    path: 'create',
     component: StaffCreateComponent, 
   },  
   {

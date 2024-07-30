@@ -6,13 +6,13 @@
         <div class="card mb-5 form-card">
             <div class="profile-picture-container">
                 <div class="profile-picture">
-                  <img [src]="profileImageUrl || defaultImageUrl" alt="Profile Picture" class="profile-img">
-                  <input type="file" (change)="onFileSelected($event)" hidden #fileInput>
-                  <button class="upload-button" (click)="fileInput.click()">
-                    <img src="assets/subscriber/Profile edit.svg " alt="Upload Icon">
-                  </button>
+                    <img [src]="profileImageUrl || defaultImageUrl" alt="Profile Picture" class="profile-img">
+                    <input type="file" (change)="onFileSelected($event)" hidden #fileInput>
+                    <button class="upload-button" (click)="fileInput.click()">
+                      <img src="assets/subscriber/Profile edit.svg " alt="Upload Icon">
+                    </button>
+                  </div>             
                 </div>
-              </div>
               <h6 class="text-center">Subscriber Details</h6>
             <form class="ps-5 pe-5 " [formGroup]="subscriberForm">
                 <div class="row justify-content-around">
@@ -106,50 +106,43 @@
                     </div>
                 </div>
  
-                <div class="row  justify-content-center">
+                <div class="row justify-content-center">
                     <div class="col-lg-4">
                         <div class="form-group">
                             <label for="panNo" class="form-control-label">PAN Card Number</label>
-                            <input type="text" placeholder="Pan Card Number" class="form-control form-control-sm" formControlName="panNo"/>
+                            <input type="text" placeholder="PAN Card Number" class="form-control form-control-sm" formControlName="panNo"/>
                         </div>
                     </div>
                     <div class="col-lg-4">
                         <div class="form-group">
                             <label for="panCard" class="form-control-label">Pan Card</label>
-                            <input type="file" placeholder="choose file to upload" class="form-control form-control-sm file-upload" formControlName="panCard"/>
+                            <input type="file" class="form-control form-control-sm file-upload" (change)="onFileChange($event, 'panCard')"/>
                         </div>
                     </div>
                     <div class="col-lg-4 mt-4">
-                        <button class="viewBtn">View File</button>
-                        <button class="removeBtn">Remove File</button>
-                    </div>  
-                  
-
+                        <button type="button" class="viewBtn" (click)="viewFile('panCard')">View File</button>
+                        <button type="button" class="removeBtn" (click)="removeFile('panCard')">Remove File</button>
+                    </div>
                 </div>
-
-                <div class="row  justify-content-center">
+                <div class="row justify-content-center">
                     <div class="col-lg-4">
                         <div class="form-group">
                             <label for="aadharNo" class="form-control-label">Aadhar Card Number</label>
-                            <input type="text" placeholder="Aadhar Card Number" class="form-control form-control-sm" formControlName="aadharCard"/>
+                            <input type="text" placeholder="Aadhar Card Number" class="form-control form-control-sm" formControlName="aadharNo"/>
                         </div>
                     </div>
                     <div class="col-lg-4">
                         <div class="form-group">
                             <label for="aadharCard" class="form-control-label">Aadhar Card</label>
-                            <input type="file" placeholder="choose file to upload" class="form-control form-control-sm file-upload" formControlName="aadharCard"/>
+                            <input type="file" class="form-control form-control-sm file-upload" (change)="onFileChange($event, 'aadharCard')"/>
                         </div>
                     </div>
                     <div class="col-lg-4 mt-4">
-                        <button class="viewBtn">View File</button>
-                        <button class="removeBtn">Remove File</button>
-
-                    <!-- </div>   -->
-                    <!-- <div class="col-lg-2"> -->
-                    <!-- </div>   -->
+                        <button type="button" class="viewBtn" (click)="viewFile('aadharCard')">View File</button>
+                        <button type="button" class="removeBtn" (click)="removeFile('aadharCard')">Remove File</button>
+                    </div>
                 </div>
-                </div>
-                <div class="row  justify-content-center">
+                <div class="row justify-content-center">
                     <div class="col-lg-4">
                         <div class="form-group">
                             <label for="bankName" class="form-control-label">Bank Name</label>
@@ -159,12 +152,12 @@
                     <div class="col-lg-4">
                         <div class="form-group">
                             <label for="passbook" class="form-control-label">Passbook</label>
-                            <input type="file" placeholder="choose file to upload" class="form-control form-control-sm file-upload" formControlName="passbook"/>
+                            <input type="file" class="form-control form-control-sm file-upload" (change)="onFileChange($event, 'passbook')"/>
                         </div>
                     </div>
                     <div class="col-lg-4 mt-4">
-                        <button class="viewBtn">View File</button>
-                        <button class="removeBtn">Remove File</button>
+                        <button type="button" class="viewBtn" (click)="viewFile('passbook')">View File</button>
+                        <button type="button" class="removeBtn" (click)="removeFile('passbook')">Remove File</button>
                     </div>
                 </div>
                 <div class="row">

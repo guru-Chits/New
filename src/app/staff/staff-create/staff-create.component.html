@@ -1,1 +1,236 @@
-<p>staff-create works!</p>
+<div class="container">
+    <div class="row">
+    <div class="col-lg-9">
+        <div class="mt-2 mb-3">Staffs</div>
+        <div class="card-wrapper">
+        <div class="card mb-5 form-card">
+            <div class="profile-picture-container">
+                <div class="profile-picture">
+                    <img [src]="profileImageUrl || defaultImageUrl" alt="Profile Picture" class="profile-img">
+                    <input type="file" (change)="onProfileImageSelected($event)" hidden #profileFileInput>
+                    <button class="upload-button" (click)="profileFileInput.click()">
+                      <img src="assets/subscriber/Profile edit.svg " alt="Upload Icon">
+                    </button>
+                  </div>
+              </div>
+              <h6 class="text-center">Crate Staff</h6>
+            <form class="ps-5 pe-5 " [formGroup]="staffsForm">
+                <div class="row justify-content-around">
+                    <div class="col-lg-4">
+                        <div class="form-group">
+                            <label for="employeeId" class="form-control-label">Employee Id</label>
+                            <input type="text" placeholder="Employee Id" class="form-control form-control-sm" formControlName="employeeId"/>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="form-group">
+                            <label for="firstName" class="form-control-label">First Name</label>
+                            <input type="text" placeholder="First Name" class="form-control form-control-sm" formControlName="firstName"/>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="form-group">
+                            <label for="lastName" class="form-control-label">Last Name</label>
+                            <input type="text" placeholder="Last Name" class="form-control form-control-sm" formControlName="lastName"/>
+                        </div>
+                    </div>
+                </div> 
+                <div class="row justify-content-around">
+                    <div class="col-lg-4">
+                        <div class="form-group">
+                            <label for="gender" class="form-control-label">Gender</label>
+                            <select type="text" placeholder="Gender" class="form-control form-control-sm" formControlName="gender">
+                                <option>Male</option>
+                                <option>Female</option>
+                                <option>Others</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="form-group">
+                            <label for="role" class="form-control-label">Role</label>
+                            <select type="text" class="form-control form-control-sm" formControlName="role">
+                                <option>Casher</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="col-lg-4">
+                        <div class="form-group">
+                            <label for="contactNumber" class="form-control-label">Contact Number</label>
+                            <input type="text" placeholder="Contact Number" class="form-control form-control-sm" formControlName="contactNumber"/>
+                        </div>
+                    </div>
+          
+                </div>
+                <div class="row justify-content-around">
+                    <div class="col-lg-4">
+                        <div class="form-group">
+                            <label for="place" class="form-control-label">Place/Address</label>
+                            <input type="text" placeholder="Place/Address" class="form-control form-control-sm" formControlName="place"/>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4">
+                        <div class="form-group">
+                            <label for="mail" class="form-control-label">Email Id</label>
+                            <input type="text" placeholder="mail" class="form-control form-control-sm" formControlName="mail"/>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4">
+                        <div class="form-group">
+                            <label for="dob" class="form-control-label">DOB</label>
+                            <input type="date" class="form-control form-control-sm" formControlName="dob"/>
+                        </div>
+                    </div>
+          
+                </div>
+                <div class="row" >
+                    <div class="col-lg-4">
+                        <div class="form-group">
+                            <label for="routeId" class="form-control-label">Route Id</label>
+                            <input type="text" placeholder="Route Id" class="form-control form-control-sm" formControlName="routeId"/>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="form-group">
+                            <label for="accountNumber" class="form-control-label">Account Number</label>
+                            <input type="text" placeholder="Account Number" class="form-control form-control-sm" formControlName="accountNumber"/>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="form-group">
+                            <label for="ifsc" class="form-control-label">IFSC Code</label>
+                            <input type="text"placeholder="IFSC Code" class="form-control form-control-sm" formControlName="ifsc"/>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="form-group">
+                            <label for="upi" class="form-control-label">UPI ID/Number</label>
+                            <input type="text" placeholder="UPI ID/Number" class="form-control form-control-sm" formControlName="upi"/>
+                        </div>
+                    </div>
+                </div>
+ 
+                <div class="row justify-content-center">
+                    <div class="col-lg-4">
+                      <div class="form-group">
+                        <label for="panNo" class="form-control-label">PAN Card Number</label>
+                        <input type="text" placeholder="Pan Card Number" class="form-control form-control-sm" formControlName="panNo" />
+                      </div>
+                    </div>
+                    <div class="col-lg-4">
+                      <div class="form-group">
+                        <label for="panCard" class="form-control-label">PAN Card</label>
+                        <input type="file" class="form-control form-control-sm file-upload" (change)="onFileSelected($event, 'panCard')" formControlName="panCard"/>
+                      </div>
+                    </div>
+                    <div class="col-lg-4 mt-4">
+                      <button class="viewBtn" (click)="viewFile('panCard')">View File</button>
+                      <button class="removeBtn" (click)="removeFile('panCard')">Remove File</button>
+                    </div>
+                  </div>
+      
+                  <div class="row justify-content-center">
+                    <div class="col-lg-4">
+                      <div class="form-group">
+                        <label for="aadharNo" class="form-control-label">Aadhar Card Number</label>
+                        <input type="text" placeholder="Aadhar Card Number" class="form-control form-control-sm" formControlName="aadharCardNo" />
+                      </div>
+                    </div>
+                    <div class="col-lg-4">
+                      <div class="form-group">
+                        <label for="aadharCard" class="form-control-label">Aadhar Card</label>
+                        <input type="file" class="form-control form-control-sm file-upload" (change)="onFileSelected($event, 'aadharCard')" formControlName="aadharCard"/>
+                      </div>
+                    </div>
+                    <div class="col-lg-4 mt-4">
+                      <button class="viewBtn" (click)="viewFile('aadharCard')">View File</button>
+                      <button class="removeBtn" (click)="removeFile('aadharCard')">Remove File</button>
+                    </div>
+                  </div>
+      
+                  <div class="row justify-content-center">
+                    <div class="col-lg-4">
+                      <div class="form-group">
+                        <label for="bankName" class="form-control-label">Bank Name</label>
+                        <input type="text" placeholder="Bank Name" class="form-control form-control-sm" formControlName="bankName" />
+                      </div>
+                    </div>
+                    <div class="col-lg-4">
+                      <div class="form-group">
+                        <label for="passbook" class="form-control-label">Passbook</label>
+                        <input type="file" class="form-control form-control-sm file-upload" (change)="onFileSelected($event, 'passbook')" formControlName="passbook"/>
+                      </div>
+                    </div>
+                    <div class="col-lg-4 mt-4">
+                      <button class="viewBtn" (click)="viewFile('passbook')">View File</button>
+                      <button class="removeBtn" (click)="removeFile('passbook')">Remove File</button>
+                    </div>
+                  </div>
+      
+                  <div class="row justify-content-center">
+                    <div class="col-lg-4">
+                      <div class="form-group">
+                        <label for="drivingNo" class="form-control-label">Driving License Number</label>
+                        <input type="text" placeholder="Driving License Number" class="form-control form-control-sm" formControlName="drivingNo" />
+                      </div>
+                    </div>
+                    <div class="col-lg-4">
+                      <div class="form-group">
+                        <label for="drivingLicense" class="form-control-label">Driving License</label>
+                        <input type="file" class="form-control form-control-sm file-upload" (change)="onFileSelected($event, 'drivingLicense')" formControlName="drivingLicense" />
+                      </div>
+                    </div>
+                    <div class="col-lg-4 mt-4">
+                      <button class="viewBtn" (click)="viewFile('drivingLicense')">View File</button>
+                      <button class="removeBtn" (click)="removeFile('drivingLicense')">Remove File</button>
+                    </div>
+                  </div>                <div class="row">
+                    <div class="col-lg-4">
+                        <div class="form-group">
+                            <label for="bgVerify" class="form-control-label">BG Verifiction</label>
+                            <select type="text" class="form-control form-control-sm" formControlName="bgVerify">
+                                <option>Yes</option>
+                                <option>No</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-4">
+                        <div class="form-group">
+                            <label for="bVRemarks" class="form-control-label">BG Verifiction Remarks</label>
+                            <input type="text" placeholder="BG Verifiction Remarks" class="form-control form-control-sm" formControlName="bVRemarks"/>
+                        </div>
+                    </div>
+                    </div>
+                <div class="row  my-2">
+                    <div class="col-lg-4">
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" formControlName="workingStatus" role="switch" id="flexSwitchCheckChecked" checked>
+                            <label class="form-check-label" for="flexSwitchCheckChecked">Working Status</label>
+                          </div>
+                    </div>
+                </div>
+
+     
+                <div class="row justify-content-center">
+                    <div class="col-lg-12 d-flex justify-content-end mb-2">
+                        <button class="btn nxt-btn btn-outline-secondary" routerLink="/projects/project">Cancel</button>
+                        <button class="btn save-btn" [disabled]="!staffsForm.valid">Submit</button>
+                    </div>
+                </div>
+
+                
+            </form>
+        </div>
+    </div>
+ </div>
+ <div class="col-lg-3">  
+    <app-viewall></app-viewall>
+</div>
+ </div>
+ </div>
+  

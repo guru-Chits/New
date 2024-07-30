@@ -1,0 +1,17 @@
+.view-all{
+    border-bottom: 1px solid #B8B8B8;
+    p{
+        font-size:10px
+    }
+    h6{
+        font-size: 12px;
+    }
+  }
+  
+  .view{
+    border-color: #3E3A97;
+    color:#3E3A97;
+    border-radius: 5px;
+    font-size: 13px;
+    width: 100px;
+  }

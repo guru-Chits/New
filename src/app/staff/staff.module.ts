@@ -4,17 +4,24 @@ import { StaffRoutingModule } from './staff-routing.module';
 import { StaffComponent } from './staff.component';
 import { StaffCreateComponent } from './staff-create/staff-create.component';
 import { StaffViewComponent } from './staff-view/staff-view.component';
+import { SharedModule } from '../shared/shared.module';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { ViewallComponent } from './viewall/viewall.component';
 
 
 @NgModule({
   declarations: [
     StaffComponent,
     StaffCreateComponent,
-    StaffViewComponent
+    StaffViewComponent,
+    ViewallComponent
   ],
   imports: [
     CommonModule,
-    StaffRoutingModule
+    StaffRoutingModule,
+    SharedModule,
+    FormsModule,
+    ReactiveFormsModule
   ]
 })
 export class StaffModule { }

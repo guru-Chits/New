@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { AnyCatcher } from 'rxjs/internal/AnyCatcher';
 
 @Component({
   selector: 'app-subscriber-create',
@@ -13,6 +14,12 @@ profileImageUrl: string | ArrayBuffer | null = null;
   defaultImageUrl = 'assets/subscriber/user.svg'; // Path to default profile image
 constructor(private formBuilder:FormBuilder){}
 get subscriberIdControl() { return this.subscriberForm.get('subscriberId'); };
+
+filesInfo = {
+  panCard: null,
+  aadharCard: null,
+  passbook: null,
+};
 
 subscribers = [
   { id: 'KNG-C10001', firstName: 'John', lastName: 'Doe', alias: 'Entrans', contact: '970543210', address: 'JP Nagar', occupation: 'Engineer', referredBy: 'Shiva', enrollments: 2 },
@@ -67,15 +74,35 @@ selectSubscriber(subscriber) {
   this.selectedSubscriber = subscriber;
 }
 
-  onFileSelected(event: Event): void {
-    const input = event.target as HTMLInputElement;
-    if (input.files && input.files[0]) {
-      const file = input.files[0];
-      const reader = new FileReader();
-      reader.onload = () => {
-        this.profileImageUrl = reader.result;
-      };
-      reader.readAsDataURL(file);
-    }
+onFileSelected(event: Event): void {
+  const input = event.target as HTMLInputElement;
+  if (input.files && input.files[0]) {
+    const file = input.files[0];
+    const reader = new FileReader();
+    reader.onload = () => {
+      this.profileImageUrl = reader.result;
+    };
+    reader.readAsDataURL(file);
   }
+}
+
+onFileChange(event: any, fileType: string) {
+  this.filesInfo[fileType] = event.target.files[0];
+}
+
+viewFile(fileType: string): void {
+  const file = this.filesInfo[fileType];
+  if (file) {
+    const fileURL = URL.createObjectURL(file);
+    window.open(fileURL, '_blank');
+  }
+}
+
+removeFile(fileType: string): void {
+  this.filesInfo[fileType] = null;
+  // Reset the file input field
+  (document.querySelector(`input[type="file"][formControlName="${fileType}"]`) as HTMLInputElement).value = '';
+}
+
+
 }

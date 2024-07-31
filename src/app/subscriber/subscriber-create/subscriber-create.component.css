@@ -181,11 +181,6 @@ padding-left: 3px;
   margin-bottom: 20px;
 }
 
-.subscriber-table {
-  width: 100%;
-  /* border-collapse: collapse; */
-}
-
 .subscriber-table th, .subscriber-table td {
   border: 1px solid #ddd;
   padding: 8px;

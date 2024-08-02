@@ -1,8 +1,7 @@
 <div class="container-fluid d-flex flex-column">
 
     <div class="row">     
-    <div class="col-md-9 col-lg-9">
-      <div class="header mt-3">Subscriber Management
+      <div [ngClass]="{'col-md-9 col-lg-9': subscriberDetail, 'col-md-12 col-lg-12': !subscriberDetail}">      <div class="header mt-3">Subscriber Management
         <button class="btn btn-primary create" routerLink="create">create subscriber</button>
       </div>
       <div class="row mt-3 mb-3">
@@ -10,7 +9,7 @@
           <div class="line p-1 pb-2 text-center">
             <div class="card-body">
               <h5 class="card-title">Total Subscribers</h5>
-              <p class="card-text">2500</p>
+              <p class="card-text">{{totalCount}}</p>
             </div>
           </div>
         </div>
@@ -23,9 +22,10 @@
           </div>  
         </div>
       </div>
-      <app-ag-grid [columns]="columns" [rowData]="rowData"   width="100%" height="280px"></app-ag-grid>
+      <app-ag-grid [columns]="column" [rowData]="data"   width="100%" height="280px"></app-ag-grid>
     </div>
     <div class="col-md-3 col-lg-3">
+    <div *ngIf="subscriberDetail">
     <div class="card details">
     <div class="title align-self-center py-2">Subscriber Details</div>
     <img src="assets/subscriber/men.svg" class="rounded-circle  align-self-center mb-2" width="75" height="75" alt="Subscriber Image">
@@ -33,31 +33,31 @@
         <tbody>
           <tr>
             <td><strong>Subscriber ID:</strong></td>
-            <td><a href="#">KNG-C10001</a></td>
+            <td><a href="#">{{subscriberDetail.Subscriber.subscriberId}}</a></td>
           </tr>
           <tr>
-            <td><strong>First Name:</strong></td>
-            <td>John</td>
+            <td><strong>First Name</strong></td>
+            <td>{{subscriberDetail.Subscriber.firstName}}</td>
           </tr>
           <tr>
             <td><strong>Last Name:</strong></td>
-            <td>Doe</td>
+            <td>{{subscriberDetail.Subscriber.lastName}}</td>
           </tr>
           <tr>
             <td><strong>Contact No:</strong></td>
-            <td>9876543210</td>
+            <td>{{subscriberDetail.Subscriber.contact}}</td>
           </tr>
           <tr>
             <td><strong>Address/Place:</strong></td>
-            <td>JP Nagar</td>
+            <td>{{subscriberDetail.Subscriber.place}}</td>
           </tr>
           <tr>
             <td><strong>Occupation:</strong></td>
-            <td>Engineer</td>
+            <td>{{subscriberDetail.Subscriber.occupation}}</td>
           </tr>
           <tr>
             <td><strong>Referral Client:</strong></td>
-            <td>Shiva</td>
+            <td>{{subscriberDetail.Subscriber.referralClient}}</td>
           </tr>
           <tr>
             <td><strong>Enrollments:</strong></td>
@@ -70,10 +70,11 @@
         </tbody>
       </table>
       <div class="text-center mb-3">
-        <button routerLink="view" class="btn  view">View More Details</button>
+        <button (click)="navigate(subscriberDetail.Subscriber._id)" class="btn  view">View More Details</button>
     </div>
   <!-- </div> -->
 </div>
+    </div>
     </div>
   </div>
 </div>

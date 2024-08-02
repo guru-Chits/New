@@ -2,7 +2,7 @@
 
 <div class="container">
 
- <div class="search-filter-container">
+ <div class="search-filter-container mb-3">
 
       <div class="search-box">
         <input  width="20" height="20" type="text"   
@@ -26,35 +26,7 @@
     [defaultColDef]="defaultColDef"
     (gridReady)="onGridReady($event)"
     [pagination]="true"
-    [paginationPageSize]="5"
-    (paginationChanged)="onPaginationChanged($event)">
+    [paginationPageSize]="5">
   </ag-grid-angular>
 
-  <div class="custom-pagination">
-    <button (click)="onBtFirst()">First</button>
-    <button (click)="onBtPrevious()">Previous</button>
-    
-    <button 
-      *ngFor="let page of visiblePages"
-      [class.active]="currentPage === page"
-      (click)="goToPage(page)">
-      {{ page }}
-    </button>
-    
-    <span *ngIf="showLeftDots">...</span>
-    <button 
-      *ngIf="!isPageInVisibleRange(1)"
-      (click)="goToPage(1)">
-      1
-    </button>
-    
-    <span *ngIf="showRightDots">...</span>
-    <button 
-      *ngIf="!isPageInVisibleRange(totalPages)"
-      (click)="goToPage(totalPages)">
-      {{ totalPages }}
-    </button>
-  
-    <button (click)="onBtNext()">Next</button>
-    <button (click)="onBtLast()">Last</button>
-  </div>
+

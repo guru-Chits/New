@@ -4,5 +4,7 @@ export interface ITableColumn {
     sortable?: boolean;
     filter?: string;
     cellRenderer?: any;
+    onCellClicked?:any;
+    cellStyle?:any;
 }
   

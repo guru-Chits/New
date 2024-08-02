@@ -15,7 +15,7 @@ const routes: Routes = [
     component: SubscriberCreateComponent, 
   },
   {
-    path: 'view',
+    path: 'view/:id',
     component: SubscriberViewComponent, 
   },
   {

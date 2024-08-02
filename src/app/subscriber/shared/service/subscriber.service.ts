@@ -1,0 +1,34 @@
+import { Injectable } from '@angular/core';
+import { environment } from '../../../../environments/environment';
+import { Observable } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class SubscriberService {
+  delete:string=environment.subscriberServiceUrl+'/subscriber/deleteSubscriber/666fe548e419feb9c05e422d'
+  subscriberUrl:string=environment.subscriberServiceUrl+"/subscriber/getSubscriberDetails"
+ 
+  constructor(private http:HttpClient) { }
+
+  getsubscriberAll(){
+    return this.http.get(this.subscriberUrl)
+  }
+
+  getsubscriberById(id: string){
+    let url = `${environment.subscriberServiceUrl}/subscriber/getSubscriberById/${id}`;
+    return this.http.get(url)
+  }
+
+  savesubscriberDetails(body: any, id?: string): Observable<any>{
+    let savesubscribeUrl: string = `${environment.subscriberServiceUrl}/subscriber/addSubscriber`
+    if(id){
+      savesubscribeUrl = `${savesubscribeUrl}/${id}`;
+    }
+    return this.http.post(savesubscribeUrl, body)
+  }
+
+}
+
+//https://chitfundapi.onrender.com/api/subscriber/getSubscriberById/66aa7f98ad1dcb4265bb9275

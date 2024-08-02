@@ -1,151 +1,48 @@
-<div class="container-fluid">
-    <div class="card-wrapper">
-        <div class="card">
-            <div class="card-body">
-                <!-- Nav pills -->
-                <!-- <ul class="nav nav-pills" role="tablist">
-                    <li class="nav-item">
-                      <a class="nav-link active" data-bs-toggle="pill" href="#home">Home</a>
-                    </li>
-                    <li class="nav-item">
-                      <a class="nav-link" data-bs-toggle="pill" href="#menu1">Menu 1</a>
-                    </li>
-                    <li class="nav-item">
-                      <a class="nav-link" data-bs-toggle="pill" href="#menu2">Menu 2</a>
-                    </li>
-                </ul> -->
-                <div class="nav " role="tablist">
-                    <div class="nav-item">
-                      <a class="nav-link active" data-bs-toggle="pill" href="#home">Payment</a>
-                    </div>
-                    <div class="nav-item">
-                      <a class="nav-link" data-bs-toggle="pill" href="#menu1">Collection</a>
-                    </div>
-                    <div class="nav-item">
-                      <a class="nav-link" data-bs-toggle="pill" href="#menu2">Transaction</a>
-                    </div>
-                  </div>
-                <div class="tab-content">
-                    <div id="home" class="container tab-pane active"><br>
-                      <app-payments></app-payments>
-                    </div>
-                    <div id="menu1" class="container tab-pane fade"><br>
-                      <app-collections></app-collections>
-                    </div>
-                    <div id="menu2" class="container tab-pane fade"><br>
-                      <app-transactions></app-transactions>
+<div>
+    <div class="nav py-3" role="tablist">
+        <div class="nav-item">
+          <a class="nav-link active" data-bs-toggle="pill" href="#home">Payment</a>
+        </div>
+        <div class="nav-item">
+          <a class="nav-link" data-bs-toggle="pill" href="#menu1">Collection</a>
+        </div>
+        <div class="nav-item">
+          <a class="nav-link" data-bs-toggle="pill" href="#menu2">Transaction</a>
+        </div>
+    </div>
+    <div class=" container-fluid">
+        <div class="card-wrapper">
+            <div class="card">
+                <div class="card-body">
+                    <div class="tab-content">
+                        <div id="home" class="container tab-pane active"><br>
+                          <app-payments></app-payments>
+                        </div>
+                        <div id="menu1" class="container tab-pane fade"><br>
+                          <app-collections></app-collections>
+                        </div>
+                        <div id="menu2" class="container tab-pane fade"><br>
+                          <app-transactions></app-transactions>
+                        </div>
                     </div>
                 </div>
-                  
-
-                <!-- <form (ngSubmit)="onSubmit()">
-                    <div class="row justify-content-around">
-                        <div class="col-lg-4">
-                            <div class="form-group">
-                                <label for="datetime" class="form-control-label">Date/Timestamp</label>
-                                <input type="date" class="form-control p-2 form-control-sm" id="datetime" formControlName="datetime" placeholder="Date"/>
-                            </div>
-                        </div>
-                        <div class="col-lg-4">
-                            <div class="form-group">
-                                <label for="passbookNum" class="form-control-label">Passbook Number</label>
-                                <input class="form-control p-2 form-control-sm" id="passbookNum" formControlName="passbookNum" placeholder="Passbook Number"/>
-                            </div>
-                        </div>
-                        <div class="col-lg-4">
-                            <div class="form-group">
-                                <label for="groupId" class="form-control-label">Group ID/Chit Details</label>
-                                <input class="form-control p-2 form-control-sm" id="groupId" formControlName="groupId" placeholder="Chit Group ID"/>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row justify-content-around">
-                        <div class="col-lg-4">
-                            <div class="form-group">
-                                <label for="collectionType" class="form-control-label">Collection Type</label>
-                                <input class="form-control p-2 form-control-sm" id="collectionType" formControlName="collectionType" placeholder="Collection Type"/>
-                            </div>
-                        </div>
-                        <div class="col-lg-4">
-                            <div class="form-group">
-                                <label for="subsId" class="form-control-label">Subscriber ID</label>
-                                <input class="form-control p-2 form-control-sm" id="subsId" formControlName="subsId" placeholder="Subscriber ID"/>
-                            </div>
-                        </div>
-                        <div class="col-lg-4">
-                            <div class="form-group">
-                                <label for="subsName" class="form-control-label">Subscriber Name</label>
-                                <input class="form-control p-2 form-control-sm" id="subsName" formControlName="subsName" placeholder="Subscriber Name"/>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row justify-content-around">
-                        <div class="col-lg-4">
-                            <div class="form-group">
-                                <label for="installNum" class="form-control-label">Installment Number</label>
-                                <input class="form-control p-2 form-control-sm" id="installNum" formControlName="installNum" placeholder="Installment Number"/>
-                            </div>
-                        </div>
-                        <div class="col-lg-4">
-                            <div class="form-group">
-                                <label for="installMonth" class="form-control-label">Installment Month</label>
-                                <input class="form-control p-2 form-control-sm" id="installMonth" formControlName="installMonth" placeholder="Installment Month"/>
-                            </div>
-                        </div>
-                        <div class="col-lg-4">
-                            <div class="form-group">
-                                <label for="areaId" class="form-control-label">Area ID</label>
-                                <input class="form-control p-2 form-control-sm" id="areaId" formControlName="areaId" placeholder="Area ID"/>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row justify-content-around">
-                        <div class="col-lg-4">
-                            <div class="form-group">
-                              <label class="form-control-label">Select Staff</label>
-                              <select class="form-control p-2 form-control-sm " formControlName="staff" placeholder="Select Staff">
-                                <option value="" disabled selected>Staffs</option>
-                                <option *ngFor="let staff of Staffs" [value]="staff">{{staff}}</option>
-                              </select>
-                            </div>
-                          </div>
-                        <div class="col-lg-4">
-                            <div class="form-group">
-                                <label for="amount" class="form-control-label">Amount</label>
-                                <input class="form-control p-2 form-control-sm" id="amount" formControlName="amount" placeholder="Amount"/>
-                            </div>
-                        </div>
-                        <div class="col-lg-4">
-                            <div class="form-group">
-                                <label for="chitAmount" class="form-control-label">Chit Amount</label>
-                                <input class="form-control p-2 form-control-sm" id="chitAmount" formControlName="chitAmount" placeholder="Chit Amount"/>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-lg-4">
-                            <div class="form-group">
-                                <label for="serialNum" class="form-control-label">Serial Number</label>
-                                <input class="form-control p-2 form-control-sm" id="serialNum" formControlName="serialNum" placeholder="Serial Number"/>
-                            </div>
-                        </div>
-                        <div class="col-lg-4">
-                            <div class="form-group">
-                                <label for="receiptNum" class="form-control-label">Receipt Number</label>
-                                <input class="form-control p-2 form-control-sm" id="receiptNum" formControlName="receiptNum" placeholder="Receipt Number"/>
-                            </div>
-                        </div>    
-                    </div>
-                    <div class="row">
-                        <div class="col-lg-12 d-flex justify-content-end py-3">
-                            <button class="btn next-btn">Preview Receipt</button>
-                        </div>
-                    </div>
-                </form> -->
+                <app-ag-grid [columns]="columns" [rowData]="rowData" class="px-3" width="100%" height="500px"></app-ag-grid>
             </div>
-            <!-- <app-ag-grid [columns]="columns" [rowData]="data"></app-ag-grid> -->
         </div>
     </div>
 </div>
-
-<!-- [disabled]="!paymentForm.valid"-->
+<div class="card">
+    <div class="card-title">
+        Payment Details
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col">
+                Date/Timestamp
+            </div>
+            <div class="col">
+                09.01.2023
+            </div>
+        </div>
+    </div>
+</div>

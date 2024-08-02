@@ -98,7 +98,108 @@
     </div>
     <div class="row">
         <div class="col-lg-12 d-flex justify-content-end py-3">
-            <button class="btn next-btn px-4 py-3 fw-bold">Preview Receipt</button>
+            <button type="button" class="btn next-btn px-4 py-3 fw-bold" data-bs-toggle="modal" data-bs-target="#paymentModal">Preview Receipt</button>
         </div>
     </div>
 </form>
+<!-- PopUp Structure-->
+<div class="modal fade" id="paymentModal" tabindex="-1" aria-labelledby="paymentModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content p-4">
+            <div class="popup-body">
+                <div class="text-center pb-2 fs-4 fw-bold">
+                    Payment Details
+                </div>
+                <div class="d-flex justify-content-end py-2">
+                    <button class="btn mx-3 btn-success popup-btn">
+                        <img src="../../../assets/popup/printer.svg" alt="" width="20px" height="20px"> Generate Receipt</button>
+                    <button class="btn me-3 btn-success popup-btn">
+                        <img src="../../../assets/popup/download.svg" alt="" width="20px" height="20px"> Download</button>
+                </div>
+                <div class="border border-dark">
+                    <div class="popup-header">
+                        <img src="../../../assets/navbar/brand.svg" alt="" width="100px" height="90px">
+                        <div class="d-flex flex-column justify-content-center align-items-center">
+                            <p class="fs-5 fw-bold m-0">Guru Chits Private Limited</p>
+                            <span>Payment Receipt for March Month 2023</span>
+                        </div>
+                    </div>
+                    <hr class="border border-dark m-0">
+                    <div class="row py-3">
+                        <div class="col-6 d-flex justify-content-around">
+                            <div class="col-5 fw-bold">Subscriber ID</div>
+                            <div class="col-5">KNG-C10001</div>
+                        </div>
+                        <div class="col-6 d-flex justify-content-around">
+                            <div class="col-5 fw-bold">Serial Number</div>
+                            <div class="col-5">001</div>
+                        </div>
+                    </div>
+                    <div class="row pb-3">
+                        <div class="col-6 d-flex justify-content-around">
+                            <div class="col-5 fw-bold">Subscriber Name</div>
+                            <div class="col-5">John Doe</div>
+                        </div>
+                        <div class="col-6 d-flex justify-content-around">
+                            <div class="col-5 fw-bold">Receipt Number</div>
+                            <div class="col-5">PB-10001-01</div>
+                        </div>
+                    </div>
+                    <div class="row pb-3">
+                        <div class="col-6 d-flex justify-content-around">
+                            <div class="col-5 fw-bold">Group ID</div>
+                            <div class="col-5">GC-JAN24-09-100</div>
+                        </div>
+                        <div class="col-6 d-flex justify-content-around">
+                            <div class="col-5 fw-bold">Route ID</div>
+                            <div class="col-5">CBE-South</div>
+                        </div>
+                    </div>
+                    <div class="row pb-3">
+                        <div class="col-6 d-flex justify-content-around">
+                            <div class="col-5 fw-bold">Passbook Number</div>
+                            <div class="col-5">PB-10001</div>
+                        </div>
+                        <div class="col-6 d-flex justify-content-around">
+                            <div class="col-5 fw-bold">Staff</div>
+                            <div class="col-5">Arunkumar</div>
+                        </div>
+                    </div>
+                    <div class="row pb-3">
+                        <div class="col-6 d-flex justify-content-around">
+                            <div class="col-5 fw-bold">Collection Type</div>
+                            <div class="col-5">Installment</div>
+                        </div>
+                        <div class="col-6 d-flex justify-content-around">
+                            <div class="col-5 fw-bold">Amount Paid</div>
+                            <div class="col-5">20000</div>
+                        </div>
+                    </div>
+                    <div class="row pb-3">
+                        <div class="col-6 d-flex justify-content-around">
+                            <div class="col-6 fw-bold">Installment Number</div>
+                            <div class="col-4">1</div>
+                        </div>
+                        <div class="col-6 d-flex justify-content-around">
+                            <div class="col-5 fw-bold">Chit Amount</div>
+                            <div class="col-5">250000</div>
+                        </div>
+                    </div>
+                    <div class="row pb-3">
+                        <div class="col-6 d-flex justify-content-around">
+                            <div class="col-5 fw-bold">Installment Month</div>
+                            <div class="col-5">March</div>
+                        </div>
+                        <div class="col-6 d-flex justify-content-around">
+                            <div class="col-5 fw-bold">Date of Payment</div>
+                            <div class="col-5">28.02.2023</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="d-flex justify-content-end py-4">
+                <button type="button" class="btn next-btn px-4 py-2 fw-bold" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>

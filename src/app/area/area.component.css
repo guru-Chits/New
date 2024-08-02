@@ -1,0 +1,22 @@
+.bold-text
+{
+    size: 14px;
+    color: #1A1A1A;
+    font-weight: 700;
+    font-family: Outfit;
+}
+
+.btn
+{
+    background-color: #3E3A97;
+    color:#FFFFFF;
+    border-radius: 10px;
+    margin-right: 10px;
+    /* width: 184px; */
+}
+
+.custom-card
+{
+    background-color: #FFFFFF;
+    border-left: 5px solid #3E3A97;    
+}

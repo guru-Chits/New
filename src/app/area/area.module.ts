@@ -5,6 +5,9 @@ import { AreaRoutingModule } from './area-routing.module';
 import { AreaComponent } from './area.component';
 import { AreaCreateComponent } from './area-create/area-create.component';
 import { RegionCreateComponent } from './region-create/region-create.component';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { SharedModule } from '../shared/shared.module';
+
 
 
 @NgModule({
@@ -15,7 +18,10 @@ import { RegionCreateComponent } from './region-create/region-create.component';
   ],
   imports: [
     CommonModule,
-    AreaRoutingModule
+    AreaRoutingModule,
+    FormsModule,
+    ReactiveFormsModule, 
+    SharedModule
   ]
 })
 export class AreaModule { }

@@ -1,0 +1,46 @@
+.bold-text{
+    size: 14px;
+    color: #1A1A1A;
+    font-weight: 700;
+    font-family: Outfit;
+}
+
+.btn{
+    background-color: #3E3A97;
+    color:#FFFFFF;
+    border-radius: 10px;
+    /* width: 184px; */
+}
+.btn1{
+    background-color: transparent;
+    border-color: #3E3A97;
+    color: #3E3A97;
+    border-radius: 10px;
+    margin-right: 10px;
+}
+
+.head-text{
+   font-size: 20px;
+    color: #1A1A1A;
+    font-weight: 700;
+}
+
+.btn2{
+    background-color: #F04438;
+    border-color: #F04438;
+    color: #FFFFFF;
+    border-radius: 10px;
+    margin-right: 10px;
+}
+
+.simple-text{
+    margin-left: 10px;
+    margin-bottom: 7px;
+    font-family: Outfit;
+    font-size: 13px;
+    font-weight: 400;
+    color:#0B0B0B;
+}
+.switch-design{
+    margin-left: 10px;
+}

@@ -1,22 +1,53 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { SubscriberService } from '../shared/service/subscriber.service';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-subscriber-view',
   templateUrl: './subscriber-view.component.html',
   styleUrl: './subscriber-view.component.css'
 })
-export class SubscriberViewComponent {
+export class SubscriberViewComponent implements OnInit{
   profileImageUrl: string | ArrayBuffer | null = null;
   defaultImageUrl = 'assets/subscriber/user.svg'; // Path to default profile image
-  subscribers = [
-    { id: 'KNG-C10001', firstName: 'John', lastName: 'Doe', alias: 'Entrans', contact: '970543210', address: 'JP Nagar', occupation: 'Engineer', referredBy: 'Shiva', enrollments: 2 },
-    { id: 'KNG-C10002', firstName: 'Jane', lastName: 'Smith', alias: 'Techie', contact: '970543211', address: 'MG Road', occupation: 'Doctor', referredBy: 'Krishna', enrollments: 1 },
-    { id: 'KNG-C10002', firstName: 'Jane', lastName: 'Smith', alias: 'Techie', contact: '970543211', address: 'MG Road', occupation: 'Doctor', referredBy: 'Krishna', enrollments: 1 },
-  ];
-  filteredSubscribers = [...this.subscribers];
+
   isShowDiv = false;  
+ subscriberDetail:any
+ subscriberData:any
+ data: any[] = [];
+ displayedSubscribers:any
+ subscriberId:string
+constructor(private service:SubscriberService,private activatedRoute:ActivatedRoute,private router:Router){}
+
+ngOnInit(): void {
+  this.activatedRoute.params.subscribe(paramData => {
+    if (Object.keys(paramData).length) {
+    this.service.getsubscriberById(paramData.id).subscribe((data) => {
+      this.subscriberDetail = data;
+      this.subscriberId=this.subscriberDetail.Subscriber._id
+      console.log(this.subscriberDetail)
+      console.log(this.subscriberId);
+      
+       })
+    }
+    })
 
 
+    this.service.getsubscriberAll().subscribe((data)=>{
+      this.subscriberData=data;
+  
+      console.log("subscriber data",this.subscriberData);
+     
+      this.data=this.subscriberData.AllSubscriber.map((subscriberDetails,index)=>({
+        id:subscriberDetails?._id,
+        subscriberId: subscriberDetails?.subscriberId,
+        subscriberName: `${subscriberDetails?.firstName} ${subscriberDetails?.lastName}`,
+        subscriberProfile:subscriberDetails?.profileImageUrl
+      }))
+      this.displayedSubscribers = this.data;
+    })
+
+}
   toggleDisplayDiv() {  
     this.isShowDiv = !this.isShowDiv;  
   }  
@@ -34,10 +65,37 @@ export class SubscriberViewComponent {
     }
   }
   applyFilter(filterValue: string) {
-    this.filteredSubscribers = this.subscribers.filter(subscriber =>
-      subscriber.firstName.toLowerCase().includes(filterValue.toLowerCase()) ||
-      subscriber.lastName.toLowerCase().includes(filterValue.toLowerCase()) ||
-      subscriber.id.toLowerCase().includes(filterValue.toLowerCase())
-    );
+    if (!filterValue || !this.data) {
+      this.displayedSubscribers = this.data; // Show all if there's no filter or data is not defined
+      return;
+    }
+  
+    this.displayedSubscribers = this.data.filter(subscriber => {
+      const subscriberId = subscriber.subscriberId ? subscriber.subscriberId.toString().toLowerCase() : '';
+      const subscriberName = subscriber.subscriberName ? subscriber.subscriberName.toLowerCase() : '';
+      return subscriberId.includes(filterValue.toLowerCase()) || subscriberName.includes(filterValue.toLowerCase());
+    });
+    }
+
+  viewFile(url: string): void {
+    if (url) {
+      window.open(url, '_blank');
+    } else {
+      console.error('URL is not provided');
+    }
+  }
+
+  getSub(id:any){
+    console.log(id);
+    
+    this.service.getsubscriberById(id).subscribe((data) => {
+      this.subscriberDetail = data;
+      console.log(this.subscriberDetail)      
+       })
+
+  }
+  edit(id:any){
+    this.router.navigate([`subscriber/edit/${id}`]);
+
   }
 }

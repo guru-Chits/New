@@ -37,7 +37,6 @@ export class AgGridComponent {
     this.gridApi = params.api;
 
     this.gridColumnApi = params.columnApi;
-    this.updatePaginationInfo();
   }
 
   onFilterTextBoxChanged() {
@@ -48,63 +47,6 @@ export class AgGridComponent {
   }
 
 
-  onPaginationChanged(event: any) {
-    if (this.gridApi) {
-      this.updatePaginationInfo();
-    }
+
+
   }
-
-  updatePaginationInfo() {
-    if (this.gridApi) {
-      this.currentPage = this.gridApi.paginationGetCurrentPage() + 1;
-      this.totalPages = this.gridApi.paginationGetTotalPages();
-      this.updateVisiblePages();
-    }
-  }
-
-  updateVisiblePages() {
-    const pagesToShow = 3;
-    const half = Math.floor(pagesToShow / 2);
-    this.showLeftDots = this.currentPage > half + 1;
-    this.showRightDots = this.currentPage < this.totalPages - half;
-
-    let startPage = Math.max(2, this.currentPage - half);
-    let endPage = Math.min(this.totalPages - 1, this.currentPage + half);
-
-    if (this.currentPage <= half + 1) {
-      endPage = Math.min(this.totalPages - 1, pagesToShow);
-    }
-
-    if (this.currentPage >= this.totalPages - half) {
-      startPage = Math.max(2, this.totalPages - pagesToShow + 1);
-    }
-
-    this.visiblePages = [];
-    for (let i = startPage; i <= endPage; i++) {
-      this.visiblePages.push(i);
-    }
-  }
-
-  isPageInVisibleRange(page: number): boolean {
-    return this.visiblePages.includes(page) || page === 1 || page === this.totalPages;
-  }
-
-  goToPage(page: number) {
-    this.gridApi.paginationGoToPage(page - 1);
-  }
-
-  onBtFirst() {
-    this.gridApi.paginationGoToFirstPage();
-  }
-
-  onBtPrevious() {
-    this.gridApi.paginationGoToPreviousPage();
-  }
-
-  onBtNext() {
-    this.gridApi.paginationGoToNextPage();
-  }
-
-  onBtLast() {
-    this.gridApi.paginationGoToLastPage();
-  }}

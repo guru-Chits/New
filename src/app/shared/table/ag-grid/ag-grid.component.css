@@ -79,35 +79,6 @@
   border: none;
 }
 
-.custom-pagination {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-top: 10px;
-}
-
-.custom-pagination button {
-  margin: 0 5px;
-  padding: 5px 10px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  background-color: #fff;
-  cursor: pointer;
-  outline: none;
-}
-
-.custom-pagination button.active {
-  background-color:#3E3A97; /* Active button color */
-  color: white;
-}
-
-.custom-pagination button:hover {
-  background-color: #f0f0f0; /* Hover color */
-}
-
-.custom-pagination span {
-  margin: 0 5px;
-}
 
 @keyframes spin {
   0% { transform: rotate(0deg); }

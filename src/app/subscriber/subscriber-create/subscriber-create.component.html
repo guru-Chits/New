@@ -3,228 +3,362 @@
     <div class="col-lg-9">
         <div class="mt-2 mb-3">Subscriber Management</div>
         <div class="card-wrapper">
-        <div class="card mb-5 form-card">
-            <div class="profile-picture-container">
+            <div class="card mb-5 form-card">
+              <div class="profile-picture-container">
                 <div class="profile-picture">
+                  <form [formGroup]="subscriberForm">
                     <img [src]="profileImageUrl || defaultImageUrl" alt="Profile Picture" class="profile-img">
-                    <input type="file" (change)="onFileSelected($event)" hidden #fileInput>
-                    <button class="upload-button" (click)="fileInput.click()">
-                      <img src="assets/subscriber/Profile edit.svg " alt="Upload Icon">
-                    </button>
-                  </div>             
+                    <div class="form-group">
+                      <input type="file" (change)="onFileSelected($event)" class="form-control" hidden #fileInput formControlName="profileImageUrl">
+                    </div>
+                  </form>
+                  <button class="upload-button" (click)="fileInput.click()">
+                    <img src="assets/subscriber/Profile edit.svg" alt="Upload Icon">
+                  </button>
                 </div>
+              </div>
               <h6 class="text-center">Subscriber Details</h6>
-            <form class="ps-5 pe-5 " [formGroup]="subscriberForm">
+              <form class="ps-5 pe-5" [formGroup]="subscriberForm">
+                <!-- Subscriber ID -->
                 <div class="row justify-content-around">
-                    <div class="col-lg-4">
-                        <div class="form-group">
-                            <label for="subscriberId" class="form-control-label">Subscriber Id</label>
-                            <input type="text" placeholder="Subscriber Id" class="form-control form-control-sm" formControlName="subscriberId"/>
-                        </div>
+                  <div class="col-lg-4">
+                    <div class="form-group">
+                      <label for="subscriberId" class="form-control-label">Subscriber ID</label>
+                      <input type="text" placeholder="Subscriber Id" class="form-control form-control-sm" formControlName="subscriberId"  [disabled]="this.subscriberId" />
+                      <div  class="invalid-feedback" *ngIf="subscriberForm.get('subscriberId').invalid && (subscriberForm.get('subscriberId').dirty || subscriberForm.get('subscriberId').touched)">
+                        <div *ngIf="subscriberForm.get('subscriberId').errors.required">Subscriber Id is required.</div>
+                        <div *ngIf="subscriberForm.get('subscriberId').errors.minlength">Subscriber Id must be at least 2 characters long.</div>
+                        <div *ngIf="subscriberForm.get('subscriberId').errors.maxlength">Subscriber Id cannot be more than 25 characters long.</div>
+                        <div *ngIf="subscriberForm.get('subscriberId').errors.pattern"> Subscriber ID must be in the format KNG-CXXXX.</div>
+                      </div>
                     </div>
-                    <div class="col-lg-4">
-                        <div class="form-group">
-                            <label for="firstName" class="form-control-label">First Name</label>
-                            <input type="text" placeholder="First Name" class="form-control form-control-sm" formControlName="firstName"/>
-                        </div>
+                  </div>
+                  <!-- First Name -->
+                  <div class="col-lg-4">
+                    <div class="form-group">
+                      <label for="firstName" class="form-control-label">First Name</label>
+                      <input type="text" placeholder="First Name" class="form-control form-control-sm" formControlName="firstName" />
+                      <div class="invalid-feedback" *ngIf="subscriberForm.get('firstName').invalid && (subscriberForm.get('firstName').dirty || subscriberForm.get('firstName').touched)">
+                        <div *ngIf="subscriberForm.get('firstName').errors.required">First Name is required.</div>
+                        <div *ngIf="subscriberForm.get('firstName').errors.pattern">First Name should only contain alphabetic characters and start with a capital letter.</div>
+                      </div>
                     </div>
-                    <div class="col-lg-4">
-                        <div class="form-group">
-                            <label for="lastName" class="form-control-label">Last Name</label>
-                            <input type="text" placeholder="Last Name" class="form-control form-control-sm" formControlName="lastName"/>
-                        </div>
+                  </div>
+                  <!-- Last Name -->
+                  <div class="col-lg-4">
+                    <div class="form-group">
+                      <label for="lastName" class="form-control-label">Last Name</label>
+                      <input type="text" placeholder="Last Name" class="form-control form-control-sm" formControlName="lastName" />
+                      <div class="invalid-feedback" *ngIf="subscriberForm.get('lastName').invalid && (subscriberForm.get('lastName').dirty || subscriberForm.get('lastName').touched)">
+                        <div *ngIf="subscriberForm.get('lastName').errors.required">Last Name is required.</div>
+                        <div *ngIf="subscriberForm.get('lastName').errors.pattern">Last Name should only contain alphabetic characters and start with a capital letter.</div>
+                      </div>
                     </div>
-                </div> 
+                  </div>
+                </div>
+                <!-- Alias Name -->
                 <div class="row justify-content-around">
-                    <div class="col-lg-4">
-                        <div class="form-group">
-                            <label for="aliasName" class="form-control-label">Alias Name</label>
-                            <input type="text" placeholder="Alias Name" class="form-control form-control-sm" formControlName="aliasName"/>
-                        </div>
+                  <div class="col-lg-4">
+                    <div class="form-group">
+                      <label for="aliasName" class="form-control-label">Alias Name</label>
+                      <input type="text" placeholder="Alias Name" class="form-control form-control-sm" formControlName="aliasName" />
+                      <div class="invalid-feedback" *ngIf="subscriberForm.get('aliasName').invalid && (subscriberForm.get('aliasName').dirty || subscriberForm.get('aliasName').touched)">
+                        <div *ngIf="subscriberForm.get('aliasName').errors.pattern">Alias Name should only contain alphabetic characters, "/", "-", "(", ")" and spaces, and start with a capital letter.</div>
+                      </div>
                     </div>
-                    <div class="col-lg-4">
-                        <div class="form-group">
-                            <label for="contactNumber" class="form-control-label">Contact Number</label>
-                            <input type="text" placeholder="Contact Number" class="form-control form-control-sm" formControlName="contactNumber"/>
-                        </div>
+                  </div>
+                  <!-- Contact Number -->
+                  <div class="col-lg-4">
+                    <div class="form-group">
+                      <label for="contact" class="form-control-label">Contact Number</label>
+                      <input type="text" placeholder="Contact Number" class="form-control form-control-sm" formControlName="contact" />
+                      <div class="invalid-feedback" *ngIf="subscriberForm.get('contact').invalid && (subscriberForm.get('contact').dirty || subscriberForm.get('contact').touched)">
+                        <div *ngIf="subscriberForm.get('contact').errors.required">Contact Number is required.</div>
+                        <div *ngIf="subscriberForm.get('contact').errors.pattern">Contact Number should be exactly 10 digits.</div>
+                      </div>
                     </div>
-                    <div class="col-lg-4">
-                        <div class="form-group">
-                            <label for="address" class="form-control-label">Place/Address</label>
-                            <input type="text" placeholder="Place/Address" class="form-control form-control-sm" formControlName="address"/>
-                        </div>
+                  </div>
+                  <!-- Address -->
+                  <div class="col-lg-4">
+                    <div class="form-group">
+                      <label for="place" class="form-control-label">Place/Address</label>
+                      <input type="text" placeholder="Place/Address" class="form-control form-control-sm" formControlName="place" />
+                      <div class="invalid-feedback" *ngIf="subscriberForm.get('place').invalid && (subscriberForm.get('place').dirty || subscriberForm.get('place').touched)">
+                        <div *ngIf="subscriberForm.get('place').errors.required">Address is required.</div>
+                        <div *ngIf="subscriberForm.get('place').errors.minlength">Address must be at least 10 characters long.</div>
+                        <div *ngIf="subscriberForm.get('place').errors.maxlength">Address cannot be more than 100 characters long.</div>
+                        <div *ngIf="subscriberForm.get('place').errors.pattern">Address contains invalid characters.</div>
+                      </div>
                     </div>
+                  </div>
                 </div>
+                <!-- Gender, DOB, Occupation -->
                 <div class="row justify-content-around">
-                    <div class="col-lg-4">
-                        <div class="form-group">
-                            <label for="gender" class="form-control-label">Gender</label>
-                            <select type="text" class="form-control form-control-sm" formControlName="gender">
-                                <option>Male</option>
-                                <option>Female</option>
-                                <option>Others</option>
-                            </select>
-                        </div>
+                  <!-- Gender -->
+                  <div class="col-lg-4">
+                    <div class="form-group">
+                      <label for="gender" class="form-control-label">Gender</label>
+                      <select class="form-control form-control-sm" formControlName="gender">
+                        <option value="">Select Gender</option>
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                        <option value="Other">Other</option>
+                      </select>
+                      <div class="invalid-feedback" *ngIf="subscriberForm.get('gender').invalid && (subscriberForm.get('gender').dirty || subscriberForm.get('gender').touched)">
+                        <div *ngIf="subscriberForm.get('gender').errors.required">Gender is required.</div>
+                      </div>
                     </div>
-                    <div class="col-lg-4">
-                        <div class="form-group">
-                            <label for="dob" class="form-control-label">DOB</label>
-                            <input type="date" class="form-control form-control-sm" formControlName="dob"/>
-                        </div>
+                  </div>
+                  <!-- DOB -->
+                  <div class="col-lg-4">
+                    <div class="form-group">
+                      <label for="dob" class="form-control-label">Date of Birth</label>
+                      <input type="date" class="form-control form-control-sm" formControlName="dob" />
+                      <div class="invalid-feedback" *ngIf="subscriberForm.get('dob').invalid && (subscriberForm.get('dob').dirty || subscriberForm.get('dob').touched)">
+                        <div *ngIf="subscriberForm.get('dob').errors.required">Date of Birth is required.</div>
+                        <div *ngIf="subscriberForm.get('dob').errors.invalidDate">Invalid Date of Birth.</div>
+                        <div *ngIf="subscriberForm.get('dob').errors.ageBelowMinimum">You must be at least 18 years old.</div>
+                      </div>
                     </div>
-                    <div class="col-lg-4">
-                        <div class="form-group">
-                            <label for="occupation" class="form-control-label">Occupation</label>
-                            <input type="text" placeholder="Occupation" class="form-control form-control-sm" formControlName="occupation"/>
-                        </div>
+                  </div>
+                  <!-- Occupation -->
+                  <div class="col-lg-4">
+                    <div class="form-group">
+                      <label for="occupation" class="form-control-label">Occupation</label>
+                      <input type="text" placeholder="Occupation" class="form-control form-control-sm" formControlName="occupation" />
+                      <div class="invalid-feedback" *ngIf="subscriberForm.get('occupation').invalid && (subscriberForm.get('occupation').dirty || subscriberForm.get('occupation').touched)">
+                        <div *ngIf="subscriberForm.get('occupation').errors.required">Occupation is required.</div>
+                        <div *ngIf="subscriberForm.get('occupation').errors.minlength">Occupation must be at least 2 characters long.</div>
+                        <div *ngIf="subscriberForm.get('occupation').errors.maxlength">Occupation cannot be more than 50 characters long.</div>
+                        <div *ngIf="subscriberForm.get('occupation').errors.pattern">Occupation contains invalid characters.</div>
+                      </div>
                     </div>
+                  </div>
                 </div>
-                <div class="row" >
-                    <div class="col-lg-4">
-                        <div class="form-group">
-                            <label for="areaId" class="form-control-label">Area Id</label>
-                            <input type="text" placeholder="Area Id" class="form-control form-control-sm" formControlName="areaId"/>
-                        </div>
+                <!-- Area ID, Account Number, IFSC -->
+                <div class="row justify-content-around">
+                  <!-- Area ID -->
+                  <div class="col-lg-4">
+                    <div class="form-group">
+                      <label for="routeId" class="form-control-label">Route Id</label>
+                      <input type="text" placeholder="Route Id" class="form-control form-control-sm" formControlName="routeId" />
                     </div>
-                    <div class="col-lg-4">
-                        <div class="form-group">
-                            <label for="accountNumber" class="form-control-label">Account Number</label>
-                            <input type="text" placeholder="Account Number" class="form-control form-control-sm" formControlName="accountNumber"/>
-                        </div>
+                  </div>
+                  <!-- Account Number -->
+                  <div class="col-lg-4">
+                    <div class="form-group">
+                      <label for="accountNumber" class="form-control-label">Account Number</label>
+                      <input type="text" placeholder="Account Number" class="form-control form-control-sm" formControlName="accountNumber" />
+                      <div class="invalid-feedback" *ngIf="subscriberForm.get('accountNumber').invalid && (subscriberForm.get('accountNumber').dirty || subscriberForm.get('accountNumber').touched)">
+                        <div *ngIf="subscriberForm.get('accountNumber').errors.required">Account Number is required.</div>
+                        <div *ngIf="subscriberForm.get('accountNumber').errors.pattern">Account Number should be 8 to 12 digits long.</div>
+                      </div>
                     </div>
-                    <div class="col-lg-4">
-                        <div class="form-group">
-                            <label for="ifsc" class="form-control-label">IFSC Code</label>
-                            <input type="text"placeholder="IFSC Code" class="form-control form-control-sm" formControlName="address"/>
-                        </div>
+                  </div>
+                  <!-- IFSC -->
+                  <div class="col-lg-4">
+                    <div class="form-group">
+                      <label for="ifsc" class="form-control-label">IFSC Code</label>
+                      <input type="text" placeholder="IFSC Code" class="form-control form-control-sm" formControlName="ifsc" />
+                      <div class="invalid-feedback" *ngIf="subscriberForm.get('ifsc').invalid && (subscriberForm.get('ifsc').dirty || subscriberForm.get('ifsc').touched)">
+                        <div *ngIf="subscriberForm.get('ifsc').errors.required">IFSC is required.</div>
+                        <div *ngIf="subscriberForm.get('ifsc').errors.pattern">IFSC should be in the format: 4 letters followed by 7 digits.</div>
+                      </div>
                     </div>
-                    <div class="col-lg-4">
-                        <div class="form-group">
-                            <label for="upi" class="form-control-label">UPI ID/Number</label>
-                            <input type="text" placeholder="UPI ID/Number" class="form-control form-control-sm" formControlName="upi"/>
-                        </div>
-                    </div>
-                </div>
- 
-                <div class="row justify-content-center">
-                    <div class="col-lg-4">
-                        <div class="form-group">
-                            <label for="panNo" class="form-control-label">PAN Card Number</label>
-                            <input type="text" placeholder="PAN Card Number" class="form-control form-control-sm" formControlName="panNo"/>
-                        </div>
-                    </div>
-                    <div class="col-lg-4">
-                        <div class="form-group">
-                            <label for="panCard" class="form-control-label">Pan Card</label>
-                            <input type="file" class="form-control form-control-sm file-upload" (change)="onFileChange($event, 'panCard')"/>
-                        </div>
-                    </div>
-                    <div class="col-lg-4 mt-4">
-                        <button type="button" class="viewBtn" (click)="viewFile('panCard')">View File</button>
-                        <button type="button" class="removeBtn" (click)="removeFile('panCard')">Remove File</button>
-                    </div>
-                </div>
-                <div class="row justify-content-center">
-                    <div class="col-lg-4">
-                        <div class="form-group">
-                            <label for="aadharNo" class="form-control-label">Aadhar Card Number</label>
-                            <input type="text" placeholder="Aadhar Card Number" class="form-control form-control-sm" formControlName="aadharNo"/>
-                        </div>
-                    </div>
-                    <div class="col-lg-4">
-                        <div class="form-group">
-                            <label for="aadharCard" class="form-control-label">Aadhar Card</label>
-                            <input type="file" class="form-control form-control-sm file-upload" (change)="onFileChange($event, 'aadharCard')"/>
-                        </div>
-                    </div>
-                    <div class="col-lg-4 mt-4">
-                        <button type="button" class="viewBtn" (click)="viewFile('aadharCard')">View File</button>
-                        <button type="button" class="removeBtn" (click)="removeFile('aadharCard')">Remove File</button>
-                    </div>
-                </div>
-                <div class="row justify-content-center">
-                    <div class="col-lg-4">
-                        <div class="form-group">
-                            <label for="bankName" class="form-control-label">Bank Name</label>
-                            <input type="text" placeholder="Bank Name" class="form-control form-control-sm" formControlName="bankName"/>
-                        </div>
-                    </div>
-                    <div class="col-lg-4">
-                        <div class="form-group">
-                            <label for="passbook" class="form-control-label">Passbook</label>
-                            <input type="file" class="form-control form-control-sm file-upload" (change)="onFileChange($event, 'passbook')"/>
-                        </div>
-                    </div>
-                    <div class="col-lg-4 mt-4">
-                        <button type="button" class="viewBtn" (click)="viewFile('passbook')">View File</button>
-                        <button type="button" class="removeBtn" (click)="removeFile('passbook')">Remove File</button>
-                    </div>
+                  </div>
                 </div>
                 <div class="row">
+                    <!-- UPI -->
                     <div class="col-lg-4">
-                        <div class="form-group">
-                            <label for="referralClient" class="form-control-label">Referral Clinet</label>
-                            <input type="text" placeholder="Referral Client" class="form-control form-control-sm" formControlName="referralClient"/>
-                        </div>
+                      <div class="form-group">
+                        <label for="upi_id" class="form-control-label">UPI</label>
+                        <input type="text" placeholder="UPI" class="form-control form-control-sm" formControlName="upi_id" />
+                      </div>
                     </div>
                 </div>
-
-                <h5>Nominee Details</h5>
+                <!-- UPI, PAN, Aadhar -->
+                <div class="row justify-content-around">
+  
+                  <div class="col-lg-4">
+                    <div class="form-group">
+                      <label for="panCardNumber" class="form-control-label">PAN Card Number</label>
+                      <input type="text" placeholder="PAN" class="form-control form-control-sm" formControlName="panCardNumber" />
+                      <div class="invalid-feedback" *ngIf="subscriberForm.get('panCardNumber').invalid && (subscriberForm.get('panCardNumber').dirty || subscriberForm.get('panCardNumber').touched)">
+                        <div *ngIf="subscriberForm.get('panCardNumber').errors.pattern">PAN should be in the format: 5 letters followed by 4 digits and 1 letter.</div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-lg-4">
+                    <div class="form-group">
+                      <label for="panUrl" class="form-control-label">PAN Card</label>
+                      <input type="file" (change)="onFileChange($event, 'panUrl')" class="form-control form-control-sm" formControlName="panUrl" />
+                    </div>
+                  </div>
+                    <div class="col-lg-4 mt-4">
+                        <button class="viewBtn" (click)="viewFile('panUrl')">View File</button>
+                        <button class="removeBtn" (click)="removeFile('panUrl')">Remove File</button>
+                      </div>
+                </div>
                 <div class="row justify-content-around">
                     <div class="col-lg-4">
                         <div class="form-group">
-                            <label for="nomineeName" class="form-control-label">Nominee Name</label>
-                            <input type="text" placeholder="Nominee Name" class="form-control form-control-sm" formControlName="nomineeName"/>
+                          <label for="aadharNumber" class="form-control-label">Aadhar Card Number</label>
+                          <input type="text" placeholder="Aadhar" class="form-control form-control-sm" formControlName="aadharNumber" />
+                          <div class="invalid-feedback" *ngIf="subscriberForm.get('aadharNumber').invalid && (subscriberForm.get('aadharNumber').dirty || subscriberForm.get('aadharNumber').touched)">
+                            <div *ngIf="subscriberForm.get('aadharNumber').errors.required">Aadhar is required.</div>
+                            <div *ngIf="subscriberForm.get('aadharNumber').errors.pattern">Aadhar should be in the format: 4 digits followed by a space, another 4 digits, another space, and another 4 digits.</div>
+                          </div>
                         </div>
+                      </div>
+                     <div class="col-lg-4">
+                      <div class="form-group">
+                        <label for="aadharUrl" class="form-control-label">Aadhar Card</label>
+                        <input type="file" (change)="onFileChange($event, 'aadharUrl')" class="form-control form-control-sm" formControlName="aadharUrl" />
+                      </div>
                     </div>
-                    <div class="col-lg-4">
-                        <div class="form-group">
-                            <label for="nomieeRelation" class="form-control-label">Nominee Reltionship</label>
-                            <input type="text" placeholder="Nominee Relationship" class="form-control form-control-sm" formControlName="nomieeRelation"/>
-                        </div>
+                    <div class="col-lg-4 mt-4">
+                        <button class="viewBtn" (click)="viewFile('aadharUrl')">View File</button>
+                        <button class="removeBtn" (click)="removeFile('aadharUrl')">Remove File</button>
+                      </div>
+               </div>
+                  <!-- Aadhar -->
+                 
+            
+                <!-- Bank Name, Referral Client -->
+                <div class="row justify-content-around">
+                  <!-- Bank Name -->
+                  <div class="col-lg-4">
+                    <div class="form-group">
+                      <label for="bankName" class="form-control-label">Bank Name</label>
+                      <input type="text" placeholder="Bank Name" class="form-control form-control-sm" formControlName="bankName" />
+                      <div class="invalid-feedback" *ngIf="subscriberForm.get('bankName').invalid && (subscriberForm.get('bankName').dirty || subscriberForm.get('bankName').touched)">
+                        <div *ngIf="subscriberForm.get('bankName').errors.required">Bank Name is required.</div>
+                        <div *ngIf="subscriberForm.get('bankName').errors.pattern">Bank Name should only contain alphabetic characters and spaces.</div>
+                      </div>
                     </div>
-                    <div class="col-lg-4">
-                        <div class="form-group">
-                            <label for="nomineeAddress" class="form-control-label">Nominee Address</label>
-                            <input type="text" placeholder="Nominee Address" class="form-control form-control-sm" formControlName="nomineeAddress"/>
-                        </div>
-                    </div>
+                  </div>
+                  <div class="col-lg-4">
+                    <div class="form-group">
+                      <label for="passbookUrl" class="form-control-label">Passbook</label>
+                      <input type="file" (change)="onFileChange($event, 'passbookUrl')" class="form-control form-control-sm" formControlName="passbookUrl" />
+                    </div>  
                 </div>
+                <div class="col-lg-4 mt-4">
+                    <button class="viewBtn" (click)="viewFile('passbookUrl')">View File</button>
+                    <button class="removeBtn" (click)="removeFile('passbookUrl')">Remove File</button>
+                  </div>
+            </div>
+              <div class="row">
+                <div class="col-lg-4">
+                    <div class="form-group">
+                      <label for="referralClient" class="form-control-label">Referral Client</label>
+                      <div class="input-group">
+                        <input type="text" [value]="referralClientName" readonly placeholder="Referral Client" class="form-control form-control-sm" formControlName="referralClient" />
+                        <div class="input-group-append">
+                          <button class="addBtn px-2 py-1" (click)="showSubscriberList()">Add</button>  
+                        </div>
+                      </div>
+                    </div>
+                  </div>
 
-                <div class="row">
-                    <div class="col-lg-4">
-                        <div class="form-group">
-                            <label for="nomineeOccupation" class="form-control-label">Nominee Occupation</label>
-                            <input type="text" placeholder="Nominee Occupation" class="form-control form-control-sm" formControlName="nomineeOccupation"/>
-                        </div>
+              </div>
+            
+                <h6 class="text-center">Nominee Details</h6>
+                <div class="row justify-content-around">
+                  <!-- Nominee Name -->
+                  <div class="col-lg-4">
+                    <div class="form-group">
+                      <label for="nomineeName" class="form-control-label">Nominee Name</label>
+                      <input type="text" placeholder="Nominee Name" class="form-control form-control-sm" formControlName="nomineeName" />
+                      <div class="invalid-feedback" *ngIf="subscriberForm.get('nomineeName').invalid && (subscriberForm.get('nomineeName').dirty || subscriberForm.get('nomineeName').touched)">
+                        <div *ngIf="subscriberForm.get('nomineeName').errors.required">Nominee Name is required.</div>
+                        <div *ngIf="subscriberForm.get('nomineeName').errors.pattern">Nominee Name should only contain alphabetic characters and start with a capital letter.</div>
+                      </div>
                     </div>
-                    <div class="col-lg-4">
-                        <div class="form-group">
-                            <label for="nomineeGender" class="form-control-label">Nominee Gender</label>
-                            <select type="text" class="form-control form-control-sm" formControlName="nomineeGender">
-                                <option>Male</option>
-                                <option>Female</option>
-                                <option>Others</option>
-                            </select>                        
-                        </div>
+                  </div>
+                  <!-- Nominee Relation -->
+                  <div class="col-lg-4">
+                    <div class="form-group">
+                      <label for="nomineeRelation" class="form-control-label">Nominee Relation</label>
+                      <input type="text" placeholder="Nominee Relation" class="form-control form-control-sm" formControlName="nomineeRelation" />
                     </div>
-                    <div class="col-lg-4">
-                        <div class="form-group">
-                            <label for="nAadharNo" class="form-control-label">Nominee Aadhar Number</label>
-                            <input type="text" placeholder="Nominee Aadhar Number" class="form-control form-control-sm" formControlName="nAadharNo"/>
-                        </div>
+                  </div>
+                  <!-- Nominee Address -->
+                  <div class="col-lg-4">
+                    <div class="form-group">
+                      <label for="nomineeAddress" class="form-control-label">Nominee Address</label>
+                      <input type="text" placeholder="Nominee Address" class="form-control form-control-sm" formControlName="nomineeAddress" />
+                      <div class="invalid-feedback" *ngIf="subscriberForm.get('nomineeAddress').invalid && (subscriberForm.get('nomineeAddress').dirty || subscriberForm.get('nomineeAddress').touched)">
+                        <div *ngIf="subscriberForm.get('nomineeAddress').errors.required">Nominee Address is required.</div>
+                        <div *ngIf="subscriberForm.get('nomineeAddress').errors.minlength">Nominee Address must be at least 10 characters long.</div>
+                        <div *ngIf="subscriberForm.get('nomineeAddress').errors.maxlength">Nominee Address cannot be more than 100 characters long.</div>
+                        <div *ngIf="subscriberForm.get('nomineeAddress').errors.pattern">Nominee Address contains invalid characters.</div>
+                      </div>
                     </div>
-                    <div class="col-lg-4">
-                        <div class="form-group">
-                            <label for="ndob" class="form-control-label">Nominee DOB</label>
-                            <input type="date" placeholder="Nominee DOB" class="form-control form-control-sm" formControlName="ndob"/>
-                        </div>
-                    </div>
+                  </div>
                 </div>
+                <!-- Nominee Occupation, Gender, Aadhar -->
+                <div class="row justify-content-around">
+                  <!-- Nominee Occupation -->
+                  <div class="col-lg-4">
+                    <div class="form-group">
+                      <label for="nomineeOccupation" class="form-control-label">Nominee Occupation</label>
+                      <input type="text" placeholder="Nominee Occupation" class="form-control form-control-sm" formControlName="nomineeOccupation" />
+                      <div class="invalid-feedback" *ngIf="subscriberForm.get('nomineeOccupation').invalid && (subscriberForm.get('nomineeOccupation').dirty || subscriberForm.get('nomineeOccupation').touched)">
+                        <div *ngIf="subscriberForm.get('nomineeOccupation').errors.required">Nominee Occupation is required.</div>
+                        <div *ngIf="subscriberForm.get('nomineeOccupation').errors.minlength">Nominee Occupation must be at least 2 characters long.</div>
+                        <div *ngIf="subscriberForm.get('nomineeOccupation').errors.maxlength">Nominee Occupation cannot be more than 50 characters long.</div>
+                        <div *ngIf="subscriberForm.get('nomineeOccupation').errors.pattern">Nominee Occupation contains invalid characters.</div>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- Nominee Gender -->
+                  <div class="col-lg-4">
+                    <div class="form-group">
+                      <label for="nomineeGender" class="form-control-label">Nominee Gender</label>
+                      <select class="form-control form-control-sm" formControlName="nomineeGender">
+                        <option value="">Select Gender</option>
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                        <option value="Other">Other</option>
+                      </select>
+                      <div class="invalid-feedback" *ngIf="subscriberForm.get('nomineeGender').invalid && (subscriberForm.get('nomineeGender').dirty || subscriberForm.get('nomineeGender').touched)">
+                        <div *ngIf="subscriberForm.get('nomineeGender').errors.required">Nominee Gender is required.</div>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- Nominee Aadhar -->
+                  <div class="col-lg-4">
+                    <div class="form-group">
+                      <label for="nomineeAadhar" class="form-control-label">Nominee Aadhar</label>
+                      <input type="text" placeholder="Nominee Aadhar" class="form-control form-control-sm" formControlName="nomineeAadhar" />
+                      <div class="invalid-feedback" *ngIf="subscriberForm.get('nomineeAadhar').invalid && (subscriberForm.get('nomineeAadhar').dirty || subscriberForm.get('nomineeAadhar').touched)">
+                        <div *ngIf="subscriberForm.get('nomineeAadhar').errors.required">Nominee Aadhar is required.</div>
+                        <div *ngIf="subscriberForm.get('nomineeAadhar').errors.pattern">Nominee Aadhar should be in the format: 4 digits followed by a space, another 4 digits, another space, and another 4 digits.</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <!-- Nominee DOB -->
+                <div class="row">
+                  <div class="col-lg-4">
+                    <div class="form-group">
+                      <label for="nomineeDOB" class="form-control-label">Nominee Date of Birth</label>
+                      <input type="date" class="form-control form-control-sm" formControlName="nomineeDOB" />
+                      <div class="invalid-feedback" *ngIf="subscriberForm.get('nomineeDOB').invalid && (subscriberForm.get('nomineeDOB').dirty || subscriberForm.get('nomineeDOB').touched)">
+                        <div *ngIf="subscriberForm.get('nomineeDOB').errors.required">Nominee Date of Birth is required.</div>
+                        <div *ngIf="subscriberForm.get('nomineeDOB').errors.invalidDate">Invalid Date of Birth.</div>
+                        <div *ngIf="subscriberForm.get('nomineeDOB').errors.ageBelowMinimum">Nominee must be at least 18 years old.</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <!-- Profile, PAN Card, Passbook Upload -->
+
                 <div class="row justify-content-center">
                     <div class="col-lg-12 d-flex justify-content-end mb-2">
-                        <button class="btn nxt-btn btn-outline-secondary" routerLink="/projects/project">Cancel</button>
-                        <button class="btn save-btn" [disabled]="!subscriberForm.valid">Submit</button>
+                        <button class="btn nxt-btn btn-outline-secondary" >Cancel</button>
+                        <button class="btn save-btn" [disabled]="!subscriberForm.valid" (click)="onSubmit()">Submit</button>
                     </div>
                 </div>
 
@@ -233,7 +367,7 @@
         </div>
     </div>
     </div>
-                <div class="col-lg-3 ">
+                <div class="col-lg-3 " *ngIf="isSubscriberListVisible">
                     <div class="card details mb-3">
                     <h5 class="text-center my-2">Referral</h5>
                         <div class="search-bar align-self-center">
@@ -243,19 +377,19 @@
                         
                         <table class="subscriber-table ">
                           <tbody>
-                            <tr *ngFor="let subscriber of filteredSubscribers">
+                            <tr *ngFor="let subscriber of displayedSubscribers" >
                            <div class="card view-all mx-3">
                             <div class="card-body align-self-center">
                                 <div class="row">
                                     <div class="col-lg-2 col-md-2">
-                                        <img class="profile-list-img" src="assets/subscriber/men.svg">                       
+                                        <img class="profile-list-img" src="subscriber.subscriberProfile">  
                                     </div>
                                     <div class="col-lg-5 col-md-5 text">
-                                        <strong>{{ subscriber.firstName }} {{ subscriber.lastName }}</strong>
-                                        {{ subscriber.id }}
+                                        <strong>{{ subscriber.subscriberId }}</strong>
+                                        {{ subscriber.subscriberName }}
                                         </div>
                                     <div class="col-lg-5 col-md-5">
-                                        <button  class="viewbtn align-left" (click)="selectSubscriber(subscriber)">View Details</button>
+                                        <button  class="viewbtn align-left" (click)="onButtonClick(subscriber.id)">View Details</button>
                                     </div>
                                 </div>
                             </div>
@@ -265,7 +399,7 @@
                         </table>
                       
                       <div class="subscriber-details">
-                        <div *ngIf="selectedSubscriber">
+                        <div *ngIf="subscriberDetail">
                             <h5 class="title  text-center">Subscriber Details</h5>
                             <div class="text-center">
                                 <img src="assets/subscriber/men.svg" class="img-fluid" alt="Subscriber Image">
@@ -274,44 +408,44 @@
                                 <tbody>
                                   <tr>
                                     <td><strong>Subscriber ID </strong></td>
-                                    <td><a href="#">{{subscriber.id }}</a></td>
+                                    <td><a href="#">{{subscriberDetail.Subscriber.subscriberId }}</a></td>
                                   </tr>
                                   <tr>
                                     <td><strong>First Name </strong></td>
-                                    <td>Sangeetha </td>
+                                    <td>{{subscriberDetail.Subscriber.firstName}} </td>
                                   </tr>
                                   <tr>
                                     <td><strong>Last Name </strong></td>
-                                    <td>{{ subscriber.lastName }}</td>
+                                    <td>{{ subscriberDetail.Subscriber.lastName }}</td>
                                   </tr>
                                   <tr>
                                     <td><strong>Contact No </strong></td>
-                                    <td>{{ subscriber.contact }}</td>
+                                    <td>{{ subscriberDetail.Subscriber.contact }}</td>
                                   </tr>
                                   <tr>
                                     <td><strong>Address/Place </strong></td>
-                                    <td>{{ subscriber.address }}</td>
+                                    <td>{{ subscriberDetail.Subscriber.place }}</td>
                                   </tr>
                                   <tr>
                                     <td><strong>Occupation </strong></td>
-                                    <td>{{ subscriber.occupation }}</td>
+                                    <td>{{ subscriberDetail.Subscriber.occupation }}</td>
                                   </tr>
                                   <tr>
                                     <td><strong>Referral Client </strong></td>
-                                    <td>{{ subscriber.referredBy }}</td>
+                                    <td>{{ subscriberDetail.Subscriber.referralClient }}</td>
                                   </tr>
                                   <tr>
                                     <td><strong>Enrollments </strong></td>
-                                    <td>{{ subscriber.enrollments }}</td>
+                                    <td>{{ subscriberDetail.Subscriber.enrollments }}</td>
                                   </tr>
                                   <tr>
                                     <td><strong>Region/Route </strong></td>
-                                    <td>{{ subscriber.region }}</td>
+                                    <td>{{ subscriberDetail.Subscriber.routeId }}</td>
                                   </tr>
                                 </tbody>
                               </table>
                               <div class="text-center mb-2">
-                                <button class="btn  view">Add Referral</button>
+                                <button class="btn  view"  (click)="addReferral()">Add Referral</button>
                             </div>
                    
                         </div>

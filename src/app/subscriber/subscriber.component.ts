@@ -78,13 +78,21 @@ totalCount:number;
         return { color: '#50A1A5' };
       },   
       onCellClicked: (event: CellClickedEvent) =>
-      // console.log('Cell was clicked',event.data.id)
       this.getSubscriberById(event.data.id)
      },
 
-    { label: 'Display Name', field:'subscriberName', sortable: true },
-    { label: 'Location', field: 'place', sortable: true },
-    { label: 'Occupation', field: 'occupation', sortable: true },
+    { label: 'Display Name', field:'subscriberName', sortable: true,
+      onCellClicked: (event: CellClickedEvent) =>
+        this.getSubscriberById(event.data.id)
+     },
+    { label: 'Location', field: 'place', sortable: true ,
+      onCellClicked: (event: CellClickedEvent) =>
+        this.getSubscriberById(event.data.id)
+    },
+    { label: 'Occupation', field: 'occupation', sortable: true ,
+      onCellClicked: (event: CellClickedEvent) =>
+        this.getSubscriberById(event.data.id)
+    },
   ];
 
   getSubscriberById(id: string): void {
@@ -101,9 +109,5 @@ totalCount:number;
   }
   navigate(id: any){
     this.router.navigate([`subscriber/view/${id}`]);
-  }
-
-  hasSubscriber(){
-     return this.subscriberDetail && this.subscriberDetail.length > 0;
   }
 }

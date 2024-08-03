@@ -2,14 +2,14 @@
 
     <div class="row">     
       <div [ngClass]="{'col-md-9 col-lg-9': subscriberDetail, 'col-md-12 col-lg-12': !subscriberDetail}">      <div class="header mt-3">Subscriber Management
-        <button class="btn btn-primary create" routerLink="create">create subscriber</button>
+        <button class="btn btn-primary create" routerLink="create">Create subscriber</button>
       </div>
       <div class="row mt-3 mb-3">
         <div class="col-md-4 col-lg-4">
           <div class="line p-1 pb-2 text-center">
             <div class="card-body">
               <h5 class="card-title">Total Subscribers</h5>
-              <p class="card-text">{{totalCount}}</p>
+              <p class="card-text mt-3">{{totalCount}}</p>
             </div>
           </div>
         </div>

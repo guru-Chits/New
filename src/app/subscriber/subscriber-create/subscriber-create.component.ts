@@ -41,7 +41,7 @@ referralClientName = '';
 
 ngOnInit(): void {
   this.subscriberForm = this.fb.group({
-    subscriberId: [{ value: '', disabled: this.subscriberId}, [Validators.required, Validators.minLength(2), Validators.maxLength(25),Validators.pattern(/^kng-c\d{4}$/)]],
+    subscriberId: [{ value: '', disabled: this.subscriberId}, [Validators.required, Validators.minLength(2), Validators.maxLength(25),Validators.pattern(/^KNG-C\d{5}$/)]],
     firstName: ['', [Validators.required, Validators.pattern(/^[A-Z][a-zA-Z]+$/)]],
     lastName: ['', [Validators.required, Validators.pattern(/^[A-Z][a-zA-Z]+$/)]],
     aliasName: ['', [Validators.pattern(/^[A-Z][a-zA-Z\/\-() ]+$/)]],
@@ -65,10 +65,10 @@ ngOnInit(): void {
     nomineeGender: ['', Validators.required],
     nomineeAadhar: ['', [Validators.required, Validators.pattern(/^\d{4}\s\d{4}\s\d{4}$/)]],
     nomineeDOB: ['', [Validators.required,  this.ageValidator(18)]],
-    profileImageUrl: [''],
-    aadharUrl:[''],
-    passbookUrl:[''],
-    panUrl: [''],
+    profileImage: [''],
+    aadhar:[''],
+    passbook:[''],
+    pan: [''],
     passbookNumber: ['']
   });
 
@@ -80,6 +80,8 @@ ngOnInit(): void {
     this.service.getsubscriberById(paramData.id).subscribe((data) => {
       this.subscriberData = data;
       this.subscriberId=this.subscriberData.Subscriber._id
+      this.profileImageUrl=this.subscriberData.Subscriber.profileImage
+
       this.subscriber=false
       console.log('Project Data = >',this.subscriberData)
       const updatedSubscriber = { ...this.subscriberData.Subscriber };
@@ -99,7 +101,7 @@ ngOnInit(): void {
       id:subscriberDetails?._id,
       subscriberId: subscriberDetails?.subscriberId,
       subscriberName: `${subscriberDetails?.firstName} ${subscriberDetails?.lastName}`,
-      subscriberProfile:subscriberDetails?.profileImageUrl
+      subscriberProfile:subscriberDetails?.profileImage
     }))
     this.displayedSubscribers = this.data;
   })
@@ -133,8 +135,6 @@ dateValidator(control: AbstractControl): {[key: string]: boolean} | null {
   return { 'invalidDate': true };
 }
 
-
-
 ageValidator(minAge: number): ValidatorFn {
   return (control: AbstractControl): {[key: string]: boolean} | null => {
     const dateValue = new Date(control.value);
@@ -158,7 +158,9 @@ onSubmit(){
   console.log('payload', payload);
   this.service.savesubscriberDetails(payload, this.subscriberId).subscribe((data) => {
     console.log(data);
-    this.router.navigate(["/view"]);
+    // this.router.navigate([`subscriber/view/${this.subscriberId}`]);
+    this.router.navigate(["/subscriber"]);
+
   })
 } 
 

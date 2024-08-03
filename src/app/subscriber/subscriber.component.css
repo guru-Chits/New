@@ -24,14 +24,14 @@
   }
 
   .card-title {
-    font-size: 14px;
+    font-size: 15px;
     padding-top: 14px;
     padding-bottom: 10px;
-    font-weight: 500;
+    font-weight: 600;
   }
 
   .card-text {
-    font-size:22px;
+    font-size:24px;
     font-weight: 600;
   }
   
@@ -46,7 +46,7 @@
   }
   
   .table tbody tr td a {
-    color: #007bff;
+    color: #50A1A5;
   }
   
   .rounded-circle {

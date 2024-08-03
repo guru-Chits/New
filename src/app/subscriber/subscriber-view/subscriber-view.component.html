@@ -6,7 +6,7 @@
             <div class="card ps-5 pe-5 mb-2 details-card">
                 <div class="profile-picture-container">
                     <div class="profile-picture">
-                      <img [src]="subscriberDetail.Subscriber.profileImageUrl || defaultImageUrl" alt="Profile Picture" class="profile-img">
+                      <img [src]="subscriberDetail.Subscriber.profileImage || defaultImageUrl" alt="Profile Picture" class="profile-img">
                       <input type="file" (change)="onFileSelected($event)" hidden #fileInput>
                       <button class="upload-button" (click)="fileInput.click()">
                         <img src="assets/subscriber/Profile edit.svg " alt="Upload Icon">
@@ -248,7 +248,7 @@
             <div class="align-self-center">
                 <div class="row">
                     <div class="col-2 text-center">
-                        <img class="img-fluid" src="subscriber.subscriberProfile">                       
+                        <img class="img-fluid" src="{{subscriber.subscriberProfile}}">                       
                     </div>
                     <div class="col-5 text">
                         <h6 (click)="getSub(subscriber.id)" class="pe-auto"><strong>{{ subscriber.subscriberName }}</strong></h6>
@@ -260,7 +260,7 @@
             </tr>
           </tbody>
         </table>
-        <button class="btn align-self-center  view">View More</button>
+        <button class="btn align-self-center view" routerLink="/subscriber">View More</button>
       </div>
       </div>
     </div>

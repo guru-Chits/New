@@ -29,7 +29,7 @@
                         <div *ngIf="subscriberForm.get('subscriberId').errors.required">Subscriber Id is required.</div>
                         <div *ngIf="subscriberForm.get('subscriberId').errors.minlength">Subscriber Id must be at least 2 characters long.</div>
                         <div *ngIf="subscriberForm.get('subscriberId').errors.maxlength">Subscriber Id cannot be more than 25 characters long.</div>
-                        <div *ngIf="subscriberForm.get('subscriberId').errors.pattern"> Subscriber ID must be in the format KNG-CXXXX.</div>
+                        <div *ngIf="subscriberForm.get('subscriberId').errors.pattern"> Subscriber ID must be in the format KNG-CXXXXX.</div>
                       </div>
                     </div>
                   </div>
@@ -357,7 +357,7 @@
 
                 <div class="row justify-content-center">
                     <div class="col-lg-12 d-flex justify-content-end mb-2">
-                        <button class="btn nxt-btn btn-outline-secondary" >Cancel</button>
+                        <button class="btn nxt-btn btn-outline-secondary" routerLink="/subscriber">Cancel</button>
                         <button class="btn save-btn" [disabled]="!subscriberForm.valid" (click)="onSubmit()">Submit</button>
                     </div>
                 </div>
@@ -382,7 +382,7 @@
                             <div class="card-body align-self-center">
                                 <div class="row">
                                     <div class="col-lg-2 col-md-2">
-                                        <img class="profile-list-img" src="subscriber.subscriberProfile">  
+                                        <img class="profile-list-img" src="subscriber.subscriberProfile"> 
                                     </div>
                                     <div class="col-lg-5 col-md-5 text">
                                         <strong>{{ subscriber.subscriberId }}</strong>

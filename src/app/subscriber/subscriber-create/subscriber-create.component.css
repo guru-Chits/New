@@ -181,11 +181,6 @@ padding-left: 3px;
   margin-bottom: 20px;
 }
 
-.subscriber-table {
-  width: 100%;
-  /* border-collapse: collapse; */
-}
-
 .subscriber-table th, .subscriber-table td {
   border: 1px solid #ddd;
   padding: 8px;
@@ -208,12 +203,12 @@ padding-left: 3px;
 }
 .viewbtn{
   border:none;
-  font-size: 9px;
+  font-size: 10px;
   color:#50A1A5;
   background: transparent;
 }
 .text{
-  font-size: 10px;
+  font-size: 12px;
 }
 .view-all{
   background-color: #ECEBF5;
@@ -226,7 +221,6 @@ padding-left: 3px;
   background-color: #ECEBF5;
   border: none;
   padding: 5px;
-  width:220px;
 }
 
 .search-bar input {
@@ -237,3 +231,16 @@ padding-left: 3px;
   flex-grow: 1;
   height: 20px;
 } 
+.addBtn{
+  background-color: #3E3A97;
+  border:none;
+  color:white;
+}
+.invalid-feedback {
+  color: red;
+  display: block;
+}
+
+.form-control.ng-invalid.ng-touched {
+  border-color: red;
+}

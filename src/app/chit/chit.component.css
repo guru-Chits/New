@@ -1,0 +1,53 @@
+.container {
+    max-width: 1200px;
+  }
+  
+  .card {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  .header{
+   font-size: 20px;
+   font-weight: 700; 
+  }
+  .line{
+    border-left: 4px solid #3E3A97;
+    /* width:200px; */
+    /* padding: 10px; */
+
+    flex: auto;
+    width: 200px;
+    height:80px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    background-color: white;
+    border-radius: 4px;
+  }
+  .title{
+    font-size: 18px;
+    font-weight: 800;
+  }
+
+  .card-title {
+    font-size: 14px;
+    padding-top: 7px;
+    padding-bottom:5px;
+    font-weight: 500;
+  }
+
+  .card-text {
+    font-size:22px;
+    font-weight: 600;
+  }
+  .create{
+    background-color: #3E3A97;
+    border: none;
+    /* float:right; */
+    }
+.red-card{
+    border:1px solid #F04438;
+    background-color: #FEECEB;
+    color:#F04438;
+    flex: auto;
+    width:150px;
+    height:80px;
+
+}

@@ -17,7 +17,7 @@ subscriber:any=true
 profileImageUrl: string | ArrayBuffer | null = null;
 defaultImageUrl = 'assets/subscriber/user.svg'; // Path to default profile image
 private subscriberIdPrefix: string = 'KNG-C';
-private subscriberIdCounter: number = 10021;
+ subscriberIdCounter: string;
 
   constructor( private fb: FormBuilder,
     private activatedRoute:ActivatedRoute,
@@ -76,11 +76,7 @@ ngOnInit(): void {
     pan: [''],
   });
 
-  this.setSubscriberId();
-  this.subscriberForm.get('firstName')?.valueChanges.subscribe(value => {
-    this.autoCorrectNames();
-  
-  });
+
   // Load data, initialize form, etc.
   this.activatedRoute.params.subscribe(paramData => {
     console.log("ObjectKeys =>",Object.keys(paramData))
@@ -105,6 +101,13 @@ ngOnInit(): void {
 
   this.service.getsubscriberAll().subscribe((data)=>{
     this.subscriberData=data;
+    this.subscriberIdCounter=this.subscriberData.AllSubscriber.length+10000
+    console.log(this.subscriberIdCounter);
+    this.setSubscriberId(this.subscriberIdCounter);
+    this.subscriberForm.get('firstName')?.valueChanges.subscribe(value => {
+      this.autoCorrectNames();
+    
+    });
 
     console.log("subscriber data",this.subscriberData);
    
@@ -117,14 +120,20 @@ ngOnInit(): void {
     this.displayedSubscribers = this.data;
   })
 
+
 }
-private setSubscriberId(): void {
-  const newSubscriberId = this.generateSubscriberId();
+ setSubscriberId(id:string): void {
+  console.log(id);
+  
+  const newSubscriberId = this.generateSubscriberId(id);
   this.subscriberForm.get('subscriberId')?.setValue(newSubscriberId);
 }
 
-private generateSubscriberId(): string {
-  return `${this.subscriberIdPrefix}${this.subscriberIdCounter}`;
+ generateSubscriberId(id:string): string {
+  // console.log(this.subscriberIdCounter);
+  console.log(id);
+  
+  return `${this.subscriberIdPrefix}${id}`;
 }
 
 
@@ -203,7 +212,7 @@ onSubmit(): void {
     const formValue = this.subscriberForm.getRawValue();
 
     if (!formValue.profileImage) {
-      formValue.profileImage = this.generateDefaultProfileImage(formValue.firstname);
+      formValue.profileImage = this.generateDefaultProfileImage(formValue.firstName);
     }
 
     for (const key in formValue) {

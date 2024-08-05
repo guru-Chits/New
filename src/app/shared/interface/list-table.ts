@@ -1,10 +1,11 @@
 export interface ITableColumn {
-    label: string;
+    label?: string;
     field: string;
     sortable?: boolean;
     filter?: string;
     cellRenderer?: any;
     onCellClicked?:any;
     cellStyle?:any;
+    header?:any
 }
   

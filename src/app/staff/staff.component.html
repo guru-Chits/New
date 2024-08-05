@@ -1,68 +1,69 @@
 <div class="container-fluid d-flex flex-column">
 
     <div class="row">     
-    <div class="col-md-9 col-lg-9">
-                <div class="header mt-3">Staffs
+      <div [ngClass]="{'col-md-9 col-lg-9': staffDetail, 'col-md-12 col-lg-12': !staffDetail}">    
+        <div class="header mt-3">Staffs
                     <button class="btn btn-primary create" routerLink="create">create New Staffs</button>
                 </div>
       <div class="row mt-3">
         <div class="col-md-4 col-lg-4">
           <div class="line text-center mb-4">
               <h5 class="card-title">Total Staffs</h5>
-              <p class="card-text">2695</p>
+              <p class="card-text">{{totalCount}}</p>
             </div>
         </div>
       </div>
-      <app-ag-grid [columns]="columns" [rowData]="rowData"   width="100%" height="280px"></app-ag-grid>
+      <app-ag-grid [columns]="column" [rowData]="data"   width="100%" height="280px"></app-ag-grid>
     </div>
     <div class="col-md-3 col-lg-3">
+      <div *ngIf="staffDetail">
     <div class="card details">
     <div class="title align-self-center py-2">Staff Details</div>
-    <img src="assets/subscriber/men.svg" class="rounded-circle  align-self-center mb-2" width="75" height="75" alt="Subscriber Image">
+    <!-- <img src="{{staffDetail.Staff.profileImageUrl}}" class="rounded-circle  align-self-center mb-2" width="75" height="75" alt="Staff Image"> -->
     <table class="table flex-column">
         <tbody>
           <tr>
             <td><strong>Employee ID </strong></td>
-            <td><a href="#">KNG-E001</a></td>
+            <td><a href="#">{{staffDetail.Subscriber.employeeId}}</a></td>
           </tr>
           <tr>
             <td><strong>First Name </strong></td>
-            <td>John</td>
+            <td>{{staffDetail.Subscriber.firstName}}</td>
           </tr>
           <tr>
             <td><strong>Last Name </strong></td>
-            <td>Doe</td>
+            <td>{{staffDetail.Subscriber.lastName}}</td>
           </tr>
           <tr>
             <td><strong>Contact No</strong></td>
-            <td>9876543210</td>
+            <td>{{staffDetail.Subscriber.contact}}</td>
           </tr>
           <tr>
             <td><strong>Role</strong></td>
-            <td>Casher</td>
+            <td>{{staffDetail.Subscriber.role}}</td>
           </tr>
           <tr>
             <td><strong>BGV Status</strong></td>
-            <td>Verified</td>
+            <td>{{staffDetail.Subscriber.bgVerification}}</td>
           </tr>
           <tr>
             <td><strong>Working Status</strong></td>
-            <td>Active</td>
+            <td>{{staffDetail.Subscriber.workingStatus}}</td>
           </tr>
           <tr>
             <td><strong>Enrollments </strong></td>
-            <td>2</td>
+            <td>{{staffDetail.Subscriber.lastName}}</td>
           </tr>
           <tr>
             <td><strong>Route ID</strong></td>
-            <td>CBE - South</td>
+            <td>{{staffDetail.Subscriber.lastName}}</td>
           </tr>
         </tbody>
       </table>
       <div class="text-center mb-3">
-        <button  routerLink="view" class="btn  view">View More Details</button>
+        <button  (click)="navigate(staffDetail.Subscriber._id)"  class="btn  view">View More Details</button>
     </div>
-  <!-- </div> -->
+  </div>
 </div>
     </div>
   </div>

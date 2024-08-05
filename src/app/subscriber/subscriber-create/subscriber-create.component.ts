@@ -15,7 +15,10 @@ subscriberData:any={}
 subscriberId:string
 subscriber:any=true
 profileImageUrl: string | ArrayBuffer | null = null;
-  defaultImageUrl = 'assets/subscriber/user.svg'; // Path to default profile image
+defaultImageUrl = 'assets/subscriber/user.svg'; // Path to default profile image
+private subscriberIdPrefix: string = 'KNG-C';
+private subscriberIdCounter: number = 10021;
+
   constructor( private fb: FormBuilder,
     private activatedRoute:ActivatedRoute,
     private service: SubscriberService,
@@ -36,42 +39,48 @@ data: any[] = [];
 filteredSubscribers:any;
 displayedSubscribers: any[];
 selectedSubscriber: any;
-referralClientName = '';
+referralClient :string
 
 
 ngOnInit(): void {
+
+
   this.subscriberForm = this.fb.group({
-    subscriberId: [{ value: '', disabled: this.subscriberId}, [Validators.required, Validators.minLength(2), Validators.maxLength(25),Validators.pattern(/^KNG-C\d{5}$/)]],
+    subscriberId: [{ value: '', disabled: true },],
     firstName: ['', [Validators.required, Validators.pattern(/^[A-Z][a-zA-Z]+$/)]],
     lastName: ['', [Validators.required, Validators.pattern(/^[A-Z][a-zA-Z]+$/)]],
     aliasName: ['', [Validators.pattern(/^[A-Z][a-zA-Z\/\-() ]+$/)]],
     contact: ['', [Validators.required, Validators.pattern(/^\d{10}$/)]],
     place: ['', [Validators.required, Validators.minLength(10), Validators.maxLength(100), Validators.pattern(/^[a-zA-Z0-9\s,.'-]+$/)]],
     gender: ['', Validators.required],
-    dob: ['', [Validators.required,this.ageValidator(18)]],
-    occupation: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(50), Validators.pattern(/^[a-zA-Z\s-]+$/)]],
+    dob: ['', [this.ageValidator(18)]],
+    occupation: ['', [Validators.minLength(2), Validators.maxLength(50), Validators.pattern(/^[a-zA-Z\s-]+$/)]],
     routeId: ['',[Validators.required]],
-    accountNumber: ['', [Validators.required, Validators.pattern(/^\d{8,12}$/)]],
-    ifsc: ['', [Validators.required, Validators.pattern(/^[A-Za-z]{4}\d{7}$/)]],
+    accountNumber: ['', [Validators.pattern(/^\d{8,12}$/)]],
+    ifsc: ['', [Validators.pattern(/^[A-Za-z]{4}\d{7}$/)]],
     upi_id: [''],
     panCardNumber: ['', [Validators.pattern(/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/)]],
-    aadharNumber: ['', [Validators.required, Validators.pattern(/^\d{4}\s\d{4}\s\d{4}$/)]],
-    bankName: ['', [Validators.required, Validators.pattern(/^[a-zA-Z\s]+$/)]],
+    aadharNumber: ['', [ Validators.pattern(/^\d{4}\s\d{4}\s\d{4}$/)]],
+    bankName: ['', [ Validators.pattern(/^[a-zA-Z\s]+$/)]],
     referralClient: [''],
-    nomineeName: ['', [Validators.required, Validators.pattern(/^[A-Z][a-zA-Z]+$/)]],
+    nomineeName: ['', [ Validators.pattern(/^[A-Z][a-zA-Z]+$/)]],
     nomineeRelation: [''],
-    nomineeAddress: ['', [Validators.required, Validators.minLength(10), Validators.maxLength(100), Validators.pattern(/^[a-zA-Z0-9\s,.'-]+$/)]],
-    nomineeOccupation: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(50), Validators.pattern(/^[a-zA-Z\s-]+$/)]],
-    nomineeGender: ['', Validators.required],
-    nomineeAadhar: ['', [Validators.required, Validators.pattern(/^\d{4}\s\d{4}\s\d{4}$/)]],
-    nomineeDOB: ['', [Validators.required,  this.ageValidator(18)]],
+    nomineeAddress: ['', [ Validators.minLength(10), Validators.maxLength(100), Validators.pattern(/^[a-zA-Z0-9\s,.'-]+$/)]],
+    nomineeOccupation: ['', [ Validators.minLength(2), Validators.maxLength(50), Validators.pattern(/^[a-zA-Z\s-]+$/)]],
+    nomineeGender: ['',],
+    nomineeAadhar: ['', [ Validators.pattern(/^\d{4}\s\d{4}\s\d{4}$/)]],
+    nomineeDOB: ['', [  this.ageValidator(18)]],
     profileImage: [''],
     aadhar:[''],
     passbook:[''],
     pan: [''],
-    passbookNumber: ['']
   });
 
+  this.setSubscriberId();
+  this.subscriberForm.get('firstName')?.valueChanges.subscribe(value => {
+    this.autoCorrectNames();
+  
+  });
   // Load data, initialize form, etc.
   this.activatedRoute.params.subscribe(paramData => {
     console.log("ObjectKeys =>",Object.keys(paramData))
@@ -80,7 +89,9 @@ ngOnInit(): void {
     this.service.getsubscriberById(paramData.id).subscribe((data) => {
       this.subscriberData = data;
       this.subscriberId=this.subscriberData.Subscriber._id
-      this.profileImageUrl=this.subscriberData.Subscriber.profileImage
+      this.profileImageUrl=this.subscriberData.Subscriber.profileImageUrl
+      console.log(this.profileImageUrl);
+      
 
       this.subscriber=false
       console.log('Project Data = >',this.subscriberData)
@@ -101,14 +112,45 @@ ngOnInit(): void {
       id:subscriberDetails?._id,
       subscriberId: subscriberDetails?.subscriberId,
       subscriberName: `${subscriberDetails?.firstName} ${subscriberDetails?.lastName}`,
-      subscriberProfile:subscriberDetails?.profileImage
+      subscriberProfile:subscriberDetails?.profileImageUrl
     }))
     this.displayedSubscribers = this.data;
   })
 
 }
+private setSubscriberId(): void {
+  const newSubscriberId = this.generateSubscriberId();
+  this.subscriberForm.get('subscriberId')?.setValue(newSubscriberId);
+}
+
+private generateSubscriberId(): string {
+  return `${this.subscriberIdPrefix}${this.subscriberIdCounter}`;
+}
 
 
+private autoCorrectNames(): void {
+  this.subscriberForm.get('firstName')?.valueChanges.subscribe(value => {
+    this.autoCorrectName('firstName', value);
+  });
+  this.subscriberForm.get('lastName')?.valueChanges.subscribe(value => {
+    this.autoCorrectName('lastName', value);
+  });
+  this.subscriberForm.get('nomineeName')?.valueChanges.subscribe(value => {
+    this.autoCorrectName('nomineeName', value);
+  });
+  this.subscriberForm.get('aliasName')?.valueChanges.subscribe(value => {
+    this.autoCorrectName('aliasName', value);
+  });
+}
+
+private autoCorrectName(controlName: string, value: string): void {
+  if (value && value.length > 0) {
+    const correctedValue = value.charAt(0).toUpperCase() + value.slice(1);
+    if (correctedValue !== value) {
+      this.subscriberForm.get(controlName)?.setValue(correctedValue, { emitEvent: false });
+    }
+  }
+}
 getSubscriberById(id: string): void {
   this.service.getsubscriberById(id).subscribe(
     data => {
@@ -151,19 +193,30 @@ showAll(): void {
 showSubscriberList(): void {
   this.isSubscriberListVisible = true;
 }
+private generateDefaultProfileImage(firstName: string): string {
+  const initial = firstName.charAt(0).toUpperCase();
+  return `https://via.placeholder.com/150/000000/FFFFFF/?text=${initial}`;
+}
 
-onSubmit(){
-  console.log(this.subscriberForm);
-  const payload = this.subscriberForm.value;
-  console.log('payload', payload);
-  this.service.savesubscriberDetails(payload, this.subscriberId).subscribe((data) => {
-    console.log(data);
-    // this.router.navigate([`subscriber/view/${this.subscriberId}`]);
-    this.router.navigate(["/subscriber"]);
+onSubmit(): void {
+    const formData = new FormData();
+    const formValue = this.subscriberForm.getRawValue();
 
-  })
-} 
+    if (!formValue.profileImage) {
+      formValue.profileImage = this.generateDefaultProfileImage(formValue.firstname);
+    }
 
+    for (const key in formValue) {
+      if (formValue.hasOwnProperty(key)) {
+        formData.append(key, formValue[key]);
+      }
+    }
+
+    this.service.savesubscriberDetails(formData, this.subscriberId).subscribe((data) => {
+      console.log(data);
+      this.router.navigate(["/subscriber"]);
+    });
+  }
 
 applyFilter(filterValue: string) {
   if (!filterValue || !this.data) {
@@ -187,15 +240,22 @@ onFileSelected(event: Event): void {
     const reader = new FileReader();
     reader.onload = () => {
       this.profileImageUrl = reader.result;
+      this.subscriberForm.patchValue({ profileImage: file });
     };
     reader.readAsDataURL(file);
   }
 }
 
 
-onFileChange(event: any, fileType: string) {
-  this.filesInfo[fileType] = event.target.files[0];
+onFileChange(event: any, controlName: string): void {
+  if (event.target.files && event.target.files.length) {
+    const file = event.target.files[0];
+    this.subscriberForm.patchValue({
+      [controlName]: file
+    });
+  }
 }
+
 
 viewFile(fileType: string): void {
   const file = this.filesInfo[fileType];
@@ -213,8 +273,8 @@ removeFile(fileType: string): void {
 
 addReferral(): void {
   if (this.subscriberDetail) {
-    this.referralClientName = this.subscriberDetail.Subscriber.firstName;
-    console.log(this.referralClientName);
+    this.referralClient = this.subscriberDetail.Subscriber.firstName;
+    console.log(this.referralClient);
     
     this.isSubscriberListVisible = false;
   }

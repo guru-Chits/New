@@ -1,1 +1,77 @@
-<p>area works!</p>
+<div class = "row d-flex ml-3 ">
+    <div class = " col-lg-8">
+       <div class = "d-flex col mt-2">
+        <div class = "d-flex col ">
+            <label class = "bold-text"> Route Manager</label>
+        </div>
+        <div class = "col d-flex justify-content-end">
+            <button routerLink="regioncreate"  class="btn">Create New Region</button>
+            <button routerLink="areacreate"  class="btn">Create New Route</button>
+        </div>
+
+       </div>
+       <div class=" col-md-4 col-lg-4">
+        <div class="line p-1 pb-2 text-center">
+          <div class="card-body">
+            <h5 class="card-title">Total Routes</h5>   
+            <h2> 200</h2>  
+          </div>
+        </div>
+      </div>
+      <app-ag-grid [columns]="columns" [rowData]="rowData" width="100%" height="200px"></app-ag-grid> 
+      <br>
+      <app-ag-grid [columns]="columns" [rowData]="rowData" width="100%" height="200px"></app-ag-grid> 
+    </div>
+    <div class="col-lg-4 d-flex mb-4">
+      <div class="card ">
+          <div class="card-body">
+                  <h6 class="text-center">Route details</h6>
+                  <table class="table simple-text">
+                      <tbody>
+                          <tr>
+                              <td><b>Route ID</b></td>
+                              <td>CMB-south</td>
+                          </tr>
+                          <tr>
+                              <td><b>Region Name</b></td>
+                              <td>Coimbatore</td>
+                          </tr>
+                          <tr>
+                              <td><b>Route Name</b></td>
+                              <td>Gandhipuram</td>
+                          </tr>
+                          <tr>
+                              <td><b>Route Description</b></td>
+                              <td>Deliquency Route</td>
+                          </tr>
+                          <tr>
+                            <td><b>Allocated Staff</b></td>
+                            <td>Thomas</td>
+                        </tr>
+                        <tr>
+                            <td><b>Subscriber Count</b></td>
+                            <td>12</td>
+                        </tr>
+                          <tr>
+                              <td><b>Route Status</b></td>
+                              <td class="Success">Active</td>
+                          </tr>
+                      </tbody>
+                      
+                  </table>
+              <div class="botton-div d-flex justify-content-center">
+                  <button type="button" class="btn1">Edit</button>
+                  <button class="btn2">Delete</button>
+              </div>
+           
+          </div>
+        </div>
+   </div>
+
+      
+
+
+      
+  </div>
+       
+

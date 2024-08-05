@@ -1,0 +1,59 @@
+.bold-text
+{
+    size: 14px;
+    color: #1A1A1A;
+    font-weight: 700;
+    font-family: Outfit;
+    margin-left: 20px;
+}
+
+.btn
+{
+    background-color: #3E3A97;
+    color:#FFFFFF;
+    border-radius: 10px;
+    margin-right: 10px;
+}
+
+.card {
+    
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  .line{
+    margin-left: 20px;
+    border-left: 4px solid #3E3A97;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    background-color: white;
+    width:70%;
+    height:100%;
+  }
+ 
+  .card-title {
+    font-size: 14px;
+    padding-top: 14px;
+    padding-bottom: 10px;
+    font-weight: 500;
+  }
+
+  .btn1{
+    background-color: transparent;
+    border-color: #3E3A97;
+    color: #3E3A97;
+    border-radius: 10px;
+    margin-right: 10px;
+}
+
+.head-text{
+   font-size: 20px;
+    color: #1A1A1A;
+    font-weight: 700;
+}
+
+.btn2{
+    background-color: #F04438;
+    border-color: #F04438;
+    color: #FFFFFF;
+    border-radius: 10px;
+    margin-right: 10px;
+}

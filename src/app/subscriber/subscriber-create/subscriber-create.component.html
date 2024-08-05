@@ -1,7 +1,6 @@
 <div class="container">
     <div class="row">
     <div class="col-lg-9">
-        <div class="mt-2 mb-3">Subscriber Management</div>
         <div class="card-wrapper">
             <div class="card mb-5 form-card">
               <div class="profile-picture-container">
@@ -9,7 +8,7 @@
                   <form [formGroup]="subscriberForm">
                     <img [src]="profileImageUrl || defaultImageUrl" alt="Profile Picture" class="profile-img">
                     <div class="form-group">
-                      <input type="file" (change)="onFileSelected($event)" class="form-control" hidden #fileInput formControlName="profileImageUrl">
+                      <input type="file" (change)="onFileChange($event,'profileImage')" class="form-control" hidden #fileInput formControlName="profileImage">
                     </div>
                   </form>
                   <button class="upload-button" (click)="fileInput.click()">
@@ -24,13 +23,13 @@
                   <div class="col-lg-4">
                     <div class="form-group">
                       <label for="subscriberId" class="form-control-label">Subscriber ID</label>
-                      <input type="text" placeholder="Subscriber Id" class="form-control form-control-sm" formControlName="subscriberId"  [disabled]="this.subscriberId" />
-                      <div  class="invalid-feedback" *ngIf="subscriberForm.get('subscriberId').invalid && (subscriberForm.get('subscriberId').dirty || subscriberForm.get('subscriberId').touched)">
+                      <input type="text" placeholder="Subscriber Id" class="form-control form-control-sm" formControlName="subscriberId"   readonly />
+                      <!-- <div  class="invalid-feedback" *ngIf="subscriberForm.get('subscriberId').invalid && (subscriberForm.get('subscriberId').dirty || subscriberForm.get('subscriberId').touched)">
                         <div *ngIf="subscriberForm.get('subscriberId').errors.required">Subscriber Id is required.</div>
                         <div *ngIf="subscriberForm.get('subscriberId').errors.minlength">Subscriber Id must be at least 2 characters long.</div>
                         <div *ngIf="subscriberForm.get('subscriberId').errors.maxlength">Subscriber Id cannot be more than 25 characters long.</div>
                         <div *ngIf="subscriberForm.get('subscriberId').errors.pattern"> Subscriber ID must be in the format KNG-CXXXXX.</div>
-                      </div>
+                      </div> -->
                     </div>
                   </div>
                   <!-- First Name -->
@@ -190,13 +189,13 @@
                   </div>
                   <div class="col-lg-4">
                     <div class="form-group">
-                      <label for="panUrl" class="form-control-label">PAN Card</label>
-                      <input type="file" (change)="onFileChange($event, 'panUrl')" class="form-control form-control-sm" formControlName="panUrl" />
+                      <label for="pan" class="form-control-label">PAN Card</label>
+                      <input type="file" (change)="onFileChange($event, 'pan')" class="form-control form-control-sm" formControlName="pan" />
                     </div>
                   </div>
                     <div class="col-lg-4 mt-4">
-                        <button class="viewBtn" (click)="viewFile('panUrl')">View File</button>
-                        <button class="removeBtn" (click)="removeFile('panUrl')">Remove File</button>
+                        <button class="viewBtn" (click)="viewFile('pan')">View File</button>
+                        <button class="removeBtn" (click)="removeFile('pan')">Remove File</button>
                       </div>
                 </div>
                 <div class="row justify-content-around">
@@ -212,13 +211,13 @@
                       </div>
                      <div class="col-lg-4">
                       <div class="form-group">
-                        <label for="aadharUrl" class="form-control-label">Aadhar Card</label>
-                        <input type="file" (change)="onFileChange($event, 'aadharUrl')" class="form-control form-control-sm" formControlName="aadharUrl" />
+                        <label for="aadhar" class="form-control-label">Aadhar Card</label>
+                        <input type="file" (change)="onFileChange($event, 'aadhar')" class="form-control form-control-sm" formControlName="aadhar" />
                       </div>
                     </div>
                     <div class="col-lg-4 mt-4">
-                        <button class="viewBtn" (click)="viewFile('aadharUrl')">View File</button>
-                        <button class="removeBtn" (click)="removeFile('aadharUrl')">Remove File</button>
+                        <button class="viewBtn" (click)="viewFile('aadhar')">View File</button>
+                        <button class="removeBtn" (click)="removeFile('aadhar')">Remove File</button>
                       </div>
                </div>
                   <!-- Aadhar -->
@@ -239,13 +238,13 @@
                   </div>
                   <div class="col-lg-4">
                     <div class="form-group">
-                      <label for="passbookUrl" class="form-control-label">Passbook</label>
-                      <input type="file" (change)="onFileChange($event, 'passbookUrl')" class="form-control form-control-sm" formControlName="passbookUrl" />
+                      <label for="passbook" class="form-control-label">Passbook</label>
+                      <input type="file" (change)="onFileChange($event, 'passbook')" class="form-control form-control-sm" formControlName="passbook" />
                     </div>  
                 </div>
                 <div class="col-lg-4 mt-4">
-                    <button class="viewBtn" (click)="viewFile('passbookUrl')">View File</button>
-                    <button class="removeBtn" (click)="removeFile('passbookUrl')">Remove File</button>
+                    <button class="viewBtn" (click)="viewFile('passbook')">View File</button>
+                    <button class="removeBtn" (click)="removeFile('passbook')">Remove File</button>
                   </div>
             </div>
               <div class="row">
@@ -253,7 +252,7 @@
                     <div class="form-group">
                       <label for="referralClient" class="form-control-label">Referral Client</label>
                       <div class="input-group">
-                        <input type="text" [value]="referralClientName" readonly placeholder="Referral Client" class="form-control form-control-sm" formControlName="referralClient" />
+                        <input type="text" [value]="referralClient" readonly placeholder="Referral Client" class="form-control form-control-sm" formControlName="referralClient" />
                         <div class="input-group-append">
                           <button class="addBtn px-2 py-1" (click)="showSubscriberList()">Add</button>  
                         </div>
@@ -280,7 +279,15 @@
                   <div class="col-lg-4">
                     <div class="form-group">
                       <label for="nomineeRelation" class="form-control-label">Nominee Relation</label>
-                      <input type="text" placeholder="Nominee Relation" class="form-control form-control-sm" formControlName="nomineeRelation" />
+                      <select class="form-control form-control-sm" formControlName="nomineeRelation">
+                        <option value="">Select Relation</option>
+                        <option value="Father">Father</option>
+                        <option value="Mother">Mother </option>
+                        <option value="Brother">Brother </option>
+                        <option value="Sister">Sister </option>
+                        <option value="Female">Spouse</option>
+                        <option value="Other">Other</option>
+                      </select>
                     </div>
                   </div>
                   <!-- Nominee Address -->
@@ -382,7 +389,7 @@
                             <div class="card-body align-self-center">
                                 <div class="row">
                                     <div class="col-lg-2 col-md-2">
-                                        <img class="profile-list-img" src="subscriber.subscriberProfile"> 
+                                        <img class="profile-list-img" src="{{subscriber.subscriberProfile}}"> 
                                     </div>
                                     <div class="col-lg-5 col-md-5 text">
                                         <strong>{{ subscriber.subscriberId }}</strong>
@@ -402,7 +409,7 @@
                         <div *ngIf="subscriberDetail">
                             <h5 class="title  text-center">Subscriber Details</h5>
                             <div class="text-center">
-                                <img src="assets/subscriber/men.svg" class="img-fluid" alt="Subscriber Image">
+                                <img src="{{subscriberDetail.Subscriber.profileImageUrl}}" class="img-fluid" alt="Subscriber Image">
                             </div>
                             <table class="table px-3">
                                 <tbody>

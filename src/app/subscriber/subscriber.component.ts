@@ -31,7 +31,7 @@ totalCount:number;
       this.totalCount=this.subscriberData.AllSubscriber.length
       this.data=this.subscriberData.AllSubscriber.map((subscriberDetails,index)=>({
         id:subscriberDetails?._id,
-        subscriberName: `${subscriberDetails?.firstName} ${subscriberDetails?.aliasName}`,
+        displayName: `${subscriberDetails?.firstName} ${subscriberDetails?.aliasName}`,
         aadharNumber: subscriberDetails?.aadharNumber,
         aadharUrl: subscriberDetails?.aadharUrl,
         accountNumber: subscriberDetails?.accountNumber,
@@ -58,7 +58,7 @@ totalCount:number;
         panUrl: subscriberDetails?.panUrl,
         passbookNumber: subscriberDetails?.passbookNumber,
         passbookUrl: subscriberDetails?.passbookUrl,
-        place: subscriberDetails?.place,
+        location: subscriberDetails?.place,
         profileImageUrl: subscriberDetails?.profileImageUrl,
         referralClient: subscriberDetails?.referralClient,
         routeId: subscriberDetails?.routeId,
@@ -71,21 +71,30 @@ totalCount:number;
 
 
   }
+  profileImageWithIdRenderer(params: any): string {
+    const imageUrl = params.data.profileImageUrl;
+    const subscriberId = params.data.subscriberId;
+    return `
+      <div style="display: flex; align-items: center;">
+        <img src="${imageUrl}" alt="Profile Image" width="35" height="35" style="border-radius: 50%; margin-right: 10px;">
+        <span style="color: #50A1A5;">${subscriberId}</span>
+      </div>
+    `;
+  }
 
   column: ITableColumn[] = [
-    { label: 'Subscriber ID', field: 'subscriberId', sortable: false, 
-      cellStyle: function (params: any) {
-        return { color: '#50A1A5' };
-      },   
-      onCellClicked: (event: CellClickedEvent) =>
-      this.getSubscriberById(event.data.id)
-     },
+    {
+      label: 'profileImageUrl',
+      field: 'Subscriber ID',
+      cellRenderer: this.profileImageWithIdRenderer,
+      onCellClicked: (event: CellClickedEvent) => this.getSubscriberById(event.data.id)
+    },
 
-    { label: 'Display Name', field:'subscriberName', sortable: true,
+    { label: 'Display Name', field:'displayName', sortable: true,
       onCellClicked: (event: CellClickedEvent) =>
         this.getSubscriberById(event.data.id)
      },
-    { label: 'Location', field: 'place', sortable: true ,
+    { label: 'Location', field: 'location', sortable: true ,
       onCellClicked: (event: CellClickedEvent) =>
         this.getSubscriberById(event.data.id)
     },
@@ -110,4 +119,5 @@ totalCount:number;
   navigate(id: any){
     this.router.navigate([`subscriber/view/${id}`]);
   }
+
 }

@@ -1,20 +1,19 @@
-import { NgModule } from '@angular/core';
+import { NgModule , CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AgGridAngular } from 'ag-grid-angular';
 import { AgGridComponent } from './table/ag-grid/ag-grid.component';
 
-
 @NgModule({
   declarations: [
-AgGridComponent
+AgGridComponent,
   ],
   imports: [
     CommonModule, 
     AgGridAngular
   ],
   exports: [
-    AgGridComponent
-
-  ]
+    AgGridComponent,
+  ],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class SharedModule { }

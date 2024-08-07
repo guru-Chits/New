@@ -1,6 +1,9 @@
 <div class="container">
     <div class="row">
-    <div class="col-lg-9">
+      <app-breadcrumb [data]="breadcrumsData"></app-breadcrumb>
+
+    <div  [ngClass]="{'col-md-9 col-lg-9': isSubscriberListVisible, 'col-md-12 col-lg-12': !isSubscriberListVisible}">
+
         <div class="card-wrapper">
             <div class="card mb-5 form-card">
               <div class="profile-picture-container">
@@ -16,14 +19,14 @@
                   </button>
                 </div>
               </div>
-              <h6 class="text-center">Subscriber Details</h6>
-              <form class="ps-5 pe-5" [formGroup]="subscriberForm">
+              <h6 class="text-center pb-3">{{heading}}</h6>
+              <form class="ps-5 pe-5" [formGroup]="subscriberForm"  [formGroup]="subscriberForm" (ngSubmit)="onSubmit()">
                 <!-- Subscriber ID -->
                 <div class="row justify-content-around">
                   <div class="col-lg-4">
                     <div class="form-group">
                       <label for="subscriberId" class="form-control-label">Subscriber ID</label>
-                      <input type="text" placeholder="Subscriber Id" class="form-control form-control-sm" formControlName="subscriberId"   readonly />
+                      <input type="text" placeholder="Subscriber Id" class="form-control form-control-sm" formControlName="subscriberId"/>
                       <!-- <div  class="invalid-feedback" *ngIf="subscriberForm.get('subscriberId').invalid && (subscriberForm.get('subscriberId').dirty || subscriberForm.get('subscriberId').touched)">
                         <div *ngIf="subscriberForm.get('subscriberId').errors.required">Subscriber Id is required.</div>
                         <div *ngIf="subscriberForm.get('subscriberId').errors.minlength">Subscriber Id must be at least 2 characters long.</div>
@@ -365,7 +368,7 @@
                 <div class="row justify-content-center">
                     <div class="col-lg-12 d-flex justify-content-end mb-2">
                         <button class="btn nxt-btn btn-outline-secondary" routerLink="/subscriber">Cancel</button>
-                        <button class="btn save-btn" [disabled]="!subscriberForm.valid" (click)="onSubmit()">Submit</button>
+                        <button class="btn save-btn"  type="submit" [disabled]="!subscriberForm.valid">Submit</button>
                     </div>
                 </div>
 

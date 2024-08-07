@@ -15,6 +15,10 @@ export class StaffComponent implements OnInit{
   selectedId:any
  staffDetail:any
   totalCount:number;
+  searchImg:string='assets/table/search.svg'
+  filterImg:string='assets/table/filter.svg'
+  search:boolean=true
+
     constructor(
       private service:StaffService,
       private router:Router
@@ -39,7 +43,8 @@ export class StaffComponent implements OnInit{
   }
 
   column: ITableColumn[] = [
-    { label: 'Employee ID', field: 'employeeId', sortable: false, 
+    { label: 'Employee ID', field: 'employeeId', sortable: false,  filter:false,
+
       cellStyle: function (params: any) {
         return { color: '#50A1A5' };
       },   
@@ -48,15 +53,16 @@ export class StaffComponent implements OnInit{
           
      },
 
-    { label: 'First Name', field:'firstName', sortable: true,
+    { label: 'First Name', field:'firstName', sortable: true,  filter:false,
       onCellClicked: (event: CellClickedEvent) =>
         this.getStaffById(event.data.id)
      },
-    { label: 'Last Name', field: 'lastName', sortable: true ,
+    { label: 'Last Name', field: 'lastName', sortable: true ,  filter:true,
       onCellClicked: (event: CellClickedEvent) =>
         this.getStaffById(event.data.id)
     },
     { label: 'Role', field: 'role', sortable: true ,
+      filter:true,
       onCellClicked: (event: CellClickedEvent) =>
         this.getStaffById(event.data.id)
     },

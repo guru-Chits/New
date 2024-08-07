@@ -8,7 +8,10 @@ import { ColDef } from 'ag-grid-community';
   styleUrl: './area.component.css'
 })
 export class AreaComponent {
-
+  searchImg:string='assets/table/search.svg'
+  filterImg:string='assets/table/filter.svg'
+  search:boolean=true
+  
   columns: ColDef[] = [
     { field: 'sno', headerName: 'S No.', sortable: true },
     { field: 'regionId', headerName: 'Region ID', sortable: true },

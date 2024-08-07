@@ -10,11 +10,22 @@ import { Router } from '@angular/router';
   styleUrl: './subscriber.component.css'
 })
 export class SubscriberComponent {
+  
+  breadcrumsData: any = [
+    {
+      key: 'Subscriber Management',
+      routerLink: 'subscriber',
+    },
+  ];
+
 subscriberData:any
 data: any[] = [];
 selectedId:any
 subscriberDetail:any
 totalCount:number;
+searchImg:string='assets/table/search.svg'
+filterImg:string='assets/table/filter.svg'
+search:boolean=true
   constructor(
     private service:SubscriberService,
     private router:Router
@@ -32,40 +43,41 @@ totalCount:number;
       this.data=this.subscriberData.AllSubscriber.map((subscriberDetails,index)=>({
         id:subscriberDetails?._id,
         displayName: `${subscriberDetails?.firstName} ${subscriberDetails?.aliasName}`,
-        aadharNumber: subscriberDetails?.aadharNumber,
-        aadharUrl: subscriberDetails?.aadharUrl,
-        accountNumber: subscriberDetails?.accountNumber,
-        aliasName: subscriberDetails?.aliasName,
-        area: subscriberDetails?.area,
-        bankName: subscriberDetails?.bankName,
-        chitpassbookNumber: subscriberDetails?.chitpassbookNumber,
-        contact: subscriberDetails?.contact,
-        createdAt: subscriberDetails?.createdAt,
-        dob: subscriberDetails?.dob,
-        firstName: subscriberDetails?.firstName,
-        gender: subscriberDetails?.gender,
-        ifsc: subscriberDetails?.ifsc,
-        lastName: subscriberDetails?.lastName,
-        nomineeAadhar: subscriberDetails?.nomineeAadhar,
-        nomineeAddress: subscriberDetails?.nomineeAddress,
-        nomineeDOB: subscriberDetails?.nomineeDOB,
-        nomineeGender: subscriberDetails?.nomineeGender,
-        nomineeName: subscriberDetails?.nomineeName,
-        nomineeOccupation: subscriberDetails?.nomineeOccupation,
-        nomineeRelationship: subscriberDetails?.nomineeRelationship,
         occupation: subscriberDetails?.occupation,
-        panCardNumber: subscriberDetails?.panCardNumber,
-        panUrl: subscriberDetails?.panUrl,
-        passbookNumber: subscriberDetails?.passbookNumber,
-        passbookUrl: subscriberDetails?.passbookUrl,
+        subscriberId: subscriberDetails?.subscriberId,
         location: subscriberDetails?.place,
         profileImageUrl: subscriberDetails?.profileImageUrl,
-        referralClient: subscriberDetails?.referralClient,
         routeId: subscriberDetails?.routeId,
-        subscriberId: subscriberDetails?.subscriberId,
-        ticketId: subscriberDetails?.ticketId,
-        updatedAt: subscriberDetails?.updatedAt,
-        upi_id: subscriberDetails?.upi_id
+
+        // aadharNumber: subscriberDetails?.aadharNumber,
+        // aadharUrl: subscriberDetails?.aadharUrl,
+        // accountNumber: subscriberDetails?.accountNumber,
+        // aliasName: subscriberDetails?.aliasName,
+        // area: subscriberDetails?.area,
+        // bankName: subscriberDetails?.bankName,
+        // chitpassbookNumber: subscriberDetails?.chitpassbookNumber,
+        // contact: subscriberDetails?.contact,
+        // createdAt: subscriberDetails?.createdAt,
+        // dob: subscriberDetails?.dob,
+        // firstName: subscriberDetails?.firstName,
+        // gender: subscriberDetails?.gender,
+        // ifsc: subscriberDetails?.ifsc,
+        // lastName: subscriberDetails?.lastName,
+        // nomineeAadhar: subscriberDetails?.nomineeAadhar,
+        // nomineeAddress: subscriberDetails?.nomineeAddress,
+        // nomineeDOB: subscriberDetails?.nomineeDOB,
+        // nomineeGender: subscriberDetails?.nomineeGender,
+        // nomineeName: subscriberDetails?.nomineeName,
+        // nomineeOccupation: subscriberDetails?.nomineeOccupation,
+        // nomineeRelationship: subscriberDetails?.nomineeRelationship,
+        // panCardNumber: subscriberDetails?.panCardNumber,
+        // panUrl: subscriberDetails?.panUrl,
+        // passbookNumber: subscriberDetails?.passbookNumber,
+        // passbookUrl: subscriberDetails?.passbookUrl,
+        // referralClient: subscriberDetails?.referralClient,
+        // ticketId: subscriberDetails?.ticketId,
+        // updatedAt: subscriberDetails?.updatedAt,
+        // upi_id: subscriberDetails?.upi_id
       }))
     })
 
@@ -82,23 +94,27 @@ totalCount:number;
     `;
   }
 
+  
   column: ITableColumn[] = [
     {
       label: 'profileImageUrl',
       field: 'Subscriber ID',
+      filter:false,
       cellRenderer: this.profileImageWithIdRenderer,
       onCellClicked: (event: CellClickedEvent) => this.getSubscriberById(event.data.id)
     },
 
     { label: 'Display Name', field:'displayName', sortable: true,
+      filter:false,
       onCellClicked: (event: CellClickedEvent) =>
         this.getSubscriberById(event.data.id)
      },
-    { label: 'Location', field: 'location', sortable: true ,
+    { label: 'Route Id', field: 'routeId', sortable: true , filter:true,
+
       onCellClicked: (event: CellClickedEvent) =>
         this.getSubscriberById(event.data.id)
     },
-    { label: 'Occupation', field: 'occupation', sortable: true ,
+    { label: 'Occupation', field: 'occupation', sortable: true ,  filter:true,
       onCellClicked: (event: CellClickedEvent) =>
         this.getSubscriberById(event.data.id)
     },

@@ -16,6 +16,17 @@ export class StaffViewComponent implements OnInit {
  data: any[] = [];
  displayedStaffs:any
  staffId:string
+ breadcrumsData: any = [
+  {
+    key: 'Staff Management',
+    routerLink: '',
+  },
+  
+  {
+    key: 'View Staff',
+    routerLink: 'view/:id',
+  },
+];
 constructor(private service:StaffService,private activatedRoute:ActivatedRoute,private router:Router){}
 
   ngOnInit(): void {
@@ -23,7 +34,7 @@ constructor(private service:StaffService,private activatedRoute:ActivatedRoute,p
       if (Object.keys(paramData).length) {
       this.service.getstaffById(paramData.id).subscribe((data) => {
         this.staffDetail = data;
-        this.staffId=this.staffDetail.Subscriber._id
+        this.staffId=this.staffDetail.Staff._id
         console.log(this.staffDetail)
         console.log(this.staffId);
         

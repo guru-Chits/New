@@ -38,11 +38,12 @@
 
       </div>
       <div class="filter-options ml-5" *ngIf="isFilterShown(field)">
-        <div *ngFor="let value of filterList[field]?.values">
-          <input type="checkbox" id="check"  [value]="value" class="mr-1"(change)="handleCheckboxChange(field, value, $event)" [checked]="filterList[field]?.selectedValues.includes(value)"/>
+        <div class="filter-item" *ngFor="let value of filterList[field]?.values">
           <label>{{ value }}</label>
+          <input type="checkbox" id="check" [value]="value" class="mr-1" (change)="handleCheckboxChange(field, value, $event)" [checked]="filterList[field]?.selectedValues.includes(value)"/>
         </div>
       </div>
+      
     </div>
   </div>
   

@@ -3,7 +3,7 @@
     <li *ngFor="let item of data; let i = index" class="d-inline-flex align-items-center">
       <div *ngIf="!item?.disable" class="d-inline-flex align-items-center">
         <a *ngIf="!item?.onclick"
-           [routerLink]="item?.routerLink"
+           [routerLink]="item.routerLink"
            [queryParams]="item?.queryParams"
            (click)="updateIfStepChanges(item)"
            class="cursor-pointer text-sm link-hover">

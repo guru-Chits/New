@@ -63,6 +63,8 @@ export class AgGridComponent implements OnChanges, OnInit {
     columns.forEach(col => {
       if (col.filter) {
         const field = col.field;
+        console.log(field);
+        
         const uniqueValues = Array.from(new Set(rowData.map(row => row[field])));
         this.filterList[field] = { values: uniqueValues, selectedValues: [], showOptions: false };
       }

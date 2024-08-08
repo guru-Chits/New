@@ -9,6 +9,16 @@ import { ColDef } from 'ag-grid-community/dist/types/core/entities/colDef';
 })
 export class AreaCreateComponent implements OnInit{
   regionForm : FormGroup
+  breadcrumsData:any = [
+    {
+      key: 'Route Manager',
+      routerLink: '/area',
+    },
+    {
+      key: 'Create New Region',
+      routerLink: 'area/areacreate',
+    },
+  ];
   ngOnInit(): void{
     this.regionForm = new FormGroup({
       regionId: new FormControl(null),

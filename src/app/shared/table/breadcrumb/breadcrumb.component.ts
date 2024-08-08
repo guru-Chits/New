@@ -18,6 +18,13 @@ export class BreadcrumbComponent {
 
   updateIfStepChanges(data: any) {
     this.handleSameRoute.emit(data);
+    console.log(data.routerLink);
+    console.log(data);
+    
+    this.router.navigate([data.routerLink])
+  
+
+      
   }
 
   onClick(): void {

@@ -10,6 +10,17 @@ import { ActivatedRoute, Router } from '@angular/router';
 export class SubscriberViewComponent implements OnInit{
   profileImageUrl: string | ArrayBuffer | null = null;
   defaultImageUrl = 'assets/subscriber/user.svg'; // Path to default profile image
+  breadcrumsData: any = [
+    {
+      key: 'Subscriber Management',
+      routerLink: '',
+    },
+    
+    {
+      key: 'View Subscriber',
+      routerLink: 'view/:id',
+    },
+  ];
 
   isShowDiv = false;  
  subscriberDetail:any

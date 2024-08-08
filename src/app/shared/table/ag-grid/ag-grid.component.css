@@ -91,3 +91,155 @@
   min-height: 3px;
 }
 
+.filter-popup {
+  position: absolute;
+  top: 50px; /* Adjust based on your layout */
+  right: 20px; /* Adjust based on your layout */
+  background-color: white;
+  border: 1px solid #ccc;
+  padding: 20px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+}
+
+.filter-panel h3 {
+  margin-top: 0;
+}
+
+.filter-panel div {
+  margin-bottom: 10px;
+}
+
+.filter-panel button {
+  margin-right: 10px;
+}
+
+.popup.model {
+  position: absolute;
+  width: 300px;
+  height:250px;
+  overflow-y: scroll;
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+}
+
+.popup .sticky-top.top-panal {
+  padding: 10px;
+  border-bottom: 1px solid #eee;
+}
+
+.popup-content {
+  padding: 10px 20px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.toggle-container {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+::-webkit-scrollbar {
+  width: 5px;
+}
+::-webkit-scrollbar-thumb {
+  background-color: #d7d7d7;
+}
+
+.toggle-container {
+  display: flex;
+  justify-content: space-between; /* Distributes space between the children */
+  align-items: center; /* Aligns items vertically center */
+}
+
+.filter-item {
+  display: flex;
+  justify-content: space-between; /* Distributes space between the label and checkbox */
+  align-items: center; /* Aligns items vertically center */
+}
+
+.filter-item label {
+  margin: 0; /* Removes any default margin from the label */
+}
+
+.filter-item input {
+  margin-left: auto; /* Pushes the checkbox to the right */
+}
+
+
+.toggle-container .toggle-btn {
+  margin-left: auto; /* Pushes the image to the right */
+}
+
+.toggle-container h6 {
+  margin: 0; /* Removes any default margin of the h6 element */
+}
+
+
+.filter-options {
+  padding: 10px 0;
+}
+
+.filter-options label {
+  margin-left: 5px;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.filter-options input[id="check"] {
+  margin-right: 5px;
+  accent-color: #3E3A97; /* Custom checkbox color */
+}
+
+/* input[id="check"] + label {
+  width: 14px;
+  height: 14px;
+  border: 2px solid #3E3A97;
+  border-radius: 2px;
+  cursor: pointer;
+} */
+.popup-actions {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 20px;
+}
+
+.popup-actions button {
+  background-color: #3E3A97;
+  color: #ffffff;
+  border: none;
+  border-radius: 5px;
+  padding: 5px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.popup-actions button.clear-filters {
+  background-color: #ffffff;
+  color: #3E3A97;
+  border: 1px solid #3E3A97;
+}
+
+/* No data found message */
+.no-data {
+  text-align: center;
+  padding: 20px 0;
+  color: #999;
+}
+
+/* Rotated class for toggle button */
+.rotated {
+  transform: rotate(270deg);
+}
+
+/* Background overlay when popup is open */
+.dull-background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+}

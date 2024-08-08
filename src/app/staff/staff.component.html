@@ -13,55 +13,55 @@
             </div>
         </div>
       </div>
-      <app-ag-grid [columns]="column" [rowData]="data"   width="100%" height="280px"></app-ag-grid>
+      <app-ag-grid [columns]="column" [rowData]="data"  [searchImg]="searchImg" [filterImg]="filterImg" [search]="search"   width="100%" height="280px"></app-ag-grid>
     </div>
     <div class="col-md-3 col-lg-3">
       <div *ngIf="staffDetail">
     <div class="card details">
     <div class="title align-self-center py-2">Staff Details</div>
-    <!-- <img src="{{staffDetail.Staff.profileImageUrl}}" class="rounded-circle  align-self-center mb-2" width="75" height="75" alt="Staff Image"> -->
+    <img src="{{staffDetail.Staff.profileImageUrl}}" class="rounded-circle  align-self-center mb-2" width="75" height="75" alt="Staff Image">
     <table class="table flex-column">
         <tbody>
           <tr>
             <td><strong>Employee ID </strong></td>
-            <td><a href="#">{{staffDetail.Subscriber.employeeId}}</a></td>
+            <td><a href="#">{{staffDetail.Staff.employeeId}}</a></td>
           </tr>
           <tr>
             <td><strong>First Name </strong></td>
-            <td>{{staffDetail.Subscriber.firstName}}</td>
+            <td>{{staffDetail.Staff.firstName}}</td>
           </tr>
           <tr>
             <td><strong>Last Name </strong></td>
-            <td>{{staffDetail.Subscriber.lastName}}</td>
+            <td>{{staffDetail.Staff.lastName}}</td>
           </tr>
           <tr>
             <td><strong>Contact No</strong></td>
-            <td>{{staffDetail.Subscriber.contact}}</td>
+            <td>{{staffDetail.Staff.contact}}</td>
           </tr>
           <tr>
             <td><strong>Role</strong></td>
-            <td>{{staffDetail.Subscriber.role}}</td>
+            <td>{{staffDetail.Staff.role}}</td>
           </tr>
           <tr>
             <td><strong>BGV Status</strong></td>
-            <td>{{staffDetail.Subscriber.bgVerification}}</td>
+            <td>{{staffDetail.Staff.bgVerification}}</td>
           </tr>
           <tr>
             <td><strong>Working Status</strong></td>
-            <td>{{staffDetail.Subscriber.workingStatus}}</td>
+            <td>{{staffDetail.Staff.workingStatus}}</td>
           </tr>
           <tr>
             <td><strong>Enrollments </strong></td>
-            <td>{{staffDetail.Subscriber.lastName}}</td>
+            <td>{{staffDetail.Staff.lastName}}</td>
           </tr>
           <tr>
             <td><strong>Route ID</strong></td>
-            <td>{{staffDetail.Subscriber.lastName}}</td>
+            <td>{{staffDetail.Staff.lastName}}</td>
           </tr>
         </tbody>
       </table>
       <div class="text-center mb-3">
-        <button  (click)="navigate(staffDetail.Subscriber._id)"  class="btn  view">View More Details</button>
+        <button  (click)="navigate(staffDetail.Staff._id)"  class="btn  view">View More Details</button>
     </div>
   </div>
 </div>

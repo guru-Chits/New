@@ -2,7 +2,7 @@ export interface ITableColumn {
     label?: string;
     field: string;
     sortable?: boolean;
-    filter?: string;
+    filter?: boolean;
     cellRenderer?: any;
     onCellClicked?:any;
     cellStyle?:any;

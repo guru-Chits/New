@@ -10,6 +10,8 @@ import { ActivatedRoute, Router } from '@angular/router';
   styleUrl: './subscriber-create.component.css'
 })
 export class SubscriberCreateComponent implements OnInit{
+
+
 subscriberForm: FormGroup;
 subscriberData:any={}
 subscriberId:string
@@ -18,7 +20,17 @@ profileImageUrl: string | ArrayBuffer | null = null;
 defaultImageUrl = 'assets/subscriber/user.svg'; // Path to default profile image
 private subscriberIdPrefix: string = 'KNG-C';
  subscriberIdCounter: string;
-
+heading:string="Subscriber Details"
+ breadcrumsData: any= [
+  {
+    key: 'Subscriber Management',
+    routerLink: '/subscriber',
+  },
+  { 
+    key: 'Create Subscriber',
+    routerLink: '/subscriber/create',
+  },
+];
   constructor( private fb: FormBuilder,
     private activatedRoute:ActivatedRoute,
     private service: SubscriberService,
@@ -39,71 +51,129 @@ data: any[] = [];
 filteredSubscribers:any;
 displayedSubscribers: any[];
 selectedSubscriber: any;
-referralClient :string
+referralClient :string;
 
 
 ngOnInit(): void {
-
-
+  
   this.subscriberForm = this.fb.group({
-    subscriberId: [{ value: '', disabled: true },],
+    subscriberId: [{ value: '', disabled: true }],
     firstName: ['', [Validators.required, Validators.pattern(/^[A-Z][a-zA-Z]+$/)]],
     lastName: ['', [Validators.required, Validators.pattern(/^[A-Z][a-zA-Z]+$/)]],
-    aliasName: ['', [Validators.pattern(/^[A-Z][a-zA-Z\/\-() ]+$/)]],
+    aliasName: ['', [
+      this.conditionalValidator(() => !!this.subscriberForm?.get('aliasName')?.value, Validators.pattern(/^[A-Z][a-zA-Z\/\-() ]+$/))
+    ]],
     contact: ['', [Validators.required, Validators.pattern(/^\d{10}$/)]],
     place: ['', [Validators.required, Validators.minLength(10), Validators.maxLength(100), Validators.pattern(/^[a-zA-Z0-9\s,.'-]+$/)]],
     gender: ['', Validators.required],
-    dob: ['', [this.ageValidator(18)]],
-    occupation: ['', [Validators.minLength(2), Validators.maxLength(50), Validators.pattern(/^[a-zA-Z\s-]+$/)]],
-    routeId: ['',[Validators.required]],
-    accountNumber: ['', [Validators.pattern(/^\d{8,12}$/)]],
-    ifsc: ['', [Validators.pattern(/^[A-Za-z]{4}\d{7}$/)]],
+    dob: ['', [
+      this.conditionalValidator(() => !!this.subscriberForm?.get('dob')?.value,this.ageValidator(18)),
+    ]],
+    occupation: ['', [
+      this.conditionalValidator(() => !!this.subscriberForm?.get('occupation')?.value, Validators.pattern(/^[a-zA-Z\s-]+$/)),
+      Validators.minLength(2),
+      Validators.maxLength(50)
+    ]],
+    routeId: ['', Validators.required],
+    accountNumber: ['', [
+      this.conditionalValidator(() => !!this.subscriberForm?.get('accountNumber')?.value, Validators.pattern(/^\d{8,12}$/))
+    ]],
+    ifsc: ['', [
+      this.conditionalValidator(() => !!this.subscriberForm?.get('ifsc')?.value, Validators.pattern(/^[A-Za-z]{4}\d{7}$/))
+    ]],
     upi_id: [''],
-    panCardNumber: ['', [Validators.pattern(/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/)]],
-    aadharNumber: ['', [ Validators.pattern(/^\d{4}\s\d{4}\s\d{4}$/)]],
-    bankName: ['', [ Validators.pattern(/^[a-zA-Z\s]+$/)]],
+    panCardNumber: ['', [
+      this.conditionalValidator(() => !!this.subscriberForm?.get('panCardNumber')?.value, Validators.pattern(/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/))
+    ]],
+    aadharNumber: ['', [
+      this.conditionalValidator(() => !!this.subscriberForm?.get('aadharNumber')?.value, Validators.pattern(/^\d{4}\s\d{4}\s\d{4}$/))
+    ]],
+    bankName: ['', [
+      this.conditionalValidator(() => !!this.subscriberForm?.get('bankName')?.value, Validators.pattern(/^[a-zA-Z\s]+$/))
+    ]],
     referralClient: [''],
-    nomineeName: ['', [ Validators.pattern(/^[A-Z][a-zA-Z]+$/)]],
+    nomineeName: ['', [
+      this.conditionalValidator(() => !!this.subscriberForm?.get('nomineeName')?.value, Validators.pattern(/^[A-Z][a-zA-Z]+$/))
+    ]],
     nomineeRelation: [''],
-    nomineeAddress: ['', [ Validators.minLength(10), Validators.maxLength(100), Validators.pattern(/^[a-zA-Z0-9\s,.'-]+$/)]],
-    nomineeOccupation: ['', [ Validators.minLength(2), Validators.maxLength(50), Validators.pattern(/^[a-zA-Z\s-]+$/)]],
-    nomineeGender: ['',],
-    nomineeAadhar: ['', [ Validators.pattern(/^\d{4}\s\d{4}\s\d{4}$/)]],
-    nomineeDOB: ['', [  this.ageValidator(18)]],
+    nomineeAddress: ['', [
+      this.conditionalValidator(() => !!this.subscriberForm?.get('nomineeAddress')?.value, Validators.minLength(10)),
+      Validators.maxLength(100),
+      Validators.pattern(/^[a-zA-Z0-9\s,.'-]+$/)
+    ]],
+    nomineeOccupation: ['', [
+      this.conditionalValidator(() => !!this.subscriberForm?.get('nomineeOccupation')?.value, Validators.minLength(2)),
+      Validators.maxLength(50),
+      Validators.pattern(/^[a-zA-Z\s-]+$/)
+    ]],
+    nomineeGender: ['', [
+      this.conditionalValidator(() => !!this.subscriberForm?.get('nomineeGender')?.value, Validators.pattern(/^(Male|Female)$/))
+    ]],
+    nomineeAadhar: ['', [
+      this.conditionalValidator(() => !!this.subscriberForm?.get('nomineeAadhar')?.value, Validators.pattern(/^\d{4}\s\d{4}\s\d{4}$/))
+    ]],
+    nomineeDOB: ['', [
+      this.conditionalValidator(() => !!this.subscriberForm?.get('nomineeDOB')?.value, this.ageValidator(18))
+    ]],
     profileImage: [''],
-    aadhar:[''],
-    passbook:[''],
-    pan: [''],
+    aadhar: [''],
+    passbook: [''],
+    pan: ['']
   });
-
+  
 
   // Load data, initialize form, etc.
   this.activatedRoute.params.subscribe(paramData => {
     console.log("ObjectKeys =>",Object.keys(paramData))
     console.log("ParamData =>", paramData)
     if (Object.keys(paramData).length) {
+      this.breadcrumsData  = [
+        {
+          key: 'Subscriber Management',
+          routerLink: 'subscriber',
+        },
+        {
+          key: 'Edit Subscriber',
+          routerLink: 'edit/this.subscriberId',
+        },
+       
+      
+      ];
+      this.heading="Edit Subscriber Details"
+
     this.service.getsubscriberById(paramData.id).subscribe((data) => {
       this.subscriberData = data;
       this.subscriberId=this.subscriberData.Subscriber._id
       this.profileImageUrl=this.subscriberData.Subscriber.profileImageUrl
       console.log(this.profileImageUrl);
-      
-
       this.subscriber=false
       console.log('Project Data = >',this.subscriberData)
-      const updatedSubscriber = { ...this.subscriberData.Subscriber };
+      const utcDob = this.convertDateFormat(this.subscriberData.Subscriber.dob);
+      const utcnDob = this.convertDateFormat(this.subscriberData.Subscriber.nomineeDOB);
+    
+      if(utcDob||utcnDob ||utcDob&&utcnDob)
+      {
+        const updatedSubscriber = { ...this.subscriberData.Subscriber,dob:utcDob,nomineeDOB:utcnDob};
+        this.subscriberForm.patchValue(updatedSubscriber);
 
-      this.subscriberForm.patchValue(updatedSubscriber);
+      }else{
+        const updatedSubscriber = { ...this.subscriberData.Subscriber};
+        this.subscriberForm.patchValue(updatedSubscriber);
+
+      }
+
       console.log("form", this.subscriberForm);
     })
   }
   })
-
   this.service.getsubscriberAll().subscribe((data)=>{
     this.subscriberData=data;
-    this.subscriberIdCounter=this.subscriberData.AllSubscriber.length+10000
-    console.log(this.subscriberIdCounter);
-    this.setSubscriberId(this.subscriberIdCounter);
+    if(!this.subscriberId){
+      this.subscriberIdCounter=this.subscriberData.AllSubscriber.length+10001
+      console.log(this.subscriberIdCounter);
+      this.setSubscriberId(this.subscriberIdCounter);
+    }
+
     this.subscriberForm.get('firstName')?.valueChanges.subscribe(value => {
       this.autoCorrectNames();
     
@@ -119,8 +189,32 @@ ngOnInit(): void {
     }))
     this.displayedSubscribers = this.data;
   })
+}
+convertDateFormat(dateStr: string): string {
+  if (!dateStr) {
+    return '';
+  }
+  const dateParts = dateStr.split("-");
+  if (dateParts.length !== 3) {
+    return '';
+  }
+  const [day, month, year] = dateParts;
+  if (isNaN(Number(day)) || isNaN(Number(month)) || isNaN(Number(year))) {
+    return '';
+  }
+  const formattedDate = `${year}-${month}-${day}`;
+
+  return formattedDate;
+}
 
 
+ conditionalValidator(condition: () => boolean, validator: ValidatorFn): ValidatorFn {
+  return (control: AbstractControl): { [key: string]: any } | null => {
+    if (!condition()) {
+      return null;
+    }
+    return validator(control);
+  };
 }
  setSubscriberId(id:string): void {
   console.log(id);

@@ -116,7 +116,9 @@
 
 .popup.model {
   position: absolute;
-  width: 250px;
+  width: 300px;
+  height:250px;
+  overflow-y: scroll;
   background-color: #ffffff;
   border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -138,17 +140,42 @@
   align-items: center;
   cursor: pointer;
 }
-
-.toggle-container img {
-  width: 15px;
-  height: 15px;
+::-webkit-scrollbar {
+  width: 5px;
+}
+::-webkit-scrollbar-thumb {
+  background-color: #d7d7d7;
 }
 
-.toggle-container span {
-  margin-left: 5px;
-  font-weight: 600;
-  font-size: 14px;
+.toggle-container {
+  display: flex;
+  justify-content: space-between; /* Distributes space between the children */
+  align-items: center; /* Aligns items vertically center */
 }
+
+.filter-item {
+  display: flex;
+  justify-content: space-between; /* Distributes space between the label and checkbox */
+  align-items: center; /* Aligns items vertically center */
+}
+
+.filter-item label {
+  margin: 0; /* Removes any default margin from the label */
+}
+
+.filter-item input {
+  margin-left: auto; /* Pushes the checkbox to the right */
+}
+
+
+.toggle-container .toggle-btn {
+  margin-left: auto; /* Pushes the image to the right */
+}
+
+.toggle-container h6 {
+  margin: 0; /* Removes any default margin of the h6 element */
+}
+
 
 .filter-options {
   padding: 10px 0;
@@ -164,6 +191,7 @@
   margin-right: 5px;
   accent-color: #3E3A97; /* Custom checkbox color */
 }
+
 /* input[id="check"] + label {
   width: 14px;
   height: 14px;

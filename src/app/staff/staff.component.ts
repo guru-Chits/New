@@ -13,7 +13,7 @@ export class StaffComponent implements OnInit{
  staffData:any
   data: any[] = [];
   selectedId:any
- staffDetail:any
+  staffDetail:any
   totalCount:number;
   searchImg:string='assets/table/search.svg'
   filterImg:string='assets/table/filter.svg'
@@ -42,8 +42,21 @@ export class StaffComponent implements OnInit{
 
   }
 
+  profileImageWithIdRenderer(params: any): string {
+    const imageUrl = params.data.profileImageUrl;
+    const employeeId = params.data.employeeId;
+    return `
+      <div style="display: flex; align-items: center;">
+        <img src="${imageUrl}" alt="Profile Image" width="35" height="35" style="border-radius: 50%; margin-right: 10px;">
+        <span style="color: #50A1A5;">${employeeId}</span>
+      </div>
+    `;
+  }
+
+
   column: ITableColumn[] = [
-    { label: 'Employee ID', field: 'employeeId', sortable: false,  filter:false,
+    { label: 'profileImageUrl', field: 'Employee Id', sortable: false,  filter:false,
+      cellRenderer: this.profileImageWithIdRenderer,
 
       cellStyle: function (params: any) {
         return { color: '#50A1A5' };

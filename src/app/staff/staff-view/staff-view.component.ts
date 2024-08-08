@@ -70,4 +70,12 @@ constructor(private service:StaffService,private activatedRoute:ActivatedRoute,p
       reader.readAsDataURL(file);
     }
   }
+  viewFile(url: string): void {
+    if (url) {
+      window.open(url, '_blank');
+    } else {
+      console.error('URL is not provided');
+    }
+  }
+
 }

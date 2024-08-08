@@ -30,19 +30,16 @@
 
 
 <div class="popup model shadow-lg p-3 mb-5 mt-8 ml--4 bg-white rounded" *ngIf="showFilter" [style.top.px]="popupTop" [style.left.px]="popupLeft">
-  <div class="sticky-top top-panal">
-    <!-- Filter Options Title -->
-  </div>
   <div *ngIf="displayedFields.length > 0; else noData">
     <div *ngFor="let field of displayedFields" class="popup-content">
       <div class="toggle-container d-flex" (click)="toggleFilter(field)">
         <span><h6>{{ field }}</h6></span>
-        <img src="assets/table/down-arrow.png" alt="toggle" class="toggle-btn mt-1 mr-1" [class.rotated]="isFilterShown(field)">
+        <img src="assets/table/down-arrow.png" alt="toggle" class="toggle-btn mt-1 " [class.rotated]="isFilterShown(field)">
 
       </div>
       <div class="filter-options ml-5" *ngIf="isFilterShown(field)">
         <div *ngFor="let value of filterList[field]?.values">
-          <input type="checkbox" id="check"  [value]="value" class="mr-1"(change)="handleCheckboxChange(field, value, $event)" [checked]="filterList[field]?.selectedValues.includes(value)" (click)="$event.stopPropagation()"/>
+          <input type="checkbox" id="check"  [value]="value" class="mr-1"(change)="handleCheckboxChange(field, value, $event)" [checked]="filterList[field]?.selectedValues.includes(value)"/>
           <label>{{ value }}</label>
         </div>
       </div>
@@ -54,7 +51,7 @@
   </ng-template>
 
   <div class="popup-actions mt-3">
-    <button class="apply-filters" (click)=" applyFilterActive()">Apply Filters</button>
+    <button class="apply-filters" (click)=" applyFilters()">Apply Filters</button>
     <button class="clear-filters" (click)="clearFilters()">Clear Filters</button>
   </div>
 

@@ -1,7 +1,7 @@
 <div class="container">
     <div class="row">
       <div class="col-lg-9">
-        <div class="mt-2 mb-3">Staff Details</div>
+        <app-breadcrumb [data]="breadcrumsData"></app-breadcrumb>
         <div class="card-wrapper">
             <div class="card ps-5 pe-5 mb-2 details-card">
                 <div class="profile-picture-container">
@@ -99,15 +99,15 @@
                       <div class="row justify-content-around">
                         <div class="col-lg-4">
                           <h6>PAN Card</h6>
-                          <button class="viewBtn">View File</button>
+                          <button class="viewBtn" (click)="viewFile(staffDetail.Staff.panUrl)">View File</button>
                         </div>
                         <div class="col-lg-4">
                           <h6>Aadhaar Card</h6>
-                          <button class="viewBtn">View File</button>
+                          <button class="viewBtn" (click)="viewFile(staffDetail.Staff.aadharUrl)">View File</button>
                         </div>
                         <div class="col-lg-4">
                             <h6>Driving Lincense</h6>
-                            <button class="viewBtn">View File</button>
+                            <button class="viewBtn" (click)="viewFile(staffDetail.Staff.drivingLicense)">View File</button>
                           </div>
   
                       </div>

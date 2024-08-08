@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, Input, OnInit, OnChanges, SimpleChanges, HostListener } from '@angular/core';
 import { ColDef, GridApi, GridReadyEvent } from 'ag-grid-community';
 import { ITableColumn } from '../../interface/list-table';
 
@@ -42,12 +42,7 @@ export class AgGridComponent implements OnChanges, OnInit {
   bg:any
   ngOnInit(): void {
     this.getFilteredFields();    
-    if(this.searchImg=='assets/table/black search.svg'){
-      this.bg="#ECEBF5"
-    }
-    else{
-      this.bg='#ffffff'
-    }
+    this.bg = this.searchImg === 'assets/table/black search.svg' ? '#ECEBF5' : '#ffffff';
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -90,10 +85,6 @@ export class AgGridComponent implements OnChanges, OnInit {
     return this.filterList[field]?.showOptions;
   }
 
-  // getUniqueValues(data: any[], field: string) {
-  //   return Array.from(new Set(data.map(item => item[field]))); // Use Array.from to ensure it's an array
-  // }
-
   onFilterTextBoxChanged() {
     this.gridApi.setGridOption(
       "quickFilterText",
@@ -103,8 +94,10 @@ export class AgGridComponent implements OnChanges, OnInit {
 
   
   handleCheckboxChange(field: string, value: any, event: any): void {
+    console.log(event.target.checked);
+    
       this.isActiveFilter = event.target.checked;
-      this.applyFilterActive();
+      // this.applyFilterActive();
 
     const selectedValues = this.filterList[field].selectedValues || [];
     if (event.target.checked) {
@@ -116,37 +109,37 @@ export class AgGridComponent implements OnChanges, OnInit {
       }
     }
     // this.filterList[field].selectedValues = selectedValues;
-    this.applyFilters();
+    // this.applyFilters();
   }
 
  
-  applyFilterActive() {
-    let filteredData = [...this.data];
-    console.log("data", filteredData);
+  // applyFilterActive() {
+  //   let filteredData = [...this.data];
+  //   console.log("data", filteredData);
     
-    if (filteredData.some(item => 'status' in item)) {
-      this.showActiveToggle = true;
-      console.log("isActive", this.isActiveFilter);
+  //   if (filteredData.some(item => 'status' in item)) {
+  //     this.showActiveToggle = true;
+  //     console.log("isActive", this.isActiveFilter);
       
-      // Only apply the status filter if the status field exists in the data
-      if (this.isActiveFilter) {
-        filteredData = filteredData.filter(item => item.status === 'Active');
-        console.log("active data", filteredData);
-      } else if(this.isActiveFilter === false) {
-        filteredData = filteredData.filter(item => item.status === 'InActive');
-        console.log("in active data", filteredData);
-      }else {
-        filteredData = filteredData.filter(item => item.status !== 'Active' && item.status !== 'InActive');
-        console.log("neither active nor inactive data", filteredData);
-      }
-    }
-    this.rowData = filteredData;
-    console.log("table data", this.rowData);
+  //     // Only apply the status filter if the status field exists in the data
+  //     if (this.isActiveFilter) {
+  //       filteredData = filteredData.filter(item => item.status === 'Active');
+  //       console.log("active data", filteredData);
+  //     } else if(this.isActiveFilter === false) {
+  //       filteredData = filteredData.filter(item => item.status === 'InActive');
+  //       console.log("in active data", filteredData);
+  //     }else {
+  //       filteredData = filteredData.filter(item => item.status !== 'Active' && item.status !== 'InActive');
+  //       console.log("neither active nor inactive data", filteredData);
+  //     }
+  //   }
+  //   this.rowData = filteredData;
+  //   console.log("table data", this.rowData);
     
-  }
+  // }
 
   applyFilters() {
-    let filteredData = [...this.rowData];
+    let filteredData = [...this.data];
     for (let key in this.filterList) {
       const selectedValues = this.filterList[key].selectedValues;
 
@@ -160,12 +153,25 @@ export class AgGridComponent implements OnChanges, OnInit {
   }
 
   clearFilters(): void {
-    this.gridApi.setFilterModel(null);
-    this.gridApi.onFilterChanged();
-    Object.keys(this.filterList).forEach(field => {
-      this.filterList[field].selectedValues = [];
-    });
-    this.showFilter = false;
+    let filteredData = [...this.data];
+    this.isActiveFilter
+    filteredData = filteredData.filter(item => item.status !== 'Active' && item.status !== 'InActive');
+
+    for (let field in this.filterList) {
+      if (this.filterList.hasOwnProperty(field)) {
+        this.filterList[field].selectedValues = []; // Clear the selected values
+      }
+    }
+
+    this.rowData = filteredData;
+    console.log("table data", this.rowData);
+
+    // this.gridApi.setFilterModel(null);
+    // this.gridApi.onFilterChanged();
+    // Object.keys(this.filterList).forEach(field => {
+    //   this.filterList[field].selectedValues = [];
+    // });
+    // this.showFilter = false;
   }
   getFilteredFields(): void {
     this.displayedFields = Object.keys(this.filterList);

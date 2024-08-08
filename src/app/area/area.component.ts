@@ -11,7 +11,12 @@ export class AreaComponent {
   searchImg:string='assets/table/search.svg'
   filterImg:string='assets/table/filter.svg'
   search:boolean=true
-  
+  breadcrumsData:any = [
+    {
+      key: 'Route Manager',
+      routerLink: '/area',
+    },
+  ];
   columns: ColDef[] = [
     { field: 'sno', headerName: 'S No.', sortable: true },
     { field: 'regionId', headerName: 'Region ID', sortable: true },

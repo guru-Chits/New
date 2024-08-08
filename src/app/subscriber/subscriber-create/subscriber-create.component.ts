@@ -130,11 +130,11 @@ ngOnInit(): void {
       this.breadcrumsData  = [
         {
           key: 'Subscriber Management',
-          routerLink: 'subscriber',
+          routerLink: '/subscriber',
         },
         {
           key: 'Edit Subscriber',
-          routerLink: 'edit/this.subscriberId',
+          routerLink: `subscriber/edit/${paramData.id}`,
         },
        
       

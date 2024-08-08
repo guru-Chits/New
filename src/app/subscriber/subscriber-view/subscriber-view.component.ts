@@ -10,17 +10,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 export class SubscriberViewComponent implements OnInit{
   profileImageUrl: string | ArrayBuffer | null = null;
   defaultImageUrl = 'assets/subscriber/user.svg'; // Path to default profile image
-  breadcrumsData: any = [
-    {
-      key: 'Subscriber Management',
-      routerLink: '',
-    },
-    
-    {
-      key: 'View Subscriber',
-      routerLink: 'view/:id',
-    },
-  ];
+  breadcrumsData: any = [];
 
   isShowDiv = false;  
  subscriberDetail:any
@@ -39,11 +29,23 @@ ngOnInit(): void {
       console.log(this.subscriberDetail)
       console.log(this.subscriberId);
       
+      
        })
+       this.breadcrumsData = [
+      {
+        key: 'Subscriber Management',
+        routerLink: '/subscriber',
+      },
+      
+      {
+        key: 'View Subscriber',
+        routerLink: `subscriber/view/${paramData.id}`,
+      },
+    ];
+
+
     }
     })
-
-
     this.service.getsubscriberAll().subscribe((data)=>{
       this.subscriberData=data;
   

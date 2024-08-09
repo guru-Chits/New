@@ -238,3 +238,14 @@ padding-left: 3px;
   flex-grow: 1;
   height: 20px;
 } 
+.invalid-feedback {
+  color: red;
+  display: block;
+}
+
+.form-control.ng-invalid.ng-touched {
+  border-color: red;
+}
+.required{
+  color:red;
+}

@@ -6,59 +6,84 @@
         <div class="card mb-5 form-card">
             <div class="profile-picture-container">
                 <div class="profile-picture">
-                    <img [src]="profileImageUrl || defaultImageUrl" alt="Profile Picture" class="profile-img">
-                    <input type="file" (change)="onProfileImageSelected($event)" hidden #profileFileInput>
+                  <form [formGroup]="staffsForm">
+                    <img [src]="profileUrl || defaultImageUrl" alt="Profile Picture" class="profile-img">
+                    <div class="form-group">
+                    <input type="file" (change)="onFileSelected($event,'profileUrl')" hidden #profileFileInput formControlNamae="profileUrl">
+                  </div>
+                  </form>
                     <button class="upload-button" (click)="profileFileInput.click()">
                       <img src="assets/subscriber/Profile edit.svg " alt="Upload Icon">
                     </button>
                   </div>
               </div>
-              <h6 class="text-center">Crate Staff</h6>
-            <form class="ps-5 pe-5 " [formGroup]="staffsForm">
+              <h6 class="text-center">{{heading}}</h6>
+            <form class="ps-5 pe-5 " [formGroup]="staffsForm"  (ngSubmit)="onSubmit()">
                 <div class="row justify-content-around">
                     <div class="col-lg-4">
                         <div class="form-group">
-                            <label for="employeeId" class="form-control-label">Employee Id</label>
-                            <input type="text" placeholder="Employee Id" class="form-control form-control-sm" formControlName="employeeId"/>
+                            <label for="employeeId" class="form-control-label">Employee Id  <span class="required" *ngIf="staffsForm.get('employeeId').hasError('required')">*</span></label>
+                            <input type="text" placeholder="Employee Id" class="form-control form-control-sm" formControlName="employeeId" readonly/>
                         </div>
                     </div>
                     <div class="col-lg-4">
                         <div class="form-group">
-                            <label for="firstName" class="form-control-label">First Name</label>
+                            <label for="firstName" class="form-control-label">First Name <span class="required" *ngIf="staffsForm.get('firstName').hasError('required')">*</span></label>
                             <input type="text" placeholder="First Name" class="form-control form-control-sm" formControlName="firstName"/>
+                            <div class="invalid-feedback" *ngIf="staffsForm.get('firstName').invalid && (staffsForm.get('firstName').dirty || staffsForm.get('firstName').touched)">
+                              <div *ngIf="staffsForm.get('firstName').errors.required">First Name is required.</div>
+                              <div *ngIf="staffsForm.get('firstName').errors.pattern">First Name should only contain alphabetic characters and start with a capital letter.</div>
+                            </div>
+      
                         </div>
                     </div>
                     <div class="col-lg-4">
                         <div class="form-group">
-                            <label for="lastName" class="form-control-label">Last Name</label>
+                            <label for="lastName" class="form-control-label">Last Name<span class="required" *ngIf="staffsForm.get('lastName').hasError('required')">*</span></label>
                             <input type="text" placeholder="Last Name" class="form-control form-control-sm" formControlName="lastName"/>
+                            <div class="invalid-feedback" *ngIf="staffsForm.get('lastName').invalid && (staffsForm.get('lastName').dirty || staffsForm.get('lastName').touched)">
+                              <div *ngIf="staffsForm.get('lastName').errors.required">Last Name is required.</div>
+                              <div *ngIf="staffsForm.get('lastName').errors.pattern">Last Name should only contain alphabetic characters and start with a capital letter.</div>
+      
+                            </div>
+
                         </div>
                     </div>
-                </div> 
+              </div>
                 <div class="row justify-content-around">
                     <div class="col-lg-4">
                         <div class="form-group">
-                            <label for="gender" class="form-control-label">Gender</label>
+                            <label for="gender" class="form-control-label">Gender <span class="required" *ngIf="staffsForm.get('gender').hasError('required')">*</span></label>
                             <select type="text" placeholder="Gender" class="form-control form-control-sm" formControlName="gender">
-                                <option>Male</option>
-                                <option>Female</option>
-                                <option>Others</option>
-                            </select>
+                              <option value="">Select Gender</option>
+                              <option value="Male">Male</option>
+                              <option value="Female">Female</option>
+                              <option value="Other">Other</option>
+                              </select>
+                            <div class="invalid-feedback" *ngIf="staffsForm.get('gender').invalid && (staffsForm.get('gender').dirty || staffsForm.get('gender').touched)">
+                              <div *ngIf="staffsForm.get('gender').errors.required">Gender is required.</div>
+                            </div>      
                         </div>
                     </div>
                     <div class="col-lg-4">
                         <div class="form-group">
-                            <label for="role" class="form-control-label">Role</label>
+                            <label for="role" class="form-control-label">Role <span class="required" *ngIf="staffsForm.get('role').hasError('required')">*</span></label>
                             <select type="text" class="form-control form-control-sm" formControlName="role">
-                                <option>Casher</option>
-                            </select>
+                              <option value="">Role</option>
+                              <option value="Field Staff">Field Staff</option>
+                              <option value="Office Staff">Office Staff</option>
+                                  </select>
                         </div>
                     </div>
                     
                     <div class="col-lg-4">
                         <div class="form-group">
-                            <label for="contactNumber" class="form-control-label">Contact Number</label>
-                            <input type="text" placeholder="Contact Number" class="form-control form-control-sm" formControlName="contactNumber"/>
+                            <label for="contact" class="form-control-label">Contact Number <span class="required" *ngIf="staffsForm.get('contact').hasError('required')">*</span></label>
+                            <input type="text" placeholder="Contact Number" class="form-control form-control-sm" formControlName="contact"/>
+                            <div class="invalid-feedback" *ngIf="staffsForm.get('contact').invalid && (staffsForm.get('contact').dirty || staffsForm.get('contact').touched)">
+                              <div *ngIf="staffsForm.get('contact').errors.required">Contact Number is required.</div>
+                              <div *ngIf="staffsForm.get('contact').errors.pattern">Contact Number should be exactly 10 digits.</div>
+                            </div>      
                         </div>
                     </div>
           
@@ -66,30 +91,39 @@
                 <div class="row justify-content-around">
                     <div class="col-lg-4">
                         <div class="form-group">
-                            <label for="place" class="form-control-label">Place/Address</label>
-                            <input type="text" placeholder="Place/Address" class="form-control form-control-sm" formControlName="place"/>
-                        </div>
+                            <label for="address" class="form-control-label">Place/Address<span class="required" *ngIf="staffsForm.get('address').hasError('required')">*</span> </label>
+                            <input type="text" placeholder="Place/Address" class="form-control form-control-sm" formControlName="address"/>
+                            <div class="invalid-feedback" *ngIf="staffsForm.get('address').invalid && (staffsForm.get('address').dirty || staffsForm.get('address').touched)">
+                              <div *ngIf="staffsForm.get('address').errors.required">Address is required.</div>
+                              <div *ngIf="staffsForm.get('address').errors.minlength">Address must be at least 10 characters long.</div>
+                              <div *ngIf="staffsForm.get('address').errors.maxlength">Address cannot be more than 100 characters long.</div>
+                              <div *ngIf="staffsForm.get('address').errors.pattern">Address contains invalid characters.</div>
+                            </div>
+                          </div>
                     </div>
-
                     <div class="col-lg-4">
                         <div class="form-group">
-                            <label for="mail" class="form-control-label">Email Id</label>
-                            <input type="text" placeholder="mail" class="form-control form-control-sm" formControlName="mail"/>
+                            <label for="emailId" class="form-control-label">Email Id <span class="required" *ngIf="staffsForm.get('emailId').hasError('required')">*</span></label>
+                            <input type="text" placeholder="mail" class="form-control form-control-sm" formControlName="emailId"/>
                         </div>
                     </div>
-
                     <div class="col-lg-4">
                         <div class="form-group">
-                            <label for="dob" class="form-control-label">DOB</label>
+                            <label for="dob" class="form-control-label">DOB <span class="required" *ngIf="staffsForm.get('dob').hasError('required')">*</span></label>
                             <input type="date" class="form-control form-control-sm" formControlName="dob"/>
+                            <div class="invalid-feedback" *ngIf="staffsForm.get('dob').invalid && (staffsForm.get('dob').dirty || staffsForm.get('dob').touched)">
+                              <div *ngIf="staffsForm.get('dob').errors.required">Date of Birth is required.</div>
+                              <div *ngIf="staffsForm.get('dob').errors.invalidDate">Invalid Date of Birth.</div>
+                              <div *ngIf="staffsForm.get('dob').errors.ageBelowMinimum">You must be at least 18 years old.</div>
+                            </div>
                         </div>
-                    </div>
-          
+                     </div> 
                 </div>
+                
                 <div class="row" >
                     <div class="col-lg-4">
                         <div class="form-group">
-                            <label for="routeId" class="form-control-label">Route Id</label>
+                            <label for="routeId" class="form-control-label">Route Id <span class="required" *ngIf="staffsForm.get('routeId').hasError('required')">*</span></label>
                             <input type="text" placeholder="Route Id" class="form-control form-control-sm" formControlName="routeId"/>
                         </div>
                     </div>
@@ -97,18 +131,28 @@
                         <div class="form-group">
                             <label for="accountNumber" class="form-control-label">Account Number</label>
                             <input type="text" placeholder="Account Number" class="form-control form-control-sm" formControlName="accountNumber"/>
+                            <div class="invalid-feedback" *ngIf="staffsForm.get('accountNumber').invalid && (staffsForm.get('accountNumber').dirty || staffsForm.get('accountNumber').touched)">
+                              <div *ngIf="staffsForm.get('accountNumber').errors.required">Account Number is required.</div>
+                              <div *ngIf="staffsForm.get('accountNumber').errors.pattern">Account Number should be 8 to 12 digits long.</div>
+                            </div>
+      
                         </div>
                     </div>
                     <div class="col-lg-4">
                         <div class="form-group">
-                            <label for="ifsc" class="form-control-label">IFSC Code</label>
-                            <input type="text"placeholder="IFSC Code" class="form-control form-control-sm" formControlName="ifsc"/>
+                            <label for="ifscCode" class="form-control-label">IFSC Code <span class="required" *ngIf="staffsForm.get('ifscCode').hasError('required')">*</span></label>
+                            <input type="text" class="form-control form-control-sm"  (input)="onInputChange($event,'AAAA0000000')" formControlName="ifscCode"/>
+                            <div class="invalid-feedback" *ngIf="staffsForm.get('ifscCode').invalid && (staffsForm.get('ifscCode').dirty || staffsForm.get('ifscCode').touched)">
+                              <div *ngIf="staffsForm.get('ifscCode').errors.required">IFSC is required.</div>
+                              <div *ngIf="staffsForm.get('ifscCode').errors.pattern">IFSC should be in the format: 4 letters followed by 7 digits.</div>
+                            </div>
+      
                         </div>
                     </div>
                     <div class="col-lg-4">
                         <div class="form-group">
-                            <label for="upi" class="form-control-label">UPI ID/Number</label>
-                            <input type="text" placeholder="UPI ID/Number" class="form-control form-control-sm" formControlName="upi"/>
+                            <label for="upiIdOrNumber" class="form-control-label">UPI ID/Number <span class="required" *ngIf="staffsForm.get('upiIdOrNumber').hasError('required')">*</span></label>
+                            <input type="text" placeholder="UPI ID/Number" class="form-control form-control-sm" formControlName="upiIdOrNumber"/>
                         </div>
                     </div>
                 </div>
@@ -116,84 +160,95 @@
                 <div class="row justify-content-center">
                     <div class="col-lg-4">
                       <div class="form-group">
-                        <label for="panNo" class="form-control-label">PAN Card Number</label>
-                        <input type="text" placeholder="Pan Card Number" class="form-control form-control-sm" formControlName="panNo" />
+                        <label for="panCardNumber" class="form-control-label">PAN Card Number <span class="required" *ngIf="staffsForm.get('panCardNumber').hasError('required')">*</span></label>
+                        <input type="text" placeholder="Pan Card Number" class="form-control form-control-sm" formControlName="panCardNumber" />
                       </div>
                     </div>
                     <div class="col-lg-4">
                       <div class="form-group">
-                        <label for="panCard" class="form-control-label">PAN Card</label>
-                        <input type="file" class="form-control form-control-sm file-upload" (change)="onFileSelected($event, 'panCard')" formControlName="panCard"/>
+                        <label for="panUrl" class="form-control-label">PAN Card <span class="required" *ngIf="staffsForm.get('panUrl').hasError('required')">*</span></label>
+                        <input type="file" class="form-control form-control-sm file-upload" (change)="onFileSelected($event, 'panUrl')" formControlName="panUrl"/>
                       </div>
                     </div>
                     <div class="col-lg-4 mt-4">
-                      <button class="viewBtn" (click)="viewFile('panCard')">View File</button>
-                      <button class="removeBtn" (click)="removeFile('panCard')">Remove File</button>
+                      <button class="viewBtn" (click)="viewFile('panUrl')">View File</button>
+                      <button class="removeBtn" (click)="removeFile('panUrl')">Remove File</button>
                     </div>
                   </div>
       
                   <div class="row justify-content-center">
                     <div class="col-lg-4">
                       <div class="form-group">
-                        <label for="aadharNo" class="form-control-label">Aadhar Card Number</label>
-                        <input type="text" placeholder="Aadhar Card Number" class="form-control form-control-sm" formControlName="aadharCardNo" />
+                        <label for="aadharNumber" class="form-control-label">Aadhar Card Number <span class="required" *ngIf="staffsForm.get('aadharNumber').hasError('required')">*</span></label>
+                        <input type="text" placeholder="Aadhar Card Number" class="form-control form-control-sm" formControlName="aadharNumber" />
+                        <div class="invalid-feedback" *ngIf="staffsForm.get('ifscCode').invalid && (staffsForm.get('ifscCode').dirty || staffsForm.get('ifscCode').touched)">
+                          <div *ngIf="staffsForm.get('aadharNumber').errors.required">Aadhar is required.</div>
+                        </div>
+
                       </div>
                     </div>
+
                     <div class="col-lg-4">
                       <div class="form-group">
-                        <label for="aadharCard" class="form-control-label">Aadhar Card</label>
-                        <input type="file" class="form-control form-control-sm file-upload" (change)="onFileSelected($event, 'aadharCard')" formControlName="aadharCard"/>
+                        <label for="aadharUrl" class="form-control-label">Aadhar Card <span class="required" *ngIf="staffsForm.get('aadharUrl').hasError('required')">*</span></label>
+                        <input type="file" class="form-control form-control-sm file-upload" (change)="onFileSelected($event, 'aadharUrl')" formControlName="aadharUrl"/>
+                        <div class="invalid-feedback" *ngIf="staffsForm.get('ifscCode').invalid && (staffsForm.get('ifscCode').dirty || staffsForm.get('ifscCode').touched)">
+                          <div *ngIf="staffsForm.get('aadharUrl').errors.required">Aadhar Card is required.</div>
+                        </div>
+
                       </div>
                     </div>
                     <div class="col-lg-4 mt-4">
-                      <button class="viewBtn" (click)="viewFile('aadharCard')">View File</button>
-                      <button class="removeBtn" (click)="removeFile('aadharCard')">Remove File</button>
+                      <button class="viewBtn" (click)="viewFile('aadharUrl')">View File</button>
+                      <button class="removeBtn" (click)="removeFile('aadharUrl')">Remove File</button>
                     </div>
                   </div>
       
                   <div class="row justify-content-center">
                     <div class="col-lg-4">
                       <div class="form-group">
-                        <label for="bankName" class="form-control-label">Bank Name</label>
+                        <label for="bankName" class="form-control-label">Bank Name <span class="required" *ngIf="staffsForm.get('bankName').hasError('required')">*</span></label>
                         <input type="text" placeholder="Bank Name" class="form-control form-control-sm" formControlName="bankName" />
                       </div>
                     </div>
                     <div class="col-lg-4">
                       <div class="form-group">
-                        <label for="passbook" class="form-control-label">Passbook</label>
-                        <input type="file" class="form-control form-control-sm file-upload" (change)="onFileSelected($event, 'passbook')" formControlName="passbook"/>
+                        <label for="passbookUrl" class="form-control-label">Passbook <span class="required" *ngIf="staffsForm.get('passbookUrl').hasError('required')">*</span></label>
+                        <input type="file" class="form-control form-control-sm file-upload" (change)="onFileSelected($event, 'passbookUrl')" formControlName="passbookUrl"/>
                       </div>
                     </div>
                     <div class="col-lg-4 mt-4">
-                      <button class="viewBtn" (click)="viewFile('passbook')">View File</button>
-                      <button class="removeBtn" (click)="removeFile('passbook')">Remove File</button>
+                      <button class="viewBtn" (click)="viewFile('passbookUrl')">View File</button>
+                      <button class="removeBtn" (click)="removeFile('passbookUrl')">Remove File</button>
                     </div>
                   </div>
       
                   <div class="row justify-content-center">
                     <div class="col-lg-4">
                       <div class="form-group">
-                        <label for="drivingNo" class="form-control-label">Driving License Number</label>
-                        <input type="text" placeholder="Driving License Number" class="form-control form-control-sm" formControlName="drivingNo" />
+                        <label for="drivingLicenseNumber" class="form-control-label">Driving License Number <span class="required" *ngIf="staffsForm.get('drivingLicenseNumber').hasError('required')">*</span></label>
+                        <input type="text" placeholder="Driving License Number" class="form-control form-control-sm" formControlName="drivingLicenseNumber" />
                       </div>
                     </div>
                     <div class="col-lg-4">
                       <div class="form-group">
-                        <label for="drivingLicense" class="form-control-label">Driving License</label>
-                        <input type="file" class="form-control form-control-sm file-upload" (change)="onFileSelected($event, 'drivingLicense')" formControlName="drivingLicense" />
+                        <label for="drivingLicenseUrl" class="form-control-label">Driving License</label>
+                        <input type="file" class="form-control form-control-sm file-upload" (change)="onFileSelected($event, 'drivingLicenseUrl')" formControlName="drivingLicenseUrl" />
                       </div>
                     </div>
                     <div class="col-lg-4 mt-4">
-                      <button class="viewBtn" (click)="viewFile('drivingLicense')">View File</button>
-                      <button class="removeBtn" (click)="removeFile('drivingLicense')">Remove File</button>
+                      <button class="viewBtn" (click)="viewFile('drivingLicenseUrl')">View File</button>
+                      <button class="removeBtn" (click)="removeFile('drivingLicenseUrl')">Remove File</button>
                     </div>
-                  </div>                <div class="row">
+                  </div>               
+                   <div class="row">
                     <div class="col-lg-4">
                         <div class="form-group">
-                            <label for="bgVerify" class="form-control-label">BG Verifiction</label>
-                            <select type="text" class="form-control form-control-sm" formControlName="bgVerify">
-                                <option>Yes</option>
-                                <option>No</option>
+                            <label for="bgVerification" class="form-control-label">BG Verifiction <span class="required" *ngIf="staffsForm.get('bgVerification').hasError('required')">*</span></label>
+                            <select type="text" class="form-control form-control-sm" formControlName="bgVerification">
+                              <option value="">BG Verifiction</option>
+                              <option value="Verified">Verified</option>
+                              <option value="UnVerified">UnVerified</option>
                             </select>
                         </div>
                     </div>
@@ -201,8 +256,8 @@
                 <div class="row">
                     <div class="col-lg-4">
                         <div class="form-group">
-                            <label for="bVRemarks" class="form-control-label">BG Verifiction Remarks</label>
-                            <input type="text" placeholder="BG Verifiction Remarks" class="form-control form-control-sm" formControlName="bVRemarks"/>
+                            <label for="bgVerification_remark" class="form-control-label">BG Verifiction Remarks <span class="required" *ngIf="staffsForm.get('bgVerification_remark').hasError('required')">*</span></label>
+                            <input type="text" placeholder="BG Verifiction Remarks" class="form-control form-control-sm" formControlName="bgVerification_remark"/>
                         </div>
                     </div>
                     </div>
@@ -210,7 +265,7 @@
                     <div class="col-lg-4">
                         <div class="form-check form-switch">
                             <input class="form-check-input" type="checkbox" formControlName="workingStatus" role="switch" id="flexSwitchCheckChecked" checked>
-                            <label class="form-check-label" for="flexSwitchCheckChecked">Working Status</label>
+                            <label class="form-check-label" for="flexSwitchCheckChecked">Working Status <span class="required" *ngIf="staffsForm.get('workingStatus').hasError('required')">*</span></label>
                           </div>
                     </div>
                 </div>
@@ -219,7 +274,7 @@
                 <div class="row justify-content-center">
                     <div class="col-lg-12 d-flex justify-content-end mb-2">
                         <button class="btn nxt-btn btn-outline-secondary" routerLink="/projects/project">Cancel</button>
-                        <button class="btn save-btn" [disabled]="!staffsForm.valid">Submit</button>
+                        <button class="btn save-btn" [disabled]="!staffsForm.valid"  type="submit">Submit</button>
                     </div>
                 </div>
 

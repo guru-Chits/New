@@ -307,6 +307,7 @@ onSubmit(): void {
 
     if (!formValue.profileImage) {
       formValue.profileImage = this.generateDefaultProfileImage(formValue.firstName);
+      this.subscriberForm.get('profileImage')?.setValue(formValue.profileImage);
     }
 
     for (const key in formValue) {
@@ -351,8 +352,14 @@ onFileSelected(event: Event): void {
 
 
 onFileChange(event: any, controlName: string): void {
+  this.filesInfo[controlName] = event.target.files[0];
+
   if (event.target.files && event.target.files.length) {
     const file = event.target.files[0];
+    if (file) {
+      this.profileImageUrl = URL.createObjectURL(file);
+    }
+
     this.subscriberForm.patchValue({
       [controlName]: file
     });

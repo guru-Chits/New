@@ -1,1 +1,111 @@
-<p>chit-view works!</p>
+<div class="container-fluid d-flex flex-column">
+    <div class="row">     
+        <div class="col-lg-9">
+            <div class="row">
+                <div class="col-lg-12 d-flex justify-content-between py-3">
+                    <div>Chit Management</div>
+                    <button class="btn next-btn px-4 py-3 fw-bold" routerLink="auction">Auction Entry</button>
+                </div>
+            </div>
+            <div class="card p-3">
+                <div class="row pb-5">
+                    <div class="col-lg-12 d-flex justify-content-center">
+                        <div class="fw-bold fs-3">Chit Group Details</div>
+                    </div>
+                </div>
+                <div class="row px-4">
+                    <div class="col-4 ">
+                        <div class="d-flex flex-column ">
+                            <h6>Group ID</h6>
+                            <p class="">100</p>
+                        </div>
+                    </div>
+                    <div class="col-4 ">
+                        <div class="d-flex flex-column ">
+                            <h6>Chit Amount</h6>
+                            <p class="">700000</p>
+                        </div>
+                    </div>
+                    <div class="col-4 ">
+                        <div class="d-flex flex-column ">
+                            <h6>Auctions Completed</h6>
+                            <p class="">250000</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="row px-4 py-3">
+                    <div class="col-4 ">
+                        <div class=" d-flex flex-column ">
+                            <h6>Prized Subscribers Count</h6>
+                            <p class="">250000</p>
+                        </div>
+                    </div>
+                    <div class="col-4 ">
+                        <div class=" d-flex flex-column ">
+                            <h6>Wallet Balance</h6>
+                            <p class="">7500</p>
+                        </div>
+                    </div>
+                    <div class="col-4 ">
+                        <div class="d-flex flex-column ">
+                            <h6>Additional Wallet Balance</h6>
+                            <p class="">250000</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="row px-4 py-3">
+                    <div class="col-4 ">
+                        <div class=" d-flex flex-column ">
+                            <h6>TKN A/C</h6>
+                            <p class="">30</p>
+                        </div>
+                    </div>
+                    <div class="col-4 ">
+                        <div class=" d-flex flex-column ">
+                            <h6>TKN Company</h6>
+                            <p class="">7500</p>
+                        </div>
+                    </div>
+                    <div class="col-4 ">
+                        <div class="d-flex flex-column ">
+                            <h6>Profit Chit Counts</h6>
+                            <p class="">250000</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="row px-4 py-3">
+                    <div class="col-4 ">
+                        <div class=" d-flex flex-column ">
+                            <h6>Chit Commencement</h6>
+                            <p class="">30</p>
+                        </div>
+                    </div>
+                    <div class="col-4 ">
+                        <div class=" d-flex flex-column ">
+                            <h6>Amount Outstanding</h6>
+                            <p class="">7500</p>
+                        </div>
+                    </div>
+                    <div class="col-4 ">
+                        <div class="d-flex flex-column ">
+                            <h6>Surplus Amount Collected</h6>
+                            <p class="">250000</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="">
+                    <div class="py-3">
+                        Bid History 
+                    </div>
+                    <app-ag-grid [columns]="column" [rowData]="data" class="px-3" width="100%" height="300px"></app-ag-grid>   
+                </div>
+            </div>
+        </div> 
+        <div class="col-lg-3">
+            <div class="card">
+
+            </div>
+        </div> 
+    </div> 
+  </div>
+  

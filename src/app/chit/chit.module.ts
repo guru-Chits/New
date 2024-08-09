@@ -6,7 +6,7 @@ import { ChitComponent } from './chit.component';
 import { ChitCreateComponent } from './chit-create/chit-create.component';
 import { ChitViewComponent } from './chit-view/chit-view.component';
 import { AuctionSidebarComponent } from './auction-sidebar/auction-sidebar.component';
-
+import { SharedModule } from '../shared/shared.module';
 
 @NgModule({
   declarations: [
@@ -17,7 +17,8 @@ import { AuctionSidebarComponent } from './auction-sidebar/auction-sidebar.compo
   ],
   imports: [
     CommonModule,
-    ChitRoutingModule
+    ChitRoutingModule,
+    SharedModule
   ]
 })
 export class ChitModule { }

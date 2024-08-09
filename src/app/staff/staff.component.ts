@@ -36,15 +36,21 @@ export class StaffComponent implements OnInit{
         employeeId:staffDetails?.employeeId,
         firstName:staffDetails?.firstName,
         lastName:staffDetails?.lastName,
-        role:staffDetails?.role
+        routeId:staffDetails?.routeId,
+        role:staffDetails?.role,
+        profileUrl:staffDetails?.profileUrl
       }))
     })
 
   }
 
   profileImageWithIdRenderer(params: any): string {
-    const imageUrl = params.data.profileImageUrl;
+    const imageUrl = params.data.profileUrl;
+    console.log(imageUrl);
+    
     const employeeId = params.data.employeeId;
+    console.log(employeeId);
+    
     return `
       <div style="display: flex; align-items: center;">
         <img src="${imageUrl}" alt="Profile Image" width="35" height="35" style="border-radius: 50%; margin-right: 10px;">
@@ -55,7 +61,7 @@ export class StaffComponent implements OnInit{
 
 
   column: ITableColumn[] = [
-    { label: 'profileImageUrl', field: 'Employee Id', sortable: false,  filter:false,
+    { label: 'profileUrl', field: 'Employee Id', sortable: false,  filter:false,
       cellRenderer: this.profileImageWithIdRenderer,
 
       cellStyle: function (params: any) {
@@ -66,11 +72,11 @@ export class StaffComponent implements OnInit{
           
      },
 
-    { label: 'First Name', field:'firstName', sortable: true,  filter:false,
+    { label: 'First Name', field:'firstName', sortable: true,
       onCellClicked: (event: CellClickedEvent) =>
         this.getStaffById(event.data.id)
      },
-    { label: 'Last Name', field: 'lastName', sortable: true ,  filter:true,
+    { label: 'Route Id', field: 'routeId', sortable: true ,  filter:true,
       onCellClicked: (event: CellClickedEvent) =>
         this.getStaffById(event.data.id)
     },

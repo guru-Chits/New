@@ -6,11 +6,11 @@
             <div class="card ps-5 pe-5 mb-2 details-card">
                 <div class="profile-picture-container">
                     <div class="profile-picture">
-                      <img [src]="profileImageUrl || defaultImageUrl" alt="Profile Picture" class="profile-img">
+                      <img [src]="staffDetail.Staff.profileUrl" alt="Profile Picture" class="profile-img">
                       <input type="file" (change)="onFileSelected($event)" hidden #fileInput>
-                      <button class="upload-button" (click)="fileInput.click()">
+                      <!-- <button class="upload-button" (click)="fileInput.click()">
                         <img src="assets/subscriber/Profile edit.svg " alt="Upload Icon">
-                      </button>
+                      </button> -->
                     </div>
                   </div>
                     <h5 class="text-center">Staff Details</h5>
@@ -127,7 +127,7 @@
                     </div>
                         <div class="row justify-content-center">
                           <div class="col-lg-10 d-flex justify-content-end mb-4">
-                              <button class="btn edit-btn">Edit</button>
+                              <button class="btn edit-btn"  (click)="edit(staffDetail.Staff._id)">Edit</button>
                           </div>
                       </div> 
                       </div>

@@ -26,7 +26,7 @@ ngOnInit(): void {
       id:staffDetails?._id,
       staffId: staffDetails?.employeeId,
       staffName: `${staffDetails?.firstName} ${staffDetails?.lastName}`,
-      staffProfile:staffDetails?.profileImageUrl
+      staffProfile:staffDetails?.profileUrl
     }))
     this.displayedStaff = this.data;
   })

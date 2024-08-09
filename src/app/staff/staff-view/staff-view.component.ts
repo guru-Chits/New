@@ -78,4 +78,10 @@ constructor(private service:StaffService,private activatedRoute:ActivatedRoute,p
     }
   }
 
+  edit(id:any){
+    console.log(id);
+    
+    this.router.navigate([`staff/edit/${id}`]);
+
+  }
 }

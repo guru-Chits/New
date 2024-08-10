@@ -10,7 +10,7 @@ const routes: Routes = [
    component: AreaComponent, 
 },
 {
-  path: 'areacreate',
+  path: 'routecreate',
   component: AreaCreateComponent, 
 },  
 {

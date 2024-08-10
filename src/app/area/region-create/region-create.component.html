@@ -1,12 +1,13 @@
 <div class = "container-fluid">
     <div class = "row d-flex ">
-        <div class = "col-lg-8">
+
+        <div [ngClass]="{'col-md-8 col-lg-8': regionDetail, 'col-md-12 col-lg-12': !regionDetail}">
            <div class = "d-flex col mt-2">
             <div class = "d-flex col">
                 <app-breadcrumb [data]="breadcrumsData"></app-breadcrumb>
             </div>
             <div class = "d-flex col justify-content-end">
-                <button class="btn">Create New Route</button>
+                <button  routerLink="routecreate" class="btn">Create New Route</button>
             </div>
            </div>
            <div class="d-flex col ">
@@ -22,7 +23,7 @@
             </div>
             <div class="col-lg-4">
                 <label class="simple-text">Region Description</label>
-                <input class = "form-control" placeholder="Region Description" formControlName="regionDescription">
+                <input class = "form-control" placeholder="Region Description" formControlName="regionDesc">
             </div>
         </div>
         </form>
@@ -35,13 +36,14 @@
       </div>
       <div class="d-flex justify-content-end">
         <button class="btn1">Cancel</button>
-        <button class="btn">Save</button>
+        <button class="btn" (click)="onSubmit()">Save</button>
       </div>
-      <app-ag-grid [columns]="columns" [rowData]="rowData" width="100%" height="200px"></app-ag-grid> 
+      <app-ag-grid [columns]="column" [rowData]="data" width="100%" height="300px"></app-ag-grid> 
    
     </div>
      
      <div class="col-lg-4 d-flex mb-4">
+     <div *ngIf="regionDetail">  
         <div class="card ">
             <div class="card-body">
                     <h6 class="text-center">Region details</h6>
@@ -49,19 +51,21 @@
                         <tbody>
                             <tr>
                                 <td>Region ID</td>
-                                <td>CMB</td>
+                                <td>{{regionDetail.Region.regionId}}</td>
                             </tr>
                             <tr>
                                 <td>Region Name</td>
-                                <td>Coimbatore</td>
+                                <td>{{regionDetail.Region.regionName}}</td>
                             </tr>
                             <tr>
                                 <td>Region Description</td>
-                                <td>Deliquency Route</td>
+                                <td>{{regionDetail.Region.regionDesc}}</td>
                             </tr>
                             <tr>
                                 <td>Region Status</td>
-                                <td class="Success">Active</td>
+                                <td>
+                                    {{regionDetail.Region.status ? 'Active' : 'Inactive' }}
+                                </td>
                             </tr>
                         </tbody>
                         
@@ -72,9 +76,9 @@
                 </div>
              
             </div>
-          </div>
+          
+        </div>
+
+     </div>  
      </div>
 
-        
-    </div>
-</div>

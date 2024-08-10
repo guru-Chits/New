@@ -1,37 +1,56 @@
 <div class = "container-fluid">
     <div class = "row d-flex ">
-        <div class = "col-lg-8">
+        <div [ngClass]="{'col-md-8 col-lg-8': routeDetail, 'col-md-12 col-lg-12': !routeDetail}">
            <div class = "d-flex col mt-2">
             <div class = "d-flex col">
                 <app-breadcrumb [data]="breadcrumsData"></app-breadcrumb>
             </div>
             <div class = "d-flex col justify-content-end">
-                <button class="btn">Create New Region</button>
+                <button class="btn" routerLink="regioncreate">Create New Region</button>
             </div>
            </div>
            <div class="d-flex col ">
             <form class="form" [formGroup]="routeForm">
-            <div class="d-flex row form-group mt-3 mb-2">
-                <div class="col-lg-4">
-                    <label class="simple-text">Region ID</label>
-                    <input class = "form-control" placeholder="Enter your region" formControlName="regionId">    
-                </div>
-            <div class="col-lg-4">
-                <label class="simple-text">Region Name</label>
-                <input class = "form-control" placeholder="Enter your Region ID" formControlName ="regionName">
-            </div>
-            <div class="col-lg-4">
-                <label class="simple-text">Route ID</label>
-                <input class = "form-control" placeholder="Region Description" formControlName="routeId">
-            </div>
-        </div>
-        <div class="d-flex row form-group mt-2 mb-5">
-            <div class="col-lg-4">
-                <label class="simple-text">Route Description</label>
-                <input class = "form-control" placeholder="Region Description" formControlName="routeDescription">
-            </div>
-        </div>
-        </form>
+                <div class="d-flex row form-group mt-3 mb-2">
+                    <div class="col-lg-4">
+                      <label class="simple-text">Region ID</label>
+                      <!-- <input class="form-control" placeholder="Enter your Region ID" formControlName="regionId"> -->
+                      <select  class="form-control form-control-sm p-2" id="regionId" formControlName="regionId" [(ngModel)]="selectedRegionId" (change)="onModuleChange()">
+                        <option value="" placeholder="Enter your Region ID" disabled selected>Select your Region ID</option>
+
+                        <option class="form-control"  *ngFor="let region of regionIdList"  [value]="region._id ">{{region.regionId}}</option>                 
+                      </select>
+                    </div>
+                  
+                    <div class="col-lg-4">
+                      <label class="simple-text">Route Name</label>
+                      <input class="form-control" placeholder="Enter your Region Name" formControlName="routeName" (change)="getRouteNameValue()">
+                      <div *ngIf="routeForm.get('routeName').touched && routeForm.get('routeName').invalid">
+                        <small *ngIf="routeForm.get('routeName').errors?.required" class="text-danger">Route Name is required.</small>
+                        <small *ngIf="routeForm.get('routeName').errors?.pattern" class="text-danger">Route Name must start with a capital letter and contain only alphabetic characters.</small>
+                      </div>
+                    </div>
+                  
+                    <div class="col-lg-4">
+                      <label class="simple-text">Route ID</label>
+                      <input class="form-control" placeholder="Enter your Route ID" formControlName="routeId">
+                     
+                    </div>
+                  </div>
+                  
+                  <div class="d-flex row form-group mt-2 mb-5">
+                    <div class="col-lg-4">
+                      <label class="simple-text">Route Description</label>
+                      <input class="form-control" placeholder="Enter your Route Description" formControlName="routeDesc">
+                      <div *ngIf="routeForm.get('routeDesc').touched && routeForm.get('routeDesc').invalid">
+                        <small *ngIf="routeForm.get('routeDesc').errors?.minlength" class="text-danger">Route Description must be at least 10 characters long.</small>
+                        <small *ngIf="routeForm.get('routeDesc').errors?.maxlength" class="text-danger">Route Description must be no more than 100 characters long.</small>
+                        <small *ngIf="routeForm.get('routeDesc').errors?.pattern" class="text-danger">Route Description can only contain letters, numbers, spaces, and common punctuation.</small>
+                      </div>
+                    </div>
+                  </div>
+                  
+            </form>
       </div>
       <div class="col d-flex">
         <div class="form-check form-switch switch-design">
@@ -39,39 +58,42 @@
             <label class="form-check-label" for="flexSwitchCheckChecked">Status of the Region</label>
           </div>
       </div>
-      <div class="d-flex justify-content-end">
+      <div class="d-flex justify-content-end m-2">
         <button class="btn1">Cancel</button>
-        <button class="btn">Save</button>
+        <button class="btn" (click)="onSubmit()">Save</button>
       </div>
-      <app-ag-grid [columns]="columns" [rowData]="rowData" width="100%" height="200px"></app-ag-grid> 
+      <app-ag-grid [columns]="column" [rowData]="data" width="100%" height="200px"></app-ag-grid> 
    
     </div>
      
      <div class="col-lg-4 d-flex mb-4">
+     <div *ngIf="routeDetail">
         <div class="card ">
-            <div class="card-body">
+            <div class="card-body ">
                     <h6 class="text-center">Route details</h6>
                     <table class="table simple-text">
                         <tbody>
                             <tr>
                                 <td><b>Route ID</b></td>
-                                <td>CMB-south</td>
+                                <td>{{routeDetail.Route.routeId}}</td>
                             </tr>
                             <tr>
                                 <td><b>Region Name</b></td>
-                                <td>Coimbatore</td>
+                                <td>{{routeDetail.Route.regionName}}</td>
                             </tr>
                             <tr>
                                 <td><b>Route Name</b></td>
-                                <td>Gandhipuram</td>
+                                <td>{{routeDetail.Route.routeName}}</td>
                             </tr>
                             <tr>
                                 <td><b>Route Description</b></td>
-                                <td>Deliquency Route</td>
+                                <td>{{routeDetail.Route.routeDesc}}</td>
                             </tr>
                             <tr>
                                 <td><b>Route Status</b></td>
-                                <td class="Success">Active</td>
+                                <td>
+                                    {{routeDetail.Route.status ? 'Active' : 'InActive' }}
+                                </td>
                             </tr>
                         </tbody>
                         
@@ -85,6 +107,6 @@
           </div>
      </div>
 
-        
-    </div>
+     </div>   
+     </div>
 </div>

@@ -3,7 +3,7 @@
     <div class="row">     
       <div [ngClass]="{'col-md-9 col-lg-9': staffDetail, 'col-md-12 col-lg-12': !staffDetail}">    
         <div class="header mt-3">Staffs
-                    <button class="btn btn-primary create" routerLink="create">create New Staffs</button>
+                    <button class="btn btn-primary create" routerLink="create">Create New Staffs</button>
                 </div>
       <div class="row mt-3">
         <div class="col-md-4 col-lg-4">
@@ -19,7 +19,7 @@
       <div *ngIf="staffDetail">
     <div class="card details">
     <div class="title align-self-center py-2">Staff Details</div>
-    <img src="{{staffDetail.Staff.profileImageUrl}}" class="rounded-circle  align-self-center mb-2" width="75" height="75" alt="Staff Image">
+    <img src="{{staffDetail.Staff.profileUrl}}" class="rounded-circle  align-self-center mb-2" width="75" height="75" alt="Staff Image">
     <table class="table flex-column">
         <tbody>
           <tr>

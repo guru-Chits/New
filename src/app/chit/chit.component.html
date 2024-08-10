@@ -1,86 +1,104 @@
 <div class="container-fluid d-flex flex-column">
-    <div class="row">     
-        <div class="col-md-8 col-lg-8">
-          <!-- <div class="header mt-2">Chit Management
-              <button class="btn btn-primary create" routerLink="create">create New Group</button>
-          </div> -->
-          <div class="row mt-2">
-            <div class="col-md-8 col-lg-8">
-              <div class="header">Chit Management
-            </div>
-            </div>
-            <div class="col-md-4  col-lg-4 ml-1">
-              <button class="btn btn-primary create" routerLink="create">create New Group</button>
-            </div>
-          </div>
-          <div class="row mt-5">
-            <div class="col-md-4 col-lg-4">
-              <div class="line text-center">
-                <div class="card-body">
-                  <h5 class="card-title">Total Chit Count</h5>
-                  <p class="card-text">100</p>
-                </div>
-              </div>
-            </div>
-            <div class="col-md-4  col-lg-4 ml-1">
-              <div class="line text-center">
-                <div class="card-body">
-                  <h5 class="card-title">Total Redeemable Amount</h5>
-                  <p class="card-text">7000000</p>
-                </div>
-              </div>  
-            </div>
-            <div class="col-md-4  col-lg-4  ml-1">
-                <div class="red-card text-center">
-                  <div class="card-body">
-                    <h5 class="card-title">Total TKN A/C</h5>
-                    <p class="card-text">250000</p>
-                  </div>
-                </div>  
-              </div>
-          </div>
-          <div class="row mt-3">
-            <div class="col-md-4 col-lg-4">
-              <div class="line text-center">
-                <div class="card-body">
-                  <h5 class="card-title">Aggregate Wallet Balance</h5>
-                  <p class="card-text">250000</p>
-                </div>
-              </div>
-            </div>
-            <div class="col-md-4  col-lg-4  ml-1">
-              <div class="line text-center ">
-                <div class="card-body">
-                  <h5 class="card-title">Extra Payouts</h5>
-                  <p class="card-text">7500</p>
-                </div>
-              </div>  
-            </div>
-          </div>
-    
-          <div class="row mt-3">
-            <div class="col-md-4 col-lg-4">
-              <div class="line text-center  ">
-                <div class="card-body">
-                  <h5 class="card-title">No.of Subscribers in more than 1 group</h5>
-                  <p class="card-text">30</p>
-                </div>
-              </div>
-            </div>
-            <div class="col-md-4  col-lg-4  ml-1">
-              <div class="line text-center  ">
-                <div class="card-body">
-                  <h5 class="card-title">Phantom Payouts</h5>
-                  <p class="card-text">7500</p>
-                </div>
-              </div>  
-            </div>
-          </div>
-    </div>
-    
-        <div class="col-lg-4">
-          <app-auction-sidebar></app-auction-sidebar>
+  <div class="row">     
+    <div class="col-lg-9">
+      <div class="row">
+        <div class="col-lg-12 d-flex justify-content-between py-3">
+            <div>Chit Management</div>
+            <button class="btn next-btn px-4 py-3 fw-bold" routerLink="create">Create New Group</button>
         </div>
-    </div>
-    
+      </div>
+      <div class="row my-3">
+        <div class="col-4 ">
+          <div class="line d-flex flex-column justify-content-center align-items-center rounded-end">
+            <h6>Total Chit Count</h6>
+            <p class="m-0 fw-bold fs-4">100</p>
+          </div>
+        </div>
+        <div class="col-4 ">
+          <div class="line d-flex flex-column justify-content-center align-items-center rounded-end">
+            <h6>Total Redeemable Amount</h6>
+            <p class="m-0 fw-bold fs-4">700000</p>
+          </div>
+        </div>
+        <div class="col-3 ">
+          <div class="red-card d-flex flex-column justify-content-center align-items-center rounded">
+            <h6>Total TKN A/C</h6>
+            <p class="m-0 fw-bold fs-4">250000</p>
+          </div>
+        </div>
+      </div>
+      <div class="row my-3">
+        <div class="col-4 ">
+          <div class="line d-flex flex-column justify-content-center align-items-center rounded-end">
+            <h6>Aggregate Wallet Balance</h6>
+            <p class="m-0 fw-bold fs-4">250000</p>
+          </div>
+        </div>
+        <div class="col-4 ">
+          <div class="line d-flex flex-column justify-content-center align-items-center rounded-end">
+            <h6>Extra Payouts</h6>
+            <p class="m-0 fw-bold fs-4">7500</p>
+          </div>
+        </div>
+      </div>
+      <div class="row my-3">
+        <div class="col-4 ">
+          <div class="line d-flex flex-column justify-content-center align-items-center rounded-end">
+            <h6>No.of Subscribers in more than 1 group</h6>
+            <p class="m-0 fw-bold fs-4">30</p>
+          </div>
+        </div>
+        <div class="col-4 ">
+          <div class="line d-flex flex-column justify-content-center align-items-center rounded-end">
+            <h6>Phantom Payouts</h6>
+            <p class="m-0 fw-bold fs-4">7500</p>
+          </div>
+        </div>
+      </div>
+      <!-- <button class="btn next-btn px-4 py-3 fw-bold" routerLink="view">Chit View Page</button> -->
+      <!-- <div *ngFor="let group of groups" class="card mb-3">
+        <div class="card-header d-flex justify-content-between align-items-center">
+          <span class="fw-bold">{{group.groupTitle}}</span>
+          <span class="badge bg-secondary rounded-pill">{{group.subscribersCount}} +</span>
+        </div>
+        <div class="card-body">
+          <div class="d-flex gap-2">
+            <span class="badge bg-primary" *ngFor="let member of group.members">{{member}}</span>
+          </div>
+        </div>
+      </div> -->
+      <!-- <div class="container mt-4">
+        <div *ngFor="let group of groups" class="card mb-3">
+          <div class="card-header d-flex justify-content-between align-items-center">
+            <span class="fw-bold">{{group.groupTitle}}</span>
+            <span class="badge bg-secondary rounded-pill">{{group.subscribersCount}} +</span>
+          </div>
+          <div class="card-body">
+            <div class="d-flex flex-wrap gap-2">
+              <span class="badge bg-primary p-2" *ngFor="let member of group.members">{{member}}</span>
+            </div>
+          </div>
+        </div>
+      </div> -->
+
+      <div class="container p-0 mt-3">
+        <div *ngFor="let group of groups" class="mb-1">
+          <div class="table py-4 px-3 d-flex justify-content-between align-items-center rounded-end">
+            <div>
+              <span class="fw-bold fs-5">{{group.groupTitle}}</span>
+            </div>
+            <div class="d-flex align-items-center">
+              <div class="d-flex flex-wrap ">
+                <span *ngFor="let member of group.members" class="rounded-circle" style="background-color: {{getColor(member)}}; color: white; padding-left: 15px; width: 40px; height: 40px;">{{member}}</span>
+              </div>
+              <span class=" ms-2">+{{group.subscribersCount}}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div> 
+    <div class="col-lg-3">
+      <app-auction-sidebar></app-auction-sidebar>
+    </div> 
+  </div> 
 </div>

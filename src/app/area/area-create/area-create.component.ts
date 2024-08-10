@@ -1,30 +1,32 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormControl, FormGroup,FormBuilder,ValidatorFn, Validators } from '@angular/forms';
 import { ColDef } from 'ag-grid-community/dist/types/core/entities/colDef';
-
+import { AreaService } from '../shared/service/area.service';
 @Component({
   selector: 'app-area-create',
   templateUrl: './area-create.component.html',
   styleUrl: './area-create.component.css'
 })
 export class AreaCreateComponent implements OnInit{
-  regionForm : FormGroup
+  routeForm : FormGroup
   breadcrumsData:any = [
     {
       key: 'Route Manager',
       routerLink: '/area',
     },
     {
-      key: 'Create New Region',
+      key: 'Create New Route',
       routerLink: 'area/areacreate',
     },
   ];
   ngOnInit(): void{
-    this.regionForm = new FormGroup({
+    this.routeForm = new FormGroup({
       regionId: new FormControl(null),
+      routeName: new FormControl(null),
       regionName: new FormControl(null),
       routeId: new FormControl(null),
-      routeDescripotion: new FormControl(null),
+      routeDesc: new FormControl(null),
+      status: new FormControl(null),
     })
     
   }

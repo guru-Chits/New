@@ -14,27 +14,30 @@
         <div class="line p-1 pb-2 text-center">
           <div class="card-body">
             <h5 class="card-title">Total Routes</h5>   
-            <h2> 200</h2>  
+            <p class="card-text mt-3">{{totalCount}}</p> 
           </div>
         </div>
       </div>
-      <app-ag-grid [columns]="columns" [rowData]="rowData" width="100%" height="200px" [searchImg]="searchImg" [filterImg]="filterImg" [search]="search"></app-ag-grid> 
+      <app-ag-grid [columns]="column" [rowData]="data" width="100%" height="200px" [searchImg]="searchImg" [filterImg]="filterImg" [search]="search"></app-ag-grid> 
       <br>
-      <app-ag-grid [columns]="columns" [rowData]="rowData" width="100%" height="200px"></app-ag-grid> 
+      <!-- <app-ag-grid [columns]="column" [rowData]="data" width="100%" height="200px"></app-ag-grid>  -->
     </div>
+    
     <div class="col-lg-4 d-flex mb-4">
+    <div *ngIf="areaDetail">
       <div class="card ">
+        
           <div class="card-body">
                   <h6 class="text-center">Route details</h6>
                   <table class="table simple-text">
                       <tbody>
                           <tr>
                               <td><b>Route ID</b></td>
-                              <td>CMB-south</td>
+                              <td>{{areaDetail.Route.routeId}}</td>
                           </tr>
                           <tr>
                               <td><b>Region Name</b></td>
-                              <td>Coimbatore</td>
+                              <td>{{areaDetail.Route.routeName}}</td>
                           </tr>
                           <tr>
                               <td><b>Route Name</b></td>
@@ -42,7 +45,7 @@
                           </tr>
                           <tr>
                               <td><b>Route Description</b></td>
-                              <td>Deliquency Route</td>
+                              <td>{{areaDetail.Route.routeDesc}}</td>
                           </tr>
                           <tr>
                             <td><b>Allocated Staff</b></td>
@@ -54,7 +57,8 @@
                         </tr>
                           <tr>
                               <td><b>Route Status</b></td>
-                              <td class="Success">Active</td>
+                              <td>
+                                {{ areaDetail.Route.status ? 'Active' : 'Inactive' }}</td>
                           </tr>
                       </tbody>
                       
@@ -65,13 +69,14 @@
               </div>
            
           </div>
-        </div>
-   </div>
+         </div>
+    </div>
+    </div>
 
       
 
 
       
-  </div>
+ 
        
 

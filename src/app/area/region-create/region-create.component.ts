@@ -62,11 +62,11 @@ export class RegionCreateComponent implements OnInit{
       this.breadcrumsData  = [
         {
           key: 'area Management',
-          routerLink: '/route',
+          routerLink: '/regioncreate',
         },
         {
           key: 'Edit Subscriber',
-          routerLink: `route/edit/${paramData.id}`,
+          routerLink: `regioncreate/edit/${paramData.id}`,
         },
        
       

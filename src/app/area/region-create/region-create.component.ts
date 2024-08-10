@@ -5,6 +5,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { AreaService } from '../shared/service/area.service';
 import { ITableColumn } from '../../shared/interface/list-table';
 
+
 @Component({
   selector: 'app-region-create',
   templateUrl: './region-create.component.html',
@@ -60,7 +61,7 @@ export class RegionCreateComponent implements OnInit{
     if (Object.keys(paramData).length) {
       this.breadcrumsData  = [
         {
-          key: 'Subscriber Management',
+          key: 'area Management',
           routerLink: '/route',
         },
         {
@@ -116,6 +117,7 @@ this.data=this.regionData.AllRegion.map((regionDetails,index)=>({
     this.regionForm.reset()
     
   }
+
   getregionById(id: string): void {
     this.service.getregionById(id).subscribe(
       data => {
@@ -128,6 +130,8 @@ this.data=this.regionData.AllRegion.map((regionDetails,index)=>({
       }
     );
   }
+ 
+
   column: ITableColumn[] = [
     {
       label: 'S No',

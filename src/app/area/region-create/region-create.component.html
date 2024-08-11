@@ -1,7 +1,7 @@
 <div class = "container-fluid">
     <div class = "row d-flex ">
 
-        <div [ngClass]="{'col-md-8 col-lg-8': regionDetail, 'col-md-12 col-lg-12': !regionDetail}">
+        <!-- <div [ngClass]="{'col-md-8 col-lg-8': regionDetail,'col-md-8 col-lg-8': !regionDetail}"> -->
            <div class = "d-flex col mt-2">
             <div class = "d-flex col">
                 <app-breadcrumb [data]="breadcrumsData"></app-breadcrumb>
@@ -36,7 +36,7 @@
       </div>
       <div class="d-flex justify-content-end">
         <button class="btn1">Cancel</button>
-        <button class="btn" (click)="onSubmit()">Save</button>
+        <button class="btn" type="submit" (click)="onSubmit()">Save</button>
       </div>
       <app-ag-grid [columns]="column" [rowData]="data" width="100%" height="300px"></app-ag-grid> 
    
@@ -71,7 +71,7 @@
                         
                     </table>
                 <div class="botton-div d-flex justify-content-center">
-                    <button class="btn1">Edit</button>
+                    <button class="btn1" (click)="edit(regionDetail.Region._id)">Edit</button>
                     <button class="btn2">Delete</button>
                 </div>
              
@@ -81,4 +81,36 @@
 
      </div>  
      </div>
+     <div class="col-lg-4">
+        <div *ngIf="regionId">
+        <div class="card d-flex p-3">
+            <h5 class="text-center my-2 fs-4 fw-bold my-4">Regions</h5>
+            <div class="search-bar align-self-center">
+                <span class="search-icon"><img src="assets/subscriber/search-icon.svg"></span>
+                <input width="20" height="20" type="text" placeholder="Search" (input)="applyFilter($event.target.value)">
+              </div>
+            <table class="table-card mx-3">
+              <tbody>
+                <tr *ngFor="let region of displayedRegion">
+                <div class="view-all my-2">
+                  <div class="align-items-center">
+                    <div class="row border d-flex py-3 rounded-1 shadow-sm">
+                        <div class="col-6">
+                          <h6><strong>Region ID</strong></h6>
+                          <p class="m-0">{{region.regionId }}</p>
+                        </div>
+                        <div class="col-6">
+                            <h6><strong>Region Name</strong></h6>
+                            <p class="m-0">{{ region.regionName }}</p>
+                        </div>  
+                    </div>
+                  </div>
+                </div>
+                </tr>
+              </tbody>
+            </table>
+            <button class="btn1 align-self-center view-btn mt-3 px-5">View More</button>
+          </div>
+     </div>
+    </div>
 

@@ -93,7 +93,6 @@ search:boolean=true
       </div>
     `;
   }
-
   
   column: ITableColumn[] = [
     {

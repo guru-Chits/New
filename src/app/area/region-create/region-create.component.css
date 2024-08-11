@@ -44,3 +44,24 @@
 .switch-design{
     margin-left: 10px;
 }
+
+.search-bar {
+    margin-bottom: 20px;
+  }
+  .search-bar {
+    display: flex;
+    align-items: center;
+    background-color: #ECEBF5;
+    border: none;
+    padding: 5px;
+    border-radius: 10px;
+  }
+  
+  .search-bar input {
+    border: none;
+    outline: none;
+    background-color: #ECEBF5;
+    padding: 5px;
+    flex-grow: 1;
+    height: 20px;
+  } 

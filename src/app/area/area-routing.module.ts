@@ -18,7 +18,7 @@ const routes: Routes = [
   component: RegionCreateComponent, 
 },
 {
-  path:'areaedit/:id',
+  path:'routeedit/:id',
   component:AreaCreateComponent
 },
 {

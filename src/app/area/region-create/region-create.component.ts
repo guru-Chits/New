@@ -81,6 +81,28 @@ export class RegionCreateComponent implements OnInit{
           this.regionForm.patchValue(updatedRegion);
   
         })
+    this.getAllRegion()
+
+  this.activatedRoute.params.subscribe(paramData => {
+    console.log("ObjectKeys =>",Object.keys(paramData))
+    console.log("ParamData =>", paramData)
+    if (Object.keys(paramData).length) {
+      this.breadcrumsData  = [
+        {
+          key: 'area Management',
+          routerLink: '/regioncreate',
+        },
+        {
+          key: 'Edit Subscriber',
+          routerLink: `regioncreate/edit/${paramData.id}`,
+        },
+       
+      
+      ];
+      // this.heading="Edit Subscriber Details"
+
+    }
+  })
     
   })
   this.getAllRegion()

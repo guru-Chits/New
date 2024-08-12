@@ -18,7 +18,15 @@ export class RegionCreateComponent implements OnInit{
   regionDetail: any;
   totalCount:any;
   region:any=true;
+  editData:any
+  displayedRegion: any[];
+  id:any
+  editing:boolean=false
+  buttonTxt:string="Submit"
   data: any[] = [];
+  searchImg:string='assets/table/search.svg'
+  filterImg:string='assets/table/filter.svg'
+  search:boolean=true
   breadcrumsData:any = [
     {
       key: 'Route Manager',
@@ -53,34 +61,40 @@ export class RegionCreateComponent implements OnInit{
       status: new FormControl(null) // Assuming you might add validation later or leave as is
     });
 
-    this.getAllRegion()
-
-  this.activatedRoute.params.subscribe(paramData => {
-    console.log("ObjectKeys =>",Object.keys(paramData))
-    console.log("ParamData =>", paramData)
-    if (Object.keys(paramData).length) {
-      this.breadcrumsData  = [
-        {
-          key: 'area Management',
-          routerLink: '/regioncreate',
-        },
-        {
-          key: 'Edit Subscriber',
-          routerLink: `regioncreate/edit/${paramData.id}`,
-        },
-       
-      
-      ];
-      // this.heading="Edit Subscriber Details"
-
-    }
+    this.activatedRoute.params.subscribe(paramData => {
+      console.log("ObjectKeys =>",Object.keys(paramData))
+      console.log("ParamData =>", paramData)
+      if (Object.keys(paramData).length) {
+        this.breadcrumsData  = [
+          {
+            key: 'Area Management',
+            routerLink: 'area',
+          },
+          {
+            key: 'Edit Region',
+            routerLink: `area/regionEdit/${paramData.id}`,
+          },
+        ];
+        this.buttonTxt="Save Changes"
+      }
+      this.service.getregionById(paramData.id).subscribe((data) => {
+        this.editData = data;
+        this.id=this.editData.Region._id
+        console.log(this.id);
+        
+         const updatedRegion = { ...this.editData.Region};
+          this.regionForm.patchValue(updatedRegion);
+  
+        })
+    this.getAllRegion()    
   })
-    
   }
+  
+  
   getAllRegion(): void{
     console.log("region data");
     
-    this.service.getregionAll().subscribe((data)=>{
+  this.service.getregionAll().subscribe((data)=>{
   this.regionData=data;
   console.log("kk",this.regionData)
 
@@ -94,28 +108,37 @@ this.data=this.regionData.AllRegion.map((regionDetails,index)=>({
   action: "view Details"
   
 }))
+this.displayedRegion = this.data;
+console.log(this.regionData.id);
+
+
 })
   }
 
   onSubmit(): void {
-    // const formData = new FormData();
-    // const formValue = this.regionForm.getRawValue();
-      const payload = this.regionForm.value
-    // for (const key in formValue) {
-    //   if (formValue.hasOwnProperty(key)) {
-    //     formData.append(key, formValue[key]);
-    //   }
-    // }
-
-    this.service.saveregionDetails(payload, this.regionId).subscribe((data) => {
+    const payload = this.regionForm.value
+    
+    this.service.saveregionDetails(payload, this.id).subscribe((data) => {
       console.log(data);
-
-      this.getAllRegion()
-
-      // this.router.navigate(["/route"]);
     });
+    this.getAllRegion()
+
     this.regionForm.reset()
     
+  }
+
+  applyFilter(filterValue: string) {
+    if (!filterValue || !this.data) {
+      this.displayedRegion = this.data; // Show all if there's no filter or data is not defined
+      return;
+    }
+  
+    this.displayedRegion = this.data.filter(region => {
+      const regionId = region.regionId ? region.regionId.toString().toLowerCase() : '';
+      const regionName = region.regionName ? region.regionName .toLowerCase() : '';
+
+      return regionId.includes(filterValue.toLowerCase()) || regionName.includes(filterValue.toLowerCase());
+    });
   }
 
   getregionById(id: string): void {
@@ -130,7 +153,11 @@ this.data=this.regionData.AllRegion.map((regionDetails,index)=>({
       }
     );
   }
- 
+  edit(id: any){
+    console.log(id);
+    this.router.navigate([`area/regionedit/${id}`]);
+    this.editing=true
+    }
 
   column: ITableColumn[] = [
     {
@@ -142,32 +169,17 @@ this.data=this.regionData.AllRegion.map((regionDetails,index)=>({
   
     { label: 'Region ID', field:'regionId', sortable: true,
       filter:false,
-      
+      cellStyle: { color: '#50A1A5' },
      },
     { label: 'Region Name', field: 'regionName', sortable: true , filter:true,
   
         },
     { label: '', field: 'action', sortable: true , filter:true,
+      cellStyle: { color: '#50A1A5' },
       onCellClicked: (event: CellClickedEvent) =>
         this.getregionById(event.data.id)
         },
+        
     
   ];
-//   columns: ColDef[] = [
-//     { field: 'sno', headerName: 'S No.', sortable: true },
-//     { field: 'regionId', headerName: 'Region ID', sortable: true },
-//     { field: 'regionName', headerName: 'Region Name', sortable: true },
-//     { field: 'status', headerName: '', sortable: true }
-//   ];
-
-//   rowData = [
-//     { sno: '1', regionId: 'CMB', regionName: 'Coimbatora', status: 'View Details' },
-//     { sno: '2', regionId: 'CHN', regionName: 'Chennai', status: 'View Details' },
-//     { sno: '3', regionId: 'BNG', regionName: 'Banglore', status: 'View Details' },
-//     { sno: '4', regionId: 'MAD', regionName: 'Madurai', status: 'View Details' },
-//     { sno: '5', regionId: 'TRY', regionName: 'Trichy', status: 'View Details' },
-//     { sno: '6', regionId: 'TVL', regionName: 'Tirunelveli', status: 'View Details' },
-//     { sno: '7', regionId: 'THU', regionName: 'Thoothukudi', status: 'View Details' },
-
-//  ]
 }

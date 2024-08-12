@@ -13,16 +13,21 @@ export class AreaCreateComponent implements OnInit{
   routeForm : FormGroup
   regionIdList: any
   routeData:any
-  routeId:string
   routeDetail: any;
+  editData:any
   totalCount:any;
   route:any=true;
+  id:any
   data: any[] = [];
-  
+  displayedRoute:any
+  buttonTxt:string="Submit"
   selectedRegionId: String =''
   selectedRouteName: String =''
   selectedRegionName: String=''
   generatedRouteID: String=''
+ search:boolean=true
+ searchImg:string='assets/table/search.svg'
+ filterImg:string='assets/table/filter.svg'
 
   breadcrumsData:any = [
     {
@@ -73,6 +78,7 @@ export class AreaCreateComponent implements OnInit{
       this.regionIdList = data.AllRegion;
       console.log("regionlist",this.regionIdList)
     })
+    
 
     this.activatedRoute.params.subscribe(paramData => {
       console.log("ObjectKeys =>",Object.keys(paramData))
@@ -80,19 +86,30 @@ export class AreaCreateComponent implements OnInit{
       if (Object.keys(paramData).length) {
         this.breadcrumsData  = [
           {
-            key: 'area Management',
-            routerLink: '/areacreate',
+            key: 'Route Manager',
+            routerLink: 'area',
           },
           {
-            key: 'Edit Subscriber',
-            routerLink: `areacreate/edit/${paramData.id}`,
+            key: 'Edit Route',
+            routerLink: `/area/routeedit/${paramData.id}`,
           },
-         
-        
         ];
-        // this.heading="Edit Subscriber Details"
-  
+        this.buttonTxt="Save Changes"
+        this.service.getrouteById(paramData.id).subscribe((data) => {
+          this.editData = data;
+          console.log(this.editData);
+          
+          this.id=this.editData.Route._id
+          console.log(this.id);
+          
+           const updatedRoute = { ...this.editData.Route};
+            this.routeForm.patchValue(updatedRoute);
+    
+          })
       }
+      this.getrouteAll()    
+
+
     })
       
   }
@@ -115,9 +132,18 @@ export class AreaCreateComponent implements OnInit{
       action: "view Details"
     
       }))
+      this.displayedRoute = this.data;
+      console.log(this.displayedRoute);
+      
+
       })
     
   }
+  edit(id: any){
+    console.log(id);
+    this.router.navigate([`area/routeedit/${id}`]);
+    }
+
   
     // patch module name to the form
     onModuleChange(){
@@ -153,7 +179,7 @@ export class AreaCreateComponent implements OnInit{
         routeDesc: formValues.routeDesc,
         status: formValues.status,
       };
-      this.service.saverouteDetails(payload, this.routeId).subscribe((data) => {
+      this.service.saverouteDetails(payload, this.id).subscribe((data) => {
         console.log(data);
   
         this.getrouteAll()
@@ -187,7 +213,8 @@ export class AreaCreateComponent implements OnInit{
       },
     
       { label: 'Route ID', field:'routeId', sortable: true,
-        filter:false,
+        filter:false,      cellStyle: { color: '#50A1A5' },
+
         
        },
       { label: 'Region Name', field: 'regionName', sortable: true , filter:true,
@@ -196,30 +223,29 @@ export class AreaCreateComponent implements OnInit{
       { label: 'Route Name', field: 'routeName', sortable: true , filter:true,
       
         },      
-      { label: '', field: 'action', sortable: true , filter:true,
+      { label: '', field: 'action', sortable: true , filter:true,      cellStyle: { color: '#50A1A5' },
+
         onCellClicked: (event: CellClickedEvent) =>
           this.getrouteById(event.data.id)
           },
       
     ];
   
+    applyFilter(filterValue: string) {
+      if (!filterValue || !this.data) {
+        this.displayedRoute = this.data; // Show all if there's no filter or data is not defined
+        return;
+      }
+    
+      this.displayedRoute = this.data.filter(route => {
+        const routeId = route.routeId ? route.routeId.toString().toLowerCase() : '';
+        const regionName = route.regionName ? route.regionName .toLowerCase() : '';
+        const routeName = route.routeName ? route.routeName .toLowerCase() : '';
+
+        return routeId.includes(filterValue.toLowerCase()) || regionName.includes(filterValue.toLowerCase());
+      });
+    }
+  delete(id:any){
+
+  }
 }
-//   columns: ColDef[] = [
-//     { field: 'sno', headerName: 'S No.', sortable: true },
-//     { field: 'routeId', headerName: 'Route ID', sortable: true },
-//     { field: 'regionName', headerName: 'Region Name', sortable: true },
-//     { field: 'routeName', headerName: 'Route Name', sortable: true },
-//     { field: 'status', headerName: '', sortable: true }
-//   ];
-
-//   rowData = [
-//     { sno: '1', routeId: 'CMB', regionName: 'Coimbatora', routeName: "Gandhipuram", status: 'View Details' },
-//     { sno: '2', routeId: 'CHN', regionName: 'Chennai', routeName: "Gandhipuram", status: 'View Details' },
-//     { sno: '3', routeId: 'BNG', regionName: 'Banglore', routeName: "Gandhipuram", status: 'View Details' },
-//     { sno: '4', routeId: 'MAD', regionName: 'Madurai', routeName: "Gandhipuram", status: 'View Details' },
-//     { sno: '5', routeId: 'TRY', regionName: 'Trichy', routeName: "Gandhipuram", status: 'View Details' },
-//     { sno: '6', routeId: 'TVL', regionName: 'Tirunelveli', routeName: "Gandhipuram", status: 'View Details' },
-//     { sno: '7', routeId: 'THU', regionName: 'Thoothukudi', routeName: "Gandhipuram", status: 'View Details' },
-
-//  ]
-

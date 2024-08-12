@@ -21,8 +21,12 @@ export class RegionCreateComponent implements OnInit{
   editData:any
   displayedRegion: any[];
   id:any
-
+  editing:boolean=false
+  buttonTxt:string="Submit"
   data: any[] = [];
+  searchImg:string='assets/table/search.svg'
+  filterImg:string='assets/table/filter.svg'
+  search:boolean=true
   breadcrumsData:any = [
     {
       key: 'Route Manager',
@@ -67,46 +71,23 @@ export class RegionCreateComponent implements OnInit{
             routerLink: 'area',
           },
           {
-            key: 'Edit Subscriber',
+            key: 'Edit Region',
             routerLink: `area/regionEdit/${paramData.id}`,
           },
         ];
+        this.buttonTxt="Save Changes"
       }
       this.service.getregionById(paramData.id).subscribe((data) => {
         this.editData = data;
-        this.regionId=this.editData.Region._id
-        console.log(this.regionId);
+        this.id=this.editData.Region._id
+        console.log(this.id);
         
          const updatedRegion = { ...this.editData.Region};
           this.regionForm.patchValue(updatedRegion);
   
         })
-    this.getAllRegion()
-
-  this.activatedRoute.params.subscribe(paramData => {
-    console.log("ObjectKeys =>",Object.keys(paramData))
-    console.log("ParamData =>", paramData)
-    if (Object.keys(paramData).length) {
-      this.breadcrumsData  = [
-        {
-          key: 'area Management',
-          routerLink: '/regioncreate',
-        },
-        {
-          key: 'Edit Subscriber',
-          routerLink: `regioncreate/edit/${paramData.id}`,
-        },
-       
-      
-      ];
-      // this.heading="Edit Subscriber Details"
-
-    }
+    this.getAllRegion()    
   })
-    
-  })
-  this.getAllRegion()
-
   }
   
   
@@ -128,15 +109,16 @@ this.data=this.regionData.AllRegion.map((regionDetails,index)=>({
   
 }))
 this.displayedRegion = this.data;
+console.log(this.regionData.id);
+
 
 })
   }
 
   onSubmit(): void {
     const payload = this.regionForm.value
-    console.log(this.regionId);
     
-    this.service.saveregionDetails(payload, this.regionId).subscribe((data) => {
+    this.service.saveregionDetails(payload, this.id).subscribe((data) => {
       console.log(data);
     });
     this.getAllRegion()
@@ -174,15 +156,7 @@ this.displayedRegion = this.data;
   edit(id: any){
     console.log(id);
     this.router.navigate([`area/regionedit/${id}`]);
-    // this.service.getregionById(id).subscribe((data) => {
-    //   this.editData = data;
-
-    //   console.log(data);
-      
-    //    const updatedRegion = { ...this.editData.Region};
-    //     this.regionForm.patchValue(updatedRegion);
-
-    //   })
+    this.editing=true
     }
 
   column: ITableColumn[] = [
@@ -195,15 +169,17 @@ this.displayedRegion = this.data;
   
     { label: 'Region ID', field:'regionId', sortable: true,
       filter:false,
-      
+      cellStyle: { color: '#50A1A5' },
      },
     { label: 'Region Name', field: 'regionName', sortable: true , filter:true,
   
         },
     { label: '', field: 'action', sortable: true , filter:true,
+      cellStyle: { color: '#50A1A5' },
       onCellClicked: (event: CellClickedEvent) =>
         this.getregionById(event.data.id)
         },
+        
     
   ];
 }

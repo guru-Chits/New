@@ -14,11 +14,12 @@ export class AreaComponent {
 areaData:any
 data: any[] = [];
 selectedId:any
+uniqueRegions: string[];
 areaDetail:any
 totalCount:number;
   searchImg:string='assets/table/search.svg'
   filterImg:string='assets/table/filter.svg'
-  search:boolean=true
+  // search:boolean=true
   constructor(
     private service:AreaService,
     private router:Router
@@ -40,12 +41,14 @@ totalCount:number;
     this.totalCount=this.areaData.AllRoute.length
     this.data=this.areaData.AllRoute.map((areaDetails,index)=>({
       id:areaDetails?._id,
+      regionName:areaDetails?.regionName,
       routeId: areaDetails?.routeId,
       routeName: areaDetails?.routeName,
       routeNo: index + 1,
       action: "view Details"
       
     }))
+    this.uniqueRegions = [...new Set(this.data.map(item => item.regionName))];
   })
 
  
@@ -63,7 +66,9 @@ getrouteById(id: string): void {
   );
 }
 
-
+getDataByRegion(region: string) {
+  return this.data.filter(item => item.regionName === region);
+}
 
 column: ITableColumn[] = [
   {
@@ -74,16 +79,16 @@ column: ITableColumn[] = [
   },
 
   { label: 'Route ID', field:'routeId', sortable: true,
-    filter:false,
+    filter:false, cellStyle: { color: '#50A1A5' },
     
    },
   { label: 'Route Name', field: 'routeName', sortable: true , filter:true,
 
       },
-  { label: '', field: 'action', sortable: true , filter:true,
+  { label: '', field: 'action', sortable: true ,cellStyle: { color: '#50A1A5' },
     onCellClicked: (event: CellClickedEvent) =>
       this.getrouteById(event.data.id)
-      },
+  },
   
 ];
 

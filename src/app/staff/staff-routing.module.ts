@@ -14,7 +14,7 @@ const routes: Routes = [
     component: StaffCreateComponent, 
   },  
   {
-    path: 'view',
+    path: 'view/:id',
     component: StaffViewComponent, 
   },
   {

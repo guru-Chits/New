@@ -1,0 +1,28 @@
+<div class="d-flex align-items-center flex-wrap border-bottom">
+  <ul class="d-flex align-items-center">
+    <li *ngFor="let item of data; let i = index" class="d-inline-flex align-items-center">
+      <div *ngIf="!item?.disable" class="d-inline-flex align-items-center">
+        <a *ngIf="!item?.onclick"
+           [routerLink]="item.routerLink"
+           [queryParams]="item?.queryParams"
+           (click)="updateIfStepChanges(item)"
+           class="cursor-pointer text-sm link-hover">
+          {{ item.key }}
+        </a>
+        <p *ngIf="item?.onclick"
+           (click)="onClick()"
+           class="cursor-pointer text-sm link-hover">
+          {{ item.key }}
+        </p>
+        <img *ngIf="i + 1 !== data.length" src="../../../../assets/breadcrumb/breadcrumb.svg">
+        <!-- <svg *ngIf="i + 1 !== data.length"
+             class="w-1 h-1 fill-current mx-1"
+             xmlns="http://www.w3.org/2000/svg"
+             viewBox="0 0 24 24">
+          <path d="M0 0h24v24H0V0z" fill="none" />
+          <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6-6-6z" />
+        </svg> -->
+      </div>
+    </li>
+  </ul>
+</div>

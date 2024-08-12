@@ -2,20 +2,20 @@
     size: 14px;
     color: #1A1A1A;
     font-weight: 700;
-    font-family: Outfit;
 }
 
 .btn{
     background-color: #3E3A97;
     color:#FFFFFF;
-    border-radius: 10px;
+    border-radius: 3px;
+    padding:5px
     /* width: 184px; */
 }
 .btn1{
     background-color: transparent;
-    border-color: #3E3A97;
+    border:1px solid #3E3A97;
     color: #3E3A97;
-    border-radius: 10px;
+    border-radius: 5px;
     margin-right: 10px;
 }
 
@@ -27,16 +27,15 @@
 
 .btn2{
     background-color: #F04438;
-    border-color: #F04438;
     color: #FFFFFF;
-    border-radius: 10px;
-    margin-right: 10px;
+    border-radius: 4px;
+    /* margin-right: 10px; */
+    border: none;
 }
 
 .simple-text{
     margin-left: 10px;
     margin-bottom: 7px;
-    font-family: Outfit;
     font-size: 13px;
     font-weight: 400;
     color:#0B0B0B;
@@ -44,3 +43,39 @@
 .switch-design{
     margin-left: 10px;
 }
+
+.search-bar {
+    margin-bottom: 20px;
+  }
+  .search-bar {
+    display: flex;
+    align-items: center;
+    background-color: #ECEBF5;
+    border: none;
+    padding: 5px;
+    border-radius: 10px;
+  }
+  
+  .search-bar input {
+    border: none;
+    outline: none;
+    background-color: #ECEBF5;
+    padding: 5px;
+    flex-grow: 1;
+    height: 20px;
+  } 
+.detail{
+    height:650px;
+    margin-bottom: 10px;
+}
+.invalid-feedback {
+    color: red;
+    display: block;
+  }
+  
+  .form-control.ng-invalid.ng-touched {
+    border-color: red;
+  }
+  .click{
+    cursor: pointer;
+  }

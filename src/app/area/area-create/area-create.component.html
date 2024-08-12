@@ -1,90 +1,151 @@
 <div class = "container-fluid">
     <div class = "row d-flex ">
-        <div class = "col-lg-8">
+      <div [ngClass]="{'col-md-8 col-lg-8': routeDetail||id,' col-lg-12 col-md-12':!routeDetail&&!id}">
            <div class = "d-flex col mt-2">
             <div class = "d-flex col">
-                <label class = "bold-text"> Route Manager</label>
+                <app-breadcrumb [data]="breadcrumsData"></app-breadcrumb>
             </div>
             <div class = "d-flex col justify-content-end">
-                <button class="btn">Create New Region</button>
+                <button class="btn" routerLink="regioncreate" routerLink="/area/regioncreate">Create New Region</button>
             </div>
            </div>
            <div class="d-flex col ">
-            <form class="form" [formGroup]="regionForm">
-            <div class="d-flex row form-group mt-3 mb-2">
-                <div class="col-lg-4">
-                    <label class="simple-text">Region ID</label>
-                    <input class = "form-control" placeholder="Enter your region" formControlName="regionId">    
-                </div>
-            <div class="col-lg-4">
-                <label class="simple-text">Region Name</label>
-                <input class = "form-control" placeholder="Enter your Region ID" formControlName ="regionName">
-            </div>
-            <div class="col-lg-4">
-                <label class="simple-text">Route ID</label>
-                <input class = "form-control" placeholder="Region Description" formControlName="routeId">
-            </div>
-        </div>
-        <div class="d-flex row form-group mt-2 mb-5">
-            <div class="col-lg-4">
-                <label class="simple-text">Route Description</label>
-                <input class = "form-control" placeholder="Region Description" formControlName="routeDescription">
-            </div>
-        </div>
-        </form>
+            <form class="form" [formGroup]="routeForm">
+                <div class="d-flex row form-group mt-3 mb-2">
+                    <div class="col-lg-4">
+                      <label class="simple-text">Region ID</label>
+                      <!-- <input class="form-control" placeholder="Enter your Region ID" formControlName="regionId"> -->
+                      <select  class="form-control form-control-sm p-2" id="regionId" formControlName="regionId" [(ngModel)]="selectedRegionId" (change)="onModuleChange()">
+                        <option value="" placeholder="Enter your Region ID" disabled selected>Region ID</option>
+
+                        <option class="form-control"  *ngFor="let region of regionIdList"  [value]="region._id ">{{region.regionId}}</option>                 
+                      </select>
+                    </div>
+                  
+                    <div class="col-lg-4">
+                      <label class="simple-text">Route Name</label>
+                      <input class="form-control" placeholder="Region Name" formControlName="routeName" (change)="getRouteNameValue()">
+                      <div *ngIf="routeForm.get('routeName').touched && routeForm.get('routeName').invalid">
+                        <small *ngIf="routeForm.get('routeName').errors?.required" class="text-danger">Route Name is required.</small>
+                        <small *ngIf="routeForm.get('routeName').errors?.pattern" class="text-danger">Route Name must start with a capital letter and contain only alphabetic characters.</small>
+                      </div>
+                    </div>
+                  
+                    <div class="col-lg-4">
+                      <label class="simple-text">Route ID</label>
+                      <input class="form-control" placeholder="Route ID" formControlName="routeId">
+                     
+                    </div>
+                  </div>
+                  <div class="d-flex row form-group mt-2 mb-5">
+                    <div class="col-lg-4">
+                      <label class="simple-text">Route Description</label>
+                      <input class="form-control" placeholder="Route Description" formControlName="routeDesc">
+                      <div *ngIf="routeForm.get('routeDesc').touched && routeForm.get('routeDesc').invalid">
+                        <small *ngIf="routeForm.get('routeDesc').errors?.minlength" class="text-danger">Route Description must be at least 10 characters long.</small>
+                        <small *ngIf="routeForm.get('routeDesc').errors?.maxlength" class="text-danger">Route Description must be no more than 100 characters long.</small>
+                        <small *ngIf="routeForm.get('routeDesc').errors?.pattern" class="text-danger">Route Description can only contain letters, numbers, spaces, and common punctuation.</small>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col d-flex">
+                      <div class="form-check form-switch switch-design">
+                          <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked" checked formControlName="status">
+                          <label class="form-check-label" for="flexSwitchCheckChecked">Status of the Region</label>
+                        </div>
+                    </div>
+              
+                  </div>
+                  
+            </form>
       </div>
-      <div class="col d-flex">
-        <div class="form-check form-switch switch-design">
-            <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked" checked>
-            <label class="form-check-label" for="flexSwitchCheckChecked">Status of the Region</label>
-          </div>
+      <div class="d-flex justify-content-end m-2">
+        <button class="btn1"  routerLink="/area">Cancel</button>
+        <button class="btn" (click)="onSubmit()">{{buttonTxt}}</button>
       </div>
-      <div class="d-flex justify-content-end">
-        <button class="btn1">Cancel</button>
-        <button class="btn">Save</button>
+      <div *ngIf="!id" class="mt-5 mb-4">
+      <app-ag-grid [columns]="column" [rowData]="data" width="100%" height="250px" [search]="search" [searchImg]="searchImg" [filterImg]="filterImg"></app-ag-grid> 
       </div>
-      <app-ag-grid [columns]="columns" [rowData]="rowData" width="100%" height="200px"></app-ag-grid> 
-   
     </div>
      
      <div class="col-lg-4 d-flex mb-4">
-        <div class="card ">
-            <div class="card-body">
-                    <h6 class="text-center">Route details</h6>
+      <div *ngIf="routeDetail">
+        <div class="card detail">
+            <div class="card-body ">
+                    <h4 class="text-center  my-4">Route Details</h4>
                     <table class="table simple-text">
                         <tbody>
                             <tr>
                                 <td><b>Route ID</b></td>
-                                <td>CMB-south</td>
+                                <td>{{routeDetail.Route.routeId}}</td>
                             </tr>
                             <tr>
                                 <td><b>Region Name</b></td>
-                                <td>Coimbatore</td>
+                                <td>{{routeDetail.Route.regionName}}</td>
                             </tr>
                             <tr>
                                 <td><b>Route Name</b></td>
-                                <td>Gandhipuram</td>
+                                <td>{{routeDetail.Route.routeName}}</td>
                             </tr>
                             <tr>
                                 <td><b>Route Description</b></td>
-                                <td>Deliquency Route</td>
+                                <td>{{routeDetail.Route.routeDesc}}</td>
                             </tr>
                             <tr>
                                 <td><b>Route Status</b></td>
-                                <td class="Success">Active</td>
+                                <td>
+                                    {{routeDetail.Route.status ? 'Active' : 'InActive' }}
+                                </td>
                             </tr>
                         </tbody>
                         
                     </table>
                 <div class="botton-div d-flex justify-content-center">
-                    <button class="btn1">Edit</button>
-                    <button class="btn2">Delete</button>
+                    <button class="btn1 px-3 py-1" (click)="edit(routeDetail.Route._id)">Edit</button>
+                    <button class="btn2 px-4 py-1" (click)="delete(routeDetail.Route._id)">Delete</button>
                 </div>
              
             </div>
+ 
           </div>
-     </div>
 
-        
-    </div>
+     </div>
+     <div *ngIf="id">
+      <div class="card d-flex p-3 mb-2">
+          <h5 class="text-center my-2 fs-4 fw-bold my-4">Regions</h5>
+          <div class="search-bar align-self-center">
+              <span class="search-icon"><img src="assets/subscriber/search-icon.svg"></span>
+              <input width="20" height="20" type="text" placeholder="Search" (input)="applyFilter($event.target.value)">
+            </div>
+          <table class="table-card mx-3">
+            <tbody>
+              <tr *ngFor="let route of displayedRoute">
+              <div class="view-all my-2">
+                <div class="align-items-center">
+                  <div class="row border d-flex py-3 rounded-1 shadow-sm click"  (click)="edit(route.id)">
+                      <div class="col-6">
+                          <h6><strong>Region Name</strong></h6>
+                          <p class="m-0">{{ route.regionName }}</p>
+                      </div>  
+                      <div class="col-6">
+                        <h6><strong>Route ID</strong></h6>
+                        <p class="m-0" style="color:#50A1A5">{{route.routeId }}</p>
+                      </div>
+                      <div class="col-6">
+                        <h6><strong>Route Name</strong></h6>
+                        <p class="m-0">{{route.routeName }}</p>
+                      </div>
+                  </div>
+                </div>
+              </div>
+              </tr>
+            </tbody>
+          </table>
+          <button class="btn1 align-self-center view-btn mt-3 px-5" routerLink="area">View More</button>
+        </div>
+   </div> 
+
+     </div>   
+     </div>
 </div>

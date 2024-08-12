@@ -1,40 +1,251 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
-import { ColDef } from 'ag-grid-community/dist/types/core/entities/colDef';
-
+import { FormControl, FormGroup,FormBuilder,ValidatorFn, Validators } from '@angular/forms';
+import { CellClickedEvent, ColDef } from 'ag-grid-community';
+import { AreaService } from '../shared/service/area.service';
+import { ActivatedRoute, Router } from '@angular/router';
+import { ITableColumn } from '../../shared/interface/list-table';
 @Component({
   selector: 'app-area-create',
   templateUrl: './area-create.component.html',
   styleUrl: './area-create.component.css'
 })
 export class AreaCreateComponent implements OnInit{
-  regionForm : FormGroup
+  routeForm : FormGroup
+  regionIdList: any
+  routeData:any
+  routeDetail: any;
+  editData:any
+  totalCount:any;
+  route:any=true;
+  id:any
+  data: any[] = [];
+  displayedRoute:any
+  buttonTxt:string="Submit"
+  selectedRegionId: String =''
+  selectedRouteName: String =''
+  selectedRegionName: String=''
+  generatedRouteID: String=''
+ search:boolean=true
+ searchImg:string='assets/table/search.svg'
+ filterImg:string='assets/table/filter.svg'
+
+  breadcrumsData:any = [
+    {
+      key: 'Route Manager',
+      routerLink: '/area',
+    },
+    {
+      key: 'Create New Route',
+      routerLink: 'area/areacreate',
+    },
+  ];
+  constructor( private fb: FormBuilder,
+    private activatedRoute:ActivatedRoute,
+    private service: AreaService,
+    private router:Router,
+  
+  ) { }
   ngOnInit(): void{
-    this.regionForm = new FormGroup({
-      regionId: new FormControl(null),
-      regionName: new FormControl(null),
-      routeId: new FormControl(null),
-      routeDescripotion: new FormControl(null),
+    this.routeForm = new FormGroup({
+      regionId: new FormControl(null, [
+        Validators.required,
+        Validators.pattern('^[A-Z]{3}$') // Exactly 3 capital letters
+      ]),
+      routeName: new FormControl(null, [
+        Validators.required,
+        Validators.pattern('^[A-Z][a-zA-Z]*$') // First letter capitalized, no spaces at beginning or end, only alphabetic characters
+      ]),
+      regionName: new FormControl(null, [
+        Validators.required,
+        Validators.pattern('^[A-Z][a-zA-Z]*$') // First letter capital, rest alphabetic
+      ]),
+      routeId: new FormControl(null, [
+        Validators.required,
+        Validators.pattern('^[A-Z]{3} - [A-Z][a-zA-Z]*$') // "Region ID - Area Name" format
+      ]),
+      routeDesc: new FormControl(null, [
+        Validators.minLength(10),
+        Validators.maxLength(100),
+        Validators.pattern('^[a-zA-Z0-9 ,.!?-]+$') // Valid characters including letters, numbers, and common punctuation
+      ]),
+      status: new FormControl(null),
+    })
+    this.getrouteAll()
+ 
+    // get regionID list
+    this.service.getregionAll().subscribe((data:any) => {
+      console.log(data);
+      this.regionIdList = data.AllRegion;
+      console.log("regionlist",this.regionIdList)
     })
     
+
+    this.activatedRoute.params.subscribe(paramData => {
+      console.log("ObjectKeys =>",Object.keys(paramData))
+      console.log("ParamData =>", paramData)
+      if (Object.keys(paramData).length) {
+        this.breadcrumsData  = [
+          {
+            key: 'Route Manager',
+            routerLink: 'area',
+          },
+          {
+            key: 'Edit Route',
+            routerLink: `/area/routeedit/${paramData.id}`,
+          },
+        ];
+        this.buttonTxt="Save Changes"
+        this.service.getrouteById(paramData.id).subscribe((data) => {
+          this.editData = data;
+          console.log(this.editData);
+          
+          this.id=this.editData.Route._id
+          console.log(this.id);
+          
+           const updatedRoute = { ...this.editData.Route};
+            this.routeForm.patchValue(updatedRoute);
+    
+          })
+      }
+      this.getrouteAll()    
+
+
+    })
+      
   }
- 
-  columns: ColDef[] = [
-    { field: 'sno', headerName: 'S No.', sortable: true },
-    { field: 'routeId', headerName: 'Route ID', sortable: true },
-    { field: 'regionName', headerName: 'Region Name', sortable: true },
-    { field: 'routeName', headerName: 'Route Name', sortable: true },
-    { field: 'status', headerName: '', sortable: true }
-  ];
+  getrouteAll(): void{
+      console.log("region data");
+      
+      this.service.getrouteAll().subscribe((data)=>{
+    this.routeData=data;
+    console.log("kk",this.routeData)
+  
+  
+    this.totalCount=this.routeData.AllRoute.length
+    this.data=this.routeData.AllRoute.map((routeDetails,index)=>({
+      id:routeDetails?._id,
+      regionId: routeDetails?.regionId,
+      regionName: routeDetails?.regionName,
+      routeId: routeDetails?.routeId,
+      routeName:routeDetails?.routeName,
+      routeNo: index + 1,
+      action: "view Details"
+    
+      }))
+      this.displayedRoute = this.data;
+      console.log(this.displayedRoute);
+      
 
-  rowData = [
-    { sno: '1', routeId: 'CMB', regionName: 'Coimbatora', routeName: "Gandhipuram", status: 'View Details' },
-    { sno: '2', routeId: 'CHN', regionName: 'Chennai', routeName: "Gandhipuram", status: 'View Details' },
-    { sno: '3', routeId: 'BNG', regionName: 'Banglore', routeName: "Gandhipuram", status: 'View Details' },
-    { sno: '4', routeId: 'MAD', regionName: 'Madurai', routeName: "Gandhipuram", status: 'View Details' },
-    { sno: '5', routeId: 'TRY', regionName: 'Trichy', routeName: "Gandhipuram", status: 'View Details' },
-    { sno: '6', routeId: 'TVL', regionName: 'Tirunelveli', routeName: "Gandhipuram", status: 'View Details' },
-    { sno: '7', routeId: 'THU', regionName: 'Thoothukudi', routeName: "Gandhipuram", status: 'View Details' },
+      })
+    
+  }
+  edit(id: any){
+    console.log(id);
+    this.router.navigate([`area/routeedit/${id}`]);
+    }
 
- ]
+  
+    // patch module name to the form
+    onModuleChange(){
+      console.log("selected regionId", this.selectedRegionId);
+      const region = this.regionIdList.find((module) => module._id === this.selectedRegionId);
+      if(region){
+        this.selectedRegionName = region.regionName
+      }
+      console.log("route form", this.routeForm);
+      
+    }
+    getRouteNameValue() {
+      const routeNameValue = this.routeForm.get('routeName').value;
+      
+      console.log('Route Name:', routeNameValue);
+      this.selectedRouteName = routeNameValue
+      this.generatedRouteID= `${this.selectedRegionName}_${this.selectedRouteName}`;
+      console.log("generatedID",this.generatedRouteID)
+
+      this.routeForm.get('routeId').patchValue(this.generatedRouteID);
+      // return routeNameValue;
+    }
+  
+    onSubmit(): void {
+     
+      
+      const formValues = this.routeForm.value
+      const payload = {
+        regionId: formValues.regionId,
+        routeName: formValues.routeName,
+        regionName: this.selectedRegionName, // Use the predefined regionName here
+        routeId: formValues.routeId,
+        routeDesc: formValues.routeDesc,
+        status: formValues.status,
+      };
+      this.service.saverouteDetails(payload, this.id).subscribe((data) => {
+        console.log(data);
+  
+        this.getrouteAll()
+  
+        // this.router.navigate(["/route"]);
+      });
+      this.routeForm.reset()
+      
+    }
+  
+    getrouteById(id: string): void {
+      this.service.getrouteById(id).subscribe(
+        data => {
+          this.routeDetail = data;
+    
+          console.log("region",this.routeDetail)
+        },
+        error => {
+          console.error('Error fetching subscriber', error);
+        }
+      );
+    }
+   
+  
+  column: ITableColumn[] = [
+      {
+        label: 'S No',
+        field: 'routeNo',
+        filter:false,
+       
+      },
+    
+      { label: 'Route ID', field:'routeId', sortable: true,
+        filter:false,      cellStyle: { color: '#50A1A5' },
+
+        
+       },
+      { label: 'Region Name', field: 'regionName', sortable: true , filter:true,
+    
+          },
+      { label: 'Route Name', field: 'routeName', sortable: true , filter:true,
+      
+        },      
+      { label: '', field: 'action', sortable: true , filter:true,      cellStyle: { color: '#50A1A5' },
+
+        onCellClicked: (event: CellClickedEvent) =>
+          this.getrouteById(event.data.id)
+          },
+      
+    ];
+  
+    applyFilter(filterValue: string) {
+      if (!filterValue || !this.data) {
+        this.displayedRoute = this.data; // Show all if there's no filter or data is not defined
+        return;
+      }
+    
+      this.displayedRoute = this.data.filter(route => {
+        const routeId = route.routeId ? route.routeId.toString().toLowerCase() : '';
+        const regionName = route.regionName ? route.regionName .toLowerCase() : '';
+        const routeName = route.routeName ? route.routeName .toLowerCase() : '';
+
+        return routeId.includes(filterValue.toLowerCase()) || regionName.includes(filterValue.toLowerCase());
+      });
+    }
+  delete(id:any){
+
+  }
 }

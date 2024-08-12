@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl,FormBuilder, FormGroup, ValidatorFn, Validators } from '@angular/forms';
+import { StaffService } from '../shared/service/staff.service';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-staff-create',
@@ -8,60 +10,201 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 })
 export class StaffCreateComponent implements OnInit{
   staffsForm: FormGroup;
+  heading:string="Create Staff"
 
-  profileImageUrl: string | ArrayBuffer | null = null;
+  profileUrl: string | ArrayBuffer | null = null;
   defaultImageUrl = 'assets/subscriber/user.svg'; // Path to default profile image
   get employeeIdControl() { return this.staffsForm.get('employeeId'); };
- constructor(private formBuilder:FormBuilder){}
+  constructor( private fb: FormBuilder,
+    private activatedRoute:ActivatedRoute,
+    private service: StaffService,
+    private router:Router,
+  
+  ) { }
 
+ breadcrumsData: any= [
+  {
+    key: 'Staff Management',
+    routerLink: '/staff',
+  },
+  { 
+    key: 'Create Staff',
+    routerLink: '/staff/create',
+  },
+];
  filesInfo = {
-  panCard: null,
-  aadharCard: null,
-  passbook: null,
-  drivingLicense: null
+  panUrl: null,
+  aadharUrl: null,
+  passbookUrl: null,
+  drivingLicenseUrl: null
 };
+data: any[] = [];
+staffData:any={}
+staffId:string
+staff:any=true
+private staffIdPrefix: string = 'KNG-';
+ staffIdCounter: string='E00'
+ displayedStaffs: any[];
 
+ inputText = '';
 ngOnInit(){
-    this.staffsForm = this.formBuilder.group({
-      employeeId: ["", [Validators.required]],
-      firstName: ["", [Validators.required]],
-      lastName: ["", [Validators.required]],
-      gender: ["", [Validators.required]],
-      role: ["", [Validators.required]],
-      contactNumber: ["", [Validators.required]],
-      place: ["", [Validators.required]],
-      mail:["",Validators.required],
-      dob: ["", [Validators.required]],
-      routeId: ["", [Validators.required]],
-      accountNumber: ["", [Validators.required]],
-      ifsc: ["", [Validators.required]],
-      upi: ["", [Validators.required]],
-      panNo: ["", [Validators.required]],
-      panCard: ["", [Validators.required]],
-      aadharCardNo: ["", [Validators.required]],
-      aadharCard: ["", [Validators.required]],
-      drivingLicense: ["", [Validators.required]],
-      drivingNo: ["", [Validators.required]],
-      bankName: ["", [Validators.required]],
-      passbook: ["", [Validators.required]],
-      workingStatus: [false, [Validators.required]],
-      bgVerify: ["", [Validators.required]],
-      bVRemarks: ["", [Validators.required]],
+  this.staffsForm = this.fb.group({
+    employeeId: [{ value: '', disabled: true },],
+    firstName: ["", [Validators.required]],
+    lastName: ["", [Validators.required]],
+    gender: ["", [Validators.required]],
+    role: ["", [Validators.required]],
+    contact: ["", [Validators.required, Validators.pattern(/^\d{10}$/)]],
+    address: ["", [Validators.required, Validators.pattern(/^[a-zA-Z0-9\s,.'-]+$/)]],
+    emailId:["", [Validators.required, Validators.email, Validators.minLength(10), Validators.maxLength(100)]],
+    dob: ['', [Validators.required,
+      this.conditionalValidator(() => !!this.staffsForm?.get('dob')?.value, this.ageValidator(18)),
+    ]],
+    routeId: ["", [Validators.required]],
+    accountNumber: ["", [
+      this.conditionalValidator(() => !!this.staffsForm?.get('accountNumber')?.value, Validators.pattern(/^\d{8,12}$/))
+    ]],
+    ifscCode: [""],
+    upiIdOrNumber: [""],
+    panCardNumber: [""],
+    panUrl: [""],
+    aadharNumber: ["", [Validators.required,Validators.pattern(/^\d{12}$/)]],
+    aadharUrl: ["", [Validators.required]],
+    drivingLicenseUrl: [""],
+    drivingLicenseNumber: ["", this.conditionalValidator(() => !!this.staffsForm?.get('drivingLicenseNumber')?.value, Validators.pattern(/^AA[0-9]{9}$/))],
+    bankName: [""],
+    passbookUrl: [""],
+    workingStatus: ["", [Validators.required]],
+    bgVerification: [""],
+    bgVerification_remark: [""],
+    profileUrl:[""]
+  });
+ 
+    this.activatedRoute.params.subscribe(paramData => {
+      console.log("ObjectKeys =>",Object.keys(paramData))
+      console.log("ParamData =>", paramData)
+      if (Object.keys(paramData).length) {
+        this.breadcrumsData  = [
+          {
+            key: 'Staff Management',
+            routerLink: 'staff',
+          },
+          {
+            key: 'Edit Staff',
+            routerLink: `edit/${paramData._id}`,
+          },
+         
+        
+        ];
+        this.heading="Edit Staff Details"
+  
+      this.service.getstaffById(paramData.id).subscribe((data) => {
+        this.staffData = data;
+        this.staffId=this.staffData.Staff._id
+        this.profileUrl=this.staffData.Staff.profileUrl
+        console.log(this.profileUrl);
+        this.staff=false
+        console.log('Project Data = >',this.staffData)
+        const utcDob = this.convertDateFormat(this.staffData.Staff.dob);
 
-    });
+         const updatedStaff = { ...this.staffData.Staff,dob:utcDob};
+         console.log(updatedStaff);
+         
+         this.staffsForm.patchValue(updatedStaff);
+
+        // console.log(utcDob);
+        
+        // if(utcDob)
+        // {
+  
+        // }else{
+        //   const updatedStaff = { ...this.staffData.Staff};
+        //   this.staffsForm.patchValue(updatedStaff);
+  
+        // }
+  
+        console.log("form", this.staffsForm);
+      })
+    }
+    })
+    this.service.getstaffAll().subscribe((data)=>{
+      this.staffData=data;
+      if(!this.staffId){
+        this.staffIdCounter+=this.staffData.AllStaff.length;
+        console.log(this.staffIdCounter);
+        this.setStaffId(this.staffIdCounter);
+      }
+  
+      this.staffsForm.get('firstName')?.valueChanges.subscribe(value => {
+        this.autoCorrectNames();
+      }
+    );
+  
+      console.log("staff data",this.staffData);
+     
+      this.data=this.staffData.AllStaff.map((staffDetails,index)=>({
+        id:staffDetails?._id,
+        staffId: staffDetails?.staffId,
+        staffrName: `${staffDetails?.firstName} ${staffDetails?.lastName}`,
+        staffProfile:staffDetails?.profileUrl
+      }))
+    })
   
   }
-  
 
-  onProfileImageSelected(event: any): void {
-    const file = event.target.files[0];
-    if (file) {
-      this.profileImageUrl = URL.createObjectURL(file);
+  onInputChange(event: any,placeholder:string) {
+    const typedText = event.target.value;
+    this.inputText = typedText;
+     placeholder = placeholder.slice(typedText.length);
+  }
+
+  ageValidator(minAge: number): ValidatorFn {
+    return (control: AbstractControl): {[key: string]: boolean} | null => {
+      const dateValue = new Date(control.value);
+      const age = new Date().getFullYear() - dateValue.getFullYear();
+      if (age >= minAge) {
+        return null;
+      }
+      return { 'ageBelowMinimum': true };
+    };
+  }
+  private autoCorrectNames(): void {
+    this.staffsForm.get('firstName')?.valueChanges.subscribe(value => {
+      this.autoCorrectName('firstName', value);
+    });
+    this.staffsForm.get('lastName')?.valueChanges.subscribe(value => {
+      this.autoCorrectName('lastName', value);
+    });
+  }
+
+  private autoCorrectName(controlName: string, value: string): void {
+    if (value && value.length > 0) {
+      const correctedValue = value.charAt(0).toUpperCase() + value.slice(1);
+      if (correctedValue !== value) {
+        this.staffsForm.get(controlName)?.setValue(correctedValue, { emitEvent: false });
+        
+      }
     }
   }
+  onProfileImageSelected(event: any,controlName: string): void {
+    if (event.target.files && event.target.files.length) {
+      const file = event.target.files[0];
+      if (file) {
+        this.profileUrl = URL.createObjectURL(file);
+      }
+      this.staffsForm.patchValue({
+        [controlName]: file
+      });
+    }  }
 
-  onFileSelected(event: any, fileType: string): void {
-    this.filesInfo[fileType] = event.target.files[0];
+  onFileSelected(event: any, controlName: string): void {
+    this.filesInfo[controlName] = event.target.files[0];
+    if (event.target.files && event.target.files.length) {
+      const file = event.target.files[0];
+        this.staffsForm.patchValue({
+        [controlName]: file
+      });
+    }
   }
 
   viewFile(fileType: string): void {
@@ -77,5 +220,69 @@ ngOnInit(){
     // Reset the file input field
     (document.querySelector(`input[type="file"][formControlName="${fileType}"]`) as HTMLInputElement).value = '';
   }
+
+  convertDateFormat(dateStr: string): string {
+    if (!dateStr) {
+      return '';
+    }
+    const dateParts = dateStr.split("-");
+    if (dateParts.length !== 3) {
+      return '';
+    }
+    const [day, month, year] = dateParts;
+    if (isNaN(Number(day)) || isNaN(Number(month)) || isNaN(Number(year))) {
+      return '';
+    }
+    const formattedDate = `${year}-${month}-${day}`;
+  
+    return formattedDate;
+  }
+  
+ conditionalValidator(condition: () => boolean, validator: ValidatorFn): ValidatorFn {
+  return (control: AbstractControl): { [key: string]: any } | null => {
+    if (!condition()) {
+      return null;
+    }
+    return validator(control);
+  };
+}
+
+setStaffId(id:string): void {
+  console.log(id);
+  
+  const newStaffId = this.generateStaffId(id);
+  this.staffsForm.get('employeeId')?.setValue(newStaffId);
+}
+generateStaffId(id:string): string {
+  // console.log(this.subscriberIdCounter);
+  console.log(id);
+  
+  return `${this.staffIdPrefix}${id}`;
+}
+private generateDefaultProfileImage(firstName: string): string {
+  const initial = firstName.charAt(0).toUpperCase();
+  return `https://via.placeholder.com/150/000000/FFFFFF/?text=${initial}`;
+}
+
+onSubmit(): void {
+  const formData = new FormData();
+  const formValue = this.staffsForm.getRawValue();
+
+  if (!formValue.profileImage) {
+    formValue.profileImage = this.generateDefaultProfileImage(formValue.firstName);
+    this.staffsForm.get('profileUrl')?.setValue(formValue.profileImage);
+  }
+
+  for (const key in formValue) {
+    if (formValue.hasOwnProperty(key)) {
+      formData.append(key, formValue[key]);
+    }
+  }
+
+  this.service.savestaffDetails(formData, this.staffId).subscribe((data) => {
+    console.log(data);
+    this.router.navigate(["/staff"]);
+  });
+}
 }
 

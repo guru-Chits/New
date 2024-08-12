@@ -1,28 +1,106 @@
-import { Component } from '@angular/core';
-import { ColDef } from 'ag-grid-community';
+import { Component, OnInit } from '@angular/core';
+import { CellClickedEvent, ColDef } from 'ag-grid-community';
+import { StaffService } from './shared/service/staff.service';
+import { Router } from '@angular/router';
+import { ITableColumn } from '../shared/interface/list-table';
 
 @Component({
   selector: 'app-staff',
   templateUrl: './staff.component.html',
   styleUrl: './staff.component.css'
 })
-export class StaffComponent {
-  columns: ColDef[] = [
-    { field: 'employeeId', headerName: 'Employee ID', sortable: true },
-    { field: 'firstName', headerName: 'First Name', sortable: true },
-    { field: 'lastName', headerName: 'Last Name', sortable: true },
-    { field: 'role', headerName: 'Role', sortable: true }
+export class StaffComponent implements OnInit{
+ staffData:any
+  data: any[] = [];
+  selectedId:any
+  staffDetail:any
+  totalCount:number;
+  searchImg:string='assets/table/search.svg'
+  filterImg:string='assets/table/filter.svg'
+  search:boolean=true
+
+    constructor(
+      private service:StaffService,
+      private router:Router
+    ) { }
+  ngOnInit(): void {
+    this.service.getstaffAll().subscribe((data)=>{
+      this.staffData=data;
+
+      console.log("staff data",this.staffData);
+      console.log(this.staffData.AllStaff);
+      this.totalCount=this.staffData.AllStaff.length
+      this.data=this.staffData.AllStaff.map((staffDetails,index)=>({
+        id:staffDetails?._id,
+        staffName: `${staffDetails?.firstName} ${staffDetails?.lastName}`,
+        employeeId:staffDetails?.employeeId,
+        firstName:staffDetails?.firstName,
+        lastName:staffDetails?.lastName,
+        routeId:staffDetails?.routeId,
+        role:staffDetails?.role,
+        profileUrl:staffDetails?.profileUrl
+      }))
+    })
+
+  }
+
+  profileImageWithIdRenderer(params: any): string {
+    const imageUrl = params.data.profileUrl;
+    console.log(imageUrl);
+    
+    const employeeId = params.data.employeeId;
+    console.log(employeeId);
+    
+    return `
+      <div style="display: flex; align-items: center;">
+        <img src="${imageUrl}" alt="Profile Image" width="35" height="35" style="border-radius: 50%; margin-right: 10px;">
+        <span style="color: #50A1A5;">${employeeId}</span>
+      </div>
+    `;
+  }
+
+
+  column: ITableColumn[] = [
+    { label: 'profileUrl', field: 'Employee Id', sortable: false,  filter:false,
+      cellRenderer: this.profileImageWithIdRenderer,
+
+      cellStyle: function (params: any) {
+        return { color: '#50A1A5' };
+      },   
+      onCellClicked: (event: CellClickedEvent) =>
+      this.getStaffById(event.data.id)
+          
+     },
+
+    { label: 'First Name', field:'firstName', sortable: true,
+      onCellClicked: (event: CellClickedEvent) =>
+        this.getStaffById(event.data.id)
+     },
+    { label: 'Route Id', field: 'routeId', sortable: true ,  filter:true,
+      onCellClicked: (event: CellClickedEvent) =>
+        this.getStaffById(event.data.id)
+    },
+    { label: 'Role', field: 'role', sortable: true ,
+      filter:true,
+      onCellClicked: (event: CellClickedEvent) =>
+        this.getStaffById(event.data.id)
+    },
   ];
+
+  getStaffById(id: string): void {
+    this.service.getstaffById(id).subscribe(
+      data => {
+        this.staffDetail = data;
   
-  rowData = [
-    {  employeeId: 'KNG-E001', firstName: 'John Doe', lastName: ' Doe', role: 'Casher' },
-    {  employeeId: 'KNG-E002', firstName: 'David', lastName: 'Doe', role: 'Casher' },
-    {  employeeId: 'KNG-E003', firstName: 'Durai ', lastName: 'Doe', role: 'Casher' },
-    {  employeeId: 'KNG-E004', firstName: 'Lawrence', lastName: 'Doe', role: 'Casher' },
-    {  employeeId: 'KNG-E005', firstName: 'Ravikumar', lastName: 'Doe', role: 'Casher' },
-    {  employeeId: 'KNG-E006', firstName: 'Anand ', lastName: 'Doe', role: 'Casher' },
-    {  employeeId: 'KNG-E007', firstName: 'Sandhya ', lastName: 'Doe', role: 'Casher' },
-  
-  ]
+        console.log(this.staffDetail)
+      },
+      error => {
+        console.error('Error fetching staff', error);
+      }
+    );
+  }
+  navigate(id: any){
+    this.router.navigate([`staff/view/${id}`]);
+  }
 
 }

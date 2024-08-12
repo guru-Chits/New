@@ -10,7 +10,7 @@ const routes: Routes = [
    component: AreaComponent, 
 },
 {
-  path: 'areacreate',
+  path: 'routecreate',
   component: AreaCreateComponent, 
 },  
 {
@@ -18,7 +18,7 @@ const routes: Routes = [
   component: RegionCreateComponent, 
 },
 {
-  path:'areaedit/:id',
+  path:'routeedit/:id',
   component:AreaCreateComponent
 },
 {

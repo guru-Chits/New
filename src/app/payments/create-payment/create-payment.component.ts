@@ -12,7 +12,15 @@ import { ITableColumn } from '../../shared/interface/list-table';
 export class CreatePaymentComponent{
   Staffs: string[];
   data: any = [];
-
+  searchImg:string='assets/table/black search.svg'
+  filterImg:string='assets/table/black filter.svg'
+  search:boolean=true
+  breadcrumsData:any = [
+    {
+      key: 'Payments',
+      routerLink: '/payment',
+    },
+  ];
   onSubmit(){
 
   }

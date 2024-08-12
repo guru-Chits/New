@@ -82,23 +82,78 @@
       </div> -->
 
       <div class="container p-0 mt-3">
-        <div *ngFor="let group of groups" class="mb-1">
-          <div class="table py-4 px-3 d-flex justify-content-between align-items-center rounded-end">
+        <div *ngFor="let group of chitdata" class="mb-1" >
+          <div class="table py-4 px-3 d-flex justify-content-between align-items-center cursor-pointer rounded-end" (click)="handleChitGropDetails()">
             <div>
-              <span class="fw-bold fs-5">{{group.groupTitle}}</span>
+              <span class="fw-bold fs-5" >{{group.id}}</span>
             </div>
-            <div class="d-flex align-items-center">
+            <!-- <div class="d-flex align-items-center">
               <div class="d-flex flex-wrap ">
                 <span *ngFor="let member of group.members" class="rounded-circle" style="background-color: {{getColor(member)}}; color: white; padding-left: 15px; width: 40px; height: 40px;">{{member}}</span>
               </div>
               <span class=" ms-2">+{{group.subscribersCount}}</span>
-            </div>
+            </div> -->
           </div>
         </div>
       </div>
     </div> 
     <div class="col-lg-3">
-      <app-auction-sidebar></app-auction-sidebar>
-    </div> 
+      <app-auction-sidebar [dataFromParent]="showChitDetails" (dataToParent)="recieveChildBoolean($event)"></app-auction-sidebar>
+      <div class="chit-details" *ngIf="showChitDetails">
+        <div class="card p-3 mt-2">
+            <h5 class="title text-center fw-bold fs-4">Chit Group 1</h5>
+            <table class="table-chit px-3">
+                <tbody>
+                  <tr>
+                    <td><strong>Group ID </strong></td>
+                    <!-- <td><a href="#">{{subscriberDetail.Subscriber.subscriberId }}</a></td> -->
+                    <td>GC-JAN24-1X-100</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Auction Completion Count </strong></td>
+                    <!-- <td>{{subscriberDetail.Subscriber.aliasName}} </td> -->
+                    <td>24</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Prized Subscriber Count</strong></td>
+                    <!-- <td>{{subscriberDetail.Subscriber.firstName}} </td> -->
+                    <td>2</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Wallet Balance</strong></td>
+                    <!-- <td>{{ subscriberDetail.Subscriber.lastName }}</td> -->
+                    <td>150000</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Additional Wallet Balance</strong></td>
+                    <!-- <td>{{ subscriberDetail.Subscriber.contact }}</td> -->
+                    <td>20000</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Redeemabale Balance</strong></td>
+                    <!-- <td>{{ subscriberDetail.Subscriber.contact }}</td> -->
+                    <td>56000</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Phantom Entry Amount</strong></td>
+                    <!-- <td>{{ subscriberDetail.Subscriber.contact }}</td> -->
+                    <td>45000</td>
+                  </tr>
+                </tbody>
+              </table>
+              <div class="text-center mb-2">
+                <!-- <button class="btn clear-btn"  (click)="addToGroup(subscriberDetail.Subscriber._id)">Add to Group</button> -->
+                 <div class="row">
+                  <div class="col-7 p-0">
+                    <button class="btn view-btn" routerLink="view">View More Details</button>
+                  </div>
+                 <div class="col-5 p-0">
+                  <button class="btn next-btn fw-bold">Auction Entry</button>
+                  </div>  
+                </div>                
+            </div>   
+        </div>
+      </div>
+    </div>  
   </div> 
 </div>

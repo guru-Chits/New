@@ -1,6 +1,6 @@
 <div class="container-fluid">
     <div class="row">
-        <div [ngClass]="{'col-md-9 col-lg-9': subscriberDetail, 'col-md-12 col-lg-12': !subscriberDetail}">
+        <div [ngClass]="{'col-md-9 col-lg-9': isSubscriberListVisible, 'col-md-12 col-lg-12': !isSubscriberListVisible}">
             <form (ngSubmit)="onSubmit()">
                 <div class="row justify-content-around">
                     <div class="col-lg-4">
@@ -8,7 +8,7 @@
                             <label for="datetime" class="form-control-label">Auction Date</label>
                             <input type="date" class="form-control p-2 form-control-sm mt-2" id="datetime" formControlName="datetime" placeholder="Date"/>
                         </div>
-                    </div>
+                    </div>                   
                     <div class="col-lg-4">
                         <div class="form-group">
                             <label for="chitAmount" class="form-control-label">Chit Amount</label>
@@ -53,13 +53,13 @@
                     </div>
                 </div>
             </form>
-            <app-ag-grid [columns]="column" [rowData]="data" class="px-3" width="100%" height="300px"></app-ag-grid>
+            <app-ag-grid [columns]="column" [rowData]="data" width="100%" height="300px"></app-ag-grid>
             <div class="row">
                 <div class="col-lg-12 d-flex justify-content-end py-3">
                     <button type="button" class="btn next-btn px-4 py-3 fw-bold">Add Additional Subscribers</button>
                 </div>
             </div>
-            <app-ag-grid [columns]="column" [rowData]="data" class="px-3" width="100%" height="300px"></app-ag-grid>
+            <app-ag-grid [columns]="column" [rowData]="data" width="100%" height="300px"></app-ag-grid>
             <div class="row">
                 <div class="col-lg-12 d-flex justify-content-end py-3">
                     <button type="button" class="btn next-btn px-4 py-3 fw-bold">Create Group</button>
@@ -67,27 +67,28 @@
             </div> 
         </div>
         <div class="col-lg-3 " *ngIf="isSubscriberListVisible">
-            <div class="card details mb-3">
-            <h5 class="text-center my-2">Referral</h5>
-                <div class="search-bar align-self-center">
+            <div class="card details p-3">
+            <h5 class="text-center my-2">Add Subscribers</h5>
+                <div class="search-bar align-self-center mb-3">
                   <span class="search-icon"><img src="assets/subscriber/search-icon.svg"></span>
-                  <input width="20" height="20" type="text" placeholder="Search Subscriber ID, Name, Email" (input)="applyFilter($event.target.value)">
+                  <input width="20" height="20" type="text" class="border-0" placeholder="Search Subscriber ID, Name" (input)="applyFilter($event.target.value)">
                 </div>
                 
-                <table class="subscriber-table ">
+                <table class="subscriber-table " *ngIf="searchInput.trim().length > 0">
                   <tbody>
                     <tr *ngFor="let subscriber of displayedSubscribers" >
-                   <div class="card view-all mx-3">
+                   <div class="card view-all mb-2">
                     <div class="card-body align-self-center">
                         <div class="row">
                             <div class="col-lg-2 col-md-2">
                                 <img class="profile-list-img" src="subscriber.subscriberProfile"> 
                             </div>
-                            <div class="col-lg-5 col-md-5 text">
-                                <strong>{{ subscriber.subscriberId }}</strong>
+                            <div class="col-lg-6 col-md-6">
+                                <!-- <b>{{ subscriber.subscriberId }}</b> -->
+                                <p class="fs-6 fw-bold m-0">{{ subscriber.subscriberId }}</p>
                                 {{ subscriber.subscriberName }}
                                 </div>
-                            <div class="col-lg-5 col-md-5">
+                            <div class="col-lg-4 col-md-4">
                                 <button  class="viewbtn align-left" (click)="onButtonClick(subscriber.id)">View Details</button>
                             </div>
                         </div>
@@ -99,7 +100,7 @@
               
               <div class="subscriber-details">
                 <div *ngIf="subscriberDetail">
-                    <h5 class="title  text-center">Subscriber Details</h5>
+                    <h5 class="title  text-center my-4">Subscriber Details</h5>
                     <div class="text-center">
                         <img src="assets/subscriber/men.svg" class="img-fluid" alt="Subscriber Image">
                     </div>
@@ -107,7 +108,11 @@
                         <tbody>
                           <tr>
                             <td><strong>Subscriber ID </strong></td>
-                            <td><a href="#">{{subscriberDetail.Subscriber.subscriberId }}</a></td>
+                            <td class="highlight">{{subscriberDetail.Subscriber.subscriberId }}</td>
+                          </tr>
+                          <tr>
+                            <td><strong>Alias Name </strong></td>
+                            <td>{{subscriberDetail.Subscriber.aliasName}} </td>
                           </tr>
                           <tr>
                             <td><strong>First Name </strong></td>
@@ -121,30 +126,10 @@
                             <td><strong>Contact No </strong></td>
                             <td>{{ subscriberDetail.Subscriber.contact }}</td>
                           </tr>
-                          <tr>
-                            <td><strong>Address/Place </strong></td>
-                            <td>{{ subscriberDetail.Subscriber.place }}</td>
-                          </tr>
-                          <tr>
-                            <td><strong>Occupation </strong></td>
-                            <td>{{ subscriberDetail.Subscriber.occupation }}</td>
-                          </tr>
-                          <tr>
-                            <td><strong>Referral Client </strong></td>
-                            <td>{{ subscriberDetail.Subscriber.referralClient }}</td>
-                          </tr>
-                          <tr>
-                            <td><strong>Enrollments </strong></td>
-                            <td>{{ subscriberDetail.Subscriber.enrollments }}</td>
-                          </tr>
-                          <tr>
-                            <td><strong>Region/Route </strong></td>
-                            <td>{{ subscriberDetail.Subscriber.routeId }}</td>
-                          </tr>
                         </tbody>
                       </table>
                       <div class="text-center mb-2">
-                        <button class="btn  view"  (click)="addReferral()">Add Referral</button>
+                        <button class="btn clear-btn"  (click)="addToGroup(subscriberDetail.Subscriber._id)">Add to Group</button>
                     </div>
            
                 </div>

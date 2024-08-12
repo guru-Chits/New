@@ -10,6 +10,40 @@
     background-color: #e8e8e8;
     font-size: smaller;
 }
+
+.clear-btn{
+    color: #3E3A97;
+    background-color: #FFFFFF;
+    border-color: #3E3A97;
+}
+.profile-list-img{
+    width: 30px;
+    height: 30px;
+    background: transparent;
+    border-radius: 50%;
+  
+  }
+
+  .search-bar {
+    display: flex;
+    align-items: center;
+    background-color: #ECEBF5;
+    border: none;
+    padding: 5px;
+  }
+  
+  .search-bar input {
+    /* border: none;*/
+    outline: none; 
+    background-color: #ECEBF5;
+    padding: 5px;
+    flex-grow: 1;
+    height: 20px;
+  } 
+
+  .highlight{
+    color:#50A1A5;
+  }
 span{
     color: #f5365c;
 }
@@ -36,5 +70,15 @@ span{
         }
         
     }
-        
-       
+    
+    
+.viewbtn{
+    border:none;
+    font-size: 12px;
+    color:#50A1A5;
+    background: transparent;
+    }       
+
+    .view-all{
+        background-color: #ECEBF5;
+      }

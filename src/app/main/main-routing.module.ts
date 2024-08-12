@@ -28,6 +28,10 @@ const routes: Routes = [
       {
         path:'area',
         loadChildren: () => import('../../app/area/area.module').then(m => m.AreaModule)
+      },
+      {
+        path:'settings',
+        loadChildren: () => import('../../app/settings/settings.module').then(m => m.SettingsModule)
       }
 
     ]

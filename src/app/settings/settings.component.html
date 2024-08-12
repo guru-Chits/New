@@ -1,0 +1,48 @@
+<div class="container">
+<div class="d-flex">
+    <div class="d-flex flex-column col-lg-4 mt-2 ms-3 mb-3" style="width: 259px; height: 100vh;">
+        <ul class="nav nav-pills flex-column mb-auto">
+          <li class="nav-item">
+            <a 
+            class="nav-link customText" 
+            [ngClass]="{'active-item': selectedItem === 'Privacy'}" 
+            routerLink="privacy" 
+            (click)="selectItem('Privacy')">
+            
+            <img 
+              [src]="isActive('Privacy') ? privacyActive : privacy" 
+              class="me-2">
+            
+            Privacy
+          </a>
+                    </li>
+          <li>
+            <a class="nav-link customText" [ngClass]="{'active-item': selectedItem === 'Role Manager'}" routerLink="staff-manager" (click)="selectItem('Role Manager')"><img [src]="isActive('Role Manager') ? rolemanagerActive : rolemanager"  class = "me-2">Staff Manager</a>
+          </li>
+          <li>
+            <a class="nav-link customText"[ngClass]="{'active-item': selectedItem === 'Collection Type'}" (click)="selectItem('Collection Type')"><img [src]="isActive('Collection Type') ? collectiontypeActive : collectiontype"  class = "me-2">Collection Type</a>
+          </li>
+          <li>
+            <a class="nav-link customText" [ngClass]="{'active-item': selectedItem === 'Deleted Reciepts'}" (click)="selectItem('Deleted Reciepts')"><img src = "assets/settings/Deleted.svg" class = "me-2">Deleted Receipts</a>
+          </li>
+          <li>
+            <a class="nav-link customText"  [ngClass]="{'active-item': selectedItem === 'Completed Chits'}" (click)="selectItem('Completed Chits')"><img src = "assets/settings/CompletedChits.svg" class = "me-2">Completed Chits</a>
+          </li>
+          <li>
+            <a class="nav-link customText"  [ngClass]="{'active-item': selectedItem === 'Reason For Deletion'}" (click)="selectItem('Reason For Deletion')"><img [src]="isActive('Reason For Deletion') ? trashActive : trash" class = "me-2">Reason for Deletion</a>
+          </li>
+          <li>
+            <a class="nav-link customText"  [ngClass]="{'active-item': selectedItem === 'Admin-Reset Password'}" (click)="selectItem('Admin-Reset Password')"><img src = "assets/settings/Reset.svg" class = "me-2">Admin-Reset Password</a>
+          </li>
+          <li>
+            <a class="nav-link customText"  [ngClass]="{'active-item': selectedItem === 'Activity Logs'}" (click)="selectItem('Deleted Reciepts')"><img src = "assets/settings/ActivityLogs.svg" class = "me-2">Activity Logs</a>
+          </li>
+        </ul>
+      </div>   
+
+      <div class="col-lg-8">
+
+<router-outlet></router-outlet>
+</div>
+</div>
+</div>

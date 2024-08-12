@@ -1,0 +1,18 @@
+.container{
+  background-color: white;
+  /* margin: 15px; */
+  width: 95%;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+.customText
+{
+    color: #969696;
+    font-size: 14px;
+}
+.active-item {
+    background-color: #3E3A97;
+    color: white;
+  }
+
+ 

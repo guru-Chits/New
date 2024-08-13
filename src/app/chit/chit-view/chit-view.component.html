@@ -3,8 +3,8 @@
         <div class="col-lg-9">
             <div class="row">
                 <div class="col-lg-12 d-flex justify-content-between py-3">
-                    <div>Chit Management</div>
-                    <button class="btn next-btn px-4 py-3 fw-bold" routerLink="auction">Auction Entry</button>
+                    <app-breadcrumb [data]="breadcrumsData"></app-breadcrumb>
+                    <button class="btn next-btn px-4 py-3 fw-bold" routerLink="/chit/auction">Auction Entry</button>
                 </div>
             </div>
             <div class="card py-3  px-4">
@@ -17,13 +17,13 @@
                     <div class="col-4 ">
                         <div class="d-flex flex-column ">
                             <h6><strong>Group ID</strong></h6>
-                            <p class="highlight">GC-JAN24-1X-100</p>
+                            <p class="highlight">{{chitData?.chitGroupId}}</p>
                         </div>
                     </div>
                     <div class="col-4 ">
                         <div class="d-flex flex-column ">
                             <h6><strong>Chit Amount</strong></h6>
-                            <p class="">700000</p>
+                            <p class="">{{chitData?.chitAmount}}</p>
                         </div>
                     </div>
                     <div class="col-4 ">
@@ -98,48 +98,58 @@
                         Bid History 
 
                     </div>
-                    <app-ag-grid [columns]="column" [rowData]="data" class="px-3" width="100%" height="300px"></app-ag-grid>   
+                    <h5>Subscribers</h5>
+                    <app-ag-grid [columns]="subscriberColumn" [rowData]="subscribers" class="px-3" width="100%" height="200px"></app-ag-grid>   
+                    <h5 class="mt-2">Additional Subscribers</h5>
+
+                    <div my-4>
+                        <app-ag-grid [columns]="addSubscriberColumn" [rowData]="addSubscribers" class="px-3" width="100%" height="200px"></app-ag-grid>   
+
+                    </div>
+
                 </div>
             </div>
         </div> 
         <div class="col-lg-3">
-            <div class="card p-3">
+            <!-- <div class="card p-3">
                 <h5 class="text-center my-2">Add Subscribers</h5>
                 <div class="search-bar align-self-center mb-3">
                   <span class="search-icon"><img src="assets/subscriber/search-icon.svg"></span>
-                  <input width="20" height="20" type="text" class="border-0" placeholder="Search Subscriber ID, Name"> <!--(input)="applyFilter($event.target.value)"-->
+                  <input width="20" height="20" type="text" class="border-0" placeholder="Search Subscriber ID, Name"> (input)="applyFilter($event.target.value)"
                 </div>
-            </div>
-            <!-- <div class="card">
+            </div> -->
+            <div class="card">
                 <h5 class="text-center my-2">Chit Groups</h5>
                 <div class="search-bar align-self-center mb-3">
                   <span class="search-icon"><img src="assets/subscriber/search-icon.svg"></span>
-                  <input width="20" height="20" type="text" class="border-0" placeholder="Search Subscriber ID, Name" (input)="applyFilter($event.target.value)">
+                  <input width="20" height="20" type="text" class="border-0" placeholder="Search" >
+                  <!-- (input)="applyFilter($event.target.value)" -->
                 </div>
                 
                 <table class="subscriber-table ">
                   <tbody>
-                    <tr *ngFor="let subscriber of displayedSubscribers" >
-                   <div class="card view-all mb-2">
+                    <tr *ngFor="let subscriber of totalChitData;let i =index" >
+                   <div class="card shadow-sm border-0 mb-2 mt-3">
                     <div class="card-body align-self-center">
                         <div class="row">
-                            <div class="col-lg-2 col-md-2">
+                            <!-- <div class="col-lg-2 col-md-2">
                                 <img class="profile-list-img" src="subscriber.subscriberProfile"> 
-                            </div>
-                            <div class="col-lg-6 col-md-6">
-                                <p class="fs-6 fw-bold m-0">{{ subscriber.subscriberId }}</p>
-                                {{ subscriber.subscriberName }}
+                            </div> -->
+                            <div class="col-lg-6 col-md-6 chitHeader">
+                                <!-- <p class="fs-6 fw-bold m-0">{{ subscriber.subscriberId }}</p> -->
+                                <!-- {{ subscriber.subscriberName }} -->
+                                <p class="fs-6 fw-bold m-0">Chit Group{{i+1}}</p>
                                 </div>
-                            <div class="col-lg-4 col-md-4">
+                            <!-- <div class="col-lg-4 col-md-4">
                                 <button  class="viewbtn align-left" (click)="onButtonClick(subscriber.id)">View Details</button>
-                            </div>
+                            </div> -->
                         </div>
                     </div>
                    </div>
                     </tr>
                   </tbody>
                 </table>
-            </div> -->
+            </div>
         </div> 
     </div> 
   </div>

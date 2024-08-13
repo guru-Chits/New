@@ -30,15 +30,18 @@
     background-color: #ECEBF5;
     border: none;
     padding: 5px;
+ 
   }
+
   
   .search-bar input {
     /* border: none;*/
     outline: none; 
     background-color: #ECEBF5;
-    padding: 5px;
+    padding: 3px;
     flex-grow: 1;
     height: 20px;
+    width:80%;
   } 
 
   .highlight{

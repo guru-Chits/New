@@ -3,6 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { ChitComponent } from './chit.component';
 import { ChitCreateComponent } from './chit-create/chit-create.component';
 import { ChitViewComponent } from './chit-view/chit-view.component';
+import { AuctionComponent } from './auction/auction.component';
 
 const routes: Routes = [
   {
@@ -20,6 +21,10 @@ const routes: Routes = [
   {
     path:'edit/:id',
     component:ChitCreateComponent
+  },
+  {
+    path:'auction',
+    component:AuctionComponent
   }
 ];
 

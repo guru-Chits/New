@@ -1,7 +1,7 @@
 <div class="container-fluid">
     <div class="row">
         <div [ngClass]="{'col-md-9 col-lg-9': isSubscriberListVisible, 'col-md-12 col-lg-12': !isSubscriberListVisible}">
-            <form (ngSubmit)="onSubmit()">
+            <form  [formGroup]="chitGroupForm">
                 <div class="row justify-content-around">
                     <div class="col-lg-4">
                         <div class="form-group">
@@ -49,20 +49,20 @@
                 </div> -->
                 <div class="row">
                     <div class="col-lg-12 d-flex justify-content-end py-3">
-                        <button type="button" class="btn next-btn px-4 py-3 fw-bold" (click)="showSubscriberList()">Add Subscribers</button>
+                       <button type="button" class="btn next-btn px-4 py-3 fw-bold"(click)="showSubscriberList('chit')">Add Subscribers</button>
                     </div>
                 </div>
             </form>
-            <app-ag-grid [columns]="column" [rowData]="data" width="100%" height="300px"></app-ag-grid>
+            <app-ag-grid [columns]="column" [rowData]="chitSubscribersData" width="100%" height="300px"></app-ag-grid>
             <div class="row">
                 <div class="col-lg-12 d-flex justify-content-end py-3">
-                    <button type="button" class="btn next-btn px-4 py-3 fw-bold">Add Additional Subscribers</button>
+                    <button type="button" class="btn next-btn px-4 py-3 fw-bold" (click)="showSubscriberList('additional')">Add Additional Subscribers</button>
                 </div>
             </div>
-            <app-ag-grid [columns]="column" [rowData]="data" width="100%" height="300px"></app-ag-grid>
+            <app-ag-grid [columns]="addSubcolumn" [rowData]="addChitSubscribersData" width="100%" height="300px"></app-ag-grid>
             <div class="row">
                 <div class="col-lg-12 d-flex justify-content-end py-3">
-                    <button type="button" class="btn next-btn px-4 py-3 fw-bold">Create Group</button>
+                    <button type="button" class="btn next-btn px-4 py-3 fw-bold" (click)="onSubmit()">Create Group</button>
                 </div>
             </div> 
         </div>
@@ -71,17 +71,16 @@
             <h5 class="text-center my-2">Add Subscribers</h5>
                 <div class="search-bar align-self-center mb-3">
                   <span class="search-icon"><img src="assets/subscriber/search-icon.svg"></span>
-                  <input width="20" height="20" type="text" class="border-0" placeholder="Search Subscriber ID, Name" (input)="applyFilter($event.target.value)">
+                  <input width="20" height="20" type="text" class="border-0" placeholder="Search" (input)="applyFilter($event.target.value)">
                 </div>
-                
-                <table class="subscriber-table " *ngIf="searchInput.trim().length > 0">
+                <table class="subscriber-table">
                   <tbody>
                     <tr *ngFor="let subscriber of displayedSubscribers" >
                    <div class="card view-all mb-2">
                     <div class="card-body align-self-center">
                         <div class="row">
                             <div class="col-lg-2 col-md-2">
-                                <img class="profile-list-img" src="subscriber.subscriberProfile"> 
+                                <img class="profile-list-img" src="{{subscriber.subscriberProfile}}"> 
                             </div>
                             <div class="col-lg-6 col-md-6">
                                 <!-- <b>{{ subscriber.subscriberId }}</b> -->
@@ -102,7 +101,7 @@
                 <div *ngIf="subscriberDetail">
                     <h5 class="title  text-center my-4">Subscriber Details</h5>
                     <div class="text-center">
-                        <img src="assets/subscriber/men.svg" class="img-fluid" alt="Subscriber Image">
+                        <img src="{{subscriberDetail.Subscriber.profileImageUrl}}" class="img-fluid" alt="Subscriber Image">
                     </div>
                     <table class="table px-3">
                         <tbody>
@@ -129,7 +128,7 @@
                         </tbody>
                       </table>
                       <div class="text-center mb-2">
-                        <button class="btn clear-btn"  (click)="addToGroup(subscriberDetail.Subscriber._id)">Add to Group</button>
+                        <button class="btn clear-btn" (click)="addSelectedSubscriber(subscriberDetail.Subscriber._id)">Add to Group</button>
                     </div>
            
                 </div>

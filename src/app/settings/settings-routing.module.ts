@@ -4,6 +4,10 @@ import { Component } from 'ag-grid-community';
 import { SettingsComponent } from './settings.component';
 import { PrivacyComponent } from './privacy/privacy.component';
 import { StaffManagerComponent } from './staff-manager/staff-manager.component';
+import { CreateStaffComponent } from './create-staff/create-staff.component';
+import { CreateRoleComponent } from './create-role/create-role.component';
+import { CollectionTypeComponent } from './collection-type/collection-type.component';
+import { ReasonDeletionComponent } from './reason-deletion/reason-deletion.component';
 
 
 const routes: Routes = [
@@ -19,6 +23,22 @@ const routes: Routes = [
  {
   path:"staff-manager",
   component:StaffManagerComponent
+ },
+ {
+  path:"create-staff",
+  component:CreateStaffComponent
+ },
+ {
+  path:"create-role",
+  component:CreateRoleComponent
+ },
+ {
+  path:"collection-type",
+  component:CollectionTypeComponent
+ },
+ {
+  path:"reason-deletion",
+  component:ReasonDeletionComponent
  }
   ]
  },

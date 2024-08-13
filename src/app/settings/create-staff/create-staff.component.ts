@@ -1,12 +1,14 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { FormControl, FormGroup } from '@angular/forms';
 import { ITableColumn } from '../../shared/interface/list-table';
 
 @Component({
-  selector: 'app-staff-manager',
-  templateUrl: './staff-manager.component.html',
-  styleUrl: './staff-manager.component.css'
+  selector: 'app-create-staff',
+  templateUrl: './create-staff.component.html',
+  styleUrl: './create-staff.component.css'
 })
-export class StaffManagerComponent {
+export class CreateStaffComponent implements OnInit{
+
   search:boolean=true
   data: any[] = [];
   searchImg:string='assets/table/black search.svg'
@@ -35,26 +37,13 @@ filterImg:string='assets/table/black filter.svg'
     }
   ]
 
-  rolecolumn: ITableColumn[] = [
-    {
-      label: 'profileImageUrl',
-      field: 'S No',
-      filter:false,
-    },
-    {
-      label: 'profileImageUrl',
-      field: 'Role',
-      filter:false,
-    },
-    {
-      label: 'profileImageUrl',
-      field: 'Description',
-      filter:false,
-    },
-    {
-      label: 'profileImageUrl',
-      field: 'Action',
-      filter:false,
-    }
-  ]
+  reactiveForm: FormGroup
+
+ ngOnInit(): void {
+   this.reactiveForm = new FormGroup({
+     staffCreate : new FormControl(null),
+     description : new FormControl(null)
+   })
+ }
+
 }

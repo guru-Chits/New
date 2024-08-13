@@ -1,1 +1,31 @@
-<p>staff-manager works!</p>
+
+<div class="row d-flex">
+<label class="head-text">
+    Staff Manager
+</label>
+<div class="column d-flex">
+    <div class="col lg-10 justify-content-start">
+    <label class="simple-text">
+        Staff Type
+    </label>
+</div>
+    <div class="col lg-2 justify-content-end">
+    <button type="submit" class="btn button align-items-center col-lg-12 col-md-12 mb-3" routerLink="/settings/create-staff">Create Staff Type</button>
+</div>
+</div>
+
+ <app-ag-grid [columns]="staffcolumn" [rowData]="data"   width="100%" height="280px" [searchImg]="searchImg" [filterImg]="filterImg" [search]="search"></app-ag-grid>
+
+
+ <div class="column d-flex mt-3">
+    <div class="col lg-10 justify-content-start">
+    <label class="simple-text">
+        Role
+    </label>
+</div>
+    <div class="col lg-2 justify-content-end">
+    <button type="submit" class="btn button align-items-center col-lg-12 col-md-12 mb-3" routerLink="/settings/create-role">Create Roles</button>
+</div>
+</div>
+ <app-ag-grid [columns]="rolecolumn" [rowData]="data"   width="100%" height="280px" [searchImg]="searchImg" [filterImg]="filterImg" [search]="search"></app-ag-grid>
+</div>

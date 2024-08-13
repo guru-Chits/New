@@ -1,0 +1,24 @@
+<label class="head-text mt-3 ms-2">
+    Staff Manager
+</label>
+<div class="container">
+<div class="row d-flex lg12 mx-3 my-3">
+    <label class="head-text mb-3">
+        Create Staff Type
+    </label>
+
+    <form class="form row d-flex" [formGroup]="reactiveForm">
+        <label class="form-check-label normalText mb-2">Staff Type Name </label>
+        <input class="form-control ms-2 me-2" type="text" placeholder="Enter Staff Type Name" formControllerName="staffCreate">
+        <label class="form-check-label normalText mb-2 mt-2">Role Name </label>
+        <input class="form-control ms-2 me-2" type="text" placeholder="Enter Role Name" formControllerName="rolename">
+        <label class="form-check-label normalText mt-3 mb-2">Description </label>
+        <input class="form-control ms-2 me-2" type="text" placeholder="Enter Role Description" formControllerName="description">
+        <button type="submit" class="btn buttoncreate align-items-center ms-2 me-2 mb-3 mt-3">Create Role</button>
+        <button type="submit" class="btn button align-items-center ms-2 me-2 mb-3">Cancel</button>
+    </form>
+
+    <app-ag-grid [columns]="staffcolumn" [rowData]="data"   width="100%" height="280px" [searchImg]="searchImg" [filterImg]="filterImg" [search]="search"></app-ag-grid>
+    
+</div>
+</div>

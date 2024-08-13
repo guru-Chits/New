@@ -3,7 +3,7 @@
     <div class="col-lg-9">
       <div class="row">
         <div class="col-lg-12 d-flex justify-content-between py-3">
-            <div>Chit Management</div>
+          <app-breadcrumb [data]="breadcrumsData"></app-breadcrumb>
             <button class="btn next-btn px-4 py-3 fw-bold" routerLink="create">Create New Group</button>
         </div>
       </div>
@@ -11,7 +11,7 @@
         <div class="col-4 ">
           <div class="line d-flex flex-column justify-content-center align-items-center rounded-end">
             <h6>Total Chit Count</h6>
-            <p class="m-0 fw-bold fs-4">{{total}}</p>
+            <p class="m-0 fw-bold fs-4">100</p>
           </div>
         </div>
         <div class="col-4 ">
@@ -81,41 +81,33 @@
         </div>
       </div> -->
 
-      <div class="container p-0 mt-3">
-        <div *ngFor="let chit of displayedChits" class="mb-1">
-          <div class="table py-4 px-3 d-flex justify-content-between align-items-center cursor-pointer rounded-end" (click)="handleChitGropDetails()">
+      <div class="container p-0 mt-3" *ngIf="chitdata.length > 0">
+        <div *ngFor="let group of chitdata;let i=index" class="mb-1" >
+          <div class="table py-4 px-3 d-flex justify-content-between align-items-center cursor-pointer rounded-end" (click)="handleChitGropDetails(group._id,i)">
             <div>
-              <span class="fw-bold fs-5">{{chit.id}}</span>
+              <span class="fw-bold fs-5" >{{group._id}}</span>
             </div>
-            <div class="d-flex align-items-center">
-              <div class="d-flex flex-wrap">
-                <!-- Loop through members of the current chit -->
-                <!-- <span *ngFor="let member of chit.members" class="rounded-circle" 
-                      style="background-color: {{getColor(member)}}; color: white; 
-                      padding-left: 15px; width: 40px; height: 40px;"
-                      >
-                  {{member.subProfile}}
-                </span> -->
-                
+            <!-- <div class="d-flex align-items-center">
+              <div class="d-flex flex-wrap ">
+                <span *ngFor="let member of group.members" class="rounded-circle" style="background-color: {{getColor(member)}}; color: white; padding-left: 15px; width: 40px; height: 40px;">{{member}}</span>
               </div>
-              <span class="ms-2">+{{chit.subsTotal}}</span>
-            </div>
+              <span class=" ms-2">+{{group.subscribersCount}}</span>
+            </div> -->
           </div>
         </div>
-        
       </div>
     </div> 
     <div class="col-lg-3">
       <app-auction-sidebar [dataFromParent]="showChitDetails" (dataToParent)="recieveChildBoolean($event)"></app-auction-sidebar>
       <div class="chit-details" *ngIf="showChitDetails">
         <div class="card p-3 mt-2">
-            <h5 class="title text-center fw-bold fs-4">Chit Group 1</h5>
+            <h5 class="title text-center fw-bold fs-4">Chit Group {{selectedChit}}</h5>
             <table class="table-chit px-3">
                 <tbody>
                   <tr>
                     <td><strong>Group ID </strong></td>
                     <!-- <td><a href="#">{{subscriberDetail.Subscriber.subscriberId }}</a></td> -->
-                    <td>GC-JAN24-1X-100</td>
+                    <td>{{specificChitData?._id}}</td>
                   </tr>
                   <tr>
                     <td><strong>Auction Completion Count </strong></td>
@@ -153,7 +145,7 @@
                 <!-- <button class="btn clear-btn"  (click)="addToGroup(subscriberDetail.Subscriber._id)">Add to Group</button> -->
                  <div class="row">
                   <div class="col-7 p-0">
-                    <button class="btn view-btn" routerLink="view">View More Details</button>
+                    <button class="btn view-btn" (click)="navigate(specificChitData?._id)">View More Details</button>
                   </div>
                  <div class="col-5 p-0">
                   <button class="btn next-btn fw-bold">Auction Entry</button>

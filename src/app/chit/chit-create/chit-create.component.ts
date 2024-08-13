@@ -4,6 +4,7 @@ import { ITableColumn } from '../../shared/interface/list-table';
 import { SubscriberService } from '../../subscriber/shared/service/subscriber.service';
 import { FormControl, FormGroup } from '@angular/forms';
 import { ChitService } from '../shared/service/chit.service';
+import { Router } from '@angular/router';
 // import { SubscriberDetails } from '../shared/interface/chit';
 
 @Component({
@@ -12,7 +13,16 @@ import { ChitService } from '../shared/service/chit.service';
   styleUrl: './chit-create.component.css'
 })
 export class ChitCreateComponent {
-
+  breadcrumsData: any = [
+    {
+      key: 'Chit Management',
+      routerLink: '/chit',
+    },
+    {
+      key: 'Create New Group',
+      routerLink: '/chit/create',
+    },
+  ];
   showList = false;
   currentListType: 'chit' | 'additional' = 'chit';
   gridApi: any;
@@ -29,7 +39,7 @@ export class ChitCreateComponent {
   searchInput:string=""
   chitGroupForm:FormGroup
   displayedChits: any[];
-  constructor( private subService:SubscriberService, private chitService:ChitService) {
+  constructor( private subService:SubscriberService, private chitService:ChitService, private router:Router,) {
 
   }
 
@@ -44,19 +54,6 @@ export class ChitCreateComponent {
       addChitSubscribers: new FormControl([])
     });
 
-    // this.chitService.getAllChit().subscribe((data)=>{
-    //   this.chitdata=data;
-    //   console.log(this.chitdata)
-    //   this.data = this.chitdata?.AllChitGroups.map((chitDetails, index) => ({
-    //     id: chitDetails._id,
-    //     subsTotal: chitDetails?.chitSubscribers.length,
-    //     subscribers: chitDetails?.chitSubscribers.map((subscriber) => ({
-    //       subProfile: subscriber?.firstName
-    //     })),
-    //   }));
-    // console.log("CHIT ID ===>")
-    // this.displayedChits = this.data;
-    // })
 
     this.subService.getsubscriberAll().subscribe((data)=>{
       this.subscriberData=data;
@@ -83,18 +80,6 @@ export class ChitCreateComponent {
       </div>
     `;
   }
-
-  column: ITableColumn[] = [
-    // { label: 'Subscriber ID', field: 'subscriberId', sortable: false },
-    { label: 'profileImageUrl', field: 'Ticket Id', sortable: false ,
-      cellRenderer: this.profileImageWithIdRenderer,
-    },
-    { label: 'Alias Name', field: 'aliasName', sortable: true },
-    { label: 'First Name', field: 'firstName', sortable: true },
-    { label: 'Place', field: 'place', sortable: true },
-    { label: 'Occupation', field: 'occupation', sortable: true }
-  ];
-
 
   onFileSelected(event: any): void {
     const file = event.target.files[0];
@@ -173,7 +158,7 @@ export class ChitCreateComponent {
         this.subData = res;
 
         const newSubscriber = {
-          subscriberId:  this.subData.Subscriber.subscriberId,
+          subscriberId:  this.subData.Subscriber.subscriberID,
           profileImageUrl:this.subData.Subscriber.profileImageUrl,
           aliasName:  this.subData.Subscriber.lastName,
           firstName:  this.subData.Subscriber.firstName,
@@ -202,16 +187,28 @@ export class ChitCreateComponent {
     );
   }
 
-  addSubcolumn: ITableColumn[] = [
+  column: ITableColumn[] = [
     // { label: 'Subscriber ID', field: 'subscriberId', sortable: false },
-    { label: 'Ticket Id', field: 'addprofileImageUrl', sortable: false ,
+    { label: 'profileImageUrl', field: 'Ticket Id', sortable: false ,
       cellRenderer: this.profileImageWithIdRenderer,
     },
-    { label: 'Alias Name', field: 'addaliasName', sortable: true },
-    { label: 'First Name', field: 'addfirstName', sortable: true },
-    { label: 'Place', field: 'addplace', sortable: true },
-    { label: 'Occupation', field: 'addoccupation', sortable: true }
+    { label: 'Alias Name', field: 'aliasName', sortable: true },
+    { label: 'First Name', field: 'firstName', sortable: true },
+    { label: 'Place', field: 'place', sortable: true },
+    { label: 'Occupation', field: 'occupation', sortable: true }
+  ];  
+
+  addSubcolumn: ITableColumn[] = [
+    // { label: 'Subscriber ID', field: 'subscriberId', sortable: false },
+    { label: 'Ticket Id', field: 'profileImageUrl', sortable: false ,
+      cellRenderer: this.profileImageWithIdRenderer,
+    },
+    { label: 'Alias Name', field: 'aliasName', sortable: true },
+    { label: 'First Name', field: 'firstName', sortable: true },
+    { label: 'Place', field: 'place', sortable: true },
+    { label: 'Occupation', field: 'occupation', sortable: true }
   ];
+
   addAdditionalSubscriberById(id: string): void {
     const addChitSubscribers = this.chitGroupForm.get('addChitSubscribers').value || [];
 
@@ -225,12 +222,12 @@ export class ChitCreateComponent {
         this.addSubData = res;
 
         const newSubscriber = {
-          subscriberId:  this.addSubData.Subscriber.subscriberId,
+          subscriberId:  this.addSubData.Subscriber.subscriberID,
           profileImageUrl:this.addSubData.Subscriber.profileImageUrl,
-          addaliasName:  this.addSubData.Subscriber.lastName,
-          addfirstName:  this.addSubData.Subscriber.firstName,
-          addplace:  this.addSubData.Subscriber.place,
-          addoccupation:this.addSubData.Subscriber.occupation
+          aliasName:  this.addSubData.Subscriber.lastName,
+          firstName:  this.addSubData.Subscriber.firstName,
+          place:  this.addSubData.Subscriber.place,
+          occupation:this.addSubData.Subscriber.occupation
           // passbookNo:  this.subData.Subscriber.passbookNo
         };
 
@@ -277,5 +274,9 @@ export class ChitCreateComponent {
     } else {
       console.warn('Form is invalid.');
     }
+    this.router.navigate(["/chit"]);
+
+
+
   }
 }

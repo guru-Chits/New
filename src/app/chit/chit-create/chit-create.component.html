@@ -1,5 +1,6 @@
 <div class="container-fluid">
     <div class="row">
+        <app-breadcrumb [data]="breadcrumsData"></app-breadcrumb>
         <div [ngClass]="{'col-md-9 col-lg-9': isSubscriberListVisible, 'col-md-12 col-lg-12': !isSubscriberListVisible}">
             <form  [formGroup]="chitGroupForm">
                 <div class="row justify-content-around">

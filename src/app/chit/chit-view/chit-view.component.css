@@ -10,3 +10,23 @@
     background-color: #3E3A97;
     color:#FFFFFF;
 }
+.chitHeader{
+    width: 100%;
+    white-space: nowrap;
+}
+.search-bar {
+    display: flex;
+    align-items: center;
+    background-color: #ECEBF5;
+    border: none;
+    padding: 5px;
+  }
+  
+  .search-bar input {
+    /* border: none;*/
+    outline: none; 
+    background-color: #ECEBF5;
+    padding: 5px;
+    flex-grow: 1;
+    height: 20px;
+  } 

@@ -18,4 +18,10 @@ export class ChitService {
     const url = `${environment.subscriberServiceUrl}/chitgroup/addchitGroup`;
     return this.http.post<any>(url, chitDetails);
   }
+
+  
+  getChitById(id: string){
+    let url = `${environment.chitServiceUrl}/chitgroup/getChitGroupById/${id}`;
+    return this.http.get(url)
+  }
 }

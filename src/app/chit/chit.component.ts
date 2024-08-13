@@ -1,78 +1,84 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { ChitService } from './shared/service/chit.service';
-
 @Component({
   selector: 'app-chit',
   templateUrl: './chit.component.html',
   styleUrl: './chit.component.css'
 })
 export class ChitComponent implements OnInit{
-
+  breadcrumsData: any = [
+    {
+      key: 'Chit Management',
+      routerLink: 'chit',
+    },
+  ];
   showChitDetails: boolean = false;
   chitdata: any;
-  displayedChits:any
   data:any[] = [];
+  specificChitData:any={}
   total: any;
-  groups = [
-    {
-      groupTitle: 'Chit Group 1',
-      subscribersCount: 15,
-      members: ['R', 'B', 'V', 'M', 'G']
-    },
-    {
-      groupTitle: 'Chit Group 2',
-      subscribersCount: 15,
-      members: ['C', 'A', 'S', 'N', 'R']
-    },
-    {
-      groupTitle: 'Chit Group 3',
-      subscribersCount: 15,
-      members: ['D', 'E', 'K', 'H', 'T']
-    }
-  ];
+  selectedChit:number=1
+  // groups = [
+  //   {
+  //     groupTitle: 'Chit Group 1',
+  //     subscribersCount: 15,
+  //     members: ['R', 'B', 'V', 'M', 'G']
+  //   },
+  //   {
+  //     groupTitle: 'Chit Group 2',
+  //     subscribersCount: 15,
+  //     members: ['C', 'A', 'S', 'N', 'R']
+  //   },
+  //   {
+  //     groupTitle: 'Chit Group 3',
+  //     subscribersCount: 15,
+  //     members: ['D', 'E', 'K', 'H', 'T']
+  //   }
+  // ];
   constructor(private router:Router, private service: ChitService){}
 
   ngOnInit(): void{
-    this.service.getAllChit().subscribe((data)=>{
-      this.chitdata=data;
-      console.log(this.chitdata)
-      this.total=this.chitdata.AllChitGroups.length
-      this.data = this.chitdata?.AllChitGroups.map((chitDetails, index) => ({
-        id: chitDetails._id,
-        subsTotal: chitDetails?.chitSubscribers.length,
-        members: chitDetails?.chitSubscribers.map((subscriber) => ({
-          subProfile: subscriber?.firstName
-            // .split(' ')
-            // .map((namePart) => namePart[0].toUpperCase())
-            // .join(''),
-        })),
-      }));
-    console.log("CHIT ID ===>")
-    this.displayedChits = this.data;
-    console.log(this.displayedChits.Subscriber);
-    })
+    this.getAllChit()
   }
 
   recieveChildBoolean(event:boolean){
   this.showChitDetails=event
   }
 
-  handleChitGropDetails(){
+  handleChitGropDetails(id:string,index:number){
     this.showChitDetails=true
+    this.selectedChit=index+1
+    this.getChitById(id)
     console.log(this.showChitDetails)
+  }
+  getChitById(id: string): void {
+    this.service.getChitById(id).subscribe(
+      (data) => {
+        
+        this.specificChitData=data
+        console.log(this.specificChitData.ChitsGroup)
+        this.specificChitData=this.specificChitData.ChitsGroup
+      },
+      error => {
+        console.error('Error fetching subscriber', error);
+      }
+    );
+    
   }
 
   getAllChit(){
     this.service.getAllChit().subscribe((data)=>{
       this.chitdata=data;
       // this.total = this.chitdata.AllChitGroups.chitSubscribers.length
+      
+      this.chitdata=this.chitdata?.AllChitGroups
       console.log(this.chitdata)
-      this.data=this.chitdata.AllChitGroups.map((chitDetails,index)=>({
-        id:chitDetails._id,
-        // subsTotal: chitDetails.chitSubscribers.length
-    }))
-    console.log("CHIT ID ===>",  this.chitdata.id)
+    //   this.data=this.chitdata.AllChitGroups.map((chitDetails,index)=>({
+    //     id:chitDetails._id,
+       
+    // }))
+    // console.log("CHIT ID ===>",  this.chitdata.id)
     })
   }
 

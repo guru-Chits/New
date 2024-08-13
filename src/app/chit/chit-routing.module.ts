@@ -15,7 +15,7 @@ const routes: Routes = [
     component: ChitCreateComponent, 
   },  
   {
-    path: 'view',
+    path: 'view/:id',
     component: ChitViewComponent, 
   },
   {

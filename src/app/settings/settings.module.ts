@@ -6,6 +6,11 @@ import { SettingsComponent } from './settings.component';
 import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { PrivacyComponent } from './privacy/privacy.component';
 import { StaffManagerComponent } from './staff-manager/staff-manager.component';
+import { SharedModule } from '../shared/shared.module';
+import { CreateStaffComponent } from './create-staff/create-staff.component';
+import { CreateRoleComponent } from './create-role/create-role.component';
+import { CollectionTypeComponent } from './collection-type/collection-type.component';
+import { ReasonDeletionComponent } from './reason-deletion/reason-deletion.component';
 
 
 
@@ -15,13 +20,18 @@ import { StaffManagerComponent } from './staff-manager/staff-manager.component';
   
     SettingsComponent,
              PrivacyComponent,
-             StaffManagerComponent
+             StaffManagerComponent,
+             CreateStaffComponent,
+             CreateRoleComponent,
+             CollectionTypeComponent,
+             ReasonDeletionComponent
   ],
   imports: [
     CommonModule,
     SettingsRoutingModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    SharedModule
   ]
 })
 export class SettingsModule { }

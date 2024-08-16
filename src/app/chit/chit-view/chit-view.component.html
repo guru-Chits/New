@@ -99,11 +99,11 @@
 
                     </div>
                     <h5>Subscribers</h5>
-                    <app-ag-grid [columns]="subscriberColumn" [rowData]="subscribers" class="px-3" width="100%" height="200px"></app-ag-grid>   
+                    <app-ag-grid [columns]="subscriberColumn" [rowData]="subscribers" class="px-3" width="100%"  [pageSize]="20"></app-ag-grid>   
                     <h5 class="mt-2">Additional Subscribers</h5>
 
                     <div my-4>
-                        <app-ag-grid [columns]="addSubscriberColumn" [rowData]="addSubscribers" class="px-3" width="100%" height="200px"></app-ag-grid>   
+                        <app-ag-grid [columns]="addSubscriberColumn" [rowData]="addSubscribers" class="px-3" width="100%" height="300px" [pageSize]="5"></app-ag-grid>   
 
                     </div>
 

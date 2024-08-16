@@ -11,7 +11,7 @@
                   <form [formGroup]="subscriberForm">
                     <img [src]="profileImageUrl || defaultImageUrl" alt="Profile Picture" class="profile-img">
                     <div class="form-group">
-                      <input type="file" (change)="onFileChange($event,'profileImage')" class="form-control" hidden #fileInput formControlName="profileImage">
+                      <input type="file" (change)="onFileSelected($event)" class="form-control" hidden #fileInput formControlName="profileImageUrl">
                     </div>
                   </form>
                   <button class="upload-button" (click)="fileInput.click()">
@@ -192,13 +192,13 @@
                   </div>
                   <div class="col-lg-4">
                     <div class="form-group">
-                      <label for="pan" class="form-control-label">PAN Card</label>
-                      <input type="file" (change)="onFileChange($event, 'pan')" class="form-control form-control-sm" formControlName="pan" />
+                      <label for="panUrl" class="form-control-label">PAN Card</label>
+                      <input type="file" (change)="onFileChange($event, 'panUrl')" class="form-control form-control-sm" formControlName="panUrl" />
                     </div>
                   </div>
                     <div class="col-lg-4 mt-4">
-                        <button class="viewBtn" (click)="viewFile('pan')">View File</button>
-                        <button class="removeBtn" (click)="removeFile('pan')">Remove File</button>
+                        <button class="viewBtn" (click)="viewFile('panUrl')">View File</button>
+                        <button class="removeBtn" (click)="removeFile('panUrl')">Remove File</button>
                       </div>
                 </div>
                 <div class="row justify-content-around">
@@ -214,13 +214,13 @@
                       </div>
                      <div class="col-lg-4">
                       <div class="form-group">
-                        <label for="aadhar" class="form-control-label">Aadhar Card</label>
-                        <input type="file" (change)="onFileChange($event, 'aadhar')" class="form-control form-control-sm" formControlName="aadhar" />
+                        <label for="aadharUrl" class="form-control-label">Aadhar Card</label>
+                        <input type="file" (change)="onFileChange($event, 'aadharUrl')" class="form-control form-control-sm" formControlName="aadharUrl" />
                       </div>
                     </div>
                     <div class="col-lg-4 mt-4">
-                        <button class="viewBtn" (click)="viewFile('aadhar')">View File</button>
-                        <button class="removeBtn" (click)="removeFile('aadhar')">Remove File</button>
+                        <button class="viewBtn" (click)="viewFile('aadharUrl')">View File</button>
+                        <button class="removeBtn" (click)="removeFile('aadharUrl')">Remove File</button>
                       </div>
                </div>
                   <!-- Aadhar -->
@@ -241,13 +241,13 @@
                   </div>
                   <div class="col-lg-4">
                     <div class="form-group">
-                      <label for="passbook" class="form-control-label">Passbook</label>
-                      <input type="file" (change)="onFileChange($event, 'passbook')" class="form-control form-control-sm" formControlName="passbook" />
+                      <label for="passbookUrl" class="form-control-label">Passbook</label>
+                      <input type="file" (change)="onFileChange($event, 'passbookUrl')" class="form-control form-control-sm" formControlName="passbookUrl" />
                     </div>  
                 </div>
                 <div class="col-lg-4 mt-4">
-                    <button class="viewBtn" (click)="viewFile('passbook')">View File</button>
-                    <button class="removeBtn" (click)="removeFile('passbook')">Remove File</button>
+                    <button class="viewBtn" (click)="viewFile('passbookUrl')">View File</button>
+                    <button class="removeBtn" (click)="removeFile('passbookUrl')">Remove File</button>
                   </div>
             </div>
               <div class="row">
@@ -391,15 +391,15 @@
                            <div class="card view-all mx-3">
                             <div class="card-body align-self-center">
                                 <div class="row">
-                                    <div class="col-lg-2 col-md-2">
+                                    <div class="col-lg-3 col-md-3">
                                         <img class="profile-list-img" src="{{subscriber.subscriberProfile}}"> 
                                     </div>
-                                    <div class="col-lg-5 col-md-5 text">
+                                    <div class="col-lg-6 col-md-6 text">
                                         <strong>{{ subscriber.subscriberId }}</strong>
                                         {{ subscriber.subscriberName }}
                                         </div>
-                                    <div class="col-lg-5 col-md-5">
-                                        <button  class="viewbtn align-left" (click)="onButtonClick(subscriber.id)">View Details</button>
+                                    <div class="col-lg-3 col-md-3">
+                                        <button  class="viewbtn" (click)="onButtonClick(subscriber.id)">View Details</button>
                                     </div>
                                 </div>
                             </div>

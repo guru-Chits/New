@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { ChitService } from './shared/service/chit.service';
+import { LoginComponent } from '../login/login.component';
 @Component({
   selector: 'app-chit',
   templateUrl: './chit.component.html',
@@ -13,37 +14,46 @@ export class ChitComponent implements OnInit{
       routerLink: 'chit',
     },
   ];
+  isChitListVisible:boolean = false;
   showChitDetails: boolean = false;
   chitdata: any;
   data:any[] = [];
+  displayedChit:any[]=[]
   specificChitData:any={}
   total: any;
   selectedChit:number=1
-  // groups = [
-  //   {
-  //     groupTitle: 'Chit Group 1',
-  //     subscribersCount: 15,
-  //     members: ['R', 'B', 'V', 'M', 'G']
-  //   },
-  //   {
-  //     groupTitle: 'Chit Group 2',
-  //     subscribersCount: 15,
-  //     members: ['C', 'A', 'S', 'N', 'R']
-  //   },
-  //   {
-  //     groupTitle: 'Chit Group 3',
-  //     subscribersCount: 15,
-  //     members: ['D', 'E', 'K', 'H', 'T']
-  //   }
-  // ];
   constructor(private router:Router, private service: ChitService){}
 
   ngOnInit(): void{
-    this.getAllChit()
-  }
+    this.service.getAllChit().subscribe((data)=>{
+      this.chitdata=data;
+      this.chitdata=this.chitdata?.AllChitGroups
+      console.log(this.chitdata)
+      this.total = this.chitdata.length
+      console.log(this.total);
+      this.displayedChit= this.chitdata;
 
+      
+    })
+  }
   recieveChildBoolean(event:boolean){
   this.showChitDetails=event
+  }
+
+  applyFilter(filterValue: string) {
+    this.displayedChit= this.chitdata;
+
+    if (!filterValue || !this.data) {
+      console.log(this.displayedChit);
+      
+      return;
+    }
+  
+    this.displayedChit = this.chitdata.filter(subscriber => {
+      const groupId = subscriber.chitGroupId ? subscriber.chitGroupId.toString().toLowerCase() : '';
+      // const subscriberName = subscriber.subscriberName ? subscriber.subscriberName.toLowerCase() : '';
+      return groupId.includes(filterValue.toLowerCase());
+    });
   }
 
   handleChitGropDetails(id:string,index:number){
@@ -70,10 +80,12 @@ export class ChitComponent implements OnInit{
   getAllChit(){
     this.service.getAllChit().subscribe((data)=>{
       this.chitdata=data;
-      // this.total = this.chitdata.AllChitGroups.chitSubscribers.length
-      
       this.chitdata=this.chitdata?.AllChitGroups
       console.log(this.chitdata)
+      this.total = this.chitdata.length
+      console.log(this.total);
+      
+
     //   this.data=this.chitdata.AllChitGroups.map((chitDetails,index)=>({
     //     id:chitDetails._id,
        

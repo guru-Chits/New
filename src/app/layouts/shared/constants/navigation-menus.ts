@@ -36,6 +36,13 @@ export const NavigationMenus: INavigationMenu[] = [
     class: ''
   },
   {
+    path: '/access',
+    title: 'Access Management',
+    img: '/assets/sidebar/inactive/access.svg',
+    activeImg: '/assets/sidebar/active/access active.svg',
+    class: ''
+  },
+  {
     path: '/staff',
     title: 'Staffs',
     img: '/assets/sidebar/inactive/staff.svg',

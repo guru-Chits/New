@@ -16,6 +16,9 @@ export class AgGridComponent implements OnChanges, OnInit {
   @Input() searchImg:string
   @Input() filterImg:string
   @Input() search:boolean;
+  @Input() pageSize: number; // Input for dynamic page size
+
+  defaultPageSize: number = 5; // Default page size
   isActiveFilter: boolean = true;
 
   private gridApi!: GridApi;
@@ -40,8 +43,11 @@ export class AgGridComponent implements OnChanges, OnInit {
   data: any[] = [];
   isLoading: boolean = true;  // Loading state
   bg:any
+  gridOptions: any;
+
   ngOnInit(): void {
     this.getFilteredFields();    
+    this.initializeGridOptions();
     this.bg = this.searchImg === 'assets/table/black search.svg' ? '#ECEBF5' : '#ffffff';
   }
 
@@ -51,7 +57,26 @@ export class AgGridComponent implements OnChanges, OnInit {
       this.generateFilterListFromColumns(this.columns, this.data);
       this.isLoading = false;
     }
+
+    if (changes.pageSize && !changes.pageSize.firstChange) {
+      this.gridOptions.paginationPageSize = this.pageSize || this.defaultPageSize;
+      this.gridOptions.api.onPaginationChanged();
+    }
+    
   }
+
+  initializeGridOptions() {
+    this.gridOptions = {
+      pagination: true,
+      paginationPageSize: this.pageSize || this.defaultPageSize,
+      columnDefs: this.columns,
+      rowData: this.rowData,
+      domLayout: 'normal', // Allows for scrolling if content exceeds height
+    };
+
+  }
+
+
 
   onGridReady(params: any) {
     this.gridApi = params.api;

@@ -6,8 +6,8 @@
                 <div class="row justify-content-around">
                     <div class="col-lg-4">
                         <div class="form-group">
-                            <label for="datetime" class="form-control-label">Auction Date</label>
-                            <input type="date" class="form-control p-2 form-control-sm mt-2" id="datetime" formControlName="datetime" placeholder="Date"/>
+                            <label for="auctionDate" class="form-control-label">Auction Date</label>
+                            <input type="date" class="form-control p-2 form-control-sm mt-2" id="auctionDate" formControlName="auctionDate" placeholder="auctionDate"/>
                         </div>
                     </div>                   
                     <div class="col-lg-4">
@@ -67,7 +67,7 @@
                 </div>
             </div> 
         </div>
-        <div class="col-lg-3 " *ngIf="isSubscriberListVisible">
+        <!-- <div class="col-lg-3 " *ngIf="isSubscriberListVisible">
             <div class="card details p-3">
             <h5 class="text-center my-2">Add Subscribers</h5>
                 <div class="search-bar align-self-center mb-3">
@@ -84,7 +84,6 @@
                                 <img class="profile-list-img" src="{{subscriber.subscriberProfile}}"> 
                             </div>
                             <div class="col-lg-6 col-md-6">
-                                <!-- <b>{{ subscriber.subscriberId }}</b> -->
                                 <p class="fs-6 fw-bold m-0">{{ subscriber.subscriberId }}</p>
                                 {{ subscriber.subscriberName }}
                                 </div>
@@ -94,47 +93,208 @@
                         </div>
                     </div>
                    </div>
+                   <div class="subscriber-details">
+                    <div *ngIf="subscriberDetail">
+                        <h5 class="title  text-center my-4">Subscriber Details</h5>
+                        <div class="text-center">
+                            <img src="{{subscriberDetail.Subscriber.profileImageUrl}}" class="img-fluid" alt="Subscriber Image">
+                        </div>
+                        <table class="table px-3">
+                            <tbody>
+                              <tr>
+                                <td><strong>Subscriber ID </strong></td>
+                                <td class="highlight">{{subscriberDetail.Subscriber.subscriberId }}</td>
+                              </tr>
+                              <tr>
+                                <td><strong>Alias Name </strong></td>
+                                <td>{{subscriberDetail.Subscriber.aliasName}} </td>
+                              </tr>
+                              <tr>
+                                <td><strong>First Name </strong></td>
+                                <td>{{subscriberDetail.Subscriber.firstName}} </td>
+                              </tr>
+                              <tr>
+                                <td><strong>Last Name </strong></td>
+                                <td>{{ subscriberDetail.Subscriber.lastName }}</td>
+                              </tr>
+                              <tr>
+                                <td><strong>Contact No </strong></td>
+                                <td>{{ subscriberDetail.Subscriber.contact }}</td>
+                              </tr>
+                            </tbody>
+                          </table>
+                          <div class="text-center mb-2">
+                            <button class="btn clear-btn" (click)="addSelectedSubscriber(subscriberDetail.Subscriber._id)">Add to Group</button>
+                        </div>
+               
+                    </div>
+                        </div>
                     </tr>
                   </tbody>
                 </table>
               
-              <div class="subscriber-details">
-                <div *ngIf="subscriberDetail">
-                    <h5 class="title  text-center my-4">Subscriber Details</h5>
-                    <div class="text-center">
-                        <img src="{{subscriberDetail.Subscriber.profileImageUrl}}" class="img-fluid" alt="Subscriber Image">
+
+            </div>
+        </div> -->
+
+        <!-- <div class="col-lg-3" *ngIf="isSubscriberListVisible">
+            <div class="card details p-3">
+              <h5 class="text-center my-2">Add Subscribers</h5>
+              <div class="search-bar align-self-center mb-3">
+                <span class="search-icon"><img src="assets/subscriber/search-icon.svg"></span>
+                <input width="20" height="20" type="text" class="border-0" placeholder="Search" (input)="applyFilter($event.target.value)">
+              </div>
+              <table class="subscriber-table">
+                <tbody>
+                  <tr *ngFor="let subscriber of displayedSubscribers">
+                    <div class="card view-all mb-2">
+                      <div class="card-body align-self-center">
+                        <div class="row">
+                          <div class="col-lg-2 col-md-2">
+                            <img class="profile-list-img" src="{{subscriber.subscriberProfile}}">
+                          </div>
+                          <div class="col-lg-6 col-md-6">
+                            <p class="fs-6 fw-bold m-0">{{ subscriber.subscriberId }}</p>
+                            {{ subscriber.subscriberName }}
+                          </div>
+                          <div class="col-lg-4 col-md-4">
+                            <button class="viewbtn align-left" (click)="onButtonClick(subscriber.id)">View Details</button>
+                          </div>
+                        </div>
+                      </div>
                     </div>
-                    <table class="table px-3">
+                    <div *ngIf="subscriberDetail && subscriberDetail.Subscriber.id === subscriber._id" class="subscriber-details">
+                      <h5 class="title text-center my-4">Subscriber Details</h5>
+                      <div class="text-center">
+                        <img src="{{subscriberDetail.Subscriber.profileImageUrl}}" class="img-fluid" alt="Subscriber Image">
+                      </div>
+                      <table class="table px-3">
                         <tbody>
                           <tr>
-                            <td><strong>Subscriber ID </strong></td>
-                            <td class="highlight">{{subscriberDetail.Subscriber.subscriberId }}</td>
+                            <td><strong>Subscriber ID</strong></td>
+                            <td class="highlight">{{subscriberDetail.Subscriber.subscriberId}}</td>
                           </tr>
                           <tr>
-                            <td><strong>Alias Name </strong></td>
-                            <td>{{subscriberDetail.Subscriber.aliasName}} </td>
+                            <td><strong>Alias Name</strong></td>
+                            <td>{{subscriberDetail.Subscriber.aliasName}}</td>
                           </tr>
                           <tr>
-                            <td><strong>First Name </strong></td>
-                            <td>{{subscriberDetail.Subscriber.firstName}} </td>
+                            <td><strong>First Name</strong></td>
+                            <td>{{subscriberDetail.Subscriber.firstName}}</td>
                           </tr>
                           <tr>
-                            <td><strong>Last Name </strong></td>
-                            <td>{{ subscriberDetail.Subscriber.lastName }}</td>
+                            <td><strong>Last Name</strong></td>
+                            <td>{{subscriberDetail.Subscriber.lastName}}</td>
                           </tr>
                           <tr>
-                            <td><strong>Contact No </strong></td>
-                            <td>{{ subscriberDetail.Subscriber.contact }}</td>
+                            <td><strong>Contact No</strong></td>
+                            <td>{{subscriberDetail.Subscriber.contact}}</td>
                           </tr>
                         </tbody>
                       </table>
                       <div class="text-center mb-2">
                         <button class="btn clear-btn" (click)="addSelectedSubscriber(subscriberDetail.Subscriber._id)">Add to Group</button>
+                      </div>
                     </div>
-           
-                </div>
-                    </div>
+                  </tr>
+                </tbody>
+              </table>
             </div>
-        </div>
+          </div> -->
+          
+          <div class="col-lg-3" *ngIf="isSubscriberListVisible">
+            <div class="card details p-3">
+              <h5 class="text-center my-2">Add Subscribers</h5>
+              <div class="search-bar align-self-center mb-3">
+                <span class="search-icon"><img src="assets/subscriber/search-icon.svg"></span>
+                <input width="20" height="20" type="text" class="border-0" placeholder="Search" (input)="applyFilter($event.target.value)">
+              </div>
+              <table class="subscriber-table">
+                <tbody>
+                  <tr *ngFor="let subscriber of displayedSubscribers">
+                    <td>
+                      <div class="card view-all mb-2">
+                        <div class="card-body align-self-center">
+                          <div class="row">
+                            <div class="col-lg-3 col-md-3">
+                              <img class="profile-list-img" src="{{subscriber.subscriberProfile}}">
+                            </div>
+                            <div class="col-lg-5 col-md-5">
+                                <p class="id fw-bold m-0">{{ subscriber.subscriberName }}</p>
+
+                              {{ subscriber.subscriberId }}
+
+                            </div>
+                            <div class="col-lg-3 col-md-3">
+                              <button class="viewbtn align-left" (click)="onButtonClick(subscriber.id)">View Details</button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+          
+                      <!-- Show details only for the selected subscriber -->
+
+                    </td>
+                  </tr>
+                  <div *ngIf="subscriberDetail" class="subscriber-details">
+                    <h5 class="title text-center my-4">Subscriber Details</h5>
+                    <div class="text-center">
+                      <img src="{{subscriberDetail.Subscriber.profileImageUrl}}" class="img-fluid" alt="Subscriber Image">
+                    </div>
+                    <table class="table px-3">
+                      <tbody>
+                        <tr>
+                          <td><strong>Subscriber ID</strong></td>
+                          <td class="highlight">{{subscriberDetail.Subscriber.subscriberId}}</td>
+                        </tr>
+                        <tr>
+                          <td><strong>Alias Name</strong></td>
+                          <td>{{subscriberDetail.Subscriber.aliasName}}</td>
+                        </tr>
+                        <tr>
+                          <td><strong>First Name</strong></td>
+                          <td>{{subscriberDetail.Subscriber.firstName}}</td>
+                        </tr>
+                        <tr>
+                          <td><strong>Last Name</strong></td>
+                          <td>{{subscriberDetail.Subscriber.lastName}}</td>
+                        </tr>
+                        <tr>
+                          <td><strong>Contact No</strong></td>
+                          <td>{{subscriberDetail.Subscriber.contact}}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                    <div class="text-center mb-2">
+                      <button class="btn clear-btn" (click)="addSelectedSubscriber(subscriberDetail.Subscriber._id)">Add to Group</button>
+                    </div>
+                  </div>
+                </tbody>
+              </table>
+
+            </div>
+          </div>
+          
+          
     </div>
+<!-- Modal -->
+<div id="duplicateModal" class="modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Error</h5>
+          <button type="button" class="close align-right" (click)="closeModal()">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <p>{{ modalErrorMessage }}</p>
+        </div>
+        <div class="modal-footer">
+          <button class="btn clear-btn" (click)="closeModal()">OK</button>
+        </div>
+      </div>
+    </div>
+  </div>
+        
 </div>

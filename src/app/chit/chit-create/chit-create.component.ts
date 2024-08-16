@@ -13,6 +13,9 @@ import { Router } from '@angular/router';
   styleUrl: './chit-create.component.css'
 })
 export class ChitCreateComponent {
+  addTicketId:any=1
+  errorMessage: string = '';
+  ticketId:any=1
   breadcrumsData: any = [
     {
       key: 'Chit Management',
@@ -24,6 +27,8 @@ export class ChitCreateComponent {
     },
   ];
   showList = false;
+  listId:any
+  modalErrorMessage: string = '';
   currentListType: 'chit' | 'additional' = 'chit';
   gridApi: any;
   data : any[] = [];
@@ -45,7 +50,7 @@ export class ChitCreateComponent {
 
   ngOnInit(): void{
     this.chitGroupForm = new FormGroup({
-      datetime: new FormControl(''),
+      auctionDate: new FormControl(''),
       chitAmount: new FormControl(''),
       foremanCommission: new FormControl(''),
       monthlyInstall: new FormControl(''),
@@ -72,11 +77,13 @@ export class ChitCreateComponent {
   }
   profileImageWithIdRenderer(params: any): string {
     const imageUrl = params.data.profileImageUrl;
-    const subscriberId = params.data.subscriberId;
+    const ticketId = params.data.ticketId; // Incrementing the ticket ID starting from 1
+    console.log(ticketId,"tickid");
+  
     return `
       <div style="display: flex; align-items: center;">
         <img src="${imageUrl}" alt="Profile Image" width="35" height="35" style="border-radius: 50%; margin-right: 10px;">
-        <span style="color: #50A1A5;">${subscriberId}</span>
+        <span style="color: #50A1A5;"></span>
       </div>
     `;
   }
@@ -117,6 +124,14 @@ export class ChitCreateComponent {
   
   onButtonClick(id: string): void {
     this.getSubscribersById(id);
+    this.listId=id
+
+    if (this.subscriberDetail && this.subscriberDetail.id === id) {
+      // If the same subscriber is clicked, toggle off the details
+      this.subscriberDetail = null;
+    } else {
+      this.subscriberDetail = this.displayedSubscribers.find(sub => sub.id === id);
+    }
   }
 
 
@@ -138,60 +153,115 @@ export class ChitCreateComponent {
   }
   
   addSelectedSubscriber(subscriber: any): void {
-    if (this.currentListType === 'chit') {
-      this.addSubscriberById(subscriber);
-    } else {
-      this.addAdditionalSubscriberById(subscriber);
+ 
+    if(this.listId==subscriber)
+    {
+      if (this.currentListType === 'chit') {
+        this.addSubscriberById(subscriber);
+      } else {
+        this.addAdditionalSubscriberById(subscriber);
+      }
+  
     }
     // this.closeSubscriberList();
+    this.subscriberDetail=null
+
   }
 
-  addSubscriberById(id: string): void {
-    const chitSubscribers = this.chitGroupForm.get('chitSubscribers').value || [];
+  // addSubscriberById(id: string): void {
+  //   const chitSubscribers = this.chitGroupForm.get('chitSubscribers').value || [];
 
-    if (chitSubscribers.length >= 20) {
-      console.warn('Cannot add more than 20 subscribers.');
-      return;
-    }
-    this.subService.getsubscriberById(id).subscribe(
-      res => {
-        this.subData = res;
-
-        const newSubscriber = {
-          subscriberId:  this.subData.Subscriber.subscriberID,
-          profileImageUrl:this.subData.Subscriber.profileImageUrl,
-          aliasName:  this.subData.Subscriber.lastName,
-          firstName:  this.subData.Subscriber.firstName,
-          place:  this.subData.Subscriber.place,
-          occupation:this.subData.Subscriber.occupation
-          // passbookNo:  this.subData.Subscriber.passbookNo
-        };
-       ;
+  //   if (chitSubscribers.length >= 20) {
+  //     console.warn('Cannot add more than 20 subscribers.');
+  //     return;
+  //   }
+  //   this.subService.getsubscriberById(id).subscribe(
+  //     res => {
+  //       this.subData = res;
+  //       const newSubscriber = {
+  //         ticketId:this.ticketId,
+  //         subscriberId:  this.subData.Subscriber.subscriberId,
+  //         profileImageUrl:this.subData.Subscriber.profileImageUrl,
+  //         aliasName:  this.subData.Subscriber.lastName,
+  //         firstName:  this.subData.Subscriber.firstName,
+  //         place:  this.subData.Subscriber.place,
+  //         occupation:this.subData.Subscriber.occupation
+  //         // passbookNo:  this.subData.Subscriber.passbookNo
+  //       };
+  //      ;
         
-        const chitSubscribers = this.chitGroupForm.get('chitSubscribers').value || [];
+  //       const chitSubscribers = this.chitGroupForm.get('chitSubscribers').value || [];
+  //       this.ticketId=chitSubscribers.length+2
 
-        if (chitSubscribers.length >= 20) {
-          console.warn('Cannot add more than 20 subscribers.');
-          return;
-        }
+  //       if (chitSubscribers.length >= 20) {
+  //         console.warn('Cannot add more than 20 subscribers.');
+  //         return;
+  //       }
 
-        chitSubscribers.push(newSubscriber);
-        this.chitGroupForm.patchValue({ chitSubscribers });
+  //       chitSubscribers.push(newSubscriber);
+  //       this.chitGroupForm.patchValue({ chitSubscribers });
 
-        // Update the table data
-        this.chitSubscribersData = [...chitSubscribers];
-      },
-      error => {
-        console.error('Error fetching subscriber:', error);
+  //       // Update the table data
+  //       this.chitSubscribersData = [...chitSubscribers];
+  //     },
+  //     error => {
+  //       console.error('Error fetching subscriber:', error);
+  //     }
+  //   );
+  // }
+
+  addSubscriberById(id: string): void {
+    if(this.ticketId <= 20)
+    {
+      const chitSubscribers = this.chitGroupForm.get('chitSubscribers').value || [];
+      this.ticketId=chitSubscribers.length+1
+      if (chitSubscribers.length >= 20) {
+        this.showModal('Cannot add more than 20 subscribers.');
+        return;
       }
-    );
+  
+      this.subService.getsubscriberById(id).subscribe(
+        res => {
+          this.subData = res;
+  
+          const newSubscriber = {
+            ticketId: this.ticketId,
+            subscriberId: this.subData.Subscriber.subscriberId,
+            profileImageUrl: this.subData.Subscriber.profileImageUrl,
+            aliasName: this.subData.Subscriber.lastName,
+            firstName: this.subData.Subscriber.firstName,
+            place: this.subData.Subscriber.place,
+            occupation: this.subData.Subscriber.occupation
+          };
+  
+          if (chitSubscribers.some(sub => sub.subscriberId === newSubscriber.subscriberId)) {
+            this.showModal('Duplicate subscriber ID detected. This subscriber cannot be added.');
+            return;
+          }
+  
+          chitSubscribers.push(newSubscriber);
+          this.chitGroupForm.patchValue({ chitSubscribers });
+  
+          // Update the table data
+          this.chitSubscribersData = [...chitSubscribers];
+        },
+        error => {
+          if (error.status === 400 && error.error.message.includes('Duplicate subscriberId')) {
+            this.showModal('Duplicate subscriber ID detected. This subscriber cannot be added.');
+          } else {
+            console.error('Error fetching subscriber:', error);
+          }
+        }
+      );
+     }
   }
 
   column: ITableColumn[] = [
-    // { label: 'Subscriber ID', field: 'subscriberId', sortable: false },
     { label: 'profileImageUrl', field: 'Ticket Id', sortable: false ,
       cellRenderer: this.profileImageWithIdRenderer,
     },
+    { label: 'TicketId', field: 'ticketId', sortable: true },
+
     { label: 'Alias Name', field: 'aliasName', sortable: true },
     { label: 'First Name', field: 'firstName', sortable: true },
     { label: 'Place', field: 'place', sortable: true },
@@ -199,56 +269,121 @@ export class ChitCreateComponent {
   ];  
 
   addSubcolumn: ITableColumn[] = [
-    // { label: 'Subscriber ID', field: 'subscriberId', sortable: false },
     { label: 'Ticket Id', field: 'profileImageUrl', sortable: false ,
       cellRenderer: this.profileImageWithIdRenderer,
     },
+    { label: 'TicketId', field: 'ticketId', sortable: true },
     { label: 'Alias Name', field: 'aliasName', sortable: true },
     { label: 'First Name', field: 'firstName', sortable: true },
     { label: 'Place', field: 'place', sortable: true },
     { label: 'Occupation', field: 'occupation', sortable: true }
   ];
 
+  // addAdditionalSubscriberById(id: string): void {
+  //   if(this.ticketId>20){
+  //     this.ticketId+=1
+  //     const addChitSubscribers = this.chitGroupForm.get('addChitSubscribers').value || [];
+
+  //     if (addChitSubscribers.length >= 5) {
+  //       console.warn('Cannot add more than 5 additional subscribers.');
+  //       return;
+  //     }
+  
+  //     this.subService.getsubscriberById(id).subscribe(
+  //       res => {
+  //         this.addSubData = res;
+          
+  //         const newSubscriber = {
+  //           ticketId:this.ticketId,
+  //           subscriberId:  this.addSubData.Subscriber.subscriberId,
+  //           profileImageUrl:this.addSubData.Subscriber.profileImageUrl,
+  //           aliasName:  this.addSubData.Subscriber.lastName,
+  //           firstName:  this.addSubData.Subscriber.firstName,
+  //           place:  this.addSubData.Subscriber.place,
+  //           occupation:this.addSubData.Subscriber.occupation
+  //           // passbookNo:  this.subData.Subscriber.passbookNo
+  //         };
+  
+  //         const addChitSubscribers = this.chitGroupForm.get('addChitSubscribers').value || [];
+  
+  //         if (addChitSubscribers.length >= 5) {
+  //           console.warn('Cannot add more than 5 additional subscribers.');
+  //           return;
+  //         }
+  
+  //         addChitSubscribers.push(newSubscriber);
+  //         this.chitGroupForm.patchValue({ addChitSubscribers });
+  
+  //         // Update the table data
+  //         this.addChitSubscribersData = [...addChitSubscribers];
+  //       },
+  //       error => {
+  //         console.error('Error fetching subscriber:', error);
+  //       }
+  //     );
+  
+  //   }
+  // }
+
   addAdditionalSubscriberById(id: string): void {
-    const addChitSubscribers = this.chitGroupForm.get('addChitSubscribers').value || [];
-
-    if (addChitSubscribers.length >= 5) {
-      console.warn('Cannot add more than 5 additional subscribers.');
-      return;
-    }
-
-    this.subService.getsubscriberById(id).subscribe(
-      res => {
-        this.addSubData = res;
-
-        const newSubscriber = {
-          subscriberId:  this.addSubData.Subscriber.subscriberID,
-          profileImageUrl:this.addSubData.Subscriber.profileImageUrl,
-          aliasName:  this.addSubData.Subscriber.lastName,
-          firstName:  this.addSubData.Subscriber.firstName,
-          place:  this.addSubData.Subscriber.place,
-          occupation:this.addSubData.Subscriber.occupation
-          // passbookNo:  this.subData.Subscriber.passbookNo
-        };
-
-        const addChitSubscribers = this.chitGroupForm.get('addChitSubscribers').value || [];
-
-        if (addChitSubscribers.length >= 5) {
-          console.warn('Cannot add more than 5 additional subscribers.');
-          return;
-        }
-
-        addChitSubscribers.push(newSubscriber);
-        this.chitGroupForm.patchValue({ addChitSubscribers });
-
-        // Update the table data
-        this.addChitSubscribersData = [...addChitSubscribers];
-      },
-      error => {
-        console.error('Error fetching subscriber:', error);
+    if (this.ticketId > 20) {
+      const addChitSubscribers = this.chitGroupForm.get('addChitSubscribers').value || [];
+      const chitSubscribers = this.chitGroupForm.get('chitSubscribers').value || [];
+  
+      if (addChitSubscribers.length >= 5) {
+        this.showModal('Cannot add more than 5 additional subscribers.');
+        return;
       }
-    );
+  
+      this.subService.getsubscriberById(id).subscribe(
+        res => {
+          this.addSubData = res;
+  
+          const newSubscriber = {
+            ticketId: this.ticketId,
+            subscriberId: this.addSubData.Subscriber.subscriberId,
+            profileImageUrl: this.addSubData.Subscriber.profileImageUrl,
+            aliasName: this.addSubData.Subscriber.lastName,
+            firstName: this.addSubData.Subscriber.firstName,
+            place: this.addSubData.Subscriber.place,
+            occupation: this.addSubData.Subscriber.occupation
+          };
+  
+          // Check for duplicate subscriber ID in both addChitSubscribers and chitSubscribers
+          if (addChitSubscribers.some(sub => sub.subscriberId === newSubscriber.subscriberId) ||
+              chitSubscribers.some(sub => sub.subscriberId === newSubscriber.subscriberId)) {
+            this.showModal('Duplicate subscriber ID detected. This subscriber cannot be added.');
+            return;
+          }
+          this.ticketId += 1;
+
+          addChitSubscribers.push(newSubscriber);
+          this.chitGroupForm.patchValue({ addChitSubscribers });
+  
+          // Update the table data
+          this.addChitSubscribersData = [...addChitSubscribers];
+        },
+        error => {
+          console.error('Error fetching subscriber:', error);
+        }
+      );
+    }
   }
+  
+  // Method to show modal (assuming you have a modal implementation)
+  showModal(message: string): void {
+    this.modalErrorMessage = message;
+    const modal = document.getElementById('duplicateModal');
+    modal.style.display = 'block';
+  }
+  
+  // Method to close modal
+  closeModal(): void {
+    const modal = document.getElementById('duplicateModal');
+    modal.style.display = 'none';
+  }
+  
+  
   
   onGridReady(params: any) {
     this.gridApi = params.api;

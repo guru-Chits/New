@@ -64,16 +64,23 @@ export class ChitViewComponent implements OnInit{
           aliasName: subscriber.aliasName,
           firstName: subscriber.firstName,
           passbookNo:subscriber.passbookNo,
-          // place: subscriber.place,
-          // occupation: subscriber.occupation,
-          subscriberId:subscriber.subscriberId
+          place: subscriber.place,
+          occupation: subscriber.occupation,
+          subscriberId:subscriber.subscriberId,
+          ticketId:subscriber.ticketId,
+          profileImageUrl:subscriber.profileImageUrl
+
         }));
   
-        const addSubscriberDetails =  this.addSubscribers.map(addSubscriber => ({
-          aliasName: addSubscriber.aliasName,
-          firstName: addSubscriber.firstName,
-          passbookNo:addSubscriber.passbookNo,
-          subscriberId:addSubscriber.subscriberId
+        const addSubscriberDetails =  this.addSubscribers.map(subscriber => ({
+          aliasName: subscriber.aliasName,
+          firstName: subscriber.firstName,
+          passbookNo:subscriber.passbookNo,
+          place: subscriber.place,
+          occupation: subscriber.occupation,
+          subscriberId:subscriber.subscriberId,
+          ticketId:subscriber.ticketId,
+          profileImageUrl:subscriber.profileImageUrl
 
         }));
   
@@ -109,23 +116,45 @@ export class ChitViewComponent implements OnInit{
   // ];
 
   // Column definitions for chitSubscribers
+
+  profileImageWithIdRenderer(params: any): string {
+    const imageUrl = params.data.profileImageUrl;
+    const ticketId = params.data.ticketId;
+    return `
+      <div style="display: flex; align-items: center;">
+        <img src="${imageUrl}" alt="Profile Image" width="35" height="35" style="border-radius: 50%; margin-right: 10px;">
+        <span style="color: #50A1A5;">${ticketId}</span>
+      </div>
+    `;
+  }
+  
   subscriberColumn : ITableColumn[]= [
-  // { label: 'Subscriber ID', field: 'subscriberId' },
-  { label: 'subscriber Id', field: 'SubscriberId' },
-  { label: 'Name', field: 'firstName' },
+    {
+      label: 'profileImageUrl',
+      field: 'Ticket ID',
+      filter:false,
+      cellRenderer: this.profileImageWithIdRenderer,
+    },  { label: 'Name', field: 'firstName' },
   { label: 'Alias Name', field: 'aliasName' },
   { label: 'Passbook Number', field: 'passbookNo' },
-  // { label: 'Occupation', field: 'occupation' },
+  { label: 'Place', field: 'place' },
+  { label: 'Occupation', field: 'occupation' },
 
 ];
 
 // Column definitions for addChitSubscribers
   addSubscriberColumn = [
-    { label: 'subscriber Id', field: 'SubscriberId' },
-    { label: 'Name', field: 'firstName' },
-    { label: 'Alias Name', field: 'aliasName' },
-    { label: 'Passbook Number', field: 'passbookNo' },
-    // { label: 'Occupation', field: 'occupation' },  
-    ];
+    {
+      label: 'profileImageUrl',
+      field: 'Ticket ID',
+      filter:false,
+      cellRenderer: this.profileImageWithIdRenderer,
+    },  { label: 'Name', field: 'firstName' },
+  { label: 'Alias Name', field: 'aliasName' },
+  { label: 'Passbook Number', field: 'passbookNo' },
+  { label: 'Place', field: 'place' },
+  { label: 'Occupation', field: 'occupation' },
 
+
+  ]
 }

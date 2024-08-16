@@ -1,4 +1,6 @@
+// const baseUrl = 'http://localhost:8000';
 const baseUrl = 'https://chitfundapi.onrender.com';
+
 
 export const environment = {
     paymentServiceUrl: `${baseUrl}/payment-service/api`,
@@ -6,6 +8,4 @@ export const environment = {
     chitServiceUrl:`${baseUrl}/api`,
     staffServiceUrl:`${baseUrl}/api`,
     areaServiceUrl:`${baseUrl}/api`
-
-
 }

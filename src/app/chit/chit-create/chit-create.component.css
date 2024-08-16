@@ -21,6 +21,7 @@
     height: 30px;
     background: transparent;
     border-radius: 50%;
+    overflow: hidden;
   
   }
 
@@ -77,11 +78,79 @@ span{
     
 .viewbtn{
     border:none;
-    font-size: 12px;
+    font-size: 10px;
     color:#50A1A5;
     background: transparent;
     }       
 
     .view-all{
         background-color: #ECEBF5;
+        font-size: 8px;
       }
+.id{
+    font-size: 10px;
+}
+/* Center the modal vertically and horizontally */
+
+
+/* Modal background and content styling */
+.modal-content {
+    width: 250px; /* Adjust the width as needed */
+    height: auto; /* Adjust the height as needed */
+    background-color: #fff;
+    border: none; /* Remove the border */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); /* Add a box shadow */
+    border-radius: 8px; /* Optional: Add rounded corners */
+}
+
+/* Remove border lines from header, body, and footer */
+.modal-header,
+.modal-footer {
+    border: none;
+    background-color: transparent; /* Ensure no background lines */
+}
+
+/* Title styling */
+.modal-title {
+    font-size: 18px;
+    font-weight: 600;
+}
+
+/* Close button styling */
+.close {
+    font-size: 1.5rem;
+    text-align: right;
+    position: relative;
+    /* right:50%; */
+    left: 70%;
+    border: none;
+    background-color: transparent;
+}
+
+/* Body styling */
+.modal-body {
+    padding: 15px;
+}
+
+/* Footer styling */
+.modal-footer {
+    padding: 10px;
+}
+
+
+/* Modal fade-in effect */
+.modal.fade .modal-dialog {
+    transform: translate(0, -25%);
+    transition: transform 0.3s ease-out;
+}
+
+.modal.show .modal-dialog {
+    transform: translate(0, 0);
+}
+
+/* Modal backdrop */
+.modal-backdrop {
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+

@@ -121,6 +121,9 @@ console.log(this.regionData.id);
     this.service.saveregionDetails(payload, this.id).subscribe((data) => {
       console.log(data);
     });
+
+
+    
     this.getAllRegion()
 
     this.regionForm.reset()

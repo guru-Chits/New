@@ -92,9 +92,9 @@ border-top: 100px solid #3E3A97;
 
   /* profile-picture-upload.component.css */
 .profile-picture-container {
-  border-radius: 50%;
+  /* border-radius: 50%; */
   align-items: left;
-  margin-top: -50px;
+  /* margin-top: -50px; */
   margin-left: 30px;
 }
 
@@ -107,8 +107,9 @@ border-top: 100px solid #3E3A97;
 }
 
 .profile-img {
-  width: 100px;
-  height: 100px;
+  /* width: 100px;
+  height: 100px; */
+  overflow: scroll;
   /* border: 2px solid #ccc; */
   background: transparent;
   border-radius: 50%;
@@ -208,7 +209,7 @@ padding-left: 3px;
   background: transparent;
 }
 .text{
-  font-size: 12px;
+  font-size: 10px;
 }
 .view-all{
   background-color: #ECEBF5;
@@ -229,6 +230,7 @@ padding-left: 3px;
   background-color: #ECEBF5;
   padding: 5px;
   flex-grow: 1;
+  width: 150px;
   height: 20px;
 } 
 .addBtn{

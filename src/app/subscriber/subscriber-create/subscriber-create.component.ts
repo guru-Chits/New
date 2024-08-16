@@ -39,9 +39,10 @@ heading:string="Subscriber Details"
   ) { }
 
 filesInfo = {
-  panCard: null,
-  aadharCard: null,
-  passbook: null,
+  panUrl: null,
+  aadharUrl: null,
+  passbookUrl: null,
+  profileImageUrl:null
 };
 subscriberDetail: any;
 isSubscriberListVisible = false;
@@ -115,10 +116,10 @@ ngOnInit(): void {
     nomineeDOB: ['', [
       this.conditionalValidator(() => !!this.subscriberForm?.get('nomineeDOB')?.value, this.ageValidator(18))
     ]],
-    profileImage: [''],
-    aadhar: [''],
-    passbook: [''],
-    pan: ['']
+    profileImageUrl: [''],
+    aadharUrl: [''],
+    passbookUrl: [''],
+    panUrl: ['']
   });
   
 
@@ -344,7 +345,7 @@ onFileSelected(event: Event): void {
     const reader = new FileReader();
     reader.onload = () => {
       this.profileImageUrl = reader.result;
-      this.subscriberForm.patchValue({ profileImage: file });
+      this.subscriberForm.patchValue({ profileImageUrl: file });
     };
     reader.readAsDataURL(file);
   }
@@ -373,6 +374,7 @@ viewFile(fileType: string): void {
     const fileURL = URL.createObjectURL(file);
     window.open(fileURL, '_blank');
   }
+  
 }
 
 removeFile(fileType: string): void {

@@ -46,11 +46,12 @@ applyFilter(filterValue: string) {
   }
   getSub(id:any){
     console.log(id);
-    
-    this.service.getstaffById(id).subscribe((data) => {
-      this.staffDetail = data;
-      console.log(this.staffDetail)      
-       })
+    this.router.navigate([`staff/view/${id}`]);
+
+    // this.service.getstaffById(id).subscribe((data) => {
+    //   this.staffDetail = data;
+    //   console.log(this.staffDetail)      
+    //    })
 
   }
 }

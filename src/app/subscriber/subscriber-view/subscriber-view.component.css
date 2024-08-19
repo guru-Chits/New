@@ -119,3 +119,6 @@
 .toggle{
   width:25%;
 }
+.click{
+  cursor: pointer;
+}

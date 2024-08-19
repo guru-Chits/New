@@ -9,7 +9,7 @@
                   <form [formGroup]="staffsForm">
                     <img [src]="profileUrl || defaultImageUrl" alt="Profile Picture" class="profile-img">
                     <div class="form-group">
-                    <input type="file" (change)="onFileSelected($event,'profileUrl')" hidden #profileFileInput formControlNamae="profileUrl">
+                    <input type="file" (change)="onFileSelected($event,'profileUrl')" hidden #profileFileInput formControlName="profileUrl">
                   </div>
                   </form>
                     <button class="upload-button" (click)="profileFileInput.click()">
@@ -191,7 +191,7 @@
                     <div class="col-lg-4">
                       <div class="form-group">
                         <label for="aadharUrl" class="form-control-label">Aadhar Card <span class="required" *ngIf="staffsForm.get('aadharUrl').hasError('required')">*</span></label>
-                        <input type="file" class="form-control form-control-sm file-upload" (change)="onFileSelected($event, 'aadharUrl')" formControlName="aadharUrl"/>
+                        <input type="file" class="form-control form-control-sm file-upload" [value]="aadharUrl" (change)="onFileSelected($event, 'aadharUrl')" formControlName="aadharUrl"/>
                         <div class="invalid-feedback" *ngIf="staffsForm.get('ifscCode').invalid && (staffsForm.get('ifscCode').dirty || staffsForm.get('ifscCode').touched)">
                           <div *ngIf="staffsForm.get('aadharUrl').errors.required">Aadhar Card is required.</div>
                         </div>

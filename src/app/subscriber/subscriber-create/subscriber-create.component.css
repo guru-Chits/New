@@ -105,10 +105,14 @@ border-top: 100px solid #3E3A97;
   border: none;
   background-color: #E8E8E8;
 }
+.form-group .form-control:focus {
+  outline: none;
+  box-shadow: none;
+}
 
 .profile-img {
-  /* width: 100px;
-  height: 100px; */
+  width: 100px;
+  height: 100px;
   overflow: scroll;
   /* border: 2px solid #ccc; */
   background: transparent;

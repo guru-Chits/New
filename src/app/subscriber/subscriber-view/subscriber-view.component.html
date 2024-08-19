@@ -8,7 +8,7 @@
             <div class="card ps-5 pe-5 mb-2 details-card">
                 <div class="profile-picture-container">
                     <div class="profile-picture">
-                      <img [src]="subscriberDetail.Subscriber.profileImage || defaultImageUrl" alt="Profile Picture" class="profile-img">
+                      <img [src]="subscriberDetail.Subscriber.profileImageUrl" alt="Profile Picture" class="profile-img">
                       <input type="file" (change)="onFileSelected($event)" hidden #fileInput>
                       <button class="upload-button" (click)="fileInput.click()">
                         <img src="assets/subscriber/Profile edit.svg " alt="Upload Icon">
@@ -248,12 +248,12 @@
             <tr *ngFor="let subscriber of displayedSubscribers">
            <div class="view-all my-2">
             <div class="align-self-center">
-                <div class="row">
+                <div class="row click"(click)="getSub(subscriber.id)">
                     <div class="col-4 text-center">
-                        <img class="profile-list-img" src="{{subscriber.subscriberProfile}}">                       
+                        <img class="rounded-circle  align-self-center mb-2" src="{{subscriber.subscriberProfile}}" height="40" width="40">                       
                     </div>
                     <div class="col-8 text">
-                        <h6 (click)="getSub(subscriber.id)" class="pe-auto"><strong>{{ subscriber.subscriberName }}</strong></h6>
+                        <h6  class="pe-auto"><strong>{{ subscriber.subscriberName }}</strong></h6>
                         <p>{{ subscriber.subscriberId }}</p>
                         </div>
                 </div>

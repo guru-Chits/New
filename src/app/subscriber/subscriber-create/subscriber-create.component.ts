@@ -42,7 +42,6 @@ filesInfo = {
   panUrl: null,
   aadharUrl: null,
   passbookUrl: null,
-  profileImageUrl:null
 };
 subscriberDetail: any;
 isSubscriberListVisible = false;
@@ -68,7 +67,7 @@ ngOnInit(): void {
     place: ['', [Validators.required, Validators.minLength(10), Validators.maxLength(100), Validators.pattern(/^[a-zA-Z0-9\s,.'-]+$/)]],
     gender: ['', Validators.required],
     dob: ['', [
-      this.conditionalValidator(() => !!this.subscriberForm?.get('dob')?.value,this.ageValidator(18)),
+      // this.conditionalValidator(() => !!this.subscriberForm?.get('dob')?.value,this.ageValidator(18)),
     ]],
     occupation: ['', [
       this.conditionalValidator(() => !!this.subscriberForm?.get('occupation')?.value, Validators.pattern(/^[a-zA-Z\s-]+$/)),
@@ -114,7 +113,7 @@ ngOnInit(): void {
       this.conditionalValidator(() => !!this.subscriberForm?.get('nomineeAadhar')?.value, Validators.pattern(/^\d{4}\s\d{4}\s\d{4}$/))
     ]],
     nomineeDOB: ['', [
-      this.conditionalValidator(() => !!this.subscriberForm?.get('nomineeDOB')?.value, this.ageValidator(18))
+      // this.conditionalValidator(() => !!this.subscriberForm?.get('nomineeDOB')?.value, this.ageValidator(18))
     ]],
     profileImageUrl: [''],
     aadharUrl: [''],
@@ -151,6 +150,7 @@ ngOnInit(): void {
       console.log('Project Data = >',this.subscriberData)
       const utcDob = this.convertDateFormat(this.subscriberData.Subscriber.dob);
       const utcnDob = this.convertDateFormat(this.subscriberData.Subscriber.nomineeDOB);
+    console.log(utcDob,utcDob);
     
       if(utcDob||utcnDob ||utcDob&&utcnDob)
       {
@@ -299,6 +299,8 @@ showSubscriberList(): void {
 }
 private generateDefaultProfileImage(firstName: string): string {
   const initial = firstName.charAt(0).toUpperCase();
+  console.log(initial);
+  
   return `https://via.placeholder.com/150/000000/FFFFFF/?text=${initial}`;
 }
 
@@ -306,9 +308,11 @@ onSubmit(): void {
     const formData = new FormData();
     const formValue = this.subscriberForm.getRawValue();
 
-    if (!formValue.profileImage) {
+    if (!formValue.profileImageUrl) {
       formValue.profileImage = this.generateDefaultProfileImage(formValue.firstName);
-      this.subscriberForm.get('profileImage')?.setValue(formValue.profileImage);
+      console.log(formValue.profileImage);
+      
+      this.subscriberForm.get('profileImageUrl')?.setValue(formValue.profileImage);
     }
 
     for (const key in formValue) {
@@ -357,10 +361,6 @@ onFileChange(event: any, controlName: string): void {
 
   if (event.target.files && event.target.files.length) {
     const file = event.target.files[0];
-    if (file) {
-      this.profileImageUrl = URL.createObjectURL(file);
-    }
-
     this.subscriberForm.patchValue({
       [controlName]: file
     });
@@ -384,12 +384,13 @@ removeFile(fileType: string): void {
 }
 
 addReferral(): void {
-  if (this.subscriberDetail) {
+  // if (this.subscriberDetail) {
     this.referralClient = this.subscriberDetail.Subscriber.firstName;
     console.log(this.referralClient);
-    
+    this.subscriberForm.get('referralClient').setValue(this.referralClient)
+
     this.isSubscriberListVisible = false;
-  }
+  // }
 }
 
 

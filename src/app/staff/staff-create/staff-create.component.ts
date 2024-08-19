@@ -11,7 +11,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 export class StaffCreateComponent implements OnInit{
   staffsForm: FormGroup;
   heading:string="Create Staff"
-
+  aadharUrl:string|null=null
   profileUrl: string | ArrayBuffer | null = null;
   defaultImageUrl = 'assets/subscriber/user.svg'; // Path to default profile image
   get employeeIdControl() { return this.staffsForm.get('employeeId'); };
@@ -69,7 +69,7 @@ ngOnInit(){
     panCardNumber: [""],
     panUrl: [""],
     aadharNumber: ["", [Validators.required,Validators.pattern(/^\d{12}$/)]],
-    aadharUrl: ["", [Validators.required]],
+    aadharUrl: [""],
     drivingLicenseUrl: [""],
     drivingLicenseNumber: ["", this.conditionalValidator(() => !!this.staffsForm?.get('drivingLicenseNumber')?.value, Validators.pattern(/^AA[0-9]{9}$/))],
     bankName: [""],
@@ -103,6 +103,7 @@ ngOnInit(){
         this.staffId=this.staffData.Staff._id
         this.profileUrl=this.staffData.Staff.profileUrl
         console.log(this.profileUrl);
+        this.aadharUrl=this.staffData.Staff.aadharUrl
         this.staff=false
         console.log('Project Data = >',this.staffData)
         const utcDob = this.convertDateFormat(this.staffData.Staff.dob);
@@ -186,16 +187,16 @@ ngOnInit(){
       }
     }
   }
-  onProfileImageSelected(event: any,controlName: string): void {
-    if (event.target.files && event.target.files.length) {
-      const file = event.target.files[0];
-      if (file) {
-        this.profileUrl = URL.createObjectURL(file);
-      }
-      this.staffsForm.patchValue({
-        [controlName]: file
-      });
-    }  }
+  // onProfileImageSelected(event: any,controlName: string): void {
+  //   if (event.target.files && event.target.files.length) {
+  //     const file = event.target.files[0];
+  //     if (file) {
+  //       this.profileUrl = URL.createObjectURL(file);
+  //     }
+  //     this.staffsForm.patchValue({
+  //       [controlName]: file
+  //     });
+  //   }  }
 
   onFileSelected(event: any, controlName: string): void {
     this.filesInfo[controlName] = event.target.files[0];
@@ -268,8 +269,10 @@ onSubmit(): void {
   const formData = new FormData();
   const formValue = this.staffsForm.getRawValue();
 
-  if (!formValue.profileImage) {
+  if (!formValue.profileUrl && !this.profileUrl) {
     formValue.profileImage = this.generateDefaultProfileImage(formValue.firstName);
+    console.log(formValue.profileImage);
+    
     this.staffsForm.get('profileUrl')?.setValue(formValue.profileImage);
   }
 

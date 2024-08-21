@@ -7,6 +7,7 @@ import { StaffViewComponent } from './staff-view/staff-view.component';
 import { SharedModule } from '../shared/shared.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ViewallComponent } from './viewall/viewall.component';
+import { NgSelectModule } from '@ng-select/ng-select';
 
 
 @NgModule({
@@ -21,7 +22,8 @@ import { ViewallComponent } from './viewall/viewall.component';
     StaffRoutingModule,
     SharedModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    NgSelectModule
   ]
 })
 export class StaffModule { }

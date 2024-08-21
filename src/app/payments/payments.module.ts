@@ -8,6 +8,7 @@ import { TransactionsComponent } from './transactions/transactions.component';
 import { HttpClientModule } from '@angular/common/http';
 import { SharedModule } from '../shared/shared.module';
 import { CreatePaymentComponent } from './create-payment/create-payment.component';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -20,7 +21,9 @@ import { CreatePaymentComponent } from './create-payment/create-payment.componen
     CommonModule,
     PaymentsRoutingModule,
     HttpClientModule,
-    SharedModule
+    SharedModule,
+    FormsModule,
+    ReactiveFormsModule
   ],
   exports: [
 

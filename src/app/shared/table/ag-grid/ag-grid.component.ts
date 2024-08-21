@@ -87,9 +87,7 @@ export class AgGridComponent implements OnChanges, OnInit {
     this.filterList = {};
     columns.forEach(col => {
       if (col.filter) {
-        const field = col.field;
-        console.log(field);
-        
+        const field = col.field;        
         const uniqueValues = Array.from(new Set(rowData.map(row => row[field])));
         this.filterList[field] = { values: uniqueValues, selectedValues: [], showOptions: false };
       }
@@ -135,35 +133,7 @@ export class AgGridComponent implements OnChanges, OnInit {
         selectedValues.splice(index, 1);
       }
     }
-    // this.filterList[field].selectedValues = selectedValues;
-    // this.applyFilters();
   }
-
- 
-  // applyFilterActive() {
-  //   let filteredData = [...this.data];
-  //   console.log("data", filteredData);
-    
-  //   if (filteredData.some(item => 'status' in item)) {
-  //     this.showActiveToggle = true;
-  //     console.log("isActive", this.isActiveFilter);
-      
-  //     // Only apply the status filter if the status field exists in the data
-  //     if (this.isActiveFilter) {
-  //       filteredData = filteredData.filter(item => item.status === 'Active');
-  //       console.log("active data", filteredData);
-  //     } else if(this.isActiveFilter === false) {
-  //       filteredData = filteredData.filter(item => item.status === 'InActive');
-  //       console.log("in active data", filteredData);
-  //     }else {
-  //       filteredData = filteredData.filter(item => item.status !== 'Active' && item.status !== 'InActive');
-  //       console.log("neither active nor inactive data", filteredData);
-  //     }
-  //   }
-  //   this.rowData = filteredData;
-  //   console.log("table data", this.rowData);
-    
-  // }
 
   applyFilters() {
     let filteredData = [...this.data];
@@ -192,18 +162,9 @@ export class AgGridComponent implements OnChanges, OnInit {
 
     this.rowData = filteredData;
     console.log("table data", this.rowData);
-
-    // this.gridApi.setFilterModel(null);
-    // this.gridApi.onFilterChanged();
-    // Object.keys(this.filterList).forEach(field => {
-    //   this.filterList[field].selectedValues = [];
-    // });
-    // this.showFilter = false;
   }
   getFilteredFields(): void {
-    this.displayedFields = Object.keys(this.filterList);
-    console.log(this.displayedFields);
-    
+    this.displayedFields = Object.keys(this.filterList);    
   }
   closePopup() {
     this.showFilter = !this.showFilter;

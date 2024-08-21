@@ -123,9 +123,18 @@
                 <div class="row" >
                     <div class="col-lg-4">
                         <div class="form-group">
-                            <label for="routeId" class="form-control-label">Route Id <span class="required" *ngIf="staffsForm.get('routeId').hasError('required')">*</span></label>
-                            <input type="text" placeholder="Route Id" class="form-control form-control-sm" formControlName="routeId"/>
-                        </div>
+                             <label for="routeId" class="form-control-label">Route Id <span class="required" *ngIf="staffsForm.get('routeId').hasError('required')">*</span></label>
+                             <ng-select
+                              [items]="routes"
+                              bindLabel="routeId"
+                              bindValue="routeId"
+                              [multiple]="true"
+                              formControlName="routeId"
+                              placeholder="Select RouteId"
+                            >
+                            <ng-option>wdedee</ng-option>
+                            </ng-select>
+                       </div>
                     </div>
                     <div class="col-lg-4">
                         <div class="form-group">

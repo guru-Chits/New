@@ -1,21 +1,24 @@
-<form (ngSubmit)="onSubmit()">
+<form  [formGroup]="paymentForm">
     <div class="row justify-content-around">
         <div class="col-lg-4">
             <div class="form-group">
-                <label for="datetime" class="form-control-label">Date/Timestamp</label>
-                <input type="date" class="form-control p-2 form-control-sm" id="datetime" formControlName="datetime" placeholder="Date"/>
+                <label for="date" class="form-control-label">Date/Timestamp</label>
+                <input type="date" class="form-control p-2 form-control-sm" id="date" formControlName="date" placeholder="Date"/>
+                <div *ngIf="paymentForm.get('date')?.hasError('invalidDate') && paymentForm.get('date')?.touched">
+                    <small class="text-danger">Please select today's date.</small>
+                  </div>
             </div>
         </div>
         <div class="col-lg-4">
             <div class="form-group">
-                <label for="passbookNum" class="form-control-label">Passbook Number</label>
-                <input class="form-control p-2 form-control-sm" id="passbookNum" formControlName="passbookNum" placeholder="Passbook Number"/>
+                <label for="passbooknumber" class="form-control-label">Passbook Number</label>
+                <input class="form-control p-2 form-control-sm" id="passbooknumber" formControlName="passbooknumber" placeholder="Passbook Number"/>
             </div>
         </div>
         <div class="col-lg-4">
             <div class="form-group">
                 <label for="groupId" class="form-control-label">Group ID/Chit Details</label>
-                <input class="form-control p-2 form-control-sm" id="groupId" formControlName="groupId" placeholder="Chit Group ID"/>
+                <input class="form-control p-2 form-control-sm" id="groupId" formControlName="groupId" placeholder="Chit Group ID" readonly/>
             </div>
         </div>
     </div>
@@ -23,39 +26,39 @@
         <div class="col-lg-4">
             <div class="form-group">
                 <label for="collectionType" class="form-control-label">Collection Type</label>
-                <input class="form-control p-2 form-control-sm" id="collectionType" formControlName="collectionType" placeholder="Collection Type"/>
+                <input class="form-control p-2 form-control-sm" id="collectionType" formControlName="collectionType" placeholder="Collection Type" readonly/>
             </div>
         </div>
         <div class="col-lg-4">
             <div class="form-group">
-                <label for="subsId" class="form-control-label">Subscriber ID</label>
-                <input class="form-control p-2 form-control-sm" id="subsId" formControlName="subsId" placeholder="Subscriber ID"/>
+                <label for="subscriberId" class="form-control-label">Subscriber ID</label>
+                <input class="form-control p-2 form-control-sm" id="subscriberId" formControlName="subscriberId" placeholder="Subscriber ID" readonly/>
             </div>
         </div>
         <div class="col-lg-4">
             <div class="form-group">
-                <label for="subsName" class="form-control-label">Subscriber Name</label>
-                <input class="form-control p-2 form-control-sm" id="subsName" formControlName="subsName" placeholder="Subscriber Name"/>
+                <label for="subscriberName" class="form-control-label">Subscriber Name</label>
+                <input class="form-control p-2 form-control-sm" id="subscriberName" formControlName="subscriberName" placeholder="Subscriber Name" readonly/>
             </div>
         </div>
     </div>
     <div class="row justify-content-around">
         <div class="col-lg-4">
             <div class="form-group">
-                <label for="installNum" class="form-control-label">Installment Number</label>
-                <input class="form-control p-2 form-control-sm" id="installNum" formControlName="installNum" placeholder="Installment Number"/>
+                <label for="installmentNumber" class="form-control-label">Installment Number</label>
+                <input class="form-control p-2 form-control-sm" id="installmentNumber" formControlName="installmentNumber" placeholder="Installment Number" readonly/>
             </div>
         </div>
         <div class="col-lg-4">
             <div class="form-group">
-                <label for="installMonth" class="form-control-label">Installment Month</label>
-                <input class="form-control p-2 form-control-sm" id="installMonth" formControlName="installMonth" placeholder="Installment Month"/>
+                <label for="installmentMonth" class="form-control-label">Installment Month</label>
+                <input class="form-control p-2 form-control-sm" id="installmentMonth" formControlName="installmentMonth" placeholder="Installment Month" readonly/>
             </div>
         </div>
         <div class="col-lg-4">
             <div class="form-group">
-                <label for="areaId" class="form-control-label">Area ID</label>
-                <input class="form-control p-2 form-control-sm" id="areaId" formControlName="areaId" placeholder="Area ID"/>
+                <label for="region" class="form-control-label">Route ID</label>
+                <input class="form-control p-2 form-control-sm" id="region" formControlName="region" placeholder="Region ID" readonly/>
             </div>
         </div>
     </div>
@@ -63,9 +66,9 @@
         <div class="col-lg-4">
             <div class="form-group">
                 <label class="form-control-label">Select Staff</label>
-                <select class="form-control p-2 form-control-sm " formControlName="staff" placeholder="Select Staff">
+                <select class="form-control p-2 form-control-sm " formControlName="selectStaff" placeholder="Select Staff">
                 <option value="" disabled selected>Staffs</option>
-                <option *ngFor="let staff of Staffs" [value]="staff">{{staff}}</option>
+                <option *ngFor="let staff of data" [value]="staff.staffName">{{staff.staffName}}</option>
                 </select>
             </div>
             </div>
@@ -78,32 +81,35 @@
         <div class="col-lg-4">
             <div class="form-group">
                 <label for="chitAmount" class="form-control-label">Chit Amount</label>
-                <input class="form-control p-2 form-control-sm" id="chitAmount" formControlName="chitAmount" placeholder="Chit Amount"/>
+                <input class="form-control p-2 form-control-sm" id="chitAmount" formControlName="chitAmount" placeholder="Chit Amount" readonly/>
             </div>
         </div>
     </div>
     <div class="row">
         <div class="col-lg-4">
             <div class="form-group">
-                <label for="serialNum" class="form-control-label">Serial Number</label>
-                <input class="form-control p-2 form-control-sm" id="serialNum" formControlName="serialNum" placeholder="Serial Number"/>
+                <label for="serialNumber" class="form-control-label">Serial Number</label>
+                <input class="form-control p-2 form-control-sm" id="serialNumber" formControlName="serialNumber" placeholder="Serial Number" readonly/>
             </div>
         </div>
         <div class="col-lg-4">
             <div class="form-group">
-                <label for="receiptNum" class="form-control-label">Receipt Number</label>
-                <input class="form-control p-2 form-control-sm" id="receiptNum" formControlName="receiptNum" placeholder="Receipt Number"/>
+                <label for="receiptNumber" class="form-control-label">Receipt Number</label>
+                <input class="form-control p-2 form-control-sm" id="receiptNumber" formControlName="receiptNumber" placeholder="Receipt Number" readonly/>
             </div>
         </div>    
     </div>
     <div class="row">
         <div class="col-lg-12 d-flex justify-content-end py-3">
-            <button type="button" class="btn next-btn px-4 py-3 fw-bold" data-bs-toggle="modal" data-bs-target="#paymentModal">Preview Receipt</button>
+            <button type="submit" class="btn next-btn px-4 py-3 fw-bold" data-bs-toggle="modal" data-bs-target="#paymentModal" [disabled]="!paymentForm.valid"   (click)="onSubmit()" >Preview Receipt</button>
+            <!-- <button type="submit" class="btn next-btn px-4 py-3 fw-bold" (click)="onSubmit()">Preview Receipt</button> -->
+
         </div>
     </div>
 </form>
 <!-- PopUp Structure-->
-<div class="modal fade" id="paymentModal" tabindex="-1" aria-labelledby="paymentModalLabel" aria-hidden="true">
+ <div *ngIf="receiptData">
+<div class="modal fade" id="paymentModal"  tabindex="-1" aria-labelledby="paymentModalLabel" aria-hidden="true" >
     <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content p-4">
             <div class="popup-body">
@@ -111,12 +117,12 @@
                     Payment Details
                 </div>
                 <div class="d-flex justify-content-end py-2">
-                    <button class="btn mx-3 btn-success popup-btn">
-                        <img src="../../../assets/popup/printer.svg" alt="" width="20px" height="20px"> Generate Receipt</button>
-                    <button class="btn me-3 btn-success popup-btn">
+                    <button class="btn mx-3 btn-success popup-btn" (click)="print()">
+                        <img src="../../../assets/popup/printer.svg" alt="" width="20px" height="20px" > Generate Receipt</button>
+                    <button class="btn me-3 btn-success popup-btn"  (click)="downloadAsImage()">
                         <img src="../../../assets/popup/download.svg" alt="" width="20px" height="20px"> Download</button>
                 </div>
-                <div class="border border-dark">
+                <div class="border border-dark" id="print-section">
                     <div class="popup-header">
                         <img src="../../../assets/navbar/brand.svg" alt="" width="100px" height="90px">
                         <div class="d-flex flex-column justify-content-center align-items-center">
@@ -124,75 +130,75 @@
                             <span>Payment Receipt for March Month 2023</span>
                         </div>
                     </div>
-                    <hr class="border border-dark m-0">
+                    <hr class="border border-dark m-0" >
                     <div class="row py-3">
                         <div class="col-6 d-flex justify-content-around">
                             <div class="col-5 fw-bold">Subscriber ID</div>
-                            <div class="col-5">KNG-C10001</div>
+                            <div class="col-5">{{receiptData.subscriberId}}</div>
                         </div>
-                        <div class="col-6 d-flex justify-content-around">
+                        <div class="col-6 d-flex justify-content-around" >
                             <div class="col-5 fw-bold">Serial Number</div>
-                            <div class="col-5">001</div>
+                            <div class="col-5">{{receiptData.serialNumber}}</div>
                         </div>
                     </div>
                     <div class="row pb-3">
                         <div class="col-6 d-flex justify-content-around">
                             <div class="col-5 fw-bold">Subscriber Name</div>
-                            <div class="col-5">John Doe</div>
+                            <div class="col-5">{{receiptData.subscriberName}}</div>
                         </div>
                         <div class="col-6 d-flex justify-content-around">
                             <div class="col-5 fw-bold">Receipt Number</div>
-                            <div class="col-5">PB-10001-01</div>
+                            <div class="col-5">{{receiptData.receiptNumber}}</div>
                         </div>
                     </div>
                     <div class="row pb-3">
                         <div class="col-6 d-flex justify-content-around">
                             <div class="col-5 fw-bold">Group ID</div>
-                            <div class="col-5">GC-JAN24-09-100</div>
+                            <div class="col-5">{{receiptData.groupId}}</div>
                         </div>
                         <div class="col-6 d-flex justify-content-around">
                             <div class="col-5 fw-bold">Route ID</div>
-                            <div class="col-5">CBE-South</div>
+                            <div class="col-5">{{receiptData.routeId}}</div>
                         </div>
                     </div>
                     <div class="row pb-3">
                         <div class="col-6 d-flex justify-content-around">
                             <div class="col-5 fw-bold">Passbook Number</div>
-                            <div class="col-5">PB-10001</div>
+                            <div class="col-5">{{receiptData.passbooknumber}}</div>
                         </div>
                         <div class="col-6 d-flex justify-content-around">
                             <div class="col-5 fw-bold">Staff</div>
-                            <div class="col-5">Arunkumar</div>
+                            <div class="col-5">{{receiptData.selectStaff}}</div>
                         </div>
                     </div>
                     <div class="row pb-3">
                         <div class="col-6 d-flex justify-content-around">
                             <div class="col-5 fw-bold">Collection Type</div>
-                            <div class="col-5">Installment</div>
+                            <div class="col-5">{{receiptData.collectionType}}</div>
                         </div>
                         <div class="col-6 d-flex justify-content-around">
                             <div class="col-5 fw-bold">Amount Paid</div>
-                            <div class="col-5">20000</div>
+                            <div class="col-5">{{receiptData.amount}}</div>
                         </div>
                     </div>
                     <div class="row pb-3">
                         <div class="col-6 d-flex justify-content-around">
                             <div class="col-6 fw-bold">Installment Number</div>
-                            <div class="col-4">1</div>
+                            <div class="col-4">{{receiptData.installmentNumber}}</div>
                         </div>
                         <div class="col-6 d-flex justify-content-around">
                             <div class="col-5 fw-bold">Chit Amount</div>
-                            <div class="col-5">250000</div>
+                            <div class="col-5">{{receiptData.chitAmount}}</div>
                         </div>
                     </div>
                     <div class="row pb-3">
                         <div class="col-6 d-flex justify-content-around">
                             <div class="col-5 fw-bold">Installment Month</div>
-                            <div class="col-5">March</div>
+                            <div class="col-5">{{receiptData.installmentMonth}}</div>
                         </div>
                         <div class="col-6 d-flex justify-content-around">
                             <div class="col-5 fw-bold">Date of Payment</div>
-                            <div class="col-5">28.02.2023</div>
+                            <div class="col-5">{{receiptData.date}}</div>
                         </div>
                     </div>
                 </div>
@@ -202,4 +208,5 @@
             </div>
         </div>
     </div>
+</div>
 </div>

@@ -34,19 +34,14 @@ constructor(private service:StaffService,private activatedRoute:ActivatedRoute,p
       if (Object.keys(paramData).length) {
       this.service.getstaffById(paramData.id).subscribe((data) => {
         this.staffDetail = data;
-        this.staffId=this.staffDetail.Staff._id
-        console.log(this.staffDetail)
-        console.log(this.staffId);
-        
+        this.staffId=this.staffDetail.Staff._id        
          })
       }
       })
 
       this.service.getstaffAll().subscribe((data)=>{
         this.staffData=data;
-    
-        console.log("staff data",this.staffData);
-       
+           
         this.data=this.staffData.AllStaff.map((staffDetails,index)=>({
           id:staffDetails?._id,
           staffId: staffDetails?.employeeId,
@@ -78,10 +73,7 @@ constructor(private service:StaffService,private activatedRoute:ActivatedRoute,p
     }
   }
 
-  edit(id:any){
-    console.log(id);
-    
+  edit(id:any){    
     this.router.navigate([`staff/edit/${id}`]);
-
   }
 }

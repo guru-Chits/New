@@ -20,7 +20,6 @@ ngOnInit(): void {
   this.service.getstaffAll().subscribe((data)=>{
     this.staffData=data;
     this.total=this.staffData.AllStaff.length
-    console.log("staff data",this.staffData);
    
     this.data=this.staffData.AllStaff.map((staffDetails,index)=>({
       id:staffDetails?._id,
@@ -45,13 +44,6 @@ applyFilter(filterValue: string) {
   });
   }
   getSub(id:any){
-    console.log(id);
     this.router.navigate([`staff/view/${id}`]);
-
-    // this.service.getstaffById(id).subscribe((data) => {
-    //   this.staffDetail = data;
-    //   console.log(this.staffDetail)      
-    //    })
-
   }
 }

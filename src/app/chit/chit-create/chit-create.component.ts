@@ -168,47 +168,6 @@ export class ChitCreateComponent {
 
   }
 
-  // addSubscriberById(id: string): void {
-  //   const chitSubscribers = this.chitGroupForm.get('chitSubscribers').value || [];
-
-  //   if (chitSubscribers.length >= 20) {
-  //     console.warn('Cannot add more than 20 subscribers.');
-  //     return;
-  //   }
-  //   this.subService.getsubscriberById(id).subscribe(
-  //     res => {
-  //       this.subData = res;
-  //       const newSubscriber = {
-  //         ticketId:this.ticketId,
-  //         subscriberId:  this.subData.Subscriber.subscriberId,
-  //         profileImageUrl:this.subData.Subscriber.profileImageUrl,
-  //         aliasName:  this.subData.Subscriber.lastName,
-  //         firstName:  this.subData.Subscriber.firstName,
-  //         place:  this.subData.Subscriber.place,
-  //         occupation:this.subData.Subscriber.occupation
-  //         // passbookNo:  this.subData.Subscriber.passbookNo
-  //       };
-  //      ;
-        
-  //       const chitSubscribers = this.chitGroupForm.get('chitSubscribers').value || [];
-  //       this.ticketId=chitSubscribers.length+2
-
-  //       if (chitSubscribers.length >= 20) {
-  //         console.warn('Cannot add more than 20 subscribers.');
-  //         return;
-  //       }
-
-  //       chitSubscribers.push(newSubscriber);
-  //       this.chitGroupForm.patchValue({ chitSubscribers });
-
-  //       // Update the table data
-  //       this.chitSubscribersData = [...chitSubscribers];
-  //     },
-  //     error => {
-  //       console.error('Error fetching subscriber:', error);
-  //     }
-  //   );
-  // }
 
   addSubscriberById(id: string): void {
     if(this.ticketId <= 20)
@@ -230,7 +189,7 @@ export class ChitCreateComponent {
             profileImageUrl: this.subData.Subscriber.profileImageUrl,
             aliasName: this.subData.Subscriber.lastName,
             firstName: this.subData.Subscriber.firstName,
-            place: this.subData.Subscriber.place,
+            place: this.subData.Subscriber.routeId,
             occupation: this.subData.Subscriber.occupation
           };
   
@@ -279,51 +238,7 @@ export class ChitCreateComponent {
     { label: 'Occupation', field: 'occupation', sortable: true }
   ];
 
-  // addAdditionalSubscriberById(id: string): void {
-  //   if(this.ticketId>20){
-  //     this.ticketId+=1
-  //     const addChitSubscribers = this.chitGroupForm.get('addChitSubscribers').value || [];
-
-  //     if (addChitSubscribers.length >= 5) {
-  //       console.warn('Cannot add more than 5 additional subscribers.');
-  //       return;
-  //     }
-  
-  //     this.subService.getsubscriberById(id).subscribe(
-  //       res => {
-  //         this.addSubData = res;
-          
-  //         const newSubscriber = {
-  //           ticketId:this.ticketId,
-  //           subscriberId:  this.addSubData.Subscriber.subscriberId,
-  //           profileImageUrl:this.addSubData.Subscriber.profileImageUrl,
-  //           aliasName:  this.addSubData.Subscriber.lastName,
-  //           firstName:  this.addSubData.Subscriber.firstName,
-  //           place:  this.addSubData.Subscriber.place,
-  //           occupation:this.addSubData.Subscriber.occupation
-  //           // passbookNo:  this.subData.Subscriber.passbookNo
-  //         };
-  
-  //         const addChitSubscribers = this.chitGroupForm.get('addChitSubscribers').value || [];
-  
-  //         if (addChitSubscribers.length >= 5) {
-  //           console.warn('Cannot add more than 5 additional subscribers.');
-  //           return;
-  //         }
-  
-  //         addChitSubscribers.push(newSubscriber);
-  //         this.chitGroupForm.patchValue({ addChitSubscribers });
-  
-  //         // Update the table data
-  //         this.addChitSubscribersData = [...addChitSubscribers];
-  //       },
-  //       error => {
-  //         console.error('Error fetching subscriber:', error);
-  //       }
-  //     );
-  
-  //   }
-  // }
+ 
 
   addAdditionalSubscriberById(id: string): void {
     if (this.ticketId > 20) {
@@ -345,7 +260,7 @@ export class ChitCreateComponent {
             profileImageUrl: this.addSubData.Subscriber.profileImageUrl,
             aliasName: this.addSubData.Subscriber.lastName,
             firstName: this.addSubData.Subscriber.firstName,
-            place: this.addSubData.Subscriber.place,
+            place: this.addSubData.Subscriber.routeId,
             occupation: this.addSubData.Subscriber.occupation
           };
   

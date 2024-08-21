@@ -34,7 +34,7 @@ search:boolean=true
   ngOnInit(): void {
       console.log("subscriber data");
       
-        this.service.getsubscriberAll().subscribe((data)=>{
+      this.service.getsubscriberAll().subscribe((data)=>{
       this.subscriberData=data;
 
       console.log("subscriber data",this.subscriberData);
@@ -49,35 +49,6 @@ search:boolean=true
         profileImageUrl: subscriberDetails?.profileImageUrl,
         routeId: subscriberDetails?.routeId,
 
-        // aadharNumber: subscriberDetails?.aadharNumber,
-        // aadharUrl: subscriberDetails?.aadharUrl,
-        // accountNumber: subscriberDetails?.accountNumber,
-        // aliasName: subscriberDetails?.aliasName,
-        // area: subscriberDetails?.area,
-        // bankName: subscriberDetails?.bankName,
-        // chitpassbookNumber: subscriberDetails?.chitpassbookNumber,
-        // contact: subscriberDetails?.contact,
-        // createdAt: subscriberDetails?.createdAt,
-        // dob: subscriberDetails?.dob,
-        // firstName: subscriberDetails?.firstName,
-        // gender: subscriberDetails?.gender,
-        // ifsc: subscriberDetails?.ifsc,
-        // lastName: subscriberDetails?.lastName,
-        // nomineeAadhar: subscriberDetails?.nomineeAadhar,
-        // nomineeAddress: subscriberDetails?.nomineeAddress,
-        // nomineeDOB: subscriberDetails?.nomineeDOB,
-        // nomineeGender: subscriberDetails?.nomineeGender,
-        // nomineeName: subscriberDetails?.nomineeName,
-        // nomineeOccupation: subscriberDetails?.nomineeOccupation,
-        // nomineeRelationship: subscriberDetails?.nomineeRelationship,
-        // panCardNumber: subscriberDetails?.panCardNumber,
-        // panUrl: subscriberDetails?.panUrl,
-        // passbookNumber: subscriberDetails?.passbookNumber,
-        // passbookUrl: subscriberDetails?.passbookUrl,
-        // referralClient: subscriberDetails?.referralClient,
-        // ticketId: subscriberDetails?.ticketId,
-        // updatedAt: subscriberDetails?.updatedAt,
-        // upi_id: subscriberDetails?.upi_id
       }))
     })
 

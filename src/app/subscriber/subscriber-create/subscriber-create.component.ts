@@ -3,6 +3,7 @@ import { AbstractControl, FormBuilder, FormGroup, ValidatorFn, Validators } from
 import { AnyCatcher } from 'rxjs/internal/AnyCatcher';
 import { SubscriberService } from '../shared/service/subscriber.service';
 import { ActivatedRoute, Router } from '@angular/router';
+import { AreaService } from '../../area/shared/service/area.service';
 
 @Component({
   selector: 'app-subscriber-create',
@@ -21,6 +22,9 @@ defaultImageUrl = 'assets/subscriber/user.svg'; // Path to default profile image
 private subscriberIdPrefix: string = 'KNG-C';
  subscriberIdCounter: string;
 heading:string="Subscriber Details"
+routeData:any
+routes:any[]=[]
+
  breadcrumsData: any= [
   {
     key: 'Subscriber Management',
@@ -35,7 +39,7 @@ heading:string="Subscriber Details"
     private activatedRoute:ActivatedRoute,
     private service: SubscriberService,
     private router:Router,
-  
+  private routeService:AreaService
   ) { }
 
 filesInfo = {
@@ -121,6 +125,15 @@ ngOnInit(): void {
     panUrl: ['']
   });
   
+  this.routeService.getrouteAll().subscribe((data)=>{
+    this.routeData=data;
+    console.log("kk",this.routeData)
+  
+    this.routes=this.routeData.AllRoute.map((routeDetails,index)=>({
+      routeId: routeDetails?.routeId,  
+      }))
+    
+     })
 
   // Load data, initialize form, etc.
   this.activatedRoute.params.subscribe(paramData => {

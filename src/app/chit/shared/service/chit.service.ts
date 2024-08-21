@@ -24,4 +24,9 @@ export class ChitService {
     let url = `${environment.chitServiceUrl}/chitgroup/getChitGroupById/${id}`;
     return this.http.get(url)
   }
+
+  getByPassbooNo(passbooknumber:string){
+    let url:string= `${environment.chitServiceUrl}/chitgroup/getByPassbookNo/${passbooknumber}`
+    return this.http.get(url)
+  }
 }

@@ -2,26 +2,31 @@ import { Component, OnInit } from '@angular/core';
 import { AbstractControl,FormBuilder, FormGroup, ValidatorFn, Validators } from '@angular/forms';
 import { StaffService } from '../shared/service/staff.service';
 import { ActivatedRoute, Router } from '@angular/router';
+import { AreaService } from '../../area/shared/service/area.service';
+import { NgSelectModule, NgLabelTemplateDirective, NgOptionTemplateDirective } from '@ng-select/ng-select';
 
 @Component({
   selector: 'app-staff-create',
   templateUrl: './staff-create.component.html',
-  styleUrl: './staff-create.component.css'
+  styleUrl: './staff-create.component.css',
 })
 export class StaffCreateComponent implements OnInit{
   staffsForm: FormGroup;
   heading:string="Create Staff"
   aadharUrl:string|null=null
   profileUrl: string | ArrayBuffer | null = null;
-  defaultImageUrl = 'assets/subscriber/user.svg'; // Path to default profile image
+  defaultImageUrl = 'assets/subscriber/user.svg';
   get employeeIdControl() { return this.staffsForm.get('employeeId'); };
+  routeData:any
+  routes: Array<{ routeId: string }> = [];  
   constructor( private fb: FormBuilder,
     private activatedRoute:ActivatedRoute,
     private service: StaffService,
     private router:Router,
+    private routeService:AreaService
   
   ) { }
-
+routeId:[]
  breadcrumsData: any= [
   {
     key: 'Staff Management',
@@ -60,7 +65,7 @@ ngOnInit(){
     dob: ['', [Validators.required,
       this.conditionalValidator(() => !!this.staffsForm?.get('dob')?.value, this.ageValidator(18)),
     ]],
-    routeId: ["", [Validators.required]],
+    routeId: [null, [Validators.required]],
     accountNumber: ["", [
       this.conditionalValidator(() => !!this.staffsForm?.get('accountNumber')?.value, Validators.pattern(/^\d{8,12}$/))
     ]],
@@ -81,8 +86,6 @@ ngOnInit(){
   });
  
     this.activatedRoute.params.subscribe(paramData => {
-      console.log("ObjectKeys =>",Object.keys(paramData))
-      console.log("ParamData =>", paramData)
       if (Object.keys(paramData).length) {
         this.breadcrumsData  = [
           {
@@ -92,39 +95,23 @@ ngOnInit(){
           {
             key: 'Edit Staff',
             routerLink: `edit/${paramData._id}`,
-          },
-         
-        
-        ];
+          },];
+
         this.heading="Edit Staff Details"
   
       this.service.getstaffById(paramData.id).subscribe((data) => {
         this.staffData = data;
         this.staffId=this.staffData.Staff._id
         this.profileUrl=this.staffData.Staff.profileUrl
-        console.log(this.profileUrl);
+
         this.aadharUrl=this.staffData.Staff.aadharUrl
         this.staff=false
-        console.log('Project Data = >',this.staffData)
+
         const utcDob = this.convertDateFormat(this.staffData.Staff.dob);
 
          const updatedStaff = { ...this.staffData.Staff,dob:utcDob};
-         console.log(updatedStaff);
          
          this.staffsForm.patchValue(updatedStaff);
-
-        // console.log(utcDob);
-        
-        // if(utcDob)
-        // {
-  
-        // }else{
-        //   const updatedStaff = { ...this.staffData.Staff};
-        //   this.staffsForm.patchValue(updatedStaff);
-  
-        // }
-  
-        console.log("form", this.staffsForm);
       })
     }
     })
@@ -132,7 +119,6 @@ ngOnInit(){
       this.staffData=data;
       if(!this.staffId){
         this.staffIdCounter+=this.staffData.AllStaff.length;
-        console.log(this.staffIdCounter);
         this.setStaffId(this.staffIdCounter);
       }
   
@@ -140,9 +126,7 @@ ngOnInit(){
         this.autoCorrectNames();
       }
     );
-  
-      console.log("staff data",this.staffData);
-     
+       
       this.data=this.staffData.AllStaff.map((staffDetails,index)=>({
         id:staffDetails?._id,
         staffId: staffDetails?.staffId,
@@ -150,7 +134,17 @@ ngOnInit(){
         staffProfile:staffDetails?.profileUrl
       }))
     })
-  
+    this.routeService.getrouteAll().subscribe((data)=>{
+      this.routeData=data;
+      console.log("kk",this.routeData)
+    
+      this.routes=this.routeData.AllRoute.map((routeDetails,index)=>({
+        routeId: routeDetails?.routeId,  
+        }))
+        console.log(this.routes);
+        
+       })
+ 
   }
 
   onInputChange(event: any,placeholder:string) {
@@ -187,16 +181,6 @@ ngOnInit(){
       }
     }
   }
-  // onProfileImageSelected(event: any,controlName: string): void {
-  //   if (event.target.files && event.target.files.length) {
-  //     const file = event.target.files[0];
-  //     if (file) {
-  //       this.profileUrl = URL.createObjectURL(file);
-  //     }
-  //     this.staffsForm.patchValue({
-  //       [controlName]: file
-  //     });
-  //   }  }
 
   onFileSelected(event: any, controlName: string): void {
     this.filesInfo[controlName] = event.target.files[0];
@@ -248,16 +232,12 @@ ngOnInit(){
   };
 }
 
-setStaffId(id:string): void {
-  console.log(id);
-  
+setStaffId(id:string): void {  
   const newStaffId = this.generateStaffId(id);
   this.staffsForm.get('employeeId')?.setValue(newStaffId);
 }
 generateStaffId(id:string): string {
-  // console.log(this.subscriberIdCounter);
-  console.log(id);
-  
+
   return `${this.staffIdPrefix}${id}`;
 }
 private generateDefaultProfileImage(firstName: string): string {
@@ -271,7 +251,6 @@ onSubmit(): void {
 
   if (!formValue.profileUrl && !this.profileUrl) {
     formValue.profileImage = this.generateDefaultProfileImage(formValue.firstName);
-    console.log(formValue.profileImage);
     
     this.staffsForm.get('profileUrl')?.setValue(formValue.profileImage);
   }
@@ -283,7 +262,6 @@ onSubmit(): void {
   }
 
   this.service.savestaffDetails(formData, this.staffId).subscribe((data) => {
-    console.log(data);
     this.router.navigate(["/staff"]);
   });
 }

@@ -143,8 +143,12 @@
                   <div class="col-lg-4">
                     <div class="form-group">
                       <label for="routeId" class="form-control-label">Route Id</label>
-                      <input type="text" placeholder="Route Id" class="form-control form-control-sm" formControlName="routeId" />
-                    </div>
+                      
+                      <select class="form-control form-control-sm" formControlName="routeId">
+                        <option value="" disabled selected>RouteId</option>
+                        <option *ngFor="let route of routes" [value]="route.routeId">{{route.routeId}}</option>
+                        </select>
+                      </div>
                   </div>
                   <!-- Account Number -->
                   <div class="col-lg-4">

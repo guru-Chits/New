@@ -163,7 +163,8 @@
                           </div>
                         </div>
                       <h6><strong>Enrollments</strong></h6>
-                      <h6 class="text-center group-name"> GCPL001 - Chit Group 1 - 2nd Jan 2023</h6>
+                      <div class="payments"  *ngFor="let group of chitGroup; let i = index">
+                        <h6 class="text-center group-name"> {{ group.chitGroupId }}</h6>
                         <div class="row justify-content-center ">
                           <div class="enroll-card col-4 p-2 m-4">
                             <h6>Prized Amount</h6>
@@ -178,31 +179,29 @@
                               <p>Monthly</p>
                             </div>
                         </div>
-                          <button class="btn btn-outline-primary toggle mb-3 w-20" type="button"  (click)=toggleDisplayDiv() >Payment History</button>
-                                <!-- <div class="collapse" id="paymentHistory1"> -->
-                                  <div  [hidden]="isShowDiv" class="full-card m-4 p-2">
-                                    <div class="row align-items-center">
-                                      <div class="col-md-3">
-                                        <h6 class=" mb-1">Receipt No</h6>
-                                        <p>ABC 1106254319</p>
-                                      </div>
-                                      <div class="col-md-3">
-                                        <h6 class=" mb-1">Amount</h6>
-                                        <p>₹ 5000</p>
-                                      </div>
-                                      <div class="col-md-3">
-                                        <h6 class=" mb-1">Group ID</h6>
-                                        <p>GCPL001</p>
-                                      </div>
-                                      <div class="col-md-3 mb-2">
-                                        <h6 class=" mb-1">Chit Group</h6>
-                                        <p>1</p>
-                                      </div>         
-                            </div>
-                      </div>
+                        <button class="btn btn-outline-primary toggle mb-3 w-20" type="button"  (click)=getByPassbook(group.passbookNo,i) >Payment History</button>
+                        <div *ngFor="let payment of paymentData">
+                        <div  class="full-card m-4 p-2"  *ngIf="selectedIndex === i"  >
 
-                        <!-- </div> -->
-                      
+                         
+                          <div class="row align-items-center">
+                            <div class="col-md-3">
+                              <h6 class=" mb-1">Receipt No</h6>
+                              <p>{{payment.receiptNumber}}</p>
+                            </div>
+                            <div class="col-md-3">
+                              <h6 class=" mb-1">Amount</h6>
+                              <p>₹ {{payment.amount}}</p>
+                            </div>
+                            <div class="col-md-3">
+                              <h6 class=" mb-1">Group ID</h6>
+                              <p>{{payment.groupId}}</p>
+                            </div>
+                         </div>
+
+                         </div>
+                        </div>
+                      </div>                      
                         <div class="full-card m-4 p-2">
                           <div>
                             <h6>Enrollment History</h6>

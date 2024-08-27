@@ -10,7 +10,7 @@ import { StaffService } from '../../staff/shared/service/staff.service';
 import { AreaService } from '../../area/shared/service/area.service';
 import { ChitService } from '../../chit/shared/service/chit.service';
 import html2canvas from 'html2canvas';
-
+import jsPDF from 'jspdf';
 @Component({
   selector: 'app-payments',
   templateUrl: './payments.component.html',
@@ -45,24 +45,24 @@ export class PaymentsComponent implements OnInit {
 
     this.paymentForm = this.formBuilder.group({
       date: ['', [Validators.required, this.validateCurrentDate]],
-      serialNumber:  [''],
-      receiptNumber:  [''],
-      passbooknumber:  [''],
-      groupId:  [''],
+      serialNumber:  ['',[Validators.required]],
+      receiptNumber:  ['',[Validators.required]],
+      passbooknumber:  ['',[Validators.required]],
+      groupId:  ['',[Validators.required]],
       amount:  ['',[Validators.required]],
-      collectionType:  [''],
-      subscriberId:  [''],
-      subscriberName:  [''],
-      installmentNumber:  [''],
-      installmentMonth:  [''],
-      region:  [''],
-      selectStaff: [''],
-      chitAmount:[''],
+      collectionType:  ['',[Validators.required]],
+      subscriberId:  ['',[Validators.required]],
+      subscriberName:  ['',[Validators.required]],
+      installmentNumber:  ['',[Validators.required]],
+      installmentMonth:  ['',[Validators.required]],
+      region:  ['',[Validators.required]],
+      selectStaff: ['',[Validators.required]],
+      chitAmount:['',[Validators.required]],
+      cancelled:['',[Validators.required]]
       });
 
-      this.paymentForm.get('amount')?.valueChanges.subscribe((amount: number) => {
-        // this.updateInstallmentForPassbook();
-      });
+      this.paymentForm.get('cancelled')?.setValue(false) 
+  
 
       this.paymentForm.get('passbooknumber').valueChanges.subscribe(passbooknumber => {
         console.log(passbooknumber);
@@ -76,13 +76,16 @@ export class PaymentsComponent implements OnInit {
         if (selectedDate) {
           const selectedMonth = new Date(selectedDate).toLocaleString('default', { month: 'long' });
            this.month=selectedMonth
-           console.log(this.month
-           );
-           
+           console.log(this.month);
+           this.paymentForm.patchValue(
+            {installmentMonth:  this.month,
+}
+           )
+
         }
       });
 
-this.service.getPaymentAll().subscribe((data)=>{
+this.service.getTodayPayment().subscribe((data)=>{
   
   this.totalPayment=data
   this.serialNumberCounter=this.totalPayment.AllPayment.length+1
@@ -102,7 +105,8 @@ this.service.getPaymentAll().subscribe((data)=>{
 
   this.routes=this.routeData.AllRoute.map((routeDetails,index)=>({
     routeId: routeDetails?.routeId,  
-    }))}) }
+    }))}) 
+  }
 
   getSubByPassbookNo(passbooknumber: string): void {
     this.chitService.getByPassbooNo(passbooknumber).subscribe(
@@ -118,9 +122,8 @@ this.service.getPaymentAll().subscribe((data)=>{
             groupId: this.subDetail.chitGroupId,
             subscriberId:  subscriberDetails.subscriberId,
             subscriberName:  subscriberDetails.firstName,
-            collectionType:"online",
-            // installmentNumber:  this.subDetail.installmentNumber,
-            installmentMonth:  this.month,
+            collectionType:"Monthly",
+            installmentNumber:1,
             region:  subscriberDetails.place,
             // amount:  this.subDetail.amount,
             chitAmount:  this.subDetail.chitAmount,
@@ -209,10 +212,10 @@ formatSerialNumber(number: number): string {
 //     installmentNumber: installmentData.installmentNumber
 //   });
 // }
-downloadAsImage() {
+downloadAsPDF() {
   const element = document.getElementById('print-section');
 
-  // Apply width to the element to preserve two-column layout in the canvas
+  // Set the width to ensure correct layout
   element.style.width = '700px';  // Adjust according to your modal's size
 
   html2canvas(element, {
@@ -220,16 +223,29 @@ downloadAsImage() {
     useCORS: true,  // Enable cross-origin resource sharing if images are hosted externally
     allowTaint: true // Allow cross-origin images to be rendered into the canvas
   }).then((canvas) => {
-    const link = document.createElement('a');
-    link.download = this.receiptNo;
-    link.href = canvas.toDataURL('image/png');
-    link.click();
+    const imgData = canvas.toDataURL('image/png');
 
-    // Reset the style after capturing the image to avoid layout issues on the page
+    // Initialize jsPDF (Portrait orientation, Millimeters, A4 size)
+    const pdf = new jsPDF('p', 'mm', 'a4');
+
+    // Calculate the width and height to fit the content on A4 page size
+    const pageWidth = pdf.internal.pageSize.getWidth();
+    const pageHeight = pdf.internal.pageSize.getHeight();
+    
+    const canvasWidth = canvas.width;
+    const canvasHeight = canvas.height;
+
+    const ratio = Math.min(pageWidth / canvasWidth, pageHeight / canvasHeight);
+
+    const imgWidth = canvasWidth * ratio;
+    const imgHeight = canvasHeight * ratio;
+
+    pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
+
+    pdf.save(`${this.receiptNo}.pdf`);
     element.style.width = '';
   });
 }
-
 print() {
   const printContent = document.getElementById('print-section').innerHTML;
   const originalContent = document.body.innerHTML;

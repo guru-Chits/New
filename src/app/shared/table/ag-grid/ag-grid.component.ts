@@ -98,8 +98,8 @@ export class AgGridComponent implements OnChanges, OnInit {
   filterTableData(event: MouseEvent): void {
     this.showFilter = !this.showFilter;
     const buttonRect = (event.target as HTMLElement).getBoundingClientRect();
-    this.popupTop = buttonRect.bottom + window.scrollY;
-    this.popupLeft = buttonRect.left + window.scrollX;
+    this.popupTop = buttonRect.bottom ;
+    this.popupLeft = buttonRect.left ;
   }
 
 

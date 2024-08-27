@@ -1,27 +1,30 @@
 <!-- <form [formGroup]="paymentForm" (ngSubmit)="onSubmit()"> -->
-<form (ngSubmit)="onSubmit()">
+<form [formGroup]="transactionForm">
     <div class="row justify-content-around">
         <div class="col-lg-4">
             <div class="form-group">
-                <label for="datetime" class="form-control-label">Date/Timestamp</label>
-                <input type="date" class="form-control p-2 form-control-sm" id="datetime" formControlName="datetime"/>
+                <label for="datetime" class="form-control-label">Date/Timestamp<span class="required" *ngIf="transactionForm.get('date').hasError('required')">*</span></label>
+                <input type="date" class="form-control p-2 form-control-sm" id="datetime" formControlName="date"/>
             </div>
         </div>
         <div class="col-lg-4">
             <div class="form-group">
-                <label class="form-control-label">Route ID</label>
-                <select class="form-control p-2 form-control-sm " formControlName="staff">
+                <label class="form-control-label">Route ID<span class="required" *ngIf="transactionForm.get('routeId').hasError('required')">*</span></label>
+                <select class="form-control p-2 form-control-sm " formControlName="routeId">
                 <option value="" disabled selected>Route ID</option>
-                <option *ngFor="let route of Routes" [value]="route">{{route}}</option>
-                </select>
+                <option *ngFor="let route of routes" [value]="route.routeId">{{route.routeId}}</option>
+            </select>
             </div>
         </div>
         <div class="col-lg-4">
             <div class="form-group">
-                <label class="form-control-label">Collection Type</label>
-                <select class="form-control p-2 form-control-sm " formControlName="staff">
+                <label class="form-control-label">Collection Type<span class="required" *ngIf="transactionForm.get('collectionType').hasError('required')">*</span></label>
+                <select class="form-control p-2 form-control-sm " formControlName="collectionType">
                 <option value="" disabled selected>Collection Type</option>
-                <option *ngFor="let collection of Collections" [value]="collection">{{collection}}</option>
+                <option value="monthly">monthly</option>
+                <option value="daily">daily</option>
+
+                <!-- <option *ngFor="let collection of Collections" [value]="collection">{{collection}}</option> -->
                 </select>
             </div>
         </div>
@@ -29,35 +32,42 @@
     <div class="row justify-content-around">
         <div class="col-lg-4">
             <div class="form-group">
-                <label for="collectionAmount" class="form-control-label">Collection Type Count</label>
-                <input class="form-control p-2 form-control-sm" id="collectionAmount" formControlName="collectionAmount" placeholder="Collection Type Count"/>
+                <label for="collectionAmount" class="form-control-label">Collection Type Count<span class="required" *ngIf="transactionForm.get('collectionTypeCount').hasError('required')">*</span></label>
+                <input class="form-control p-2 form-control-sm" id="collectionAmount" formControlName="collectionTypeCount" placeholder="Collection Type Count"/>
             </div>
         </div>
         <div class="col-lg-4">
             <div class="form-group">
-                <label for="amountCollected" class="form-control-label"> Collection Type Amount</label>
-                <input class="form-control p-2 form-control-sm" id="amountCollected" formControlName="amountCollected" placeholder="Collection Type Amount"/>
+                <label for="amountCollected" class="form-control-label"> Collection Type Amount<span class="required" *ngIf="transactionForm.get('collectionTypeAmount').hasError('required')">*</span></label>
+                <input class="form-control p-2 form-control-sm" id="amountCollected" formControlName="collectionTypeAmount" placeholder="Collection Type Amount"/>
             </div>
         </div>
         <div class="col-lg-4">
             <div class="form-group">
-                <label for="balanace" class="form-control-label">Total Serial Number Count </label>
-                <input class="form-control p-2 form-control-sm" id="balance" formControlName="balance" placeholder="Total Serial Number Count"/>
+                <label for="balanace" class="form-control-label">Total Serial Number Count <span class="required" *ngIf="transactionForm.get('totalSerialNumberCount').hasError('required')">*</span> </label>
+                <input class="form-control p-2 form-control-sm" id="balance" formControlName="totalSerialNumberCount" placeholder="Total Serial Number Count"/>
             </div>
         </div>
     </div>
     <div class="row">
         <div class="col-lg-4">
             <div class="form-group">
-                <label for="serialNumCount" class="form-control-label">Grand Total Amount</label>
-                <input class="form-control p-2 form-control-sm" id="serialNumCount" formControlName="serialNumCount" placeholder="Grnad Total Amount"/>
+                <label for="serialNumCount" class="form-control-label">Grand Total Amount<span class="required" *ngIf="transactionForm.get('grandTotalAmount').hasError('required')">*</span></label>
+                <input class="form-control p-2 form-control-sm" id="serialNumCount" formControlName="grandTotalAmount" placeholder="Grnad Total Amount"/>
             </div>
         </div>  
     </div>
     <div class="row">
         <div class="col-lg-12 d-flex justify-content-end py-3">
-            <button class="btn clear-btn px-4 py-3 me-4" >Clear Filter</button>
-            <button class="btn next-btn px-4 py-3 fw-bold" >Download Summary</button>
+            <button class="btn clear-btn px-4 py-3 me-4" (click)="clear()">Clear Filter</button>
+            <button class="btn next-btn px-4 py-3 fw-bold" (click)="downloadAsPDF()">Download Summary</button>
         </div>
     </div>
 </form>
+<div id="print-section">
+    <app-ag-grid  [columns]="column" [rowData]="data" 
+    class="px-3 mb-3" [searchImg]="searchImg" [filterImg]="filterImg" width="100%" height="340px" 
+    [pageSize]="7" [search]="search">
+    </app-ag-grid>
+    
+</div>

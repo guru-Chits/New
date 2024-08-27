@@ -19,6 +19,10 @@ getCollectionAll(){
   return this.http.get(`${this.paymentUrl}/getCollectionDetails`)
 }
 
+getTodayPayment(){
+  return this.http.get(`${this.paymentUrl}/getTodayPayment`)
+
+}
 getTransactionAll(){
   return this.http.get(`${this.paymentUrl}/getTransactionDetails`)
 }
@@ -27,7 +31,57 @@ getPaymentById(id: string){
   let url = `${this.paymentUrl}/getPaymentById/${id}`;
   return this.http.get(url)
   console.log(url);
+}
+
+getAmountByRouteId(routeId:string){
+  let url=`${this.paymentUrl}/getByRoute/${routeId}`
+  return this.http.get(url)
+}
+
+getRouteByDate(date:Date){
+  let url=`${this.paymentUrl}/getRouteByDate/${date}`
+  return this.http.get(url)
+}
+
+getTotal(date:Date,routeId:string,selectStaff:any){
+  let url=`${this.paymentUrl}/getTotalAmount/${date}/${routeId}/${selectStaff}`
+  return this.http.get(url)
+}
+getStaff(date:Date,routeId:string){
+  let url=`${this.paymentUrl}/getStaffs/${date}/${routeId}`
+  return this.http.get(url)
+
+}
+
+getGrandTotal(date: string, region?: string): Observable<any> {
+  let url = `${this.paymentUrl}/grandTotal/${date}`;
   
+  if (region) {
+    url += `/${region}`;  // Append region if provided
+  }
+
+  return this.http.get(url);
+}
+
+
+getPaymentByPassbook(passbookNo:string){
+  let url=`${this.paymentUrl}/getPaymentByPassbook/${passbookNo}`
+  return this.http.get(url)
+
+}
+
+getDataByDate(date: string, region?: string , collectionType?:string){
+  let url=`${this.paymentUrl}/getDataByDate/${date}`
+  if(region&&!collectionType){
+    url+=`/${region}`;
+  }
+  return this.http.get(url);
+}
+
+getTotalByGroupId(groupId:string): Observable<any> {
+  let url=`${this.paymentUrl}/getTotalByGroupId/${groupId}`
+  return this.http.get(url)
+
 }
 
 getCollectionById(id: string){

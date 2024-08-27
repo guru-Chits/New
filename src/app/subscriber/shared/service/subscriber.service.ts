@@ -20,6 +20,12 @@ export class SubscriberService {
     return this.http.get(url)
   }
 
+  getChitGroupById(subscriberId: string){
+    let url = `${environment.subscriberServiceUrl}/chitgroup/getBySubscriberId/${subscriberId}`;
+    return this.http.get(url)
+  }
+
+
   savesubscriberDetails(body: any, id?: string): Observable<any>{
     let savesubscribeUrl: string = `${environment.subscriberServiceUrl}/subscriber/addSubscriber`
     if(id){
@@ -27,6 +33,8 @@ export class SubscriberService {
     }
     return this.http.post(savesubscribeUrl, body)
   }
+
+
 
 }
 

@@ -12,11 +12,12 @@ import { PaymentService } from '../shared/service/payment.service';
 })
 export class CreatePaymentComponent{
   Staffs: string[];
-
+  deletedPayments: any
   paymentForm: FormGroup<IPaymentForm>;
   paymentData: any = {};  
 
   data: any[] = [];
+  cancelled:any[]=[];
   paymentDetail:any
   accessPrivData: any;
   subscriberDetail:any
@@ -29,7 +30,8 @@ export class CreatePaymentComponent{
       routerLink: '/payment',
     },
   ];
-
+  activeTab: string = 'home'; 
+  showCancelledPayments = false;
   constructor(private router: Router,
     private formBuilder: FormBuilder,
     private activatedRoute: ActivatedRoute,
@@ -41,31 +43,50 @@ this.getAllPayment()
 
   
   getAllPayment() {
-    this.service.getPaymentAll().subscribe((data)=>{
-      this.paymentData=data;
-
-      console.log("subscriber data",this.paymentData);
-      this.data=this.paymentData.AllPayment.map((paymentDetail,index)=>({
-        id:paymentDetail?._id,
-        date: paymentDetail?.date,
-        passbooknumber: paymentDetail?.passbooknumber,
-        groupId: paymentDetail?.groupId,
-        collectionType: paymentDetail?.collectionType,
-        subscriberId: paymentDetail?.subscriberId,
-        subscriberName: paymentDetail?.subscriberName,
-        installmentNumber: paymentDetail?.installmentNumber,
-        installmentMonth: paymentDetail?.installmentMonth,
-        region: paymentDetail?.region,
-        selectStaff: paymentDetail?.selectStaff,
-        amount: paymentDetail?.amount,
-        chitAmount: paymentDetail?.chitAmount,
-        serialNumber: paymentDetail?.serialNumber,
-        receiptNumber: paymentDetail?.receiptNumber,
-        sno:index+1,
-      }))
-    })
+    this.service.getTodayPayment().subscribe((data) => {
+      this.paymentData = data;
+      console.log(this.deletedPayments, "deleted");
+  
+      // Initialize arrays for available and cancelled payments
+      this.data = [];
+      this.cancelled = [];
+  
+      // Counters for serial numbers
+      let availableSno = 1;
+      let cancelledSno = 1;
+  
+      if (this.paymentData.AllPayment) {
+        // Separate payments based on the cancelled status
+        this.paymentData.AllPayment.forEach((paymentDetail) => {
+          const formattedPayment = {
+            id: paymentDetail?._id,
+            passbooknumber: paymentDetail?.passbooknumber,
+            groupId: paymentDetail?.groupId,
+            amount: paymentDetail?.amount,
+            receiptNumber: paymentDetail?.receiptNumber,
+            cancelled: paymentDetail?.cancelled,
+          };
+  
+          // Push to appropriate array based on the cancelled status
+          if (paymentDetail?.cancelled) {
+            this.cancelled.push({
+              ...formattedPayment,
+              sno: cancelledSno++,
+            });
+          } else {
+            this.data.push({
+              ...formattedPayment,
+              sno: availableSno++,
+            });
+          }
+        });
+      }
+    });
+  }
+  
+  togglePayments() {
+  this.showCancelledPayments = !this.showCancelledPayments;
 }
-
 getPaymentById(id: string): void {
   this.service.getPaymentById(id).subscribe(
     data => {
@@ -92,13 +113,13 @@ column: ITableColumn[] = [
   {
     label: 'Passbook Number',
     field: 'passbooknumber',
-    filter:false,
+    filter:true,
     onCellClicked: (event: CellClickedEvent) => this.getPaymentById(event.data.id)
   },
   {
     label: 'Group Id',
     field: 'groupId',
-    filter:false,
+    filter:true,
     onCellClicked: (event: CellClickedEvent) => this.getPaymentById(event.data.id)
   },
   
@@ -106,26 +127,67 @@ column: ITableColumn[] = [
     label: 'Amount Paid',
     field: 'amount',
     filter:false,
+    cellStyle: { color: '#12B76A' },
     onCellClicked: (event: CellClickedEvent) => this.getPaymentById(event.data.id)
   },
-
 ];
- delete(id){
+
+columnCancelled: ITableColumn[] = [
+  {
+    label: 'Serial No',
+    field: 'sno',
+    filter:false,
+  },
+  {
+    label: 'Receipt Number',
+    field: 'receiptNumber',
+    filter:false,
+  },
+  {
+    label: 'Passbook Number',
+    field: 'passbooknumber',
+    filter:true,
+  },
+  {
+    label: 'Group Id',
+    field: 'groupId',
+    filter:true,
+  },
+  
+  {
+    label: 'Amount Paid',
+    field: 'amount',
+    filter:false,
+    cellStyle: { color: 'red' },
+  },
+];
+
+delete(id) {
   if (confirm('Are you sure you want to delete this subscriber?')) {
-    this.service.deletePayment(id).subscribe(
-      response => {
-        console.log('Subscriber deleted successfully', response);
-        this.data = this.data.filter(s => s._id !== id);
+ 
+    this.paymentDetail.cancelled=true
+    let cancelled=this.paymentDetail
+    console.log(cancelled);
+    
+    this.service.savePaymentDetails( cancelled,id).subscribe(
+      (response:any) => {
+        console.log(response);
+        
       },
     );
   }
-  this.paymentDetail=null
-  this.getAllPayment()
+  this.paymentDetail = null;
+  this.getAllPayment();
   this.router.navigate(["/payment"]);
+}
 
-
- }
  cancel(){
   this.paymentDetail=null
  }  
+ changeTab(tab: string) {
+  this.activeTab = tab;
 }
+
+
+}
+

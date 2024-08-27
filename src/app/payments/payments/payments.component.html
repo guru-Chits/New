@@ -2,7 +2,7 @@
     <div class="row justify-content-around">
         <div class="col-lg-4">
             <div class="form-group">
-                <label for="date" class="form-control-label">Date/Timestamp</label>
+                <label for="date" class="form-control-label">Date/Timestamp <span class="required" *ngIf="paymentForm.get('date').hasError('required')">*</span></label>
                 <input type="date" class="form-control p-2 form-control-sm" id="date" formControlName="date" placeholder="Date"/>
                 <div *ngIf="paymentForm.get('date')?.hasError('invalidDate') && paymentForm.get('date')?.touched">
                     <small class="text-danger">Please select today's date.</small>
@@ -11,13 +11,13 @@
         </div>
         <div class="col-lg-4">
             <div class="form-group">
-                <label for="passbooknumber" class="form-control-label">Passbook Number</label>
+                <label for="passbooknumber" class="form-control-label">Passbook Number <span class="required" *ngIf="paymentForm.get('passbooknumber').hasError('required')">*</span></label>
                 <input class="form-control p-2 form-control-sm" id="passbooknumber" formControlName="passbooknumber" placeholder="Passbook Number"/>
             </div>
         </div>
         <div class="col-lg-4">
             <div class="form-group">
-                <label for="groupId" class="form-control-label">Group ID/Chit Details</label>
+                <label for="groupId" class="form-control-label">Group ID/Chit Details<span class="required" *ngIf="paymentForm.get('date').hasError('required')">*</span></label>
                 <input class="form-control p-2 form-control-sm" id="groupId" formControlName="groupId" placeholder="Chit Group ID" readonly/>
             </div>
         </div>
@@ -25,19 +25,19 @@
     <div class="row justify-content-around">
         <div class="col-lg-4">
             <div class="form-group">
-                <label for="collectionType" class="form-control-label">Collection Type</label>
+                <label for="collectionType" class="form-control-label">Collection Type<span class="required" *ngIf="paymentForm.get('collectionType').hasError('required')">*</span></label>
                 <input class="form-control p-2 form-control-sm" id="collectionType" formControlName="collectionType" placeholder="Collection Type" readonly/>
             </div>
         </div>
         <div class="col-lg-4">
             <div class="form-group">
-                <label for="subscriberId" class="form-control-label">Subscriber ID</label>
+                <label for="subscriberId" class="form-control-label">Subscriber ID<span class="required" *ngIf="paymentForm.get('subscriberId').hasError('required')">*</span></label>
                 <input class="form-control p-2 form-control-sm" id="subscriberId" formControlName="subscriberId" placeholder="Subscriber ID" readonly/>
             </div>
         </div>
         <div class="col-lg-4">
             <div class="form-group">
-                <label for="subscriberName" class="form-control-label">Subscriber Name</label>
+                <label for="subscriberName" class="form-control-label">Subscriber Name<span class="required" *ngIf="paymentForm.get('subscriberName').hasError('required')">*</span></label>
                 <input class="form-control p-2 form-control-sm" id="subscriberName" formControlName="subscriberName" placeholder="Subscriber Name" readonly/>
             </div>
         </div>
@@ -45,19 +45,19 @@
     <div class="row justify-content-around">
         <div class="col-lg-4">
             <div class="form-group">
-                <label for="installmentNumber" class="form-control-label">Installment Number</label>
+                <label for="installmentNumber" class="form-control-label">Installment Number<span class="required" *ngIf="paymentForm.get('installmentNumber').hasError('required')">*</span></label>
                 <input class="form-control p-2 form-control-sm" id="installmentNumber" formControlName="installmentNumber" placeholder="Installment Number" readonly/>
             </div>
         </div>
         <div class="col-lg-4">
             <div class="form-group">
-                <label for="installmentMonth" class="form-control-label">Installment Month</label>
+                <label for="installmentMonth" class="form-control-label">Installment Month<span class="required" *ngIf="paymentForm.get('installmentMonth').hasError('required')">*</span></label>
                 <input class="form-control p-2 form-control-sm" id="installmentMonth" formControlName="installmentMonth" placeholder="Installment Month" readonly/>
             </div>
         </div>
         <div class="col-lg-4">
             <div class="form-group">
-                <label for="region" class="form-control-label">Route ID</label>
+                <label for="region" class="form-control-label">Route ID<span class="required" *ngIf="paymentForm.get('region').hasError('required')">*</span></label>
                 <input class="form-control p-2 form-control-sm" id="region" formControlName="region" placeholder="Region ID" readonly/>
             </div>
         </div>
@@ -65,8 +65,8 @@
     <div class="row justify-content-around">
         <div class="col-lg-4">
             <div class="form-group">
-                <label class="form-control-label">Select Staff</label>
-                <select class="form-control p-2 form-control-sm " formControlName="selectStaff" placeholder="Select Staff">
+                <label class="form-control-label">Select Staff<span class="required" *ngIf="paymentForm.get('selectStaff').hasError('required')">*</span></label>
+                <select class="form-control form-control-sm form-select" formControlName="selectStaff" placeholder="Select Staff">
                 <option value="" disabled selected>Staffs</option>
                 <option *ngFor="let staff of data" [value]="staff.staffName">{{staff.staffName}}</option>
                 </select>
@@ -74,13 +74,13 @@
             </div>
         <div class="col-lg-4">
             <div class="form-group">
-                <label for="amount" class="form-control-label">Amount</label>
+                <label for="amount" class="form-control-label">Amount<span class="required" *ngIf="paymentForm.get('amount').hasError('required')">*</span></label>
                 <input class="form-control p-2 form-control-sm" id="amount" formControlName="amount" placeholder="Amount"/>
             </div>
         </div>
         <div class="col-lg-4">
             <div class="form-group">
-                <label for="chitAmount" class="form-control-label">Chit Amount</label>
+                <label for="chitAmount" class="form-control-label">Chit Amount<span class="required" *ngIf="paymentForm.get('chitAmount').hasError('required')">*</span></label>
                 <input class="form-control p-2 form-control-sm" id="chitAmount" formControlName="chitAmount" placeholder="Chit Amount" readonly/>
             </div>
         </div>
@@ -88,13 +88,13 @@
     <div class="row">
         <div class="col-lg-4">
             <div class="form-group">
-                <label for="serialNumber" class="form-control-label">Serial Number</label>
+                <label for="serialNumber" class="form-control-label">Serial Number<span class="required" *ngIf="paymentForm.get('serialNumber').hasError('required')">*</span></label>
                 <input class="form-control p-2 form-control-sm" id="serialNumber" formControlName="serialNumber" placeholder="Serial Number" readonly/>
             </div>
         </div>
         <div class="col-lg-4">
             <div class="form-group">
-                <label for="receiptNumber" class="form-control-label">Receipt Number</label>
+                <label for="receiptNumber" class="form-control-label">Receipt Number<span class="required" *ngIf="paymentForm.get('receiptNumber').hasError('required')">*</span></label>
                 <input class="form-control p-2 form-control-sm" id="receiptNumber" formControlName="receiptNumber" placeholder="Receipt Number" readonly/>
             </div>
         </div>    
@@ -119,7 +119,7 @@
                 <div class="d-flex justify-content-end py-2">
                     <button class="btn mx-3 btn-success popup-btn" (click)="print()">
                         <img src="../../../assets/popup/printer.svg" alt="" width="20px" height="20px" > Generate Receipt</button>
-                    <button class="btn me-3 btn-success popup-btn"  (click)="downloadAsImage()">
+                    <button class="btn me-3 btn-success popup-btn"  (click)="downloadAsPDF()">
                         <img src="../../../assets/popup/download.svg" alt="" width="20px" height="20px"> Download</button>
                 </div>
                 <div class="border border-dark" id="print-section">
@@ -158,7 +158,7 @@
                         </div>
                         <div class="col-6 d-flex justify-content-around">
                             <div class="col-5 fw-bold">Route ID</div>
-                            <div class="col-5">{{receiptData.routeId}}</div>
+                            <div class="col-5">{{receiptData.region}}</div>
                         </div>
                     </div>
                     <div class="row pb-3">

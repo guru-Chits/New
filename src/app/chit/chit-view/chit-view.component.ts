@@ -2,6 +2,7 @@ import { Component,OnInit } from '@angular/core';
 import { ITableColumn } from '../../shared/interface/list-table';
 import { Router ,ActivatedRoute } from '@angular/router';
 import { ChitService } from '../shared/service/chit.service';
+import { PaymentService } from '../../payments/shared/service/payment.service';
 @Component({
   selector: 'app-chit-view',
   templateUrl: './chit-view.component.html',
@@ -15,8 +16,9 @@ export class ChitViewComponent implements OnInit{
   breadcrumsData: any = [];
   chitId:string="";
   totalChitData:any;  
-  
-  constructor(private activatedRoute:ActivatedRoute,private router:Router, private service: ChitService){}
+  groupId:string;
+  walletBalance:any
+  constructor(private activatedRoute:ActivatedRoute,private router:Router, private service: ChitService,private paymentService:PaymentService){}
 
   getAllChit(){
     this.service.getAllChit().subscribe((data)=>{
@@ -40,7 +42,26 @@ export class ChitViewComponent implements OnInit{
       this.service.getChitById(paramData.id).subscribe((data) => {
         this.chitData = data;
         this.chitData=this.chitData.ChitsGroup;
+        this.groupId=this.chitData.chitGroupId;
+
+        console.log(this.chitData.addChitSubscribers);
         
+        this.paymentService.getTotalByGroupId(this.groupId).subscribe((data)=>{
+          console.log(data);
+          data.passbooknumber.forEach((passbookItem: any) => {
+             console.log(passbookItem);
+             
+            this.service.getByPassbooNo(passbookItem.passbooknumber).subscribe((responseData) => {
+              console.log(responseData);
+              // You can handle the response data here, e.g., update your walletBalance or other variables
+            });
+          });
+
+          this.walletBalance=data
+          this.walletBalance=this.walletBalance.totalAmount
+          
+        })
+
         console.log(this.chitData);
         this.breadcrumsData = [
           {
@@ -89,6 +110,8 @@ export class ChitViewComponent implements OnInit{
   });
 }
 });
+
+
   }
   profileImageWithIdRenderer(params: any): string {
     const imageUrl = params.data.profileImageUrl;

@@ -65,7 +65,7 @@ ngOnInit(){
     dob: ['', [Validators.required,
       this.conditionalValidator(() => !!this.staffsForm?.get('dob')?.value, this.ageValidator(18)),
     ]],
-    routeId: [null, [Validators.required]],
+    routeId: [[], [Validators.required]],
     accountNumber: ["", [
       this.conditionalValidator(() => !!this.staffsForm?.get('accountNumber')?.value, Validators.pattern(/^\d{8,12}$/))
     ]],

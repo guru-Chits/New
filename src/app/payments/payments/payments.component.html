@@ -80,8 +80,8 @@
         </div>
         <div class="col-lg-4">
             <div class="form-group">
-                <label for="chitAmount" class="form-control-label">Chit Amount<span class="required" *ngIf="paymentForm.get('chitAmount').hasError('required')">*</span></label>
-                <input class="form-control p-2 form-control-sm" id="chitAmount" formControlName="chitAmount" placeholder="Chit Amount" readonly/>
+                <label for="chitAmount" class="form-control-label">Chit Value<span class="required" *ngIf="paymentForm.get('chitAmount').hasError('required')">*</span></label>
+                <input class="form-control p-2 form-control-sm" id="chitAmount" formControlName="chitAmount" placeholder="Chit Value" readonly/>
             </div>
         </div>
     </div>
@@ -187,7 +187,7 @@
                             <div class="col-4">{{receiptData.installmentNumber}}</div>
                         </div>
                         <div class="col-6 d-flex justify-content-around">
-                            <div class="col-5 fw-bold">Chit Amount</div>
+                            <div class="col-5 fw-bold">Chit Value</div>
                             <div class="col-5">{{receiptData.chitAmount}}</div>
                         </div>
                     </div>

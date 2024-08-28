@@ -35,7 +35,8 @@ export class TransactionsComponent implements OnInit{
 
 ngOnInit(): void {
   this.transactionForm=this.formBuilder.group({
-    date:['', [Validators.required]],
+    fromDate:['', [Validators.required]],
+    toDate:['', [Validators.required]],
     routeId:['', [Validators.required]],
     collectionType:['', [Validators.required]],
     collectionTypeCount:['', [Validators.required]],
@@ -82,94 +83,110 @@ column: ITableColumn[] = [
 
 
 formChanges() {
-  this.transactionForm.get('date').valueChanges.subscribe(date => {
-    // Reset routeId when date changes
-    this.transactionForm.controls['routeId'].reset();
+  // Subscribe to changes in both 'fromDate' and 'toDate'
+  this.transactionForm.get('fromDate').valueChanges.subscribe(fromDate => {
+    this.handleDateChange(fromDate, this.transactionForm.get('toDate').value);
+  });
 
-    if (!date) {
-      // If no date, clear the data and totals
-      this.data = [];
-      this.transactionForm.patchValue({
-        totalSerialNumberCount: 0,
-        grandTotalAmount: '0'
-      });
-      return;
+  this.transactionForm.get('toDate').valueChanges.subscribe(toDate => {
+    this.handleDateChange(this.transactionForm.get('fromDate').value, toDate);
+  });
+
+  // Subscribe to changes in 'routeId'
+  this.transactionForm.get('routeId').valueChanges.subscribe(routeId => {
+    const fromDate = this.transactionForm.get('fromDate').value;
+    const toDate = this.transactionForm.get('toDate').value;
+    if (fromDate && toDate && routeId) {
+      // Fetch data filtered by date range and routeId
+      this.fetchDataByRoute(fromDate, toDate, routeId);
     }
+  });
+}
 
-    // Call the service to fetch data by date
-    this.service.getDataByDate(date).subscribe(data => {
-      this.transData = data;
+// Handle fetching data when 'fromDate' or 'toDate' changes
+handleDateChange(fromDate: string, toDate: string) {
+  // Reset the routeId field whenever the date range changes
+  this.transactionForm.controls['routeId'].reset();
 
-      // Map data to your table structure
-      this.data = this.transData.details.map((transDetails, index) => ({
-        id: transDetails._id,
-        sno: index + 1,
-        date: transDetails.date,
-        receiptNumber: transDetails.receiptNumber,
-        passbooknumber: transDetails.passbooknumber,
-        groupId: transDetails.groupId,
-        amount: transDetails.amount
-      }));
+  if (!fromDate || !toDate) {
+    // If either date is missing, clear the data and totals
+    this.data = [];
+    this.transactionForm.patchValue({
+      totalSerialNumberCount: 0,
+      grandTotalAmount: '0'
+    });
+    return;
+  }
 
-      // Calculate and format the grandTotalAmount
-      const grandTotal = this.data.reduce((total, item) => total + parseFloat(item.amount), 0);
+  // Call the service to fetch data by date range
+  this.service.getDataByDate(fromDate, toDate).subscribe(data => {
+    this.transData = data;
 
-      // Format grandTotal to remove leading zeros and add commas (if needed)
-      const formattedGrandTotal = grandTotal.toLocaleString('en-US', {
-        minimumFractionDigits: 2, 
-        maximumFractionDigits: 2
-      });
+    // Map the data to the table structure
+    this.data = this.transData.details.map((transDetails, index) => ({
+      id: transDetails._id,
+      sno: index + 1,
+      date: transDetails.date,
+      receiptNumber: transDetails.receiptNumber,
+      passbooknumber: transDetails.passbooknumber,
+      groupId: transDetails.groupId,
+      amount: transDetails.amount
+    }));
 
-      // Update the totalSerialNumberCount and grandTotalAmount
-      this.transactionForm.patchValue({
-        totalSerialNumberCount: this.data.length,
-        grandTotalAmount: formattedGrandTotal
-      });
+    // Calculate and format the grandTotalAmount
+    const grandTotal = this.data.reduce((total, item) => total + parseFloat(item.amount), 0);
+    const formattedGrandTotal = grandTotal.toLocaleString('en-US', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
     });
 
-    // Fetch the route data by date (optional)
-    this.service.getRouteByDate(date).subscribe(data => {
-      this.routeData = data;
-      this.routes = this.routeData.region.map(routeDetails => ({
-        routeId: routeDetails
-      }));
+    // Update the totalSerialNumberCount and grandTotalAmount
+    this.transactionForm.patchValue({
+      totalSerialNumberCount: this.data.length,
+      grandTotalAmount: formattedGrandTotal
+    });
+  });
+
+  // Fetch the route data based on the selected date range
+  this.service.getRouteByDate(fromDate).subscribe(data => {
+    this.routeData = data;
+    this.routes = this.routeData.region.map(routeDetails => ({
+      routeId: routeDetails
+    }));
+  });
+}
+
+// Fetch data filtered by date range and routeId
+fetchDataByRoute(fromDate: string, toDate: string, routeId: string) {
+  this.service.getDataByDate(fromDate, toDate, routeId).subscribe(data => {
+    this.transData = data;
+
+    // Map filtered data
+    this.data = this.transData.details.map((transDetails, index) => ({
+      id: transDetails._id,
+      sno: index + 1,
+      date: transDetails.date,
+      receiptNumber: transDetails.receiptNumber,
+      passbooknumber: transDetails.passbooknumber,
+      groupId: transDetails.groupId,
+      amount: transDetails.amount
+    }));
+
+    // Calculate and format the grandTotalAmount for filtered data
+    const grandTotal = this.data.reduce((total, item) => total + parseFloat(item.amount), 0);
+    const formattedGrandTotal = grandTotal.toLocaleString('en-US', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
     });
 
-    // Fetch filtered data if routeId is selected
-    this.transactionForm.get('routeId').valueChanges.subscribe(routeId => {
-      if (routeId) {
-        this.service.getDataByDate(date, routeId).subscribe(data => {
-          this.transData = data;
-
-          // Map filtered data
-          this.data = this.transData.details.map((transDetails, index) => ({
-            id: transDetails._id,
-            sno: index + 1,
-            date: transDetails.date,
-            receiptNumber: transDetails.receiptNumber,
-            passbooknumber: transDetails.passbooknumber,
-            groupId: transDetails.groupId,
-            amount: transDetails.amount
-          }));
-
-          // Calculate and format the grandTotalAmount for filtered data
-          const grandTotal = this.data.reduce((total, item) => total + parseFloat(item.amount), 0);
-
-          const formattedGrandTotal = grandTotal.toLocaleString('en-US', {
-            minimumFractionDigits: 2, 
-            maximumFractionDigits: 2
-          });
-
-          // Update the totals for filtered data
-          this.transactionForm.patchValue({
-            totalSerialNumberCount: this.data.length,
-            grandTotalAmount: formattedGrandTotal
-          });
-        });
-      }
+    // Update the totals for filtered data
+    this.transactionForm.patchValue({
+      totalSerialNumberCount: this.data.length,
+      grandTotalAmount: formattedGrandTotal
     });
   });
 }
+
 
 
   onSubmit(){

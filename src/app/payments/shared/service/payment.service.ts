@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from '../../../../environments/environment';
 import { Observable } from 'rxjs';
@@ -38,9 +38,15 @@ getAmountByRouteId(routeId:string){
   return this.http.get(url)
 }
 
-getRouteByDate(date:Date){
-  let url=`${this.paymentUrl}/getRouteByDate/${date}`
-  return this.http.get(url)
+getRouteByDate(fromDate: any, toDate?: any): Observable<any> {
+  let params = new HttpParams().set('fromDate', fromDate);
+  
+  // If toDate is provided, add it to the params
+  if (toDate) {
+    params = params.set('toDate', toDate);
+  }
+
+  return this.http.get(`${this.paymentUrl}/getRouteByDate`, { params });
 }
 
 getTotal(date:Date,routeId:string,selectStaff:any){
@@ -70,8 +76,8 @@ getPaymentByPassbook(passbookNo:string){
 
 }
 
-getDataByDate(date: string, region?: string , collectionType?:string){
-  let url=`${this.paymentUrl}/getDataByDate/${date}`
+getDataByDate(fromDate: any, toDate:any,region?: string , collectionType?:string){
+  let url=`${this.paymentUrl}/getDataByDate/${fromDate}/${toDate}`
   if(region&&!collectionType){
     url+=`/${region}`;
   }
@@ -84,6 +90,10 @@ getTotalByGroupId(groupId:string): Observable<any> {
 
 }
 
+getPassbookNo(date:Date,routeId:string,selectStaff:string){
+  let url=`${this.paymentUrl}/getPassbookNo/${date}/${routeId}/${selectStaff}`
+  return this.http.get(url)
+}
 getCollectionById(id: string){
   let url = `${this.paymentUrl}/getCollectionById/${id}`;
   return this.http.get(url)
@@ -93,6 +103,12 @@ getTransactionById(id: string){
   let url = `${this.paymentUrl}/getTransactionById/${id}`;
   return this.http.get(url)
 }
+
+verifyPassbookNo(passbookno: string): Observable<any> {
+  return this.http.get(`${this.paymentUrl}/verifyPassbookNo/${passbookno}`);
+}
+
+
 
 savePaymentDetails(body: any, id?: string): Observable<any>{
   let savepaymentUrl: string = `${this.paymentUrl}/addPayment`

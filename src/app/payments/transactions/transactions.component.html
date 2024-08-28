@@ -3,8 +3,14 @@
     <div class="row justify-content-around">
         <div class="col-lg-4">
             <div class="form-group">
-                <label for="datetime" class="form-control-label">Date/Timestamp<span class="required" *ngIf="transactionForm.get('date').hasError('required')">*</span></label>
-                <input type="date" class="form-control p-2 form-control-sm" id="datetime" formControlName="date"/>
+                <label for="fromDate" class="form-control-label">From Date<span class="required" *ngIf="transactionForm.get('fromDate').hasError('required')">*</span></label>
+                <input type="date" class="form-control p-2 form-control-sm" id="fromDate" formControlName="fromDate"/>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="form-group">
+                <label for="toDate" class="form-control-label">To Date<span class="required" *ngIf="transactionForm.get('toDate').hasError('required')">*</span></label>
+                <input type="date" class="form-control p-2 form-control-sm" id="toDate" formControlName="toDate"/>
             </div>
         </div>
         <div class="col-lg-4">
@@ -16,6 +22,9 @@
             </select>
             </div>
         </div>
+
+    </div>
+    <div class="row justify-content-around">
         <div class="col-lg-4">
             <div class="form-group">
                 <label class="form-control-label">Collection Type<span class="required" *ngIf="transactionForm.get('collectionType').hasError('required')">*</span></label>
@@ -28,8 +37,6 @@
                 </select>
             </div>
         </div>
-    </div>
-    <div class="row justify-content-around">
         <div class="col-lg-4">
             <div class="form-group">
                 <label for="collectionAmount" class="form-control-label">Collection Type Count<span class="required" *ngIf="transactionForm.get('collectionTypeCount').hasError('required')">*</span></label>
@@ -42,14 +49,15 @@
                 <input class="form-control p-2 form-control-sm" id="amountCollected" formControlName="collectionTypeAmount" placeholder="Collection Type Amount"/>
             </div>
         </div>
+
+    </div>
+    <div class="row">
         <div class="col-lg-4">
             <div class="form-group">
                 <label for="balanace" class="form-control-label">Total Serial Number Count <span class="required" *ngIf="transactionForm.get('totalSerialNumberCount').hasError('required')">*</span> </label>
                 <input class="form-control p-2 form-control-sm" id="balance" formControlName="totalSerialNumberCount" placeholder="Total Serial Number Count"/>
             </div>
         </div>
-    </div>
-    <div class="row">
         <div class="col-lg-4">
             <div class="form-group">
                 <label for="serialNumCount" class="form-control-label">Grand Total Amount<span class="required" *ngIf="transactionForm.get('grandTotalAmount').hasError('required')">*</span></label>

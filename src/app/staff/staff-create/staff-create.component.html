@@ -124,9 +124,9 @@
                   <div class="col-lg-4">
                     <div class="form-group">
                         <label for="region" class="form-control-label">Route Id 
-                            <span class="required" *ngIf="staffsForm.get('region').hasError('required')">*</span>
+                            <!-- <span class="required" *ngIf="staffsForm.get('region').hasError('required')">*</span> -->
                         </label>
-                        <ng-select
+                        <!-- <ng-select
                             [items]="routes"
                             bindLabel="routeId"
                             bindValue="routeId"
@@ -134,7 +134,9 @@
                             formControlName="routeId"
                             placeholder="Select RouteId"
                         >
-                        </ng-select>
+                        </ng-select> -->
+
+                        <input type="text" formControlName="routeId">
                     </div>
                 </div>
                 

@@ -25,6 +25,7 @@ export class SubscriberViewComponent implements OnInit{
  chitGroup:any
  subscriberId:string
  paymentHistory:any
+ verified:any
  selectedIndex: string | null = null;
 constructor(private service:SubscriberService,private activatedRoute:ActivatedRoute,private router:Router,private chitService:ChitService,private paymentService:PaymentService){}
 
@@ -80,29 +81,41 @@ ngOnInit(): void {
 
 
   getByPassbook(passbookNo:string,index:any){
+    console.log(passbookNo,"pno");
+    
+    this.paymentService.verifyPassbookNo(passbookNo).subscribe(data=>{
+      console.log(data,"sata");
+      this.verified=data.verified
 
-    if (this.selectedIndex === index) {
-      // If the selected index is already active, toggle off
-      this.selectedIndex = null;
-      this.paymentData = [];
-      this.isShowDiv = this.isShowDiv;  
-      
-    } 
-    else{
-      this.selectedIndex = index;
-      this.isShowDiv = !this.isShowDiv;  
+      console.log(data.passbookno);
 
-      this.paymentService.getPaymentByPassbook(passbookNo).subscribe(response=>{
-        console.log(response);
-        this.paymentHistory=response
-        this.paymentData=this.paymentHistory.payments.map((paymentDetail,index)=>({
-        receiptNumber:paymentDetail.receiptNumber,
-        amount:paymentDetail.amount,
-        groupId:paymentDetail.groupId,
-        }))
+
+      if (this.selectedIndex === index) {
+        // If the selected index is already active, toggle off
+        this.selectedIndex = null;
+        this.paymentData = [];
+        this.isShowDiv = this.isShowDiv;  
         
-       })
-    }
+      } 
+      else{
+        this.selectedIndex = index;
+        this.isShowDiv = !this.isShowDiv;  
+  
+        this.paymentService.getPaymentByPassbook(data.passbookno).subscribe(response=>{
+          console.log(response);
+          this.paymentHistory=response
+          this.paymentData=this.paymentHistory.payments.map((paymentDetail,index)=>({
+          receiptNumber:paymentDetail.receiptNumber,
+          amount:paymentDetail.amount,
+          groupId:paymentDetail.groupId,
+          }))
+          
+         })
+      }
+      
+
+    })
+
 
 
   }

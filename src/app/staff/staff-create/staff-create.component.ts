@@ -79,7 +79,7 @@ ngOnInit(){
     drivingLicenseNumber: ["", this.conditionalValidator(() => !!this.staffsForm?.get('drivingLicenseNumber')?.value, Validators.pattern(/^AA[0-9]{9}$/))],
     bankName: [""],
     passbookUrl: [""],
-    workingStatus: ["", [Validators.required]],
+    workingStatus: [false, [Validators.required]],
     bgVerification: [""],
     bgVerification_remark: [""],
     profileUrl:[""]

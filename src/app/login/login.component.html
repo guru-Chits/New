@@ -1,4 +1,4 @@
-<div class="container-fluid">
+<div class="container-fluid" *ngIf="!verified">
     <div class="row d-flex">
         <div class="col-lg-6 col-md-6 ml-5 mt-10">
           <div class="login-img">
@@ -65,7 +65,7 @@
                           </div>
                           </div>
               </div>
-              <button type="submit" class="btn btn-primary col-lg-12 col-md-12 mb-3 mt-3">Login</button>
+              <button type="submit" class="btn btn-primary col-lg-12 col-md-12 mb-3 mt-3" (click)="onSubmit()">Login</button>
               
             </form>
           </div>
@@ -73,4 +73,8 @@
         </div>
       </div>
     </div>
+  </div>
+
+  <div *ngIf="verified">
+<app-verify [mobileNumber]="mobileNumber"></app-verify>
   </div>

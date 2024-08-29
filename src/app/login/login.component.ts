@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { LoginService } from './shared/serive/login.service';
+import { HttpClient } from '@angular/common/http';
 interface ILogin{
   employeeId:FormControl<string|null>
   password:FormControl<string|null>
@@ -33,7 +35,7 @@ export class LoginComponent {
    * Check if the confirm password is empty
    */
   isConfirmPwdEmpty: boolean = true;
-
+ verified:boolean=false
   /**
    * Confirm password
    */
@@ -49,11 +51,11 @@ export class LoginComponent {
    * Check if the password is reset
    */
   isPasswordReset: boolean = false;
-
-
+ 
+  mobileNumber:any
   passwordPattern: RegExp = /^(?=.*[!@#$%^&*(),.?":{}|<>])(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$/;
 
- constructor(private router: Router, private fb: FormBuilder){}
+ constructor(private router: Router, private fb: FormBuilder,private service:LoginService,private HttpClient:HttpClient){}
 
  get passwordControl() { return this.loginForm.get('password'); };
 
@@ -62,7 +64,8 @@ export class LoginComponent {
   
   this.loginForm=this.fb.group({
     employeeId:['',[Validators.required, Validators.pattern(this.employeePattern)]],
-    password:['',[Validators.required,Validators.pattern(this.passwordPattern),Validators.maxLength(12),Validators.minLength(8)],]
+    password:['']
+    // password:['',[Validators.required,Validators.pattern(this.passwordPattern),Validators.maxLength(12),Validators.minLength(8)],]
   })
 
   this.loginForm.get("password").valueChanges.subscribe(() => {
@@ -73,6 +76,8 @@ export class LoginComponent {
       this.isPwdEmpty = isPwdEmpty;
     }
   });
+
+
 
 }
 
@@ -90,8 +95,28 @@ toggleconfirmPasswordVisibility(): void {
 
 
 onSubmit(){
-  this.router.navigate(["/login"]);
+  console.log("lofin");
+   
+  const payload=this.loginForm.value
 
+    this.service.getLoginDetail(payload.employeeId).subscribe(response => {
+      console.log(response);
+      this.mobileNumber=response
+      this.mobileNumber=this.mobileNumber.mobileNumber
+      // Prepare the URL with the mobile number and API key
+      const otpUrl = `https://2factor.in/API/V1/b1037ef1-2ed8-11ef-8b60-0200cd936042/SMS/${this.mobileNumber.mobileNumber}/AUTOGEN/OTPTemplate`;
+  
+      // Send the OTP using HttpClient
+      this.HttpClient.get(otpUrl).subscribe(
+        (otpResponse: any) => {
+          console.log('OTP sent successfully:', otpResponse);
+          this.verified=true
+        },
+        (error) => {
+          console.error('Error sending OTP:', error);
+        }
+      );
+    })
 }
 }
 

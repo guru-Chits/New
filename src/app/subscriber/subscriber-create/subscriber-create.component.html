@@ -381,91 +381,98 @@
         </div>
     </div>
     </div>
-                <div class="col-lg-3 " *ngIf="isSubscriberListVisible">
-                    <div class="card details mb-3">
-                    <h5 class="text-center my-2">Referral</h5>
-                        <div class="search-bar align-self-center">
-                          <span class="search-icon"><img src="assets/subscriber/search-icon.svg"></span>
-                          <input width="20" height="20" type="text" placeholder="Search Subscriber ID, Name, Email" (input)="applyFilter($event.target.value)">
-                        </div>
-                        
-                        <table class="subscriber-table ">
-                          <tbody>
-                            <tr *ngFor="let subscriber of displayedSubscribers" >
-                           <div class="card view-all mx-3">
-                            <div class="card-body align-self-center">
-                                <div class="row">
-                                    <div class="col-lg-3 col-md-3">
-                                        <img class="profile-list-img" src="{{subscriber.subscriberProfile}}"> 
-                                    </div>
-                                    <div class="col-lg-6 col-md-6 text">
-                                        <strong>{{ subscriber.subscriberId }}</strong>
-                                        {{ subscriber.subscriberName }}
-                                        </div>
-                                    <div class="col-lg-3 col-md-3">
-                                        <button  class="viewbtn" (click)="onButtonClick(subscriber.id)">View Details</button>
-                                    </div>
-                                </div>
-                            </div>
-                           </div>
-                            </tr>
-                          </tbody>
-                        </table>
-                      
-                      <div class="subscriber-details">
-                        <div *ngIf="subscriberDetail">
-                            <h5 class="title  text-center">Subscriber Details</h5>
-                            <div class="text-center">
-                                <img src="{{subscriberDetail.Subscriber.profileImageUrl}}" class="img-fluid" alt="Subscriber Image">
-                            </div>
-                            <table class="table px-3">
-                                <tbody>
-                                  <tr>
-                                    <td><strong>Subscriber ID </strong></td>
-                                    <td><a href="#">{{subscriberDetail.Subscriber.subscriberId }}</a></td>
-                                  </tr>
-                                  <tr>
-                                    <td><strong>First Name </strong></td>
-                                    <td>{{subscriberDetail.Subscriber.firstName}} </td>
-                                  </tr>
-                                  <tr>
-                                    <td><strong>Last Name </strong></td>
-                                    <td>{{ subscriberDetail.Subscriber.lastName }}</td>
-                                  </tr>
-                                  <tr>
-                                    <td><strong>Contact No </strong></td>
-                                    <td>{{ subscriberDetail.Subscriber.contact }}</td>
-                                  </tr>
-                                  <tr>
-                                    <td><strong>Address/Place </strong></td>
-                                    <td>{{ subscriberDetail.Subscriber.place }}</td>
-                                  </tr>
-                                  <tr>
-                                    <td><strong>Occupation </strong></td>
-                                    <td>{{ subscriberDetail.Subscriber.occupation }}</td>
-                                  </tr>
-                                  <tr>
-                                    <td><strong>Referral Client </strong></td>
-                                    <td>{{ subscriberDetail.Subscriber.referralClient }}</td>
-                                  </tr>
-                                  <tr>
-                                    <td><strong>Enrollments </strong></td>
-                                    <td>{{ subscriberDetail.Subscriber.enrollments }}</td>
-                                  </tr>
-                                  <tr>
-                                    <td><strong>Region/Route </strong></td>
-                                    <td>{{ subscriberDetail.Subscriber.routeId }}</td>
-                                  </tr>
-                                </tbody>
-                              </table>
-                              <div class="text-center mb-2">
-                                <button class="btn  view"  (click)="addReferral()">Add Referral</button>
-                            </div>
-                   
-                        </div>
-                            </div>
+    <div class="col-lg-3" *ngIf="isSubscriberListVisible">
+      <div class="card details mb-3">
+        <h5 class="text-center my-2">Referral</h5>
+        <div class="search-bar align-self-center">
+          <span class="search-icon"><img src="assets/subscriber/search-icon.svg"></span>
+          <input width="20" height="20" type="text" placeholder="Search Subscriber ID, Name, Email" (input)="applyFilter($event.target.value)">
+        </div>
+    
+        <table class="subscriber-table">
+          <tbody>
+            <tr *ngFor="let subscriber of displayedSubscribers">
+              <div class="card view-all mx-3">
+                <div class="card-body align-self-center">
+                  <div class="row">
+                    <div class="col-lg-3 col-md-3">
+                      <img class="profile-list-img" [src]="subscriber.subscriberProfile">
                     </div>
-             </div>
+                    <div class="col-lg-6 col-md-6 text">
+                      <strong>{{ subscriber.subscriberId }}</strong>
+                      {{ subscriber.subscriberName }}
+                    </div>
+                    <div class="col-lg-3 col-md-3">
+                      <button class="viewbtn" (click)="onButtonClick(subscriber.id)">View Details</button>
+                    </div>
+                  </div>
+    
+                  <!-- Subscriber details section -->
+                  <div *ngIf="selectedSubscriberId === subscriber.subscriberId && subscriberDetail.Subscriber.subscriberId">
+                    <div class="subscriber-details mt-3">
+                      <h5 class="title text-center">Subscriber Details</h5>
+                      <div class="text-center">
+                        <img [src]="subscriberDetail.Subscriber.profileImageUrl" class="img-fluid" alt="Subscriber Image">
+                      </div>
+                      <table class="table px-3">
+                        <tbody>
+                          <tr>
+                            <td><strong>Subscriber ID</strong></td>
+                            <td>{{ subscriberDetail.Subscriber.subscriberId }}</td>
+                          </tr>
+                          <tr>
+                            <td><strong>Alias Name</strong></td>
+                            <td>{{ subscriberDetail.Subscriber.aliasName }}</td>
+                          </tr>
+                          <tr>
+                            <td><strong>First Name</strong></td>
+                            <td>{{ subscriberDetail.Subscriber.firstName }}</td>
+                          </tr>
+                          <tr>
+                            <td><strong>Last Name</strong></td>
+                            <td>{{ subscriberDetail.Subscriber.lastName }}</td>
+                          </tr>
+                          <tr>
+                            <td><strong>Contact No</strong></td>
+                            <td>{{ subscriberDetail.Subscriber.contact }}</td>
+                          </tr>
+                          <tr>
+                            <td><strong>Address/Place</strong></td>
+                            <td>{{ subscriberDetail.Subscriber.place }}</td>
+                          </tr>
+                          <tr>
+                            <td><strong>Occupation</strong></td>
+                            <td>{{ subscriberDetail.Subscriber.occupation }}</td>
+                          </tr>
+                          <tr>
+                            <td><strong>Referral Client</strong></td>
+                            <td>{{ subscriberDetail.Subscriber.referralClient }}</td>
+                          </tr>
+                          <tr>
+                            <td><strong>Enrollments</strong></td>
+                            <td>{{ subscriberDetail.Subscriber.enrollments }}</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                      <div class="text-center mb-2">
+                        <button class="btn view" (click)="addReferral()">Add Referral</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </tr>
+          </tbody>
+        </table>
+    
+        <div *ngIf="showall === false" class="text-center mt-3">
+          <button class="btn view" (click)="viewMore()">View More</button>
+        </div>
+      </div>
+    </div>
+    
+    
+    
                                             
             </div>
         </div>

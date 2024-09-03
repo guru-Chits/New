@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { StaffService } from '../../staff/shared/service/staff.service';
 import { AreaService } from '../../area/shared/service/area.service';
 import { PaymentService } from '../shared/service/payment.service';
@@ -31,7 +31,7 @@ export class CollectionsComponent implements OnInit {
   filterImg:string='assets/table/black filter.svg'
   search:boolean=true
   showCancelledPayments = false;
-
+  paymentBody:any
   passbooknumber:any
   constructor(private formBuilder:FormBuilder,
     private staffService:StaffService,
@@ -40,7 +40,7 @@ export class CollectionsComponent implements OnInit {
   ){}
   ngOnInit(): void {
     this.collectionForm = this.formBuilder.group({
-      date: ['', [Validators.required]],
+      date: ['', [Validators.required,this.validatePastOrTodayDate]],
       routeId:  ['', [Validators.required]],
       selectedStaff:  ['', [Validators.required]],
       collectionAmount:  ['', [Validators.required]],
@@ -52,12 +52,17 @@ export class CollectionsComponent implements OnInit {
       verified:[false]
       });
 
-      this.staffService.getstaffAll().subscribe((data)=>{
-        this.staffs=data  
-       this.data=this.staffs.AllStaff.map((staffDetails,index)=>({
-        staffName:staffDetails.firstName
-       }))
-       })
+      // this.staffService.getstaffAll().subscribe((data)=>{
+      //   this.staffs=data  
+      //  this.data=this.staffs.AllStaff.map((staffDetails,index)=>({
+      //   staffName:staffDetails.firstName
+      //  }))
+      //  })
+      this.staffs=localStorage.getItem('name')
+      this.staffs=this.staffs.replace(/"/g, ''); 
+      console.log(this.staffs);
+      
+
        this.collectionForm.get('date')?.valueChanges.subscribe(date => {
         this.date = date;
         
@@ -134,10 +139,17 @@ export class CollectionsComponent implements OnInit {
 
   }
 
+  validatePastOrTodayDate(control: AbstractControl): { [key: string]: boolean } | null {
+    const selectedDate = new Date(control.value).setHours(0, 0, 0, 0);
+    const today = new Date().setHours(0, 0, 0, 0);
+
+    return selectedDate <= today ? null : { invalidDate: true };
+  }
+  
   getAllPayment(date:Date,routeId:string,selectStaff:string) {
     this.service.getTotal(date,routeId,selectStaff).subscribe((data) => {
       this.paymentData = data;
-       console.log(this.paymentData);
+       console.log(this.paymentData,"payment daat");
   
       // Initialize arrays for available and cancelled payments
       this.avlData = [];
@@ -157,6 +169,16 @@ export class CollectionsComponent implements OnInit {
             amount: paymentDetail?.amount,
             receiptNumber: paymentDetail?.receiptNumber,
             cancelled: paymentDetail?.cancelled,
+            verified: true,
+            chitAmount:paymentDetail?.chitAmount,
+            region:paymentDetail?.region,
+            subscriberId:paymentDetail?.subscriberId,
+            subscriberName:paymentDetail?.subscribeName,
+            installmentMonth:paymentDetail?.installmentMonth,
+            selectStaff:paymentDetail?.selectStaff,
+            serialNumber:paymentDetail?.serialNumber,
+            date:paymentDetail?.date,
+            collectionType:paymentDetail?.collectionType
           };
   
           // Push to appropriate array based on the cancelled status
@@ -165,16 +187,24 @@ export class CollectionsComponent implements OnInit {
               ...formattedPayment,
               sno: cancelledSno++,
             });
-          } else {
+            console.log(this.canData)
+
+          } else if(!paymentDetail?.cancelled) {
             this.avlData.push({
               ...formattedPayment,
               sno: availableSno++,
             });
+            console.log(this.avlData);
+
           }
         });
       }
     });
+    
+
   }
+
+
   column: ITableColumn[] = [
     {
       label: 'Serial No',
@@ -243,6 +273,34 @@ export class CollectionsComponent implements OnInit {
      const payload=this.collectionForm.value
      const balance = this.collectionForm.get('balance')?.value;
 
+     this.avlData.forEach((payment) => {
+      this.paymentBody = {
+       date: payment.date,
+       receiptNumber: payment.receiptNumber,
+       passbooknumber: payment.passbooknumber,
+       groupId: payment.groupId,
+       amount: payment.amount,
+       verified: true, // Ensure verified is set to true
+       chitAmount: payment.chitAmount,
+       region: payment.region,
+       subscriberId: payment.subscriberId,
+       subscriberName: payment.subscriberName,
+       installmentMonth: payment.installmentMonth,
+       selectStaff: payment.selectStaff,
+       serialNumber: payment.serialNumber,
+       collectionType: payment.collectionType,
+     };
+     console.log(this.paymentBody);
+     
+     this.service.savePaymentDetails(this.paymentBody, payment.id).subscribe(
+       (response) => {
+         console.log(`Payment with ID: ${payment.id} saved successfully.`, response);
+       },
+       (error) => {
+         console.error(`Failed to save payment with ID: ${payment.id}`, error);
+       }
+     );
+   });
      // Check if the balance is less than 0
      if (balance < 0) {
              this.collectionForm.controls['submitButton'].disable();

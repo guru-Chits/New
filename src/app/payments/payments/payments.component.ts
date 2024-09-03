@@ -11,10 +11,14 @@ import { AreaService } from '../../area/shared/service/area.service';
 import { ChitService } from '../../chit/shared/service/chit.service';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
+import { AuthService } from '../../shared/service/auth.service';
+import { DatePipe } from '@angular/common';
+
 @Component({
   selector: 'app-payments',
   templateUrl: './payments.component.html',
-  styleUrl: './payments.component.css'
+  styleUrl: './payments.component.css',
+  providers: [DatePipe]
 })
 export class PaymentsComponent implements OnInit {
   receiptNo:string
@@ -32,13 +36,20 @@ export class PaymentsComponent implements OnInit {
   month:string
   accessPrivData: any;
   subscriberDetail:any
- serialNumberCounter:number;
+  serialNumberCounter:number;
+  canCreate: boolean = false;
+  canEdit: boolean = false;
+  canDelete: boolean = false;
+  canView:boolean=false
+
  passbookInstallmentData: any = {};
   constructor(private router: Router,
     private formBuilder: FormBuilder,
     private service: PaymentService,
     private staffService:StaffService,
     private chitService:ChitService,
+    private authService:AuthService,
+    private datePipe: DatePipe,
     private routeService:AreaService) { }
 
   ngOnInit(): void {
@@ -53,16 +64,19 @@ export class PaymentsComponent implements OnInit {
       collectionType:  ['',[Validators.required]],
       subscriberId:  ['',[Validators.required]],
       subscriberName:  ['',[Validators.required]],
-      installmentNumber:  ['',[Validators.required]],
+      // installmentNumber:  ['',[Validators.required]],
       installmentMonth:  ['',[Validators.required]],
       region:  ['',[Validators.required]],
       selectStaff: ['',[Validators.required]],
       chitAmount:['',[Validators.required]],
-      cancelled:['',[Validators.required]]
+      cancelled:['',[Validators.required]],
+      verified:['',Validators.required]
       });
 
+
+
       this.paymentForm.get('cancelled')?.setValue(false) 
-  
+      this.paymentForm.get('verified')?.setValue(false)
 
       this.paymentForm.get('passbooknumber').valueChanges.subscribe(passbooknumber => {
         console.log(passbooknumber);
@@ -72,18 +86,17 @@ export class PaymentsComponent implements OnInit {
         }
       });
 
-      this.paymentForm.get('date')?.valueChanges.subscribe((selectedDate: string) => {
-        if (selectedDate) {
-          const selectedMonth = new Date(selectedDate).toLocaleString('default', { month: 'long' });
-           this.month=selectedMonth
-           console.log(this.month);
-           this.paymentForm.patchValue(
-            {installmentMonth:  this.month,
-}
-           )
-
-        }
-      });
+      // this.paymentForm.get('date')?.valueChanges.subscribe((selectedDate: string) => {
+      //   if (selectedDate) {
+      //     const selectedMonth = new Date(selectedDate).toLocaleString('default', { month: 'long' });
+      //      this.month=selectedMonth
+      //      console.log(this.month);
+      //      this.paymentForm.patchValue(
+      //       {installmentMonth:  this.month,
+      //         }
+      //      )
+      //   }
+      // });
 
 this.service.getTodayPayment().subscribe((data)=>{
   
@@ -92,12 +105,17 @@ this.service.getTodayPayment().subscribe((data)=>{
   console.log(this.serialNumberCounter);
   
 })
- this.staffService.getstaffAll().subscribe((data)=>{
-  this.staffs=data  
- this.data=this.staffs.AllStaff.map((staffDetails,index)=>({
-  staffName:staffDetails.firstName
- }))
- })
+//  this.staffService.getstaffAll().subscribe((data)=>{
+//   this.staffs=data  
+//  this.data=this.staffs.AllStaff.map((staffDetails,index)=>({
+//   staffName:staffDetails.firstName
+//  }))
+//  })
+
+this.staffs=sessionStorage.getItem('name')
+this.staffs=this.staffs.replace(/"/g, ''); 
+console.log(this.staffs);
+
 
  this.routeService.getrouteAll().subscribe((data)=>{
   this.routeData=data;
@@ -113,9 +131,13 @@ this.service.getTodayPayment().subscribe((data)=>{
       data => {
         if (data) {
           this.subDetail=data
+          console.log(this.subDetail,"sub");
+          const date=this.datePipe.transform(this.subDetail.auctionDate, 'dd-MMMM') || '';
+          console.log("dare",date);
+          
+
           let serialNumber = this.formatSerialNumber(this.serialNumberCounter);
           const subscriberDetails = this.subDetail.subscriberDetails;
-          
           const receiptNumber = `${subscriberDetails.passbookNo}-${serialNumber}`;
           this.receiptNo=receiptNumber
           this.paymentForm.patchValue({
@@ -123,7 +145,7 @@ this.service.getTodayPayment().subscribe((data)=>{
             subscriberId:  subscriberDetails.subscriberId,
             subscriberName:  subscriberDetails.firstName,
             collectionType:"Monthly",
-            installmentNumber:1,
+            installmentMonth:date,
             region:  subscriberDetails.place,
             // amount:  this.subDetail.amount,
             chitAmount:  this.subDetail.chitAmount,

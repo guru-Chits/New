@@ -3,6 +3,7 @@ import { SubscriberService } from '../shared/service/subscriber.service';
 import { ActivatedRoute, ResolveStart, Router } from '@angular/router';
 import { ChitService } from '../../chit/shared/service/chit.service';
 import { PaymentService } from '../../payments/shared/service/payment.service';
+import { AuthService } from '../../shared/service/auth.service';
 
 @Component({
   selector: 'app-subscriber-view',
@@ -27,9 +28,24 @@ export class SubscriberViewComponent implements OnInit{
  paymentHistory:any
  verified:any
  selectedIndex: string | null = null;
-constructor(private service:SubscriberService,private activatedRoute:ActivatedRoute,private router:Router,private chitService:ChitService,private paymentService:PaymentService){}
+ itemsPerPage = 10; // Default items per page
+ showAll = false;
+ paymentHistoryToggled: boolean[] = [];
+ canEdit=false
+constructor(private service:SubscriberService,    private authService:AuthService, private activatedRoute:ActivatedRoute,private router:Router,private chitService:ChitService,private paymentService:PaymentService){}
 
 ngOnInit(): void {
+
+  this.authService.checkAccess('Subscriber Management', 'edit').subscribe((hasAccess: boolean) => {
+    if (hasAccess) {
+      this.canEdit=true
+      console.log('Edit access granted');
+    } else {
+      console.log('Edit access denied');
+    }
+  });
+
+
   this.activatedRoute.params.subscribe(paramData => {
     if (Object.keys(paramData).length) {
     this.service.getsubscriberById(paramData.id).subscribe((data) => {
@@ -53,7 +69,7 @@ ngOnInit(): void {
       },
       
       {
-        key: 'View Subscriber',
+        key: 'Subscriber Details',
         routerLink: `subscriber/view/${paramData.id}`,
       },
     ];
@@ -72,7 +88,7 @@ ngOnInit(): void {
         subscriberName: `${subscriberDetails?.firstName} ${subscriberDetails?.lastName}`,
         subscriberProfile:subscriberDetails?.profileImageUrl
       }))
-      this.displayedSubscribers = this.data;
+      this.displayedSubscribers = this.data.slice(0, this.itemsPerPage);
     })
     console.log(this.subscriberId,"siub");
     
@@ -82,7 +98,7 @@ ngOnInit(): void {
 
   getByPassbook(passbookNo:string,index:any){
     console.log(passbookNo,"pno");
-    
+    this.paymentHistoryToggled[index] = !this.paymentHistoryToggled[index];
     this.paymentService.verifyPassbookNo(passbookNo).subscribe(data=>{
       console.log(data,"sata");
       this.verified=data.verified
@@ -134,18 +150,42 @@ ngOnInit(): void {
       reader.readAsDataURL(file);
     }
   }
+  // applyFilter(filterValue: string) {
+  //   if (!filterValue || !this.data) {
+  //     this.displayedSubscribers = this.data; // Show all if there's no filter or data is not defined
+  //     return;
+  //   }
+  
+  //   this.displayedSubscribers = this.data.filter(subscriber => {
+  //     const subscriberId = subscriber.subscriberId ? subscriber.subscriberId.toString().toLowerCase() : '';
+  //     const subscriberName = subscriber.subscriberName ? subscriber.subscriberName.toLowerCase() : '';
+  //     return subscriberId.includes(filterValue.toLowerCase()) || subscriberName.includes(filterValue.toLowerCase());
+  //   });
+  //   }
+
+
   applyFilter(filterValue: string) {
     if (!filterValue || !this.data) {
-      this.displayedSubscribers = this.data; // Show all if there's no filter or data is not defined
+      this.displayedSubscribers = this.data.slice(0, this.itemsPerPage); // Reset to first page if no filter
       return;
     }
-  
-    this.displayedSubscribers = this.data.filter(subscriber => {
+
+    // Filter based on subscriber ID or Name
+    const filteredSubscribers = this.data.filter(subscriber => {
       const subscriberId = subscriber.subscriberId ? subscriber.subscriberId.toString().toLowerCase() : '';
       const subscriberName = subscriber.subscriberName ? subscriber.subscriberName.toLowerCase() : '';
       return subscriberId.includes(filterValue.toLowerCase()) || subscriberName.includes(filterValue.toLowerCase());
     });
+
+    // Update the displayed subscribers with the filtered data
+    this.displayedSubscribers = filteredSubscribers.slice(0, this.itemsPerPage); // Limit filtered result to 10
+  }
+  viewMore() {
+    if (!this.showAll) {
+      this.displayedSubscribers = this.data; // Show all subscribers
+      this.showAll = true;
     }
+  }
 
   viewFile(url: string): void {
     if (url) {
@@ -165,8 +205,9 @@ ngOnInit(): void {
 
   }
   edit(id:any){
-    this.router.navigate([`subscriber/edit/${id}`]);
-
+    if(this.canEdit){
+      this.router.navigate([`subscriber/edit/${id}`]);
+    }
   }
 
   formatDate(dateString: string): string {

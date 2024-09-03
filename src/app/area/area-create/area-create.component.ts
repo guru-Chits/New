@@ -4,6 +4,7 @@ import { CellClickedEvent, ColDef } from 'ag-grid-community';
 import { AreaService } from '../shared/service/area.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ITableColumn } from '../../shared/interface/list-table';
+import { AuthService } from '../../shared/service/auth.service';
 @Component({
   selector: 'app-area-create',
   templateUrl: './area-create.component.html',
@@ -39,13 +40,43 @@ export class AreaCreateComponent implements OnInit{
       routerLink: 'area/areacreate',
     },
   ];
+  canView:boolean=false
+  canCreate:boolean=false
+  canDelete:boolean=false
+  canEdit:boolean=false
+
   constructor( private fb: FormBuilder,
     private activatedRoute:ActivatedRoute,
     private service: AreaService,
     private router:Router,
-  
+    private authService:AuthService
+
   ) { }
   ngOnInit(): void{
+    this.authService.checkAccess('Route Manager', 'view').subscribe((hasAccess: boolean) => {
+      if (hasAccess) {
+      }
+    });
+
+    this.authService.checkAccess('Route Manager', 'create').subscribe((hasAccess: boolean) => {
+      if (hasAccess) {
+        this.canCreate=true
+      }
+    });
+
+
+    this.authService.checkAccess('Route Manager', 'delete').subscribe((hasAccess: boolean) => {
+      if (hasAccess) {
+        this.canDelete=true
+      } 
+    });
+
+    this.authService.checkAccess('Route Manager', 'edit').subscribe((hasAccess: boolean) => {
+      if (hasAccess) {
+        this.canEdit=true
+      } 
+    });
+
     this.routeForm = new FormGroup({
       regionId: new FormControl(null, [
         Validators.required,

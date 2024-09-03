@@ -5,6 +5,7 @@ import { AbstractControl, FormArray, FormBuilder, FormGroup, Validators } from '
 import { ActivatedRoute, Router } from '@angular/router';
 import { ITableColumn } from '../../shared/interface/list-table';
 import { PaymentService } from '../shared/service/payment.service';
+import { AuthService } from '../../shared/service/auth.service';
 @Component({
   selector: 'app-create-payment',
   templateUrl: './create-payment.component.html',
@@ -31,13 +32,40 @@ export class CreatePaymentComponent{
     },
   ];
   activeTab: string = 'home'; 
+  canCreate: boolean = false;
+  canEdit: boolean = false;
+  canDelete: boolean = false;
+  canView:boolean=false 
   showCancelledPayments = false;
   constructor(private router: Router,
     private formBuilder: FormBuilder,
     private activatedRoute: ActivatedRoute,
+    private authService:AuthService,
     private service: PaymentService) { }
 
   ngOnInit(): void {
+    this.authService.checkAccess('Payments', 'create').subscribe((hasAccess: boolean) => {
+      if (hasAccess) {
+        this.canCreate=true
+      }
+    });
+
+    this.authService.checkAccess('Payments', 'edit').subscribe((hasAccess: boolean) => {
+      if (hasAccess) {
+        this.canEdit=true
+      }
+    });
+
+    this.authService.checkAccess('Payments', 'view').subscribe((hasAccess: boolean) => {
+      if (hasAccess) {
+        this.canView=true
+      }
+    });
+    this.authService.checkAccess('Payments', 'delete').subscribe((hasAccess: boolean) => {
+      if (hasAccess) {
+        this.canDelete=true
+      }
+    });
 this.getAllPayment()
   }
 
@@ -61,7 +89,7 @@ this.getAllPayment()
           const formattedPayment = {
             id: paymentDetail?._id,
             passbooknumber: paymentDetail?.passbooknumber,
-            groupId: paymentDetail?.groupId,
+            groupId: paymentDetail?.groupId,  
             amount: paymentDetail?.amount,
             receiptNumber: paymentDetail?.receiptNumber,
             cancelled: paymentDetail?.cancelled,

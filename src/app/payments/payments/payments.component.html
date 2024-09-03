@@ -43,12 +43,12 @@
         </div>
     </div>
     <div class="row justify-content-around">
-        <div class="col-lg-4">
+        <!-- <div class="col-lg-4">
             <div class="form-group">
                 <label for="installmentNumber" class="form-control-label">Installment Number<span class="required" *ngIf="paymentForm.get('installmentNumber').hasError('required')">*</span></label>
                 <input class="form-control p-2 form-control-sm" id="installmentNumber" formControlName="installmentNumber" placeholder="Installment Number" readonly/>
             </div>
-        </div>
+        </div> -->
         <div class="col-lg-4">
             <div class="form-group">
                 <label for="installmentMonth" class="form-control-label">Installment Month<span class="required" *ngIf="paymentForm.get('installmentMonth').hasError('required')">*</span></label>
@@ -61,17 +61,19 @@
                 <input class="form-control p-2 form-control-sm" id="region" formControlName="region" placeholder="Region ID" readonly/>
             </div>
         </div>
-    </div>
-    <div class="row justify-content-around">
+
         <div class="col-lg-4">
             <div class="form-group">
                 <label class="form-control-label">Select Staff<span class="required" *ngIf="paymentForm.get('selectStaff').hasError('required')">*</span></label>
                 <select class="form-control form-control-sm form-select" formControlName="selectStaff" placeholder="Select Staff">
                 <option value="" disabled selected>Staffs</option>
-                <option *ngFor="let staff of data" [value]="staff.staffName">{{staff.staffName}}</option>
+                <option  [value]="staffs">{{staffs}}</option>
                 </select>
             </div>
             </div>
+    </div>
+    <div class="row justify-content-around">
+
         <div class="col-lg-4">
             <div class="form-group">
                 <label for="amount" class="form-control-label">Amount<span class="required" *ngIf="paymentForm.get('amount').hasError('required')">*</span></label>
@@ -84,14 +86,15 @@
                 <input class="form-control p-2 form-control-sm" id="chitAmount" formControlName="chitAmount" placeholder="Chit Value" readonly/>
             </div>
         </div>
-    </div>
-    <div class="row">
         <div class="col-lg-4">
             <div class="form-group">
                 <label for="serialNumber" class="form-control-label">Serial Number<span class="required" *ngIf="paymentForm.get('serialNumber').hasError('required')">*</span></label>
                 <input class="form-control p-2 form-control-sm" id="serialNumber" formControlName="serialNumber" placeholder="Serial Number" readonly/>
             </div>
         </div>
+    </div>
+    <div class="row">
+
         <div class="col-lg-4">
             <div class="form-group">
                 <label for="receiptNumber" class="form-control-label">Receipt Number<span class="required" *ngIf="paymentForm.get('receiptNumber').hasError('required')">*</span></label>
@@ -182,10 +185,10 @@
                         </div>
                     </div>
                     <div class="row pb-3">
-                        <div class="col-6 d-flex justify-content-around">
+                        <!-- <div class="col-6 d-flex justify-content-around">
                             <div class="col-6 fw-bold">Installment Number</div>
                             <div class="col-4">{{receiptData.installmentNumber}}</div>
-                        </div>
+                        </div> -->
                         <div class="col-6 d-flex justify-content-around">
                             <div class="col-5 fw-bold">Chit Value</div>
                             <div class="col-5">{{receiptData.chitAmount}}</div>
@@ -198,7 +201,7 @@
                         </div>
                         <div class="col-6 d-flex justify-content-around">
                             <div class="col-5 fw-bold">Date of Payment</div>
-                            <div class="col-5">{{receiptData.date}}</div>
+                            <div class="col-5">{{receiptData.date| date: 'dd-MM-YYYY' }}</div>
                         </div>
                     </div>
                 </div>

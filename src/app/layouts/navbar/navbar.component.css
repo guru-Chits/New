@@ -18,7 +18,18 @@
   display: flex;
   align-items: center;
 }
+.navbar-user{
+  margin-right: 30px;
+}
+.bell-image{
+  background-color:#ECEBF5;
+  padding: 4px;
+  border-radius: 10px;
+}
+.notification-icon{
+  margin-right:30px;
 
+}
 .navbar-logo {
   margin-right: 20px;
 }
@@ -45,10 +56,14 @@
 }
 
 .navbar-username {
-  font-size: 16px;
-  font-weight: 600;
+  font-size: 15px;
+  /* font-weight: 600; */
 }
 
+.navbar-role{
+font-size: 12px;
+font-weight: 300;
+}
 /* Responsive styles */
 @media (max-width: 768px) {
   .navbar {

@@ -19,7 +19,8 @@ export class NavbarComponent implements OnInit {
    * List titles
    */
   public listTitles: any[];
-
+ profile:any
+ role:string
   /**
    * Location
    */
@@ -29,7 +30,7 @@ export class NavbarComponent implements OnInit {
    * User
    */
   user: { firstName: string, lastName: string, role: string};
-
+users:any
   /**
    * Constructor
    * @param location - Location
@@ -50,39 +51,18 @@ export class NavbarComponent implements OnInit {
     this.sidebarToggle.emit();
   }
   getUserInfo() {
-    const user = sessionStorage.getItem('user');
-    if (user) {
-      return JSON.parse(user);
-    }
-    return null;
-  }
+    this.profile= sessionStorage.getItem('profile');
+    console.log(this.profile);
+    this.profile=this.profile.replace(/"/g, '')
   
-  getTitle(): string {
-    let title: string = this.location.prepareExternalUrl(this.location.path());
+    this.users=sessionStorage.getItem('name')
+    this.users=this.users.replace(/"/g, ''); 
+    this.role=sessionStorage.getItem('userRole')
+    this.role=this.role.replace(/"/g, '')
+    console.log(this.users);
 
-    for (let item = 0; item < this.listTitles.length; item++) {
-
-      //get the menu without children
-      if (!this.listTitles[item].children && title.startsWith(this.listTitles[item].path)) {
-        if (this.listTitles[item].title === "Home"){
-          return `Hello ${this.user.firstName} ${this.user.lastName}`;
-        }
-        return this.listTitles[item].title;
-      }
-
-      //get title of the child menu
-      else if (this.listTitles[item].children) {
-        for (let childItem = 0; childItem < this.listTitles[item].children.length; childItem++){
-          if (this.listTitles[item].children[childItem].path === title){
-            return this.listTitles[item].children[childItem].title
-          }
-          //children title remains same for inner routing 
-          else if (title.startsWith(this.listTitles[item].children[childItem].path)) {
-            return this.listTitles[item].children[childItem].title;
-          }
-        }
-      }
-    }
+    return this.users;
   }
+
 
 }

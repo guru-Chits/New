@@ -30,7 +30,7 @@ export const NavigationMenus: INavigationMenu[] = [
   },
   {
     path: '/area',
-    title: 'Area Manager',
+    title: 'Route Manager',
     img: '/assets/sidebar/inactive/area.svg',
     activeImg: '/assets/sidebar/active/area selected.svg',
     class: ''

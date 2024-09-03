@@ -104,6 +104,8 @@ border-top: 100px solid #3E3A97;
   border-radius: 50%;
   border: none;
   background-color: #E8E8E8;
+  margin-top: -50px;
+
 }
 .form-group .form-control:focus {
   outline: none;
@@ -128,7 +130,7 @@ border-top: 100px solid #3E3A97;
 .upload-button {
   position: absolute;
   bottom: 10px;
-  right: 10px;
+  right: 0px;
   border: none;
   cursor: pointer;
   background: transparent;
@@ -197,7 +199,9 @@ padding-left: 3px;
 }
 
 .subscriber-details {
-  margin-top: 20px;
+  padding: 20px;
+
+  background-color: white;
 }
 
 .subscriber-details img {

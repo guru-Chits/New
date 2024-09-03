@@ -3,6 +3,7 @@ import {CellClickedEvent, ColDef } from 'ag-grid-community';
 import { AreaService } from './shared/service/area.service';
 import {ITableColumn} from '../../app/shared/interface/list-table'
 import { Router } from '@angular/router';
+import { AuthService } from '../shared/service/auth.service';
 
 
 @Component({
@@ -22,8 +23,14 @@ totalCount:number;
   // search:boolean=true
   constructor(
     private service:AreaService,
-    private router:Router
+    private router:Router,
+    private authService:AuthService
+
   ) { }
+  canView:boolean=false
+  canCreate:boolean=false
+  canDelete:boolean=false
+  canEdit:boolean=false
   breadcrumsData:any = [
     {
       key: 'Route Manager',
@@ -31,9 +38,31 @@ totalCount:number;
     },
   ];
   ngOnInit(): void {
-    console.log("subscriber data");
-    
-      this.service.getrouteAll().subscribe((data)=>{
+    this.authService.checkAccess('Route Manager', 'view').subscribe((hasAccess: boolean) => {
+      if (hasAccess) {
+      }
+    });
+
+    this.authService.checkAccess('Route Manager', 'create').subscribe((hasAccess: boolean) => {
+      if (hasAccess) {
+        this.canCreate=true
+      }
+    });
+
+
+    this.authService.checkAccess('Route Manager', 'delete').subscribe((hasAccess: boolean) => {
+      if (hasAccess) {
+        this.canDelete=true
+      } 
+    });
+
+    this.authService.checkAccess('Route Manager', 'edit').subscribe((hasAccess: boolean) => {
+      if (hasAccess) {
+        this.canEdit=true
+      } 
+    });
+
+    this.service.getrouteAll().subscribe((data)=>{
     this.areaData=data;
     console.log("kk",this.areaData)
 

@@ -9,6 +9,8 @@ const routes: Routes = [
   {
       path: '',
      component: ChitComponent, 
+     data: { accKey: 'Subscriber Management', action: 'view' }
+
   },
   {
     path: 'create',

@@ -3,6 +3,7 @@ import { CellClickedEvent, ColDef } from 'ag-grid-community';
 import { StaffService } from './shared/service/staff.service';
 import { Router } from '@angular/router';
 import { ITableColumn } from '../shared/interface/list-table';
+import { AuthService } from '../shared/service/auth.service';
 
 @Component({
   selector: 'app-staff',
@@ -18,12 +19,54 @@ export class StaffComponent implements OnInit{
   searchImg:string='assets/table/search.svg'
   filterImg:string='assets/table/filter.svg'
   search:boolean=true
-
+  canCreate: boolean = false;
+  canEdit: boolean = false;
+  canDelete: boolean = false;
+  canView:boolean=false
+  
     constructor(
       private service:StaffService,
-      private router:Router
+      private router:Router,
+      private authService:AuthService
+
     ) { }
   ngOnInit(): void {
+    this.authService.checkAccess('Staffs', 'create').subscribe((hasAccess: boolean) => {
+      if (hasAccess) {
+        this.canCreate=true
+        // Code to execute when access is granted
+        console.log('Create access granted');
+      } else {
+        // Code to execute when access is denied
+        console.log('Create access denied');
+      }
+    });
+    
+
+
+    this.authService.checkAccess('Staffs', 'view').subscribe((hasAccess: boolean) => {
+      if (hasAccess) {
+        this.canView=true
+        // Code to execute when access is granted
+        console.log('Create access granted');
+      } else {
+        // Code to execute when access is denied
+        console.log('Create access denied');
+      }
+    });
+
+    this.authService.checkAccess('Staffs', 'delete').subscribe((hasAccess: boolean) => {
+      if (hasAccess) {
+        this.canDelete=true
+        // Code to execute when access is granted
+        console.log('Create access granted');
+      } else {
+        // Code to execute when access is denied
+        console.log('Create access denied');
+      }
+    });
+
+
     this.service.getstaffAll().subscribe((data)=>{
       this.staffData=data;
 
@@ -47,30 +90,32 @@ export class StaffComponent implements OnInit{
   profileImageWithIdRenderer(params: any): string {
     const imageUrl = params.data.profileUrl;
     console.log(imageUrl);
-    
-    const employeeId = params.data.employeeId;
-    console.log(employeeId);
-    
+        
     return `
       <div style="display: flex; align-items: center;">
-        <img src="${imageUrl}" alt="Profile Image" width="35" height="35" style="border-radius: 50%; margin-right: 10px;">
-        <span style="color: #50A1A5;">${employeeId}</span>
+        <img src="${imageUrl}" alt="Profile Image" width="32" height="32" style="border-radius: 50%; margin-right: 10px;">
       </div>
     `;
   }
 
 
   column: ITableColumn[] = [
-    { label: 'profileUrl', field: 'Employee Id', sortable: false,  filter:false,
+    { label: ' ', field: ' ', sortable: false,  filter:false,
       cellRenderer: this.profileImageWithIdRenderer,
-
+      maxWidth:80,
+      onCellClicked: (event: CellClickedEvent) =>
+      this.getStaffById(event.data.id)    
+     },
+     {
+      label: 'Employee ID',
+      field: 'employeeId',
+      sortable:true,
+      filter:false,
       cellStyle: function (params: any) {
         return { color: '#50A1A5' };
-      },   
-      onCellClicked: (event: CellClickedEvent) =>
-      this.getStaffById(event.data.id)
-          
-     },
+      }, 
+      onCellClicked: (event: CellClickedEvent) => this.getStaffById(event.data.id)
+    },
 
     { label: 'First Name', field:'firstName', sortable: true,
       onCellClicked: (event: CellClickedEvent) =>

@@ -96,9 +96,9 @@ border-top: 100px solid #3E3A97;
 
   /* profile-picture-upload.component.css */
 .profile-picture-container {
-  /* border-radius: 50%; */
+  border-radius: 50%;
   align-items: left;
-  /* margin-top: -50px; */
+  margin-top: -50px;
   margin-left: 30px;
 }
 
@@ -114,6 +114,7 @@ border-top: 100px solid #3E3A97;
   width: 100px;
   height: 100px;
   overflow: scroll;
+  border-radius: 50%;
 
   /* border: 2px solid #ccc; */
   background: transparent;

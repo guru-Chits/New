@@ -1,13 +1,17 @@
-<!-- navbar.component.html -->
 <nav class="navbar">
   <div class="navbar-left">
-    <!-- <span class="navbar-title">Application Title</span> -->
+    <img src="assets/logo.png" alt="Company Logo" class="navbar-logo">
   </div>
   <div class="navbar-right">
+    <div class="notification-icon">
+      <img class="bell-image" src="../../../assets/navbar/bell.svg">
+    </div>
     <div class="navbar-user">
-      <img src="../../../assets/navbar/profile.svg" alt="User">
-      <h5 class="navbar-username" style="color: black;">Guru</h5>
-      
+      <img [src]="profile" alt="User" class="profile-image">
+      <div class="user-info">
+        <h5 class="navbar-username">{{users}}</h5>
+        <h6 class="navbar-role">{{role}}</h6>
+      </div>
     </div>
   </div>
 </nav>

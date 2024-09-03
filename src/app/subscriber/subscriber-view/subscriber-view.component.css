@@ -4,10 +4,11 @@
 
  }
  .profile-picture-container {
-    /* border-radius: 50%; */
+    border-radius: 50%;
     align-items: left;
     margin-left: 20px;
-    /* margin-top: 50px; */
+    margin-top:-50px;
+    margin-left: -20px;
   }
   
   .profile-picture {
@@ -17,6 +18,12 @@
     border: none;
     background-color: #E8E8E8;
   }
+  .pay-his{
+    color: #50A1A5;
+    border: 1px solid #50A1A5;
+    border-radius: 10px;
+    background-color: #EEF6F6;
+  }
   
   .profile-img {
     width: 100px;
@@ -24,7 +31,9 @@
     background: transparent;
     border-radius: 50%;
   }
-
+  .fa {
+    font-size: 14px;
+  }
   .profile-list-img{
     width: 30px;
     height: 30px;
@@ -100,8 +109,10 @@
   border: none;
   outline: none;
   background-color: #ECEBF5;
-  padding: 5px;
+  /* padding: 5px; */
   flex-grow: 1;
+  width:160px;
+
   height: 20px;
 } 
 

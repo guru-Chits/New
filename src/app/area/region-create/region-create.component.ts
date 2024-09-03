@@ -4,6 +4,7 @@ import { CellClickedEvent, ColDef } from 'ag-grid-community';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AreaService } from '../shared/service/area.service';
 import { ITableColumn } from '../../shared/interface/list-table';
+import { AuthService } from '../../shared/service/auth.service';
 
 
 @Component({
@@ -27,6 +28,11 @@ export class RegionCreateComponent implements OnInit{
   searchImg:string='assets/table/search.svg'
   filterImg:string='assets/table/filter.svg'
   search:boolean=true
+  canView:boolean=false
+  canCreate:boolean=false
+  canDelete:boolean=false
+  canEdit:boolean=false
+
   breadcrumsData:any = [
     {
       key: 'Route Manager',
@@ -41,9 +47,33 @@ export class RegionCreateComponent implements OnInit{
     private activatedRoute:ActivatedRoute,
     private service: AreaService,
     private router:Router,
-  
+    private authService:AuthService
+
   ) { }
   ngOnInit(): void{
+    this.authService.checkAccess('Route Manager', 'view').subscribe((hasAccess: boolean) => {
+      if (hasAccess) {
+      }
+    });
+
+    this.authService.checkAccess('Route Manager', 'create').subscribe((hasAccess: boolean) => {
+      if (hasAccess) {
+        this.canCreate=true
+      }
+    });
+
+
+    this.authService.checkAccess('Route Manager', 'delete').subscribe((hasAccess: boolean) => {
+      if (hasAccess) {
+        this.canDelete=true
+      } 
+    });
+
+    this.authService.checkAccess('Route Manager', 'edit').subscribe((hasAccess: boolean) => {
+      if (hasAccess) {
+        this.canEdit=true
+      } 
+    });
     this.regionForm = this.fb.group({
       regionName: new FormControl(null, [
         Validators.required,

@@ -24,7 +24,7 @@ private subscriberIdPrefix: string = 'KNG-C';
 heading:string="Subscriber Details"
 routeData:any
 routes:any[]=[]
-
+url
  breadcrumsData: any= [
   {
     key: 'Subscriber Management',
@@ -47,6 +47,7 @@ filesInfo = {
   aadharUrl: null,
   passbookUrl: null,
 };
+selectedSubscriberId:string
 subscriberDetail: any;
 isSubscriberListVisible = false;
 showAllSubscribers = false;
@@ -56,8 +57,9 @@ filteredSubscribers:any;
 displayedSubscribers: any[];
 selectedSubscriber: any;
 referralClient :string;
-
-
+urls:any
+itemsPerPage = 10; // Subscribers per page
+showall = false; // To toggle "View More"
 ngOnInit(): void {
   
   this.subscriberForm = this.fb.group({
@@ -71,7 +73,7 @@ ngOnInit(): void {
     place: ['', [Validators.required, Validators.minLength(10), Validators.maxLength(100), Validators.pattern(/^[a-zA-Z0-9\s,.'-]+$/)]],
     gender: ['', Validators.required],
     dob: ['', [
-      // this.conditionalValidator(() => !!this.subscriberForm?.get('dob')?.value,this.ageValidator(18)),
+      this.conditionalValidator(() => !!this.subscriberForm?.get('dob')?.value,this.ageValidator(18)),
     ]],
     occupation: ['', [
       this.conditionalValidator(() => !!this.subscriberForm?.get('occupation')?.value, Validators.pattern(/^[a-zA-Z\s-]+$/)),
@@ -117,7 +119,7 @@ ngOnInit(): void {
       this.conditionalValidator(() => !!this.subscriberForm?.get('nomineeAadhar')?.value, Validators.pattern(/^\d{4}\s\d{4}\s\d{4}$/))
     ]],
     nomineeDOB: ['', [
-      // this.conditionalValidator(() => !!this.subscriberForm?.get('nomineeDOB')?.value, this.ageValidator(18))
+      this.conditionalValidator(() => !!this.subscriberForm?.get('nomineeDOB')?.value, this.ageValidator(18))
     ]],
     profileImageUrl: [''],
     aadharUrl: [''],
@@ -159,23 +161,32 @@ ngOnInit(): void {
       this.subscriberId=this.subscriberData.Subscriber._id
       this.profileImageUrl=this.subscriberData.Subscriber.profileImageUrl
       console.log(this.profileImageUrl);
+      this.urls=this.subscriberData.Subscriber
       this.subscriber=false
       console.log('Project Data = >',this.subscriberData)
       const utcDob = this.convertDateFormat(this.subscriberData.Subscriber.dob);
       const utcnDob = this.convertDateFormat(this.subscriberData.Subscriber.nomineeDOB);
     console.log(utcDob,utcDob);
     
-      if(utcDob||utcnDob ||utcDob&&utcnDob)
-      {
-        const updatedSubscriber = { ...this.subscriberData.Subscriber,dob:utcDob,nomineeDOB:utcnDob};
-        this.subscriberForm.patchValue(updatedSubscriber);
+    let updatedSubscriber = { ...this.subscriberData.Subscriber };
+    console.log(updatedSubscriber);
+    
+    // Check if either utcDob or utcnDob exists and update accordingly
+    if (utcDob) {
+      updatedSubscriber = { ...updatedSubscriber, dob: utcDob };
+    }
+    
+    if (utcnDob) {
+      updatedSubscriber = { ...updatedSubscriber, nomineeDOB: utcnDob };
+    }
+    
+    if (utcnDob&&utcDob) {
+      updatedSubscriber = { ...updatedSubscriber, dob: utcDob,nomineeDOB: utcnDob };
+    }
 
-      }else{
-        const updatedSubscriber = { ...this.subscriberData.Subscriber};
-        this.subscriberForm.patchValue(updatedSubscriber);
-
-      }
-
+    // Patch the form with the updated subscriber data
+    this.subscriberForm.patchValue(updatedSubscriber);
+    
       console.log("form", this.subscriberForm);
     })
   }
@@ -201,7 +212,7 @@ ngOnInit(): void {
       subscriberName: `${subscriberDetails?.firstName} ${subscriberDetails?.lastName}`,
       subscriberProfile:subscriberDetails?.profileImageUrl
     }))
-    this.displayedSubscribers = this.data;
+    this.displayedSubscribers = this.data.slice(0, this.itemsPerPage);
   })
 }
 convertDateFormat(dateStr: string): string {
@@ -272,6 +283,7 @@ getSubscriberById(id: string): void {
   this.service.getsubscriberById(id).subscribe(
     data => {
       this.subscriberDetail = data;
+      this.selectedSubscriberId = this.subscriberDetail.Subscriber.subscriberId;
 
       console.log(this.subscriberDetail)
     },
@@ -312,45 +324,67 @@ showSubscriberList(): void {
 }
 private generateDefaultProfileImage(firstName: string): string {
   const initial = firstName.charAt(0).toUpperCase();
-  console.log(initial);
+  const color = this.getColorForInitial(initial);
   
-  return `https://via.placeholder.com/150/000000/FFFFFF/?text=${initial}`;
+  console.log(`Initial: ${initial}, Color: ${color}`);
+
+  return `https://via.placeholder.com/150/${color}/FFFFFF/?text=${initial}`;
 }
 
+private getColorForInitial(initial: string): string {
+  // Define a color map for the alphabet
+  const colors: { [key: string]: string } = {
+    A: 'FF5733', B: '33FF57', C: '3357FF', D: 'F333FF', E: '33FFF3', F: 'FF33F3', G: '33F3FF',
+    H: 'F3FF33', I: '5733FF', J: '33FF33', K: 'FF3333', L: '33FF99', M: '99FF33', N: 'FF9933',
+    O: 'FF33AA', P: 'AA33FF', Q: '33AAFF', R: 'FF5733', S: '33FFCC', T: '33FF33', U: 'FF33CC',
+    V: 'FFCC33', W: '33FF00', X: '00FF33', Y: 'FF3399', Z: '3399FF'
+  };
+
+  // Return color based on the initial letter, default to black if no match
+  return colors[initial] || '000000';
+}
+
+
 onSubmit(): void {
-    const formData = new FormData();
-    const formValue = this.subscriberForm.getRawValue();
+  const formData = new FormData();
+  const formValue = this.subscriberForm.getRawValue();
 
-    if (!formValue.profileImageUrl) {
-      formValue.profileImage = this.generateDefaultProfileImage(formValue.firstName);
-      console.log(formValue.profileImage);
-      
-      this.subscriberForm.get('profileImageUrl')?.setValue(formValue.profileImage);
+  // Handle profile image URL separately from the file input
+  if (!formValue.profileImageUrl) {
+    const defaultProfileImage = this.generateDefaultProfileImage(formValue.firstName);
+    formData.append('profileImageUrl', defaultProfileImage); // Add to FormData directly
+  } else {
+    // Append the file if profileImageUrl contains a file
+    const profileImageFile = this.subscriberForm.get('profileImageUrl')?.value;
+    if (profileImageFile instanceof File) {
+      formData.append('profileImageUrl', profileImageFile);
     }
-
-    for (const key in formValue) {
-      if (formValue.hasOwnProperty(key)) {
-        formData.append(key, formValue[key]);
-      }
-    }
-
-    this.service.savesubscriberDetails(formData, this.subscriberId).subscribe((data) => {
-      console.log(data);
-      this.router.navigate(["/subscriber"]);
-    });
   }
+
+  // Append other form values
+  for (const key in formValue) {
+    if (formValue.hasOwnProperty(key) && key !== 'profileImageUrl') { // Exclude the file input from rawValue
+      formData.append(key, formValue[key]);
+    }
+  }
+
+  this.service.savesubscriberDetails(formData, this.subscriberId).subscribe((data) => {
+    console.log(data);
+    this.router.navigate(['/subscriber']);
+  });
+}
 
 applyFilter(filterValue: string) {
-  if (!filterValue || !this.data) {
-    this.displayedSubscribers = this.data; // Show all if there's no filter or data is not defined
-    return;
-  }
-
-  this.displayedSubscribers = this.data.filter(subscriber => {
-    const subscriberId = subscriber.subscriberId ? subscriber.subscriberId.toString().toLowerCase() : '';
-    const subscriberName = subscriber.subscriberName ? subscriber.subscriberName.toLowerCase() : '';
-    return subscriberId.includes(filterValue.toLowerCase()) || subscriberName.includes(filterValue.toLowerCase());
+  const filteredSubscribers = this.data.filter(subscriber => {
+    const subscriberId = subscriber.subscriberId?.toString().toLowerCase() || '';
+    const subscriberName = subscriber.subscriberName?.toLowerCase() || '';
+    const email = subscriber.email?.toLowerCase() || '';
+    return subscriberId.includes(filterValue.toLowerCase()) ||
+           subscriberName.includes(filterValue.toLowerCase()) ||
+           email.includes(filterValue.toLowerCase());
   });
+
+  this.displayedSubscribers = filteredSubscribers.slice(0, this.itemsPerPage);
 }
 
 
@@ -368,6 +402,12 @@ onFileSelected(event: Event): void {
   }
 }
 
+viewMore() {
+  if (!this.showall) {
+    this.displayedSubscribers = this.data; // Show all subscribers
+    this.showall = true;
+  }
+}
 
 onFileChange(event: any, controlName: string): void {
   this.filesInfo[controlName] = event.target.files[0];
@@ -382,12 +422,33 @@ onFileChange(event: any, controlName: string): void {
 
 
 viewFile(fileType: string): void {
-  const file = this.filesInfo[fileType];
-  if (file) {
-    const fileURL = URL.createObjectURL(file);
-    window.open(fileURL, '_blank');
-  }
+  this.url=fileType
+  let file
+  // console.log(this.url,'url');
+  if(this.url==="panUrl")
+ {  file = this.urls.panUrl}
+  else if(this.url==="aadharUrl")
+ { file = this.urls.aadharUrl}
+else if(this.url=='passbookUrl')
+ {  file = this.urls.passbookUrl}
+
+
+  console.log(file,"fi");
   
+   // Get file URL from form control
+
+  if (file) {
+    if (typeof file === 'string') {
+      // If the file is a URL (string), open it directly
+      window.open(file, '_blank');
+    } else if (file instanceof File) {
+      // If it's a file object, create a blob URL and open it
+      const fileURL = URL.createObjectURL(file);
+      window.open(fileURL, '_blank');
+    }
+  } else {
+    console.log('No file found');
+  }
 }
 
 removeFile(fileType: string): void {

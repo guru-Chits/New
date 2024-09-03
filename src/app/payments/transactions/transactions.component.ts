@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AreaService } from '../../area/area.service';
 import { ChitService } from '../../chit/shared/service/chit.service';
@@ -35,8 +35,8 @@ export class TransactionsComponent implements OnInit{
 
 ngOnInit(): void {
   this.transactionForm=this.formBuilder.group({
-    fromDate:['', [Validators.required]],
-    toDate:['', [Validators.required]],
+    fromDate:['', [Validators.required,this.validatePastOrTodayDate]],
+    toDate:['', [Validators.required,this.validatePastOrTodayDate]],
     routeId:['', [Validators.required]],
     collectionType:['', [Validators.required]],
     collectionTypeCount:['', [Validators.required]],
@@ -49,6 +49,13 @@ ngOnInit(): void {
 
 
 
+}
+
+validatePastOrTodayDate(control: AbstractControl): { [key: string]: boolean } | null {
+  const selectedDate = new Date(control.value).setHours(0, 0, 0, 0);
+  const today = new Date().setHours(0, 0, 0, 0);
+
+  return selectedDate <= today ? null : { invalidDate: true };
 }
 
 column: ITableColumn[] = [
@@ -148,7 +155,7 @@ handleDateChange(fromDate: string, toDate: string) {
   });
 
   // Fetch the route data based on the selected date range
-  this.service.getRouteByDate(fromDate).subscribe(data => {
+  this.service.getRouteVerfiedByDate(fromDate,toDate).subscribe(data => {
     this.routeData = data;
     this.routes = this.routeData.region.map(routeDetails => ({
       routeId: routeDetails
@@ -156,7 +163,7 @@ handleDateChange(fromDate: string, toDate: string) {
   });
 }
 
-// Fetch data filtered by date range and routeId
+// Fetch data filtered by date range and routeId 
 fetchDataByRoute(fromDate: string, toDate: string, routeId: string) {
   this.service.getDataByDate(fromDate, toDate, routeId).subscribe(data => {
     this.transData = data;

@@ -11,7 +11,10 @@ export class LoginService {
   
 loginUrl:string=environment.loginServiceUrl+'/login/'
   getLoginDetail(empId:string){
-    return this.http.get(`${this.loginUrl}/getloginDetail/${empId}`)
+    return this.http.get(`${this.loginUrl}getloginDetail/${empId}`)
+  }
+  isAuthenticated(): boolean {
+    return !!sessionStorage.getItem('userRole');
   }
 
 }

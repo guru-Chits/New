@@ -7,5 +7,7 @@ export interface ITableColumn {
     onCellClicked?:any;
     cellStyle?:any;
     header?:any
+    maxWidth?:any
+    suppressSizeToFit?:any
 }
   

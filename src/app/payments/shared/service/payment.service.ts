@@ -48,6 +48,16 @@ getRouteByDate(fromDate: any, toDate?: any): Observable<any> {
 
   return this.http.get(`${this.paymentUrl}/getRouteByDate`, { params });
 }
+getRouteVerfiedByDate(fromDate: any, toDate?: any): Observable<any> {
+  let params = new HttpParams().set('fromDate', fromDate);
+  
+  // If toDate is provided, add it to the params
+  if (toDate) {
+    params = params.set('toDate', toDate);
+  }
+
+  return this.http.get(`${this.paymentUrl}/getRouteVerfiedByDate`, { params });
+}
 
 getTotal(date:Date,routeId:string,selectStaff:any){
   let url=`${this.paymentUrl}/getTotalAmount/${date}/${routeId}/${selectStaff}`

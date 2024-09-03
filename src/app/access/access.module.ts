@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { AccessRoutingModule } from './access-routing.module';
 import { AccessManagementComponent } from './access-management/access-management.component';
 import { SharedModule } from '../shared/shared.module';
+import { HttpClientModule } from '@angular/common/http';
 
 
 @NgModule({
@@ -13,7 +14,8 @@ import { SharedModule } from '../shared/shared.module';
   imports: [
     CommonModule,
     AccessRoutingModule,
-    SharedModule
+    SharedModule,
+    HttpClientModule
   ]
 })
 export class AccessModule { }

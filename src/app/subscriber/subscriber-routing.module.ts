@@ -4,25 +4,36 @@ import { Subscriber } from 'rxjs';
 import { SubscriberComponent } from './subscriber.component';
 import { SubscriberCreateComponent } from './subscriber-create/subscriber-create.component';
 import { SubscriberViewComponent } from './subscriber-view/subscriber-view.component';
+import { AuthGuard } from '../shared/guard/auth.guard';
 
 const routes: Routes = [
   {
     path: '',
-    component: SubscriberComponent, 
+    component: SubscriberComponent,
+    canActivate: [AuthGuard],
+    data: { accKey: 'Subscriber Management', action: 'view' }
   },
   {
     path: 'create',
-    component: SubscriberCreateComponent, 
+    component: SubscriberCreateComponent,
+    canActivate: [AuthGuard],
+    data: { accKey: 'Subscriber Management', action: 'create' }
   },
   {
     path: 'view/:id',
-    component: SubscriberViewComponent, 
+    component: SubscriberViewComponent,
+    canActivate: [AuthGuard],
+    data: { accKey: 'Subscriber Management', action: 'view' }
   },
   {
-    path:'edit/:id',
-    component:SubscriberCreateComponent
+    path: 'edit/:id',
+    component: SubscriberCreateComponent,
+    canActivate: [AuthGuard],
+    data: { accKey: 'Subscriber Management', action: 'edit' }
   }
 ];
+
+
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],

@@ -6,15 +6,15 @@
           <a class="nav-link active" data-bs-toggle="pill" href="#home" (click)="changeTab('home')">Payment</a>
         </div>
         <div class="nav-item">
-          <a class="nav-link " data-bs-toggle="pill" href="#menu1" (click)="changeTab('collection')">Collection</a>
+          <a class="nav-link " data-bs-toggle="pill" href="#menu1" *ngIf="canEdit" (click)="changeTab('collection')">Collection</a>
         </div>
         <div class="nav-item">
-          <a class="nav-link" data-bs-toggle="pill" href="#menu2" (click)="changeTab('transaction')">Transaction</a>
+          <a class="nav-link" data-bs-toggle="pill" href="#menu2" *ngIf="canEdit" (click)="changeTab('transaction')">Transaction</a>
         </div>
     </div>
     <div class="container-fluid d-flex flex-column mb-3">
         <div class="row">
-            <div [ngClass]="{'col-md-8 col-lg-8': paymentDetail, 'col-md-12 col-lg-12': !paymentDetail}">     
+            <div [ngClass]="{'col-md-8 col-lg-8': paymentDetail&&activeTab == 'home', 'col-md-12 col-lg-12': !paymentDetail}">     
                 <div class="card-wrapper">
                     <div class="card">
                         <div class="card-body">
@@ -61,7 +61,7 @@
                 </div>
             </div>
             <div class="col-lg-4">
-                <div *ngIf="paymentDetail">
+                <div *ngIf="paymentDetail&& activeTab == 'home'">
                     <div class="card">
             
                         <div class="card-body">

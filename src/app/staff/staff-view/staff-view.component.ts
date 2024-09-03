@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { StaffService } from '../shared/service/staff.service';
 import { ActivatedRoute, Router } from '@angular/router';
+import { AuthService } from '../../shared/service/auth.service';
 
 @Component({
   selector: 'app-staff-view',
@@ -14,6 +15,7 @@ export class StaffViewComponent implements OnInit {
  staffDetail:any
  staffData:any
  data: any[] = [];
+ canEdit:boolean=false
  displayedStaffs:any
  staffId:string
  breadcrumsData: any = [
@@ -27,9 +29,19 @@ export class StaffViewComponent implements OnInit {
     routerLink: 'view/:id',
   },
 ];
-constructor(private service:StaffService,private activatedRoute:ActivatedRoute,private router:Router){}
+constructor(private service:StaffService,private activatedRoute:ActivatedRoute,private router:Router, private authService:AuthService){}
 
   ngOnInit(): void {
+    this.authService.checkAccess('Staffs', 'edit').subscribe((hasAccess: boolean) => {
+      if (hasAccess) {
+        this.canEdit=true
+        // Code to execute when access is granted
+        console.log('Create access granted');
+      } else {
+        // Code to execute when access is denied
+        console.log('Create access denied');
+      }
+    });
     this.activatedRoute.params.subscribe(paramData => {
       if (Object.keys(paramData).length) {
       this.service.getstaffById(paramData.id).subscribe((data) => {
@@ -73,7 +85,10 @@ constructor(private service:StaffService,private activatedRoute:ActivatedRoute,p
     }
   }
 
-  edit(id:any){    
-    this.router.navigate([`staff/edit/${id}`]);
+  edit(id:any){   
+    if(this.canEdit){
+      this.router.navigate([`staff/edit/${id}`]);
+
+    } 
   }
 }

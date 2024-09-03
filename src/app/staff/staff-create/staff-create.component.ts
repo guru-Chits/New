@@ -52,7 +52,18 @@ private staffIdPrefix: string = 'KNG-';
  displayedStaffs: any[];
 
  inputText = '';
+ role:boolean=false
 ngOnInit(){
+  let role=sessionStorage.getItem('userRole')
+  role = role ? role.replace(/"/g, '') : null; // Clean up role string
+  console.log(role);
+
+  if(role=="SuperAdmin"){
+    this.role=true
+    
+  }
+
+
   this.staffsForm = this.fb.group({
     employeeId: [{ value: '', disabled: true },],
     firstName: ["", [Validators.required]],
@@ -242,21 +253,44 @@ generateStaffId(id:string): string {
 }
 private generateDefaultProfileImage(firstName: string): string {
   const initial = firstName.charAt(0).toUpperCase();
-  return `https://via.placeholder.com/150/000000/FFFFFF/?text=${initial}`;
+  const color = this.getColorForInitial(initial);
+  
+  console.log(`Initial: ${initial}, Color: ${color}`);
+
+  return `https://via.placeholder.com/150/${color}/FFFFFF/?text=${initial}`;
 }
+
+private getColorForInitial(initial: string): string {
+ 
+  const colors: { [key: string]: string } = {
+    A: 'FF5733', B: '33FF57', C: '3357FF', D: 'F333FF', E: '33FFF3', F: 'FF33F3', G: '33F3FF',
+    H: 'F3FF33', I: '5733FF', J: '33FF33', K: 'FF3333', L: '33FF99', M: '99FF33', N: 'FF9933',
+    O: 'FF33AA', P: 'AA33FF', Q: '33AAFF', R: 'FF5733', S: '33FFCC', T: '33FF33', U: 'FF33CC',
+    V: 'FFCC33', W: '33FF00', X: '00FF33', Y: 'FF3399', Z: '3399FF'
+  };
+
+  return colors[initial] || '000000';
+}
+
 
 onSubmit(): void {
   const formData = new FormData();
   const formValue = this.staffsForm.getRawValue();
 
-  if (!formValue.profileUrl && !this.profileUrl) {
-    formValue.profileImage = this.generateDefaultProfileImage(formValue.firstName);
-    
-    this.staffsForm.get('profileUrl')?.setValue(formValue.profileImage);
+  if (!formValue.profileImageUrl) {
+    const defaultProfileImage = this.generateDefaultProfileImage(formValue.firstName);
+    formData.append('profileUrl', defaultProfileImage); // Add to FormData directly
+  } else {
+    // Append the file if profileImageUrl contains a file
+    const profileImageFile = this.staffsForm.get('profileUrl')?.value;
+    if (profileImageFile instanceof File) {
+      formData.append('profileUrl', profileImageFile);
+    }
   }
 
+  // Append other form values
   for (const key in formValue) {
-    if (formValue.hasOwnProperty(key)) {
+    if (formValue.hasOwnProperty(key) && key !== 'profileUrl') { // Exclude the file input from rawValue
       formData.append(key, formValue[key]);
     }
   }

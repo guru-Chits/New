@@ -19,7 +19,7 @@
                     <div class="row justify-content-around">
                       <div class="col-lg-4">
                         <h6>Subscriber ID</h6>
-                        <p>{{subscriberDetail.Subscriber.subscriberId}}</p>
+                        <p style="color: #50A1A5;">{{subscriberDetail.Subscriber.subscriberId}}</p>
                       </div>
                       <div class="col-lg-4">
                         <h6>First Name</h6>
@@ -63,29 +63,29 @@
                       <div class="row justify-content-around">
                       <div class="col-lg-4">
                         <h6>Route ID</h6>
-                        <p>{{subscriberDetail.Subscriber.routeId}}</p>
+                        <p style="color: #50A1A5;">{{subscriberDetail?.Subscriber?.routeId}}</p>
                       </div>
                       <div class="col-lg-4">
                         <h6>Account Number</h6>
-                        <p>{{subscriberDetail.Subscriber.accountNumber}}</p>
+                        <p>{{subscriberDetail?.Subscriber?.accountNumber}}</p>
                       </div>
                       <div class="col-lg-4">
                         <h6>IFSC Code</h6>
-                        <p>{{subscriberDetail.Subscriber.ifsc}}</p>
+                        <p>{{subscriberDetail?.Subscriber?.ifsc}}</p>
                       </div>
                       </div>
                       <div class="row justify-content-around">
                       <div class="col-lg-4">
                         <h6>Bank Name</h6>
-                        <p>{{subscriberDetail.Subscriber.bankName}}</p>
+                        <p>{{subscriberDetail?.Subscriber?.bankName}}</p>
                       </div>
                       <div class="col-lg-4">
                         <h6>UPI ID/Number</h6>
-                        <p>{{subscriberDetail.Subscriber.upi_id}}</p>
+                        <p>{{subscriberDetail?.Subscriber?.upi_id}}</p>
                       </div>
                       <div class="col-lg-4">
                         <h6>PAN Card Number</h6>
-                        <p>{{subscriberDetail.Subscriber.panCardNumber}}</p>
+                        <p>{{subscriberDetail?.Subscriber?.panCardNumber}}</p>
                       </div>
                       </div>
                       <div class="row">
@@ -153,7 +153,7 @@
                         </div>
                         <div class="row justify-content-center">
                           <div class="col-lg-10 d-flex justify-content-end mb-4">
-                              <button class="btn edit-btn" (click)="edit(subscriberDetail.Subscriber._id)">Edit</button>
+                              <button class="btn edit-btn" *ngIf="canEdit" (click)="edit(subscriberDetail.Subscriber._id)">Edit</button>
                           </div>
                       </div>
                         <div class="enroll-card p-2 mb-3">
@@ -179,7 +179,11 @@
                               <p>Monthly</p>
                             </div>
                         </div>
-                        <button class="btn btn-outline-primary toggle mb-3 w-20" type="button"  (click)=getByPassbook(group.passbookNo,i) >Payment History</button>
+                        <button class="pay-his  py-1 toggle mb-3 me-2"type="button"   (click)=getByPassbook(group.passbookNo,i) >Payment History
+                          <img  *ngIf="selectedIndex!=i" src="assets/subscriber/down arrow.svg">
+                          <img  *ngIf="selectedIndex ===  i" src="assets/subscriber/right arrow.svg" alt="">
+                        </button>
+
                         <div *ngFor="let payment of paymentData">
                         <div  class="full-card m-4 p-2"  *ngIf="selectedIndex === i"  >
 
@@ -200,6 +204,7 @@
                          </div>
 
                          </div>
+
                         </div>
                       </div>                      
                         <div class="full-card m-4 p-2">
@@ -235,34 +240,60 @@
                     </div>
                   </div>
   
-      <div class="col-lg-3">
-      <div class="card p-3">
-        <h5 class="text-center my-2">Subscribers</h5>
-        <div class="search-bar align-self-center my-2">
-          <span class="search-icon"><img src="assets/subscriber/search-icon.svg"></span>
-          <input width="20" height="20" type="text" placeholder="Search" (input)="applyFilter($event.target.value)">
-        </div>
-        <table class="table-card mx-3">
-          <tbody>
-            <tr *ngFor="let subscriber of displayedSubscribers">
-           <div class="view-all my-2">
-            <div class="align-self-center">
-                <div class="row click"(click)="getSub(subscriber.id)">
-                    <div class="col-4 text-center">
-                        <img class="rounded-circle  align-self-center mb-2" src="{{subscriber.subscriberProfile}}" height="40" width="40">                       
+                  <div class="col-lg-3">
+                    <div class="card p-3">
+                      <h5 class="text-center my-2">Subscribers</h5>
+                  
+                      <div class="search-bar align-self-center my-2">
+                        <span class="search-icon">
+                          <img src="assets/subscriber/search-icon.svg" />
+                        </span>
+                        <input
+                          width="20"
+                          height="20"
+                          type="text"
+                          placeholder="Search"
+                          (input)="applyFilter($event.target.value)"
+                        />
+                      </div>
+                  
+                      <table class="table-card mx-3">
+                        <tbody>
+                          <tr *ngFor="let subscriber of displayedSubscribers">
+                            <div class="view-all my-2">
+                              <div class="align-self-center">
+                                <div class="row click" (click)="getSub(subscriber.id)">
+                                  <div class="col-4 text-center">
+                                    <img
+                                      class="rounded-circle align-self-center mb-2"
+                                      [src]="subscriber.subscriberProfile"
+                                      height="40"
+                                      width="40"
+                                    />
+                                  </div>
+                                  <div class="col-8 text">
+                                    <h6 class="pe-auto">
+                                      <strong>{{ subscriber.subscriberName }}</strong>
+                                    </h6>
+                                    <p>{{ subscriber.subscriberId }}</p>
+                                  </div>
+                                </div>
+                  
+                                <!-- Subscriber Details are shown only for the clicked subscriber -->
+                                <div *ngIf="selectedSubscriberId === subscriber.id" class="subscriber-details">
+                                  <p><strong>Details for {{ subscriber.subscriberName }}</strong></p>
+                                  <!-- Add more details you want to show here -->
+                                  <p>More information...</p>
+                                </div>
+                              </div>
+                            </div>
+                          </tr>
+                        </tbody>
+                      </table>
+                  
+                      <!-- View More Button -->
+                      <button *ngIf="!showAll" class="btn align-self-center view" (click)="viewMore()">View More</button>
                     </div>
-                    <div class="col-8 text">
-                        <h6  class="pe-auto"><strong>{{ subscriber.subscriberName }}</strong></h6>
-                        <p>{{ subscriber.subscriberId }}</p>
-                        </div>
-                </div>
-            </div>
-           </div>
-            </tr>
-          </tbody>
-        </table>
-        <button class="btn align-self-center view" routerLink="/subscriber">View More</button>
-      </div>
-      </div>
-    </div>
+                  </div>
+                      </div>
   </div>

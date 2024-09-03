@@ -1,11 +1,24 @@
-<!-- app.component.html -->
-<app-navbar></app-navbar>
+<div class="container-fluid">
+  <app-navbar></app-navbar>
 
-<div class="app-container">
-  <app-sidebar></app-sidebar>
-  <!-- <div class="main-content"> -->
-    <div class="content-area">
-      <router-outlet></router-outlet>
+  <div class="row mt-5">
+    <!-- Navbar -->
+
+    <!-- Sidebar -->
+    <div class="col-lg-2 col-md-3 col-sm-12">
+      <app-sidebar></app-sidebar>
+    </div>
+
+    <!-- Main content -->
+    <div class="col-lg-10 col-md-9 col-sm-12">
+      <div class="row">
+        <!-- Breadcrumb navigation -->
+        <div class="col-lg-12 col-sm-12">
+          <div class="content">
+            <router-outlet></router-outlet>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
-<!-- </div> -->
+</div>

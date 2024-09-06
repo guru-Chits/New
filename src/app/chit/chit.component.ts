@@ -117,4 +117,8 @@ export class ChitComponent implements OnInit{
   navigate(id: any){
     this.router.navigate([`chit/view/${id}`]);
   }
+
+  auctionEntry(id: any){
+    this.router.navigate([`chit/auction/${id}`])
+  }
 }

@@ -89,7 +89,7 @@ export class ChitViewComponent implements OnInit{
         });
         
         
-
++
         console.log(this.chitData);
         this.breadcrumsData = [
           {

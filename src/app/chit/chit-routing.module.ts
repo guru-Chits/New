@@ -9,8 +9,6 @@ const routes: Routes = [
   {
       path: '',
      component: ChitComponent, 
-     data: { accKey: 'Subscriber Management', action: 'view' }
-
   },
   {
     path: 'create',
@@ -25,7 +23,7 @@ const routes: Routes = [
     component:ChitCreateComponent
   },
   {
-    path:'auction',
+    path:'auction/:id',
     component:AuctionComponent
   }
 ];

@@ -3,7 +3,7 @@
     <div class="row justify-content-around">
         <div class="col-lg-4">
             <div class="form-group">
-                <label for="fromDate" class="form-control-label">From Date<span class="required" *ngIf="transactionForm.get('fromDate').hasError('required')">*</span></label>
+                <label for="fromDate" class="form-control-label">From Date</label>
                 <input type="date" class="form-control p-2 form-control-sm" id="fromDate" formControlName="fromDate"/>
                 <div *ngIf="transactionForm.get('fromDate')?.hasError('invalidDate') && transactionForm.get('fromDate')?.touched">
                     <small class="text-danger">Please select valid date.</small>
@@ -13,7 +13,7 @@
         </div>
         <div class="col-lg-4">
             <div class="form-group">
-                <label for="toDate" class="form-control-label">To Date<span class="required" *ngIf="transactionForm.get('toDate').hasError('required')">*</span></label>
+                <label for="toDate" class="form-control-label">To Date</label>
                 <input type="date" class="form-control p-2 form-control-sm" id="toDate" formControlName="toDate"/>
                 <div *ngIf="transactionForm.get('toDate')?.hasError('invalidDate') && transactionForm.get('toDate')?.touched">
                     <small class="text-danger">Please select valid date.</small>
@@ -23,7 +23,7 @@
         </div>
         <div class="col-lg-4">
             <div class="form-group">
-                <label class="form-control-label">Route ID<span class="required" *ngIf="transactionForm.get('routeId').hasError('required')">*</span></label>
+                <label class="form-control-label">Route ID</label>
                 <select class="form-control p-2 form-control-sm " formControlName="routeId">
                 <option value="" disabled selected>Route ID</option>
                 <option *ngFor="let route of routes" [value]="route.routeId">{{route.routeId}}</option>
@@ -35,7 +35,7 @@
     <div class="row justify-content-around">
         <div class="col-lg-4">
             <div class="form-group">
-                <label class="form-control-label">Collection Type<span class="required" *ngIf="transactionForm.get('collectionType').hasError('required')">*</span></label>
+                <label class="form-control-label">Collection Type</label>
                 <select class="form-control p-2 form-control-sm " formControlName="collectionType">
                 <option value="" disabled selected>Collection Type</option>
                 <option value="monthly">monthly</option>
@@ -47,13 +47,13 @@
         </div>
         <div class="col-lg-4">
             <div class="form-group">
-                <label for="collectionAmount" class="form-control-label">Collection Type Count<span class="required" *ngIf="transactionForm.get('collectionTypeCount').hasError('required')">*</span></label>
+                <label for="collectionAmount" class="form-control-label">Collection Type Count</label>
                 <input class="form-control p-2 form-control-sm" id="collectionAmount" formControlName="collectionTypeCount" placeholder="Collection Type Count"/>
             </div>
         </div>
         <div class="col-lg-4">
             <div class="form-group">
-                <label for="amountCollected" class="form-control-label"> Collection Type Amount<span class="required" *ngIf="transactionForm.get('collectionTypeAmount').hasError('required')">*</span></label>
+                <label for="amountCollected" class="form-control-label"> Collection Type Amount</label>
                 <input class="form-control p-2 form-control-sm" id="amountCollected" formControlName="collectionTypeAmount" placeholder="Collection Type Amount"/>
             </div>
         </div>
@@ -62,21 +62,21 @@
     <div class="row">
         <div class="col-lg-4">
             <div class="form-group">
-                <label for="balanace" class="form-control-label">Total Serial Number Count <span class="required" *ngIf="transactionForm.get('totalSerialNumberCount').hasError('required')">*</span> </label>
+                <label for="balanace" class="form-control-label">Total Serial Number Count </label>
                 <input class="form-control p-2 form-control-sm" id="balance" formControlName="totalSerialNumberCount" placeholder="Total Serial Number Count"/>
             </div>
         </div>
         <div class="col-lg-4">
             <div class="form-group">
-                <label for="serialNumCount" class="form-control-label">Grand Total Amount<span class="required" *ngIf="transactionForm.get('grandTotalAmount').hasError('required')">*</span></label>
-                <input class="form-control p-2 form-control-sm" id="serialNumCount" formControlName="grandTotalAmount" placeholder="Grnad Total Amount"/>
+                <label for="serialNumCount" class="form-control-label">Grand Total Amount</label>
+                <input class="form-control p-2 form-control-sm" id="serialNumCount" formControlName="grandTotalAmount" placeholder="Grand Total Amount"/>
             </div>
         </div>  
     </div>
     <div class="row">
         <div class="col-lg-12 d-flex justify-content-end py-3">
             <button class="btn clear-btn px-4 py-3 me-4" (click)="clear()">Clear Filter</button>
-            <button class="btn next-btn px-4 py-3 fw-bold" (click)="downloadAsPDF()">Download Summary</button>
+            <button class="btn next-btn px-4 py-3 fw-bold" (click)="exportToExcel()">Download Summary</button>
         </div>
     </div>
 </form>

@@ -85,22 +85,13 @@
   border: none;
 }
 
-
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-
 .ag-body-horizontal-scroll-viewport{
   height: 3px;
   max-height: 3px;
   min-height: 3px;
 }
 
-.filter-popup {
-  position: absolute;
-  top: 50px; /* Adjust based on your layout */
-  right: 20px; /* Adjust based on your layout */
+ .filter-popup {
   background-color: white;
   border: 1px solid #ccc;
   padding: 20px;
@@ -123,6 +114,8 @@
 .popup.model {
   position: absolute;
   width: 300px;
+  margin-left: 300px;
+  margin-top: 300px;
   height:250px;
   overflow-y: scroll;
   background-color: #ffffff;
@@ -155,31 +148,29 @@
 
 .toggle-container {
   display: flex;
-  justify-content: space-between; /* Distributes space between the children */
-  align-items: center; /* Aligns items vertically center */
+  justify-content: space-between; 
+  align-items: center; 
 }
 
 .filter-item {
   display: flex;
-  justify-content: space-between; /* Distributes space between the label and checkbox */
-  align-items: center; /* Aligns items vertically center */
+  justify-content: space-between; 
+  align-items: center;
 }
-
 .filter-item label {
-  margin: 0; /* Removes any default margin from the label */
+  margin: 0; 
 }
 
 .filter-item input {
-  margin-left: auto; /* Pushes the checkbox to the right */
+  margin-left: auto; 
 }
 
 
 .toggle-container .toggle-btn {
-  margin-left: auto; /* Pushes the image to the right */
+  margin-left: auto; 
 }
-
 .toggle-container h6 {
-  margin: 0; /* Removes any default margin of the h6 element */
+  margin: 0; 
 }
 
 
@@ -195,16 +186,9 @@
 
 .filter-options input[id="check"] {
   margin-right: 5px;
-  accent-color: #3E3A97; /* Custom checkbox color */
+  accent-color: #3E3A97; 
 }
 
-/* input[id="check"] + label {
-  width: 14px;
-  height: 14px;
-  border: 2px solid #3E3A97;
-  border-radius: 2px;
-  cursor: pointer;
-} */
 .popup-actions {
   display: flex;
   justify-content: space-between;
@@ -227,19 +211,16 @@
   border: 1px solid #3E3A97;
 }
 
-/* No data found message */
 .no-data {
   text-align: center;
   padding: 20px 0;
   color: #999;
 }
 
-/* Rotated class for toggle button */
 .rotated {
   transform: rotate(270deg);
 }
 
-/* Background overlay when popup is open */
 .dull-background {
   position: fixed;
   top: 0;
@@ -248,4 +229,4 @@
   bottom: 0;
   background-color: rgba(0, 0, 0, 0.5);
   z-index: 999;
-}
+} 

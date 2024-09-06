@@ -239,22 +239,22 @@ export class AreaCreateComponent implements OnInit{
       {
         label: 'S No',
         field: 'routeNo',
-        filter:false,
+        filterList:false,
        
       },
     
       { label: 'Route ID', field:'routeId', sortable: true,
-        filter:false,      cellStyle: { color: '#50A1A5' },
+        filterList:false,      cellStyle: { color: '#50A1A5' },
 
         
        },
-      { label: 'Region Name', field: 'regionName', sortable: true , filter:true,
+      { label: 'Region Name', field: 'regionName', sortable: true , filterList:true,
     
           },
-      { label: 'Route Name', field: 'routeName', sortable: true , filter:true,
+      { label: 'Route Name', field: 'routeName', sortable: true , filterList:true,
       
         },      
-      { label: '', field: 'action', sortable: true , filter:true,      cellStyle: { color: '#50A1A5' },
+      { label: '', field: 'action', sortable: true , filterList:true,      cellStyle: { color: '#50A1A5' },
 
         onCellClicked: (event: CellClickedEvent) =>
           this.getrouteById(event.data.id)

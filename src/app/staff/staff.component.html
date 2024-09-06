@@ -24,7 +24,7 @@
         <tbody>
           <tr>
             <td><strong>Employee ID </strong></td>
-            <td><a href="#">{{staffDetail.Staff.employeeId}}</a></td>
+            <td style="color: #50A1A5;">{{staffDetail.Staff.employeeId}}</td>
           </tr>
           <tr>
             <td><strong>First Name </strong></td>
@@ -48,7 +48,8 @@
           </tr>
           <tr>
             <td><strong>Working Status</strong></td>
-            <td>{{staffDetail.Staff.workingStatus}}</td>
+            <td *ngIf="staffDetail.Staff.workingStatus" style="color:#12B76A">Active</td>
+            <td *ngIf="!staffDetail.Staff.workingStatus" style="color:#F04438">InActive</td>
           </tr>
           <tr>
             <td><strong>Enrollments </strong></td>
@@ -56,7 +57,7 @@
           </tr>
           <tr>
             <td><strong>Route ID</strong></td>
-            <td>{{staffDetail.Staff.lastName}}</td>
+            <td style="color: #50A1A5">{{staffDetail.Staff.lastName}}</td>
           </tr>
         </tbody>
       </table>

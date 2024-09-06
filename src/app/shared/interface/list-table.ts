@@ -3,6 +3,7 @@ export interface ITableColumn {
     field: string;
     sortable?: boolean;
     filter?: boolean;
+    filterList?:boolean;
     cellRenderer?: any;
     onCellClicked?:any;
     cellStyle?:any;

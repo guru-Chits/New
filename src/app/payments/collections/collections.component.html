@@ -15,7 +15,7 @@
             <div class="form-group">
                 <label class="form-control-label">Route ID <span class="required" *ngIf="collectionForm.get('routeId').hasError('required')">*</span></label>
                 <select class="form-control form-control-sm form-select" formControlName="routeId" placeholder="Route ID">
-                    <option value="" disabled selected>Route Id</option>
+                    <option value="" disabled selected>Route ID</option>
                     <option *ngFor="let route of routes" [value]="route.routeId">{{route.routeId}}</option>
                 </select>
             </div>

@@ -119,8 +119,13 @@ onSubmit() {
         this.roleAccess=roleResponse
         if ( this.roleAccess && this.roleAccess.roleAccess.roleDetails) {
           console.log("Role access granted:", roleResponse);
-              this.router.navigate(['/']); // Navigate after OTP success
+              if(this.role=="Collection Staff"){
+                this.router.navigate(['payment'])
+              }
+              else{
+                this.router.navigate(['/subscriber']); // Navigate after OTP success
 
+              }
           // const otpUrl = `https://2factor.in/API/V1/b1037ef1-2ed8-11ef-8b60-0200cd936042/SMS/${this.mobileNumber}/AUTOGEN/OTPTemplate`;
 
           // // Send OTP

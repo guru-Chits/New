@@ -5,7 +5,7 @@ export const environment = {
     paymentServiceUrl: `${baseUrl}/api`,
     subscriberServiceUrl:`${baseUrl}/api`,
     chitServiceUrl:`${baseUrl}/api`,
-    staffServiceUrl:`${baseUrl}/api`,
+    staffServiceUrl:`${localUrl}/api`,
     areaServiceUrl:`${baseUrl}/api`,
     loginServiceUrl:`${baseUrl}/api`,
     accessServiceUrl:`${baseUrl}/api`

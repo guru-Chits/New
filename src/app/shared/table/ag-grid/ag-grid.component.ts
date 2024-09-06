@@ -86,7 +86,7 @@ export class AgGridComponent implements OnChanges, OnInit {
   generateFilterListFromColumns(columns: ITableColumn[], rowData: any[]): void {
     this.filterList = {};
     columns.forEach(col => {
-      if (col.filter) {
+      if (col.filterList) {
         const field = col.field;        
         const uniqueValues = Array.from(new Set(rowData.map(row => row[field])));
         this.filterList[field] = { values: uniqueValues, selectedValues: [], showOptions: false };
@@ -97,9 +97,6 @@ export class AgGridComponent implements OnChanges, OnInit {
 
   filterTableData(event: MouseEvent): void {
     this.showFilter = !this.showFilter;
-    const buttonRect = (event.target as HTMLElement).getBoundingClientRect();
-    this.popupTop = buttonRect.bottom ;
-    this.popupLeft = buttonRect.left ;
   }
 
 
@@ -127,12 +124,15 @@ export class AgGridComponent implements OnChanges, OnInit {
     const selectedValues = this.filterList[field].selectedValues || [];
     if (event.target.checked) {
       selectedValues.push(value);
+
     } else {
       const index = selectedValues.indexOf(value);
       if (index > -1) {
         selectedValues.splice(index, 1);
       }
     }
+
+
   }
 
   applyFilters() {
@@ -147,6 +147,8 @@ export class AgGridComponent implements OnChanges, OnInit {
       }
     }
     this.rowData = filteredData;
+    this.showFilter = !this.showFilter;
+
   }
 
   clearFilters(): void {
@@ -162,6 +164,8 @@ export class AgGridComponent implements OnChanges, OnInit {
 
     this.rowData = filteredData;
     console.log("table data", this.rowData);
+    this.showFilter = !this.showFilter;
+
   }
   getFilteredFields(): void {
     this.displayedFields = Object.keys(this.filterList);    

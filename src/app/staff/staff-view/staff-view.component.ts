@@ -14,18 +14,19 @@ export class StaffViewComponent implements OnInit {
   isShowDiv = false;  
  staffDetail:any
  staffData:any
+ bgV:boolean
  data: any[] = [];
  canEdit:boolean=false
  displayedStaffs:any
  staffId:string
  breadcrumsData: any = [
   {
-    key: 'Staff Management',
-    routerLink: '',
+    key: 'Staffs',
+    routerLink: 'staff',
   },
   
   {
-    key: 'View Staff',
+    key: 'Staff Details',
     routerLink: 'view/:id',
   },
 ];
@@ -46,7 +47,15 @@ constructor(private service:StaffService,private activatedRoute:ActivatedRoute,p
       if (Object.keys(paramData).length) {
       this.service.getstaffById(paramData.id).subscribe((data) => {
         this.staffDetail = data;
-        this.staffId=this.staffDetail.Staff._id        
+        this.staffId=this.staffDetail.Staff._id  
+        
+        const bgVerification =this.staffDetail.Staff.bgVerification
+        if(bgVerification=="Verified"){
+          this.bgV=true
+        }else{
+          this.bgV=false
+        }
+
          })
       }
       })

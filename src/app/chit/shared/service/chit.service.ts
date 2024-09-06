@@ -31,7 +31,7 @@ export class ChitService {
   }
 
   getSubscriberByTicketId(ticketId: string, groupId: string): Observable<any> {
-    let url:string = `${environment.chitServiceUrl}/getSubscriberDetails/${ticketId}/${groupId}`
+    let url:string = `${environment.chitServiceUrl}/chitgroup/getByTicketId/${groupId}/${ticketId}`
     return this.http.get(url)
   }
 }

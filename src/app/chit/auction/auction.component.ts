@@ -30,7 +30,7 @@ export class AuctionComponent implements OnInit {
   walletBalance:any
   chitSubscriberTotal = 0;
   addSubscriberTotal = 0;
-
+  subDetails:any
   column: ITableColumn[] = [
     { field: 'Ticket Id', sortable: false, filter: false },
     { field: 'Name', sortable: false, filter: false },
@@ -45,6 +45,9 @@ export class AuctionComponent implements OnInit {
     private service: ChitService,
     private paymentService:PaymentService 
   ) {
+  }
+
+  ngOnInit(): void {
     this.auctionForm = this.fb.group({
       groupId: [''],
       walletBal: [''],
@@ -57,9 +60,14 @@ export class AuctionComponent implements OnInit {
       auctionCycle: [''],
       auctionStart: [false]
     });
-  }
 
-  ngOnInit(): void {
+    const auctionStart = this.auctionForm.get('auctionStart')?.value;
+    if (auctionStart) {
+      this.auctionForm.enable();
+    } else {
+      this.auctionForm.disable();
+      this.auctionForm.get('auctionStart')?.enable();
+    }
     this.activatedRoute.params.subscribe(paramData => {
       if (Object.keys(paramData).length) {
         this.service.getChitById(paramData.id).subscribe((data) => {
@@ -99,6 +107,9 @@ export class AuctionComponent implements OnInit {
                       // Log the totals (or use these totals to update the UI)
                       console.log('Chit Subscriber Total:', this.chitSubscriberTotal);
                       console.log('Add Subscriber Total:', this.addSubscriberTotal);
+                      this.auctionForm.patchValue({
+                        walletBal:this.chitSubscriberTotal
+                      })
                     });
                   });
                 } else {
@@ -111,8 +122,9 @@ export class AuctionComponent implements OnInit {
           
         this.subscribers = this.chitData.chitSubscribers;
         this.addSubscribers = this.chitData.addChitSubscribers;
-  
-  
+          
+
+          
         // You can also store these values in separate arrays if needed
         const subscriberDetails = this.subscribers.map(subscriber => ({
           aliasName: subscriber.aliasName,
@@ -141,6 +153,16 @@ export class AuctionComponent implements OnInit {
         console.log('Subscriber Details:', subscriberDetails);
         console.log('Additional Subscriber Details:', addSubscriberDetails);
 
+        const ticketId = this.auctionForm.get('ticketId')?.value;
+        const groupId = this.groupId;
+    
+      this.service.getSubscriberByTicketId(ticketId, groupId).subscribe((details: SubscriberDetails) => {
+        // this.auctionForm.patchValue({
+        //   prizedSubName: `${details.firstName} ${details.lastName}`,
+        //   passbookNumber: details.passbookNumber,
+        // });
+      });
+
           this.autofillForm();
         });
       }
@@ -151,7 +173,6 @@ export class AuctionComponent implements OnInit {
   autofillForm(): void {
     const chitDetails = {
       groupId: this.chitData?.chitGroupId,
-      walletBal: this.chitSubscriberTotal,
       foreCommission: this.chitData?.foremanCommission,
     };
 
@@ -206,9 +227,12 @@ export class AuctionComponent implements OnInit {
 
     if (ticketId && groupId) {
       this.service.getSubscriberByTicketId(ticketId, groupId).subscribe((details: SubscriberDetails) => {
+        console.log(details);
+        this.subDetails=details
+        
         this.auctionForm.patchValue({
-          prizedSubName: `${details.firstName} ${details.lastName}`,
-          passbookNumber: details.passbookNumber,
+          prizedSubName: `${this.subDetails.chitDetails.firstName} ${this.subDetails.chitDetails.aliasName}`,
+          passbookNumber: this.subDetails.chitDetails.passbookNo,
         });
       });
     }
@@ -217,9 +241,9 @@ export class AuctionComponent implements OnInit {
   toggleFormControls(): void {
     const auctionStart = this.auctionForm.get('auctionStart')?.value;
     if (auctionStart) {
-      this.auctionForm.disable();
-    } else {
       this.auctionForm.enable();
+    } else {
+      this.auctionForm.disable();
       // this.auctionForm.get('auctionStart')?.enable();
     }
   }

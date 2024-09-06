@@ -19,7 +19,7 @@
                   </button>
                 </div>
               </div>
-              <h6 class="text-center pb-3">{{heading}}</h6>
+              <h5 class="text-center pb-3 mb-3">{{heading}}</h5>
               <form class="ps-5 pe-5" [formGroup]="subscriberForm">
                 <!-- Subscriber ID -->
                 <div class="row justify-content-around">
@@ -43,6 +43,7 @@
                       <div class="invalid-feedback" *ngIf="subscriberForm.get('firstName').invalid && (subscriberForm.get('firstName').dirty || subscriberForm.get('firstName').touched)">
                         <div *ngIf="subscriberForm.get('firstName').errors.required">First Name is required.</div>
                         <div *ngIf="subscriberForm.get('firstName').errors.pattern">First Name should only contain alphabetic characters and start with a capital letter.</div>
+
                       </div>
                     </div>
                   </div>
@@ -87,9 +88,9 @@
                       <input type="text" placeholder="Place/Address" class="form-control form-control-sm" formControlName="place" />
                       <div class="invalid-feedback" *ngIf="subscriberForm.get('place').invalid && (subscriberForm.get('place').dirty || subscriberForm.get('place').touched)">
                         <div *ngIf="subscriberForm.get('place').errors.required">Address is required.</div>
-                        <div *ngIf="subscriberForm.get('place').errors.minlength">Address must be at least 10 characters long.</div>
+                        <!-- <div *ngIf="subscriberForm.get('place').errors.minlength">Address must be at least 10 characters long.</div>
                         <div *ngIf="subscriberForm.get('place').errors.maxlength">Address cannot be more than 100 characters long.</div>
-                        <div *ngIf="subscriberForm.get('place').errors.pattern">Address contains invalid characters.</div>
+                        <div *ngIf="subscriberForm.get('place').errors.pattern">Address contains invalid characters.</div> -->
                       </div>
                     </div>
                   </div>
@@ -100,11 +101,10 @@
                   <div class="col-lg-4">
                     <div class="form-group">
                       <label for="gender" class="form-control-label">Gender</label>
-                      <select class="form-control form-control-sm" formControlName="gender">
+                      <select class="form-control form-control-sm form-select" formControlName="gender">
                         <option value="">Select Gender</option>
                         <option value="Male">Male</option>
                         <option value="Female">Female</option>
-                        <option value="Other">Other</option>
                       </select>
                       <div class="invalid-feedback" *ngIf="subscriberForm.get('gender').invalid && (subscriberForm.get('gender').dirty || subscriberForm.get('gender').touched)">
                         <div *ngIf="subscriberForm.get('gender').errors.required">Gender is required.</div>
@@ -144,7 +144,7 @@
                     <div class="form-group">
                       <label for="routeId" class="form-control-label">Route Id</label>
                       
-                      <select class="form-control form-control-sm" formControlName="routeId">
+                      <select class="form-control form-control-sm form-select" formControlName="routeId">
                         <option value="" disabled selected>RouteId</option>
                         <option *ngFor="let route of routes" [value]="route.routeId">{{route.routeId}}</option>
                         </select>
@@ -286,7 +286,7 @@
                   <div class="col-lg-4">
                     <div class="form-group">
                       <label for="nomineeRelation" class="form-control-label">Nominee Relation</label>
-                      <select class="form-control form-control-sm" formControlName="nomineeRelation">
+                      <select class="form-control form-control-sm form-select" formControlName="nomineeRelation">
                         <option value="">Select Relation</option>
                         <option value="Father">Father</option>
                         <option value="Mother">Mother </option>
@@ -330,11 +330,10 @@
                   <div class="col-lg-4">
                     <div class="form-group">
                       <label for="nomineeGender" class="form-control-label">Nominee Gender</label>
-                      <select class="form-control form-control-sm" formControlName="nomineeGender">
+                      <select class="form-control form-control-sm form-select" formControlName="nomineeGender">
                         <option value="">Select Gender</option>
                         <option value="Male">Male</option>
                         <option value="Female">Female</option>
-                        <option value="Other">Other</option>
                       </select>
                       <div class="invalid-feedback" *ngIf="subscriberForm.get('nomineeGender').invalid && (subscriberForm.get('nomineeGender').dirty || subscriberForm.get('nomineeGender').touched)">
                         <div *ngIf="subscriberForm.get('nomineeGender').errors.required">Nominee Gender is required.</div>
@@ -372,7 +371,7 @@
                 <div class="row justify-content-center">
                     <div class="col-lg-12 d-flex justify-content-end mb-2">
                         <button class="btn nxt-btn btn-outline-secondary" routerLink="/subscriber">Cancel</button>
-                        <button class="btn save-btn"  type="submit" [disabled]="!subscriberForm.valid" (click)="onSubmit()">Submit</button>
+                        <button class="btn save-btn"  type="submit" [disabled]="!subscriberForm.valid" (click)="onSubmit()">{{submit}}</button>
                     </div>
                 </div>
 
@@ -382,17 +381,17 @@
     </div>
     </div>
     <div class="col-lg-3" *ngIf="isSubscriberListVisible">
-      <div class="card details mb-3">
+      <div class="card details  mb-3">
         <h5 class="text-center my-2">Referral</h5>
         <div class="search-bar align-self-center">
           <span class="search-icon"><img src="assets/subscriber/search-icon.svg"></span>
           <input width="20" height="20" type="text" placeholder="Search Subscriber ID, Name, Email" (input)="applyFilter($event.target.value)">
         </div>
     
-        <table class="subscriber-table">
+        <table class="subscriber-table my-3">
           <tbody>
             <tr *ngFor="let subscriber of displayedSubscribers">
-              <div class="card view-all mx-3">
+              <div class="card view-all">
                 <div class="card-body align-self-center">
                   <div class="row">
                     <div class="col-lg-3 col-md-3">
@@ -409,12 +408,12 @@
     
                   <!-- Subscriber details section -->
                   <div *ngIf="selectedSubscriberId === subscriber.subscriberId && subscriberDetail.Subscriber.subscriberId">
-                    <div class="subscriber-details mt-3">
+                    <div class="subscriber-details my-5 py-5">
                       <h5 class="title text-center">Subscriber Details</h5>
                       <div class="text-center">
-                        <img [src]="subscriberDetail.Subscriber.profileImageUrl" class="img-fluid" alt="Subscriber Image">
+                        <img [src]="subscriberDetail.Subscriber.profileImageUrl" class="rounded-circle  align-self-center mb-2" width="75" height="75" alt="Subscriber Image">
                       </div>
-                      <table class="table px-3">
+                      <table class="table flex-column">
                         <tbody>
                           <tr>
                             <td><strong>Subscriber ID</strong></td>
@@ -465,7 +464,7 @@
           </tbody>
         </table>
     
-        <div *ngIf="showall === false" class="text-center mt-3">
+        <div *ngIf="showall === false" class="text-center my-3">
           <button class="btn view" (click)="viewMore()">View More</button>
         </div>
       </div>

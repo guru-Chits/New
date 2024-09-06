@@ -17,7 +17,7 @@
                     <div class="row justify-content-around">
                       <div class="col-lg-4">
                         <h6>Employee ID</h6>
-                        <p>{{staffDetail.Staff.employeeId}}</p>
+                        <p style="color: #50A1A5;">{{staffDetail.Staff.employeeId}}</p>
                       </div>
                       <div class="col-lg-4">
                         <h6>First Name</h6>
@@ -61,7 +61,7 @@
                       <div class="row justify-content-around">
                       <div class="col-lg-4">
                         <h6>Route ID</h6>
-                        <p>{{staffDetail.Staff.routeId}}</p>
+                        <p style="color: #50A1A5;">{{staffDetail.Staff.routeId}}</p>
                       </div>
                       <div class="col-lg-4">
                         <h6>Account Number</h6>
@@ -107,25 +107,39 @@
                         </div>
                         <div class="col-lg-4">
                             <h6>Driving Lincense</h6>
-                            <button class="viewBtn" (click)="viewFile(staffDetail.Staff.drivingLicense)">View File</button>
+                            <button class="viewBtn" (click)="viewFile(staffDetail.Staff.drivingLicenseUrl)">View File</button>
                           </div>
   
                       </div>
                    <div class="row justify-content-around mt-4">
                     <div class="col-lg-4">
-                        <h6>BGV Status</h6>
-                        <p>{{staffDetail.Staff.bgVerification}}</p>
+                      <h6>Passbook</h6>
+                      <button class="viewBtn" (click)="viewFile(staffDetail.Staff.passbookUrl)">View File</button>
                     </div>
+
+                    <div class="col-lg-4">
+                        <h6>BGV Status</h6>
+                        <p *ngIf="bgV" style="color:#12B76A">Verified</p>
+                        <p *ngIf="!bgV" style="color:#F04438">UnVerified</p>
+
+                      </div>
                     <div class="col-lg-4">
                         <h6>BGV Remarks</h6>
                         <p>{{staffDetail.Staff.bgVerification_remark}}</p>
                     </div>
-                    <div class="col-lg-4">
-                        <h6>Woring Status</h6>
-                        <p>{{staffDetail.Staff.workingStatus}}</p>
-                      </div>
                     </div>
+                    <div class="row  mt-4">
+                      <div class="col-lg-4">
+                        <h6>Working Status</h6>
+                        <p *ngIf="staffDetail.Staff.workingStatus" style="color:#12B76A">Active</p>
+                        <p *ngIf="!staffDetail.Staff.workingStatus" style="color:#F04438">InActive</p>
+
+                      </div>
+  
+                    </div>
+                    
                         <div class="row justify-content-center">
+
                           <div class="col-lg-10 d-flex justify-content-end mb-4">
                               <button class="btn edit-btn" *ngIf="canEdit" (click)="edit(staffDetail.Staff._id)">Edit</button>
                           </div>

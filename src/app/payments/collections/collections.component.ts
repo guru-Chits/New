@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { AbstractControl, FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, FormArray, FormBuilder, FormGroup, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { StaffService } from '../../staff/shared/service/staff.service';
 import { AreaService } from '../../area/shared/service/area.service';
 import { PaymentService } from '../shared/service/payment.service';
@@ -44,8 +44,8 @@ export class CollectionsComponent implements OnInit {
       routeId:  ['', [Validators.required]],
       selectedStaff:  ['', [Validators.required]],
       collectionAmount:  ['', [Validators.required]],
-      amountCollected:  ['', [Validators.required]],
-      balance:  ['', [Validators.required]],
+      amountCollected:  ['', [Validators.required,]],
+      balance:  ['', [Validators.required,this.balanceValidator()]],
       serialNumberCount:  ['', [Validators.required]],
       verifiedBy:  ['', [Validators.required]],
       passbookno: this.formBuilder.array([]),
@@ -146,6 +146,19 @@ export class CollectionsComponent implements OnInit {
     return selectedDate <= today ? null : { invalidDate: true };
   }
   
+  balanceValidator(): ValidatorFn {
+    return (control: AbstractControl): ValidationErrors | null => {
+      const value = control.value;
+
+      // Ensure the value is a number and check if it's greater or less than 0
+      if (value > 0 || value < 0) {
+        return { invalidBalance: true }; // Return an error if balance is not 0
+      }
+
+      return null; // Return null if balance is exactly 0 (valid)
+    };
+  }
+
   getAllPayment(date:Date,routeId:string,selectStaff:string) {
     this.service.getTotal(date,routeId,selectStaff).subscribe((data) => {
       this.paymentData = data;
@@ -209,28 +222,28 @@ export class CollectionsComponent implements OnInit {
     {
       label: 'Serial No',
       field: 'sno',
-      filter:false,
+      filterList:false,
     },
     {
       label: 'Receipt Number',
       field: 'receiptNumber',
-      filter:false,
+      filterList:false,
     },
     {
       label: 'Passbook Number',
       field: 'passbooknumber',
-      filter:true,
+      filterList:true,
     },
     {
       label: 'Group Id',
       field: 'groupId',
-      filter:true,
+      filterList:true,
     },
     
     {
       label: 'Amount Paid',
       field: 'amount',
-      filter:false,
+      filterList:false,
       cellStyle: { color: '#12B76A' },
     },
   ];
@@ -239,28 +252,28 @@ export class CollectionsComponent implements OnInit {
     {
       label: 'Serial No',
       field: 'sno',
-      filter:false,
+      filterList:false,
     },
     {
       label: 'Receipt Number',
       field: 'receiptNumber',
-      filter:false,
+      filterList:false,
     },
     {
       label: 'Passbook Number',
       field: 'passbooknumber',
-      filter:true,
+      filterList:true,
     },
     {
       label: 'Group Id',
       field: 'groupId',
-      filter:true,
+      filterList:true,
     },
     
     {
       label: 'Amount Paid',
       field: 'amount',
-      filter:false,
+      filterList:false,
       cellStyle: { color: 'red' },
     },
   ];
@@ -272,7 +285,8 @@ export class CollectionsComponent implements OnInit {
   onSubmit(){
      const payload=this.collectionForm.value
      const balance = this.collectionForm.get('balance')?.value;
-
+     console.log(balance);
+     
      this.avlData.forEach((payment) => {
       this.paymentBody = {
        date: payment.date,
@@ -302,11 +316,11 @@ export class CollectionsComponent implements OnInit {
      );
    });
      // Check if the balance is less than 0
-     if (balance < 0) {
-             this.collectionForm.controls['submitButton'].disable();
+    //  if (balance < 0) {
+    //          this.collectionForm.disable();
        
-       return; // Stop form submission
-     }
+    //    return; 
+    //  }
      this.service.saveCollectionDetails(payload).subscribe((response:any)=>{
        console.log(response);
        this.collectionForm.reset()

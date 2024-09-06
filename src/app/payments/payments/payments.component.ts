@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormControl, FormGroup, ValidationErrors, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PaymentService } from '../shared/service/payment.service';
 import { IPaymentForm } from '../shared/interface/payment-form';
@@ -71,7 +71,11 @@ export class PaymentsComponent implements OnInit {
       chitAmount:['',[Validators.required]],
       cancelled:['',[Validators.required]],
       verified:['',Validators.required]
-      });
+      },
+      {
+        validator: this.amountLessThanOrEqualChitAmount('amount', 'chitAmount') // Add custom validator here
+      }
+    );
 
 
 
@@ -124,6 +128,19 @@ console.log(this.staffs);
   this.routes=this.routeData.AllRoute.map((routeDetails,index)=>({
     routeId: routeDetails?.routeId,  
     }))}) 
+  }
+
+  amountLessThanOrEqualChitAmount(amountKey: string, chitAmountKey: string) {
+    return (formGroup: AbstractControl): ValidationErrors | null => {
+      const amount = formGroup.get(amountKey)?.value;
+      const chitAmount = formGroup.get(chitAmountKey)?.value;
+
+      if (amount && chitAmount && amount > chitAmount) {
+        return { amountExceedsChitAmount: true }; // Validation error if amount > chitAmount
+      }
+
+      return null; // No error if validation passes
+    };
   }
 
   getSubByPassbookNo(passbooknumber: string): void {

@@ -10,64 +10,60 @@ import { AccessService } from '../../access/service/access.service';
   styleUrls: ['./sidebar.component.scss']
 })
 export class SidebarComponent implements OnInit {
-  constructor(private router: Router,private accessService:AccessService) { }
-  public menuItems: INavigationMenu[] = NavigationMenus;
+  constructor(private router: Router, private accessService: AccessService) { }
+
+  public menuItems: INavigationMenu[] = [];  // Start with an empty array
   activeMenu: INavigationMenu;
   matchedMenus: INavigationMenu[] = [];
   public isCollapsed = true;
-  roleAccess:any 
-  roleDetail:any
+  roleAccess: any;
+  roleDetail: any;
+
   ngOnInit() {
-    
     this.router.events.subscribe(event => {
       if (event instanceof NavigationEnd) {
         this.setActiveMenu();
       }
     });
-    
-     this.setActiveMenu();
-     this.filterMenuItemsBasedOnAccess();
 
-   }   
-  
-getRoleAccess(){
-
-}
-filterMenuItemsBasedOnAccess() {
-  
-  let user = sessionStorage.getItem('userRole')
-  user=user.replace(/"/g, '');
-  console.log(user);
-  
-  this.accessService.getAccessByRole(user).subscribe(response=>{
-    console.log(response);
-    this.roleAccess=response
-    this.roleDetail=this.roleAccess.roleAccess.roleDetails
-    const roleDetails = this.roleAccess.roleAccess.roleDetails;
-    this.menuItems = this.menuItems.filter(menuItem => {
-      const moduleAccess = roleDetails.find(rd => rd.moduleName === menuItem.title);
-      return moduleAccess && moduleAccess.accessType.view; // Show only if the user has view access
-    });
-  })
-
-}
-
-setActiveMenu(menuItem?: INavigationMenu) {
-  if (menuItem) {
-    // Set the active menu to the provided menu item
-    this.activeMenu = menuItem;
-  } else {
-    // If no menu item is provided, find and set the active menu based on the router URL
-    this.activeMenu = this.findActiveMenu(this.menuItems, this.router.url);
-
-    // If no menu item is found based on the URL, set the first menu item as default
-    if (!this.activeMenu && this.menuItems.length > 0) {
-      this.activeMenu = this.menuItems[0];
-    }
+    // Fetch and filter the menu based on access
+    this.filterMenuItemsBasedOnAccess();
   }
 
-  console.log(this.activeMenu);  // For debugging, you can remove this line in production
-}
+  filterMenuItemsBasedOnAccess() {
+    let user = sessionStorage.getItem('userRole');
+    user = user?.replace(/"/g, '');  // Clean up the role string from session storage
+
+    if (!user) {
+      return;  // If no user role is found, don't attempt to filter the menu
+    }
+
+    this.accessService.getAccessByRole(user).subscribe(response => {
+      this.roleAccess = response;
+      this.roleDetail = this.roleAccess?.roleAccess?.roleDetails;
+
+      if (this.roleDetail) {
+        this.menuItems = NavigationMenus.filter(menuItem => {
+          const moduleAccess = this.roleDetail.find(rd => rd.moduleName === menuItem.title);
+          return moduleAccess && moduleAccess.accessType.view; // Show only menus with 'view' access
+        });
+      }
+
+      this.setActiveMenu();  // Set the active menu after filtering
+    });
+  }
+
+  setActiveMenu(menuItem?: INavigationMenu) {
+    if (menuItem) {
+      this.activeMenu = menuItem;
+    } else {
+      this.activeMenu = this.findActiveMenu(this.menuItems, this.router.url);
+
+      if (!this.activeMenu && this.menuItems.length > 0) {
+        this.activeMenu = this.menuItems[0];
+      }
+    }
+  }
 
   toggleSidebar() {
     this.isCollapsed = !this.isCollapsed;
@@ -94,5 +90,4 @@ setActiveMenu(menuItem?: INavigationMenu) {
   logout(): void {
     this.router.navigate(['/login']);
   }
-
 }

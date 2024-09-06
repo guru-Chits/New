@@ -16,6 +16,7 @@ export class StaffComponent implements OnInit{
   selectedId:any
   staffDetail:any
   totalCount:number;
+  status:string
   searchImg:string='assets/table/search.svg'
   filterImg:string='assets/table/filter.svg'
   search:boolean=true
@@ -100,7 +101,7 @@ export class StaffComponent implements OnInit{
 
 
   column: ITableColumn[] = [
-    { label: ' ', field: ' ', sortable: false,  filter:false,
+    { label: ' ', field: ' ', sortable: false,  filterList:false,
       cellRenderer: this.profileImageWithIdRenderer,
       maxWidth:80,
       onCellClicked: (event: CellClickedEvent) =>
@@ -110,7 +111,7 @@ export class StaffComponent implements OnInit{
       label: 'Employee ID',
       field: 'employeeId',
       sortable:true,
-      filter:false,
+      filterList:false,
       cellStyle: function (params: any) {
         return { color: '#50A1A5' };
       }, 
@@ -121,12 +122,12 @@ export class StaffComponent implements OnInit{
       onCellClicked: (event: CellClickedEvent) =>
         this.getStaffById(event.data.id)
      },
-    { label: 'Route Id', field: 'routeId', sortable: true ,  filter:true,
+    { label: 'Route Id', field: 'routeId', sortable: true ,  filterList:true,
       onCellClicked: (event: CellClickedEvent) =>
         this.getStaffById(event.data.id)
     },
     { label: 'Role', field: 'role', sortable: true ,
-      filter:true,
+      filterList:true,
       onCellClicked: (event: CellClickedEvent) =>
         this.getStaffById(event.data.id)
     },
@@ -136,7 +137,13 @@ export class StaffComponent implements OnInit{
     this.service.getstaffById(id).subscribe(
       data => {
         this.staffDetail = data;
-  
+        const workingStatus= this.staffDetail.Staff.workingStatus
+
+        if(workingStatus==true){
+          this.status="Active"
+        }else if(workingStatus==false){
+          this.status="InActive"
+        }
         console.log(this.staffDetail)
       },
       error => {

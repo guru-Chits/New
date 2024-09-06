@@ -196,18 +196,18 @@ console.log(this.regionData.id);
     {
       label: 'S No',
       field: 'routeNo',
-      filter:false,
+      filterList:false,
      
     },
   
     { label: 'Region ID', field:'regionId', sortable: true,
-      filter:false,
+      filterList:false,
       cellStyle: { color: '#50A1A5' },
      },
-    { label: 'Region Name', field: 'regionName', sortable: true , filter:true,
+    { label: 'Region Name', field: 'regionName', sortable: true , filterList:true,
   
         },
-    { label: '', field: 'action', sortable: true , filter:true,
+    { label: '', field: 'action', sortable: true , filterList:true,
       cellStyle: { color: '#50A1A5' },
       onCellClicked: (event: CellClickedEvent) =>
         this.getregionById(event.data.id)

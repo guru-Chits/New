@@ -1,9 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { ITableColumn } from '../../shared/interface/list-table';
 import { ChitService } from '../shared/service/chit.service';
 import { PaymentService } from '../../payments/shared/service/payment.service';
+import html2canvas from 'html2canvas';
+import jsPDF from 'jspdf';
 
 interface SubscriberDetails {
   firstName: string;
@@ -19,6 +21,7 @@ interface SubscriberDetails {
 export class AuctionComponent implements OnInit {
   activeTab: string = 'regular'; // Default active tab
   auctionForm: FormGroup;
+  auctionData:any = {};
   searchImg: string = 'assets/table/black search.svg';
   filterImg: string = 'assets/table/black filter.svg';
   search: boolean = true;
@@ -49,15 +52,15 @@ export class AuctionComponent implements OnInit {
 
   ngOnInit(): void {
     this.auctionForm = this.fb.group({
-      groupId: [''],
-      walletBal: [''],
-      foreCommission: [''],
-      winBid: [''],
-      priAm: [''],
-      ticketId: [''],
-      prizedSubName: [''],
-      passbookNumber: [''],
-      auctionCycle: [''],
+      groupId: ['',[Validators.required]],
+      walletBal: ['',[Validators.required]],
+      foreCommission: ['',[Validators.required]],
+      winBid: ['',[Validators.required]],
+      priAm: ['',[Validators.required]],
+      ticketId: ['',[Validators.required]],
+      prizedSubName: ['',[Validators.required]],
+      passbookNumber: ['',[Validators.required]],
+      auctionCycle: ['',[Validators.required]],
       auctionStart: [false]
     });
 
@@ -74,7 +77,6 @@ export class AuctionComponent implements OnInit {
           this.chitData = data;
           this.chitData=this.chitData.ChitsGroup;
           this.groupId=this.chitData.chitGroupId;
-
           console.log(this.chitData.addChitSubscribers);
           
           this.paymentService.getTotalByGroupId(this.groupId).subscribe((data: any) => {
@@ -118,11 +120,16 @@ export class AuctionComponent implements OnInit {
               });
             });
           });
-
+        // const winBid = this.auctionForm.get('winBid')?.value;
+        // const chitAm = this.chitData.chitAmount;
+        // if (winBid !== null && chitAm !== null){
+        //   const priAm = chitAm - winBid;
+        //   this.auctionForm.get('priAm')?.setValue(priAm, {emitEvent: false});
+        // }
           
         this.subscribers = this.chitData.chitSubscribers;
         this.addSubscribers = this.chitData.addChitSubscribers;
-          
+        
 
           
         // You can also store these values in separate arrays if needed
@@ -153,21 +160,11 @@ export class AuctionComponent implements OnInit {
         console.log('Subscriber Details:', subscriberDetails);
         console.log('Additional Subscriber Details:', addSubscriberDetails);
 
-        const ticketId = this.auctionForm.get('ticketId')?.value;
-        const groupId = this.groupId;
-    
-      this.service.getSubscriberByTicketId(ticketId, groupId).subscribe((details: SubscriberDetails) => {
-        // this.auctionForm.patchValue({
-        //   prizedSubName: `${details.firstName} ${details.lastName}`,
-        //   passbookNumber: details.passbookNumber,
-        // });
-      });
-
           this.autofillForm();
         });
       }
     });
-    // this.toggleFormControls();
+
   }
 
   autofillForm(): void {
@@ -175,51 +172,33 @@ export class AuctionComponent implements OnInit {
       groupId: this.chitData?.chitGroupId,
       foreCommission: this.chitData?.foremanCommission,
     };
-
+    this.incrementAuctionCycle()
     this.auctionForm.patchValue(chitDetails);
-    this.registerValueChanges();
 
     this.auctionForm.get('ticketId')?.valueChanges.subscribe(() => {
       this.fetchSubscriberDetails();
     });
   }
 
-  registerValueChanges(): void {
-    this.auctionForm.get('walletBal')?.valueChanges.subscribe(() => {
-      this.updateWinningBid();
-    });
-
-    this.auctionForm.get('priAm')?.valueChanges.subscribe(() => {
-      this.updateWinningBid();
-    });
-  }
-
-  updateWinningBid(): void {
-    const walletBal = this.auctionForm.get('walletBal')?.value;
-    const priAm = this.auctionForm.get('priAm')?.value;
-
-    if (walletBal !== null && priAm !== null) {
-      const winBid = walletBal - priAm;
-      this.auctionForm.get('winBid')?.setValue(winBid, { emitEvent: false });
-    }
-  }
-
-  // fetchSubscriberDetails(): void {
-  //   const ticketId = this.auctionForm.get('ticketId')?.value;
-  //   const groupId = this.auctionForm.get('groupId')?.value;
-
-  //   if (ticketId) {
-  //     this.service
-  //       .getChitById(ticketId && groupId)
-  //       .subscribe((details: SubscriberDetails) => {
-
-  //         this.auctionForm.patchValue({
-  //           prizedSubName: `${details.firstName} ${details.lastName}`,
-  //           passbookNumber: details.passbookNumber,
-  //         });
-  //       });
-  //   }
+  // incrementAuctionCycle(): void {
+  //   this.auctionForm.get('auctionCycle')?.setValue(this.auctionCycle++);
   // }
+
+
+  getRouteNameValue() {
+    const winBid = this.auctionForm.get('winBid').value;
+    const priAm = `${this.chitData.chitAmount - winBid}`
+    console.log('minus value', priAm)
+    this.auctionForm.get('priAm').patchValue(priAm)
+    // debugger;
+    const finalPriAm = this.auctionForm.get('priAm').value;
+    const walletBal = this.chitSubscriberTotal
+    const sumOfTwo = Number(finalPriAm) + Number(this.chitData.foremanCommission);
+    console.log('sum of Two', sumOfTwo)
+    const finalWallet = `${walletBal - sumOfTwo}`
+    console.log('final value', finalWallet)
+    this.auctionForm.get('walletBal').patchValue(finalWallet)
+  }
 
   fetchSubscriberDetails(): void {
     const ticketId = this.auctionForm.get('ticketId')?.value;
@@ -237,6 +216,21 @@ export class AuctionComponent implements OnInit {
       });
     }
   }
+
+  incrementAuctionCycle(): void{
+    // debugger
+    const groupId=this.chitData?.chitAmount;
+    if(groupId){
+      this.service.getAuctionCycleByGroupId(groupId).subscribe((data) => {
+        const cycle = data
+        console.log('increased cycle', cycle)
+        this.auctionForm.patchValue({
+          auctionCycle: `${cycle?.auctionCycle}`
+        })
+      })
+    }
+  }
+
 
   toggleFormControls(): void {
     const auctionStart = this.auctionForm.get('auctionStart')?.value;
@@ -262,6 +256,18 @@ export class AuctionComponent implements OnInit {
     this.activeTab = tabName;
   }
 
+  onSubmit(){
+    const payload = this.auctionForm.value
+    
+    this.service.saveAuctionDetails(payload).subscribe((response:any) => {
+      this.auctionData = response.newAuction;
+      console.log('auctionForm', this.auctionData)
+      console.log(response);
+    });
+
+    this.auctionForm.reset()
+  }
+
   profileImageWithIdRenderer(params: any): string {
     const imageUrl = params.data.profileImageUrl;
     const ticketId = params.data.ticketId;
@@ -271,6 +277,56 @@ export class AuctionComponent implements OnInit {
         <span style="color: #50A1A5;">${ticketId}</span>
       </div>
     `;
+  }
+
+  downloadAsPDF() {
+    const element = document.getElementById('print-section');
+  
+    // Set the width to ensure correct layout
+    element.style.width = '700px';  // Adjust according to your modal's size
+  
+    html2canvas(element, {
+      scale: 2, // Increase the scale to improve image quality
+      useCORS: true,  // Enable cross-origin resource sharing if images are hosted externally
+      allowTaint: true // Allow cross-origin images to be rendered into the canvas
+    }).then((canvas) => {
+      const imgData = canvas.toDataURL('image/png');
+  
+      // Initialize jsPDF (Portrait orientation, Millimeters, A4 size)
+      const pdf = new jsPDF('p', 'mm', 'a4');
+  
+      // Calculate the width and height to fit the content on A4 page size
+      const pageWidth = pdf.internal.pageSize.getWidth();
+      const pageHeight = pdf.internal.pageSize.getHeight();
+      
+      const canvasWidth = canvas.width;
+      const canvasHeight = canvas.height;
+  
+      const ratio = Math.min(pageWidth / canvasWidth, pageHeight / canvasHeight);
+  
+      const imgWidth = canvasWidth * ratio;
+      const imgHeight = canvasHeight * ratio;
+  
+      pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
+  
+      // pdf.save(`${this.auctionCycle}.pdf`);
+      element.style.width = '';
+    });
+  }
+  print() {
+    const printContent = document.getElementById('print-section').innerHTML;
+    const originalContent = document.body.innerHTML;
+    console.log(originalContent);
+    
+    // Replace body content with modal content
+    document.body.innerHTML = printContent;
+  
+    // Trigger print
+    window.print();
+  
+    // Revert body content
+    document.body.innerHTML = originalContent;
+    window.location.reload(); // Reload to restore state
   }
 
   subscriberColumn : ITableColumn[]= [

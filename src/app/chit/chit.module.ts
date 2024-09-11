@@ -9,6 +9,10 @@ import { AuctionSidebarComponent } from './auction-sidebar/auction-sidebar.compo
 import { SharedModule } from '../shared/shared.module';
 import { AuctionComponent } from './auction/auction.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { ProfitComponent } from './profit/profit.component';
+import { PurchaseComponent } from './purchase/purchase.component';
+import { TknComponent } from './tkn/tkn.component';
+import { ExtraComponent } from './extra/extra.component';
 
 @NgModule({
   declarations: [
@@ -16,7 +20,11 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     ChitCreateComponent,
     ChitViewComponent,
     AuctionSidebarComponent,
-    AuctionComponent
+    AuctionComponent,
+    ProfitComponent,
+    PurchaseComponent,
+    TknComponent,
+    ExtraComponent
   ],
   imports: [
     CommonModule,

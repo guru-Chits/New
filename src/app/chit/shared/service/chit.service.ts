@@ -7,6 +7,7 @@ import { HttpClient } from '@angular/common/http';
   providedIn: 'root'
 })
 export class ChitService {
+  auctionUrl: string = environment.auctionServiceUrl
   chitUrl:string=environment.chitServiceUrl+"/chitgroup/getAllChitGroup"
   constructor(private http: HttpClient) { }
 
@@ -29,4 +30,23 @@ export class ChitService {
     let url:string= `${environment.chitServiceUrl}/chitgroup/getByPassbookNo/${passbooknumber}`
     return this.http.get(url)
   }
+
+  getSubscriberByTicketId(ticketId: string, groupId: string): Observable<any> {
+    let url:string = `${environment.chitServiceUrl}/chitgroup/getByTicketId/${groupId}/${ticketId}`
+    return this.http.get(url)
+  }
+
+  saveAuctionDetails(body: any, id?: string): Observable<any>{
+    let saveauctionUrl: string = `${this.auctionUrl}/chit_management/regular_chit`
+    if(id){
+      saveauctionUrl = `${saveauctionUrl}/${id}`;
+    }
+    return this.http.post(saveauctionUrl, body);
+  }
+
+  getAuctionCycleByGroupId(groupId: string): Observable<any>{
+    let url:string = `${environment.auctionServiceUrl}/chit_management/getAuction/${groupId}`
+    return this.http.get(url)
+  }
+
 }

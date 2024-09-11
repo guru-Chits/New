@@ -153,7 +153,7 @@
                     <button class="btn view-btn" (click)="navigate(specificChitData?._id)">View More Details</button>
                   </div>
                  <div class="col-6">
-                  <button class="btn auc-btn" routerLink="auction" *ngIf="canCreate" >Auction Entry</button>
+                  <button class="btn auc-btn" (click)="auctionEntry(specificChitData?._id)" >Auction Entry</button> 
                   </div>  
                 </div>                
             </div>   

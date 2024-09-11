@@ -132,6 +132,9 @@ ngOnInit(): void {
     panUrl: ['']
   });
   
+  // this.subscriberForm.get('profileImageUrl').valueChanges.subscribe(profile=>{
+    
+  // })
   this.subscriberForm.patchValue({
     contact: '+91 '
   });

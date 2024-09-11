@@ -6,7 +6,7 @@ import { environment } from '../../../../environments/environment';
   providedIn: 'root'
 })
 export class LoginService {
-
+  private isVerified = false;
   constructor(private http:HttpClient) { }
   
 loginUrl:string=environment.loginServiceUrl+'/login/'
@@ -16,5 +16,16 @@ loginUrl:string=environment.loginServiceUrl+'/login/'
   isAuthenticated(): boolean {
     return !!sessionStorage.getItem('userRole');
   }
+  markAsVerified() {
 
+   return this.isVerified = true;
+
+  }
+
+  // Check if the user is verified
+  checkVerified(): boolean {
+    console.log(this.isVerified,"cer");
+    
+    return this.isVerified;
+  }
 }

@@ -11,6 +11,7 @@ export class AreaService {
  routeUrl:string=environment.areaServiceUrl+"/route/getRegionDetails"
 
   constructor(private http:HttpClient) {}
+
   saverouteDetails(body: any, id?: string): Observable<any>{
     let saverouteUrl: string = `${environment.areaServiceUrl}/route/addRoute`
     if(id){
@@ -18,6 +19,7 @@ export class AreaService {
     }
     return this.http.post(saverouteUrl, body)
   }
+
   getrouteAll(){
     return this.http.get(this.areaUrl)
   }
@@ -25,6 +27,9 @@ export class AreaService {
     let url = `${environment.areaServiceUrl}/route/getRouteById/${id}`;
     return this.http.get(url)
   }
+
+
+  
   saveregionDetails(body: any, id?: string): Observable<any>{
     let saveregionUrl: string = `${environment.areaServiceUrl}/route/addRegion`
     if(id){

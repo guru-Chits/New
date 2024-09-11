@@ -18,9 +18,15 @@ export class AuthService {
 
 
 
-  isLoggedIn():boolean {
-    return !!sessionStorage.getItem('userRole'); 
-   }
+ isLoggedIn(): boolean {
+    // Logic to check if the user is logged in
+    return !!sessionStorage.getItem('userRole');
+  }
+
+  isVerified(): boolean {
+    // Logic to check if the user is verified, based on your app's implementation
+    return !!sessionStorage.getItem('isVerified');  // Example: Check verification status from sessionStorage
+  }
 
   checkAccess(accKey: string, action: string): Observable<boolean> {
     let role = sessionStorage.getItem('userRole');

@@ -1,6 +1,6 @@
 .nav-item {
     border-bottom: 10px solid transparent !important; 
-    background: white;
+    /* background: white; */
   }
   
   .nav-item .nav-link.active {
@@ -44,3 +44,17 @@ background-color: #e8e8e8;
     color:red;
     font-size: 13px;
   }
+  .btn2{
+    background-color: #F04438;
+    border:none;
+    color: #FFFFFF;
+    border-radius: 4px;
+    margin-right: 10px;
+}
+.btn1{
+  background-color: transparent;
+  border:1px solid #3E3A97;
+  color: #3E3A97;
+  border-radius: 4px;
+  margin-right: 10px;
+}

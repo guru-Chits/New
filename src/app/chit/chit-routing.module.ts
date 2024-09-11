@@ -36,7 +36,7 @@ const routes: Routes = [
 
   },
   {
-    path:'auction',
+    path:'auction/:id',
     component:AuctionComponent,
     canActivate: [AuthGuard],
     data: { accKey: 'Chit Management', action: 'create' }

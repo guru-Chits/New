@@ -8,5 +8,6 @@ export const environment = {
     staffServiceUrl:`${localUrl}/api`,
     areaServiceUrl:`${baseUrl}/api`,
     loginServiceUrl:`${baseUrl}/api`,
-    accessServiceUrl:`${baseUrl}/api`
+    accessServiceUrl:`${baseUrl}/api`,
+    auctionServiceUrl:`${baseUrl}/api`
 }

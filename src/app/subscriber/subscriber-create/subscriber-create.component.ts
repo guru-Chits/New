@@ -21,6 +21,7 @@ profileImageUrl: string | ArrayBuffer | null = null;
 defaultImageUrl = 'assets/subscriber/user.svg'; // Path to default profile image
 private subscriberIdPrefix: string = 'KNG-C';
  subscriberIdCounter: string;
+submit:string="Submit"
 heading:string="Subscriber Details"
 routeData:any
 routes:any[]=[]
@@ -64,12 +65,16 @@ ngOnInit(): void {
   
   this.subscriberForm = this.fb.group({
     subscriberId: [{ value: '', disabled: true }],
-    firstName: ['', [Validators.required, Validators.pattern(/^[A-Z][a-zA-Z]+$/)]],
-    lastName: ['', [Validators.required, Validators.pattern(/^[A-Z][a-zA-Z]+$/)]],
+    firstName: ['', [Validators.required, Validators.pattern(/^[A-Z][a-zA-Z]+$/),Validators.maxLength(25),Validators.minLength(2)]],
+    lastName: ['', [Validators.required, Validators.pattern(/^[A-Z][a-zA-Z]+$/),Validators.maxLength(25),Validators.minLength(2)]],
     aliasName: ['', [
-      this.conditionalValidator(() => !!this.subscriberForm?.get('aliasName')?.value, Validators.pattern(/^[A-Z][a-zA-Z\/\-() ]+$/))
+      this.conditionalValidator(() => !!this.subscriberForm?.get('aliasName')?.value, Validators.pattern(/^[A-Z][a-zA-Z\/\-() ]+$/)),
+      this.conditionalValidator(() => !!this.subscriberForm?.get('aliasName')?.value, Validators.maxLength(25)),
+      this.conditionalValidator(() => !!this.subscriberForm?.get('aliasName')?.value, Validators.minLength(2))
+
+
     ]],
-    contact: ['', [Validators.required, Validators.pattern(/^\d{10}$/)]],
+    contact: ["", [Validators.required, Validators.pattern(/^\+91\s?\d{10}$/)]],
     place: ['', [Validators.required, Validators.minLength(10), Validators.maxLength(100), Validators.pattern(/^[a-zA-Z0-9\s,.'-]+$/)]],
     gender: ['', Validators.required],
     dob: ['', [
@@ -127,6 +132,13 @@ ngOnInit(): void {
     panUrl: ['']
   });
   
+  // this.subscriberForm.get('profileImageUrl').valueChanges.subscribe(profile=>{
+    
+  // })
+  this.subscriberForm.patchValue({
+    contact: '+91 '
+  });
+
   this.routeService.getrouteAll().subscribe((data)=>{
     this.routeData=data;
     console.log("kk",this.routeData)
@@ -155,7 +167,7 @@ ngOnInit(): void {
       
       ];
       this.heading="Edit Subscriber Details"
-
+      this.submit="Save Changes"
     this.service.getsubscriberById(paramData.id).subscribe((data) => {
       this.subscriberData = data;
       this.subscriberId=this.subscriberData.Subscriber._id
@@ -200,6 +212,18 @@ ngOnInit(): void {
     }
 
     this.subscriberForm.get('firstName')?.valueChanges.subscribe(value => {
+      this.autoCorrectNames();
+    
+    });
+    this.subscriberForm.get('lastName')?.valueChanges.subscribe(value => {
+      this.autoCorrectNames();
+    
+    });
+    this.subscriberForm.get('aliasName')?.valueChanges.subscribe(value => {
+      this.autoCorrectNames();
+    
+    });
+    this.subscriberForm.get('nomineeName')?.valueChanges.subscribe(value => {
       this.autoCorrectNames();
     
     });

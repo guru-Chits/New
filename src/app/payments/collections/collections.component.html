@@ -1,5 +1,8 @@
 <!-- <form [formGroup]="paymentForm" (ngSubmit)="onSubmit()"> -->
-<form [formGroup]="collectionForm">
+    <div class="container-fluid d-flex flex-column mb-3">
+   <div class="row">
+   <div [ngClass]="{'col-md-8 col-lg-8': paymentDetail, 'col-md-12 col-lg-12': !paymentDetail}">     
+    <form [formGroup]="collectionForm">
     <div class="row justify-content-around">
         <div class="col-lg-4">
             <div class="form-group">
@@ -15,7 +18,7 @@
             <div class="form-group">
                 <label class="form-control-label">Route ID <span class="required" *ngIf="collectionForm.get('routeId').hasError('required')">*</span></label>
                 <select class="form-control form-control-sm form-select" formControlName="routeId" placeholder="Route ID">
-                    <option value="" disabled selected>Route Id</option>
+                    <option value="" disabled selected>Route ID</option>
                     <option *ngFor="let route of routes" [value]="route.routeId">{{route.routeId}}</option>
                 </select>
             </div>
@@ -96,8 +99,10 @@
         class="px-3 mb-3" [searchImg]="searchImg" [filterImg]="filterImg" width="100%" height="340px"
         [pageSize]="7" [search]="search">
     </app-ag-grid>
+    </div>
+</div>
 
-    <!-- <div class="col-lg-4">
+    <div class="col-lg-4">
         <div *ngIf="paymentDetail">
             <div class="card">
     
@@ -161,15 +166,15 @@
                             
                         </table>
                     <div class="botton-div d-flex justify-content-center">
-                        <button type="button" class="btn1 px-3 py-1" (click)="cancel()">Cancel</button>
+                        <button type="button" class="btn1 px-3 py-1" (click)="cancel()" >Cancel</button>
 
-                        <button class="btn2 px-3 py-1" (click)="delete(paymentDetail.payment._id)">Cancel Bill</button>
+                        <button class="btn2 px-3 py-1" (click)="delete(paymentDetail.payment._id)" *ngIf="canDelete">Cancel Bill</button>
 
                     </div>
                  
                 </div>
                </div>
             </div>
-    </div> -->
-
+    </div>
+</div>
     </div>

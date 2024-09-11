@@ -103,15 +103,15 @@ column: ITableColumn[] = [
   {
     label: 'Route No',
     field: 'routeNo',
-    filter:false,
+    filterList:false,
    
   },
 
   { label: 'Route ID', field:'routeId', sortable: true,
-    filter:false, cellStyle: { color: '#50A1A5' },
+    filterList:false, cellStyle: { color: '#50A1A5' },
     
    },
-  { label: 'Route Name', field: 'routeName', sortable: true , filter:true,
+  { label: 'Route Name', field: 'routeName', sortable: true , filterList:true,
 
       },
   { label: '', field: 'action', sortable: true ,cellStyle: { color: '#50A1A5' },

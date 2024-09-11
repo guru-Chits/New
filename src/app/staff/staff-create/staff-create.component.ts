@@ -13,6 +13,7 @@ import { NgSelectModule, NgLabelTemplateDirective, NgOptionTemplateDirective } f
 export class StaffCreateComponent implements OnInit{
   staffsForm: FormGroup;
   heading:string="Create Staff"
+  submit:string="Submit"
   aadharUrl:string|null=null
   profileUrl: string | ArrayBuffer | null = null;
   defaultImageUrl = 'assets/subscriber/user.svg';
@@ -66,11 +67,11 @@ ngOnInit(){
 
   this.staffsForm = this.fb.group({
     employeeId: [{ value: '', disabled: true },],
-    firstName: ["", [Validators.required]],
-    lastName: ["", [Validators.required]],
+    firstName: ["", [Validators.required,Validators.pattern(/^[A-Z][a-zA-Z]+$/),Validators.maxLength(25),Validators.minLength(2)]],
+    lastName: ["", [Validators.required,Validators.pattern(/^[A-Z][a-zA-Z]+$/),Validators.maxLength(25),Validators.minLength(2)]],
     gender: ["", [Validators.required]],
     role: ["", [Validators.required]],
-    contact: ["", [Validators.required, Validators.pattern(/^\d{10}$/)]],
+    contact: ["", [Validators.required, Validators.pattern(/^\+91\s?\d{10}$/)]],
     address: ["", [Validators.required, Validators.pattern(/^[a-zA-Z0-9\s,.'-]+$/)]],
     emailId:["", [Validators.required, Validators.email, Validators.minLength(10), Validators.maxLength(100)]],
     dob: ['', [Validators.required,
@@ -80,20 +81,32 @@ ngOnInit(){
     accountNumber: ["", [
       this.conditionalValidator(() => !!this.staffsForm?.get('accountNumber')?.value, Validators.pattern(/^\d{8,12}$/))
     ]],
-    ifscCode: [""],
-    upiIdOrNumber: [""],
-    panCardNumber: [""],
+    ifscCode: ['', [
+      this.conditionalValidator(() => !!this.staffsForm?.get('ifscCode')?.value, Validators.pattern(/^[A-Za-z]{4}\d{7}$/))
+    ]],
+    upiIdOrNumber: ["",[this.conditionalValidator(() => !!this.staffsForm?.get('upiIdOrNumber')?.value, Validators.pattern(/^[\w.-]+@[\w.-]+$/))
+    ]],
+    panCardNumber: ['', [
+      this.conditionalValidator(() => !!this.staffsForm?.get('panCardNumber')?.value, Validators.pattern(/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/))
+    ]],
     panUrl: [""],
-    aadharNumber: ["", [Validators.required,Validators.pattern(/^\d{12}$/)]],
+    aadharNumber: ['', [
+      this.conditionalValidator(() => !!this.staffsForm?.get('aadharNumber')?.value, Validators.pattern(/^\d{4}\s\d{4}\s\d{4}$/))
+    ]],
     aadharUrl: [""],
     drivingLicenseUrl: [""],
-    drivingLicenseNumber: ["", this.conditionalValidator(() => !!this.staffsForm?.get('drivingLicenseNumber')?.value, Validators.pattern(/^AA[0-9]{9}$/))],
+    drivingLicenseNumber: ["", this.conditionalValidator(() => !!this.staffsForm?.get('drivingLicenseNumber')?.value, Validators.pattern(/^[A-Z]{2}[- ]?[A-Z0-9]{2}[ ]?[0-9]{4}[ ]?[0-9]{7}$/))],
     bankName: [""],
     passbookUrl: [""],
     workingStatus: [false, [Validators.required]],
-    bgVerification: [""],
+    bgVerification: ["UnVerified"],
     bgVerification_remark: [""],
-    profileUrl:[""]
+    profileUrl:[""],
+    password:[""]
+  });
+
+  this.staffsForm.patchValue({
+    contact: '+91 '
   });
  
     this.activatedRoute.params.subscribe(paramData => {
@@ -109,7 +122,7 @@ ngOnInit(){
           },];
 
         this.heading="Edit Staff Details"
-  
+        this.submit="Save Changes"
       this.service.getstaffById(paramData.id).subscribe((data) => {
         this.staffData = data;
         this.staffId=this.staffData.Staff._id
@@ -132,7 +145,8 @@ ngOnInit(){
         this.staffIdCounter+=this.staffData.AllStaff.length;
         this.setStaffId(this.staffIdCounter);
       }
-  
+      
+
       this.staffsForm.get('firstName')?.valueChanges.subscribe(value => {
         this.autoCorrectNames();
       }
@@ -191,6 +205,16 @@ ngOnInit(){
         
       }
     }
+  }
+
+  generateRandomPassword(length: number): string {
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+[]{}|;:,.<>?';
+    let password = '';
+    for (let i = 0; i < length; i++) {
+      const randomIndex = Math.floor(Math.random() * chars.length);
+      password += chars[randomIndex];
+    }
+    return password;
   }
 
   onFileSelected(event: any, controlName: string): void {
@@ -273,9 +297,49 @@ private getColorForInitial(initial: string): string {
 }
 
 
+// onSubmit(): void {
+//   const formData = new FormData();
+  
+//   this.staffsForm.patchValue({
+//     password: this.generateRandomPassword(12)  // Generate a 12-character random password
+//   });
+  
+//   const formValue = this.staffsForm.getRawValue();
+
+//   if (!formValue.profileImageUrl) {
+//     const defaultProfileImage = this.generateDefaultProfileImage(formValue.firstName);
+//     formData.append('profileUrl', defaultProfileImage); // Add to FormData directly
+//   } else {
+//     // Append the file if profileImageUrl contains a file
+//     const profileImageFile = this.staffsForm.get('profileUrl')?.value;
+//     if (profileImageFile instanceof File) {
+//       formData.append('profileUrl', profileImageFile);
+//     }
+//   }
+
+//   // Append other form values
+//   for (const key in formValue) {
+//     if (formValue.hasOwnProperty(key) && key !== 'profileUrl') { // Exclude the file input from rawValue
+//       formData.append(key, formValue[key]);
+//     }
+//   }
+
+//   this.service.savestaffDetails(formData, this.staffId).subscribe((data) => {
+//     this.router.navigate(["/staff"]);
+//   });
+// }
+
 onSubmit(): void {
   const formData = new FormData();
+  
+  this.staffsForm.patchValue({
+    password: this.generateRandomPassword(12)  // Generate a 12-character random password
+  });
+  
   const formValue = this.staffsForm.getRawValue();
+
+  // Check if it's a new staff creation
+  const isNewStaff = !this.staffId;  // Assuming staffId will be undefined or null for new staff
 
   if (!formValue.profileImageUrl) {
     const defaultProfileImage = this.generateDefaultProfileImage(formValue.firstName);
@@ -296,8 +360,27 @@ onSubmit(): void {
   }
 
   this.service.savestaffDetails(formData, this.staffId).subscribe((data) => {
+    if (isNewStaff) {
+      // Send notification (OTP API or Email) with employeeId, password, and link
+      // const employeeId = this.staffsForm.get('employeeId')?.value;
+      // const password = this.staffsForm.get('password')?.value;
+      // const loginLink = 'http://13.127.210.25/login/forgot-password';
+      
+      // let message = `Your employee ID is ${employeeId} and your temporary password is ${password}. Use the following link to login and reset your password: ${loginLink}`;
+    }
+      // Assuming the service has a method to send SMS or email notifications
+      this.service.sendSms(
+         formValue.contact,
+         `Your employee ID is ${ this.staffsForm.get('employeeId')?.value} and your temporary password is ${this.staffsForm.get('password')?.value}. Use the following link to login and reset your password: ${'http://13.127.210.25/login/forgot-password'}`,
+      )
+    
+    // Navigate to staff list after saving
     this.router.navigate(["/staff"]);
-  });
+
+  })
+
 }
+
+
 }
 

@@ -58,7 +58,7 @@
         <div class="col-lg-4">
             <div class="form-group">
                 <label for="region" class="form-control-label">Route ID<span class="required" *ngIf="paymentForm.get('region').hasError('required')">*</span></label>
-                <input class="form-control p-2 form-control-sm" id="region" formControlName="region" placeholder="Region ID" readonly/>
+                <input class="form-control p-2 form-control-sm" id="region" formControlName="region" placeholder="Route ID" readonly/>
             </div>
         </div>
 
@@ -78,6 +78,9 @@
             <div class="form-group">
                 <label for="amount" class="form-control-label">Amount<span class="required" *ngIf="paymentForm.get('amount').hasError('required')">*</span></label>
                 <input class="form-control p-2 form-control-sm" id="amount" formControlName="amount" placeholder="Amount"/>
+                <div *ngIf="paymentForm.errors?.amountExceedsChitAmount" style="color: red;">
+                    Amount cannot be greater than Chit Amount.
+                  </div>
             </div>
         </div>
         <div class="col-lg-4">

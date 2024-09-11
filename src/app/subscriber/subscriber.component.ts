@@ -108,7 +108,7 @@ this.authService.checkAccess('Subscriber Management', 'delete').subscribe((hasAc
     {
       label: ' ',
       field: ' ',
-      filter:false,
+      filterList:false,
       maxWidth:80,  
       cellRenderer: this.profileImageWithIdRenderer,
       onCellClicked: (event: CellClickedEvent) => this.getSubscriberById(event.data.id)
@@ -117,24 +117,24 @@ this.authService.checkAccess('Subscriber Management', 'delete').subscribe((hasAc
       label: 'Subscriber ID',
       field: 'subscriberId',
       sortable:true,
-      filter:false,
+      filterList:false,
       cellStyle: function (params: any) {
-        return { color: '#50A1A5' };
+        return { color: '#50A1A5' ,cursor:'pointer'};
       }, 
       onCellClicked: (event: CellClickedEvent) => this.getSubscriberById(event.data.id)
     },
 
     { label: 'Display Name', field:'displayName', sortable: true,
-      filter:false,
+      filterList:false,
       onCellClicked: (event: CellClickedEvent) =>
         this.getSubscriberById(event.data.id)
      },
-    { label: 'Route Id', field: 'routeId', sortable: true , filter:true,
+    { label: 'Route ID', field: 'routeId', sortable: true , filterList:true,
 
       onCellClicked: (event: CellClickedEvent) =>
         this.getSubscriberById(event.data.id)
     },
-    { label: 'Occupation', field: 'occupation', sortable: true ,  filter:true,
+    { label: 'Occupation', field: 'occupation', sortable: true ,  filterList:true,
       onCellClicked: (event: CellClickedEvent) =>
         this.getSubscriberById(event.data.id)
     },

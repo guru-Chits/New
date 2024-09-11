@@ -124,9 +124,9 @@
                                     
                                 </table>
                             <div class="botton-div d-flex justify-content-center">
-                                <button type="button" class="btn1 px-3 py-1" (click)="cancel()">Cancel</button>
+                                <button type="button" class="btn1 px-3 py-1" (click)="cancel()" >Cancel</button>
 
-                                <button class="btn2 px-3 py-1" (click)="delete(paymentDetail.payment._id)">Cancel Bill</button>
+                                <button class="btn2 px-3 py-1" (click)="delete(paymentDetail.payment._id)" *ngIf="canDelete">Cancel Bill</button>
 
                             </div>
                          

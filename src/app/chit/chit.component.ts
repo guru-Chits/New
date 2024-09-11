@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { ChitService } from './shared/service/chit.service';
 import { LoginComponent } from '../login/login.component';
+import { AuthService } from '../shared/service/auth.service';
 @Component({
   selector: 'app-chit',
   templateUrl: './chit.component.html',
@@ -22,9 +23,18 @@ export class ChitComponent implements OnInit{
   specificChitData:any={}
   total: any;
   selectedChit:number=1
-  constructor(private router:Router, private service: ChitService){}
+  canCreate: boolean = false;
+
+  constructor(private router:Router, private service: ChitService,private authService:AuthService  ){}
 
   ngOnInit(): void{
+    this.authService.checkAccess('Chit Management', 'create').subscribe((hasAccess: boolean) => {
+      if (hasAccess) {
+        this.canCreate=true
+      }
+    });
+
+
     this.service.getAllChit().subscribe((data)=>{
       this.chitdata=data;
       this.chitdata=this.chitdata?.AllChitGroups

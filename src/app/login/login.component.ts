@@ -67,8 +67,7 @@ export class LoginComponent {
   
   this.loginForm=this.fb.group({
     employeeId:['',[Validators.required, Validators.pattern(this.employeePattern)]],
-    password:['']
-    // password:['',[Validators.required,Validators.pattern(this.passwordPattern),Validators.maxLength(12),Validators.minLength(8)],]
+    password:['',[Validators.required,Validators.pattern(this.passwordPattern),Validators.maxLength(12),Validators.minLength(8)],]
   })
 
   this.loginForm.get("password").valueChanges.subscribe(() => {
@@ -119,21 +118,19 @@ onSubmit() {
         this.roleAccess=roleResponse
         if ( this.roleAccess && this.roleAccess.roleAccess.roleDetails) {
           console.log("Role access granted:", roleResponse);
-              this.router.navigate(['/']); // Navigate after OTP success
+  
+          const otpUrl = `https://2factor.in/API/V1/b1037ef1-2ed8-11ef-8b60-0200cd936042/SMS/${this.mobileNumber}/AUTOGEN/OTPTemplate`;
 
-          // const otpUrl = `https://2factor.in/API/V1/b1037ef1-2ed8-11ef-8b60-0200cd936042/SMS/${this.mobileNumber}/AUTOGEN/OTPTemplate`;
-
-          // // Send OTP
-          // this.HttpClient.get(otpUrl).subscribe(
-          //   (otpResponse: any) => {
-          //     console.log('OTP sent successfully:', otpResponse);
-          //     this.verified = true;
-          //     this.router.navigate(['/']); // Navigate after OTP success
-          //   },
-          //   (error) => {
-          //     console.error('Error sending OTP:', error);
-          //   }
-          // );
+          // Send OTP
+          this.HttpClient.get(otpUrl).subscribe(
+            (otpResponse: any) => {
+              console.log('OTP sent successfully:', otpResponse);
+              this.verified = true;
+             },
+            (error) => {
+              console.error('Error sending OTP:', error);
+            }
+          );
         } else {
           console.log("No role access, denying login.");
           alert('Access denied. Please contact admin.');

@@ -129,32 +129,32 @@ column: ITableColumn[] = [
   {
     label: 'Serial No',
     field: 'sno',
-    filter:false,
+    filterList:false,
     onCellClicked: (event: CellClickedEvent) => this.getPaymentById(event.data.id)
   },
   {
     label: 'Receipt Number',
     field: 'receiptNumber',
-    filter:false,
+    filterList:false,
     onCellClicked: (event: CellClickedEvent) => this.getPaymentById(event.data.id)
   },
   {
     label: 'Passbook Number',
     field: 'passbooknumber',
-    filter:true,
+    filterList:true,
     onCellClicked: (event: CellClickedEvent) => this.getPaymentById(event.data.id)
   },
   {
     label: 'Group Id',
     field: 'groupId',
-    filter:true,
+    filterList:true,
     onCellClicked: (event: CellClickedEvent) => this.getPaymentById(event.data.id)
   },
   
   {
     label: 'Amount Paid',
     field: 'amount',
-    filter:false,
+    filterList:false,
     cellStyle: { color: '#12B76A' },
     onCellClicked: (event: CellClickedEvent) => this.getPaymentById(event.data.id)
   },
@@ -164,28 +164,28 @@ columnCancelled: ITableColumn[] = [
   {
     label: 'Serial No',
     field: 'sno',
-    filter:false,
+    filterList:false,
   },
   {
     label: 'Receipt Number',
     field: 'receiptNumber',
-    filter:false,
+    filterList:false,
   },
   {
     label: 'Passbook Number',
     field: 'passbooknumber',
-    filter:true,
+    filterList:true,
   },
   {
     label: 'Group Id',
     field: 'groupId',
-    filter:true,
+    filterList:true,
   },
   
   {
     label: 'Amount Paid',
     field: 'amount',
-    filter:false,
+    filterList:false,
     cellStyle: { color: 'red' },
   },
 ];

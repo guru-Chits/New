@@ -8,17 +8,26 @@ import { PaymentService } from '../shared/service/payment.service';
 import { ITableColumn } from '../../shared/interface/list-table';
 import { CellClickedEvent } from 'ag-grid-community';
 import jsPDF from 'jspdf';
+import * as XLSX from 'xlsx';
+import { saveAs } from 'file-saver';
 import html2canvas from 'html2canvas';
 import 'jspdf-autotable'; 
+import { DatePipe } from '@angular/common';
+
 @Component({
   selector: 'app-transactions',
   templateUrl: './transactions.component.html',
-  styleUrl: './transactions.component.css'
+  styleUrl: './transactions.component.css',
+  providers: [DatePipe]
+
 })
 export class TransactionsComponent implements OnInit{
   routeData:any
   routes:any[]=[]
   data:any[]=[]
+  worksheetData:any
+  fileName:string
+  downloadData:any[]=[]
   transData:any
   searchImg:string='assets/table/black search.svg'
   filterImg:string='assets/table/black filter.svg'
@@ -26,11 +35,13 @@ export class TransactionsComponent implements OnInit{
   totalAmount: number = 0;
   totalRecords: number = 0;
   transactionForm:FormGroup
+  private readonly EXCEL_TYPE = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
   constructor(private router: Router,
     private formBuilder: FormBuilder,
     private service: PaymentService,
     private staffService:StaffService,
     private chitService:ChitService,
+    private datePipe: DatePipe,
     private routeService:AreaService) { }
 
 ngOnInit(): void {
@@ -62,28 +73,28 @@ column: ITableColumn[] = [
   {
     label: 'Serial No',
     field: 'sno',
-    filter:false,
+    filterList:false,
   },
   {
     label: 'Receipt Number',
     field: 'receiptNumber',
-    filter:false,
+    filterList:false,
   },
   {
     label: 'Passbook Number',
     field: 'passbooknumber',
-    filter:true,
+    filterList:true,
   },
   {
     label: 'Group Id',
     field: 'groupId',
-    filter:true,
+    filterList:true,
   },
   
   {
     label: 'Amount Paid',
     field: 'amount',
-    filter:false,
+    filterList:false,
     cellStyle: { color: '#12B76A' },
   },
 ];
@@ -104,6 +115,7 @@ formChanges() {
     const fromDate = this.transactionForm.get('fromDate').value;
     const toDate = this.transactionForm.get('toDate').value;
     if (fromDate && toDate && routeId) {
+
       // Fetch data filtered by date range and routeId
       this.fetchDataByRoute(fromDate, toDate, routeId);
     }
@@ -140,12 +152,57 @@ handleDateChange(fromDate: string, toDate: string) {
       amount: transDetails.amount
     }));
 
+
+    this.downloadData=this.transData.details.map((transDetails, index) => ({
+      SNo: index + 1,
+      RouteId: transDetails.region,
+      SubscriberId:transDetails.subscriberId,
+      PassbookNumber: transDetails.passbooknumber,
+      receiptNumber: transDetails.receiptNumber,
+      InstallmentMonth:transDetails.installmentMonth,
+      CollectionType: transDetails.collectionType,
+      Amount: transDetails.amount
+    }));
+
+
     // Calculate and format the grandTotalAmount
     const grandTotal = this.data.reduce((total, item) => total + parseFloat(item.amount), 0);
     const formattedGrandTotal = grandTotal.toLocaleString('en-US', {
       minimumFractionDigits: 2,
       maximumFractionDigits: 2
     });
+
+    this.fileName=`${fromDate}-${toDate}`
+    
+    this.worksheetData = [
+      // Add the first row for the title
+      [{v: 'Collection Summary', s: {font: {sz: 14, bold: true}, alignment: {horizontal: 'center'}}}],
+      
+      // Merge the title across the columns
+      [],
+      ['From Date:' +fromDate, 'To Date:'+toDate],
+
+      // Add header row
+      ['S No', 'Route ID', 'Subscriber ID', 'Passbook No.', 'Receipt No.', 'Installment Month', 'Collection Type', 'Amount'],
+      
+      // Add the data rows
+      ...this.downloadData.map((data: any, index: number) => [
+        index + 1,
+        data.RouteId, 
+        data.SubscriberId,
+        data.PassbookNumber,
+        data.receiptNumber,
+        data.InstallmentMonth,
+        data.CollectionType,
+        data.Amount
+      ]),
+  
+      // Add a blank row before the total
+      [],
+      
+      // Add the total row
+      ['', '', '', '', '', '', 'Amount', "₹"+formattedGrandTotal.toLocaleString('en-IN', { style: 'currency', currency: 'INR' })]
+    ];
 
     // Update the totalSerialNumberCount and grandTotalAmount
     this.transactionForm.patchValue({
@@ -179,12 +236,50 @@ fetchDataByRoute(fromDate: string, toDate: string, routeId: string) {
       amount: transDetails.amount
     }));
 
+    this.downloadData=this.transData.details.map((transDetails, index) => ({
+      SNo: index + 1,
+      date:transDetails.date,
+      subscriberId:transDetails.subscriberId,
+      subscriberName:transDetails.subscriberName,
+      chitAmount: transDetails.chitAmount,
+      amount:transDetails.amount,
+    }));
+
+
     // Calculate and format the grandTotalAmount for filtered data
     const grandTotal = this.data.reduce((total, item) => total + parseFloat(item.amount), 0);
     const formattedGrandTotal = grandTotal.toLocaleString('en-US', {
       minimumFractionDigits: 2,
       maximumFractionDigits: 2
     });
+
+    this.fileName=`${fromDate}-${toDate}-${routeId}`
+    this.worksheetData = [
+      // Add the first row for the title
+      [{v: 'Collection Summary', s: {font: {sz: 14, bold: true}, alignment: {horizontal: 'center'},}}],
+      
+      // Merge the title across the columns
+      ['From Date:' +fromDate, 'To Date:'+toDate,'Route ID:'+ routeId],
+      
+      // Add header row
+      ['S No', 'Date', 'Subscriber ID', 'Subscriber Name', 'Chit Amount', 'Amount'],
+      
+      // Add the data rows
+      ...this.downloadData.map((data: any, index: number) => [
+        index + 1,
+        this.datePipe.transform(data.date, 'dd-MM-YYYY') || '',
+        data.subscriberId,
+        data.subscriberName,
+        data.chitAmount,
+        data.amount
+      ]),
+  
+      // Add a blank row before the total
+      [],
+      
+      // Add the total row
+      ['', '', '', '',  'Amount',"₹"+ formattedGrandTotal.toLocaleString('en-IN', { style: 'currency', currency: 'INR' })]
+    ];
 
     // Update the totals for filtered data
     this.transactionForm.patchValue({
@@ -194,11 +289,29 @@ fetchDataByRoute(fromDate: string, toDate: string, routeId: string) {
   });
 }
 
+exportToExcel(): void {
 
+  const worksheet: XLSX.WorkSheet = XLSX.utils.aoa_to_sheet(this.worksheetData);
 
-  onSubmit(){
+  worksheet['!merges'] = [
+    { s: { r: 0, c: 0 }, e: { r: 0, c: 9 } }, 
+  ];
 
-  }
+  // Add the worksheet to a new workbook
+  const workbook: XLSX.WorkBook = {
+    Sheets: { 'Collection Summary': worksheet },
+    SheetNames: ['Collection Summary']
+  };
+
+  // Export the workbook to Excel file
+
+  XLSX.writeFile(workbook, `${this.fileName}.xlsx`);
+}
+
+// Function to calculate the total amount
+getTotalAmount(): number {
+  return this.downloadData.reduce((total: number, item: any) => total + parseFloat(item.Amount), 0);
+}
 
   clear(){
     this.totalAmount = 0;
@@ -206,28 +319,5 @@ fetchDataByRoute(fromDate: string, toDate: string, routeId: string) {
     this.transactionForm.reset()
     this.formChanges()
 
-  }
-  downloadAsPDF() {
-    // Create a new jsPDF instance
-    const doc = new jsPDF();
-
-    // Define the columns and rows for the table
-    const columns = this.column.map(col => col.field); // Get the column headers
-    const rows = this.data.map(row => 
-      this.column.map(col => row[col.field]) // Get the row data for each column
-    );
-
-    // Add a title to the PDF
-    doc.text('Table Summary', 14, 10);
-
-    // Use autoTable to generate the table
-    (doc as any).autoTable({
-      head: [columns],
-      body: rows,
-      startY: 20, // Start the table below the title
-    });
-
-    // Save the generated PDF
-    doc.save('table-summary.pdf');
   }
 }

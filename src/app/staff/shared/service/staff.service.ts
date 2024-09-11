@@ -9,6 +9,7 @@ import { Observable } from 'rxjs';
 export class StaffService {
   delete:string=environment.staffServiceUrl+'/staff/deleteStaff/666fe548e419feb9c05e422d'
   staffUrl:string=environment.staffServiceUrl+"/staff/getStaffDetails"
+  private apiUrl = 'https://2factor.in/API/V1/b1037ef1-2ed8-11ef-8b60-0200cd936042/SMS';
 
   constructor(private http:HttpClient) { }
 
@@ -29,5 +30,19 @@ export class StaffService {
     return this.http.post(savesubscribeUrl, body)
   }
 
+  sendSms(mobileNumber: string, message: string): void {
+    const url = `${this.apiUrl}/${mobileNumber}/AUTOGEN/YourTemplateWithUsernamePasswordAndLink/${message}`;
+
+    this.http.get(url).subscribe(
+      (response) => {
+        console.log('SMS sent successfully:', response);
+      },
+      (error) => {
+        console.error('Error sending SMS:', error);
+      }
+    );
+  }
 }
+
+
 

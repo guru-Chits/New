@@ -18,7 +18,7 @@
                   </div>
               </div>
               <h6 class="text-center">{{heading}}</h6>
-            <form class="ps-5 pe-5 " [formGroup]="staffsForm"  (ngSubmit)="onSubmit()">
+            <form class="ps-5 pe-5 " [formGroup]="staffsForm">
                 <div class="row justify-content-around">
                     <div class="col-lg-4">
                         <div class="form-group">
@@ -54,11 +54,10 @@
                     <div class="col-lg-4">
                         <div class="form-group">
                             <label for="gender" class="form-control-label">Gender <span class="required" *ngIf="staffsForm.get('gender').hasError('required')">*</span></label>
-                            <select type="text" placeholder="Gender" class="form-control form-control-sm" formControlName="gender">
+                            <select type="text" placeholder="Gender" class="form-control form-control-sm form-select" formControlName="gender">
                               <option value="">Select Gender</option>
                               <option value="Male">Male</option>
                               <option value="Female">Female</option>
-                              <option value="Other">Other</option>
                               </select>
                             <div class="invalid-feedback" *ngIf="staffsForm.get('gender').invalid && (staffsForm.get('gender').dirty || staffsForm.get('gender').touched)">
                               <div *ngIf="staffsForm.get('gender').errors.required">Gender is required.</div>
@@ -68,7 +67,7 @@
                     <div class="col-lg-4">
                         <div class="form-group">
                             <label for="role" class="form-control-label">Role <span class="required" *ngIf="staffsForm.get('role').hasError('required')">*</span></label>
-                            <select type="text" class="form-control form-control-sm" formControlName="role">
+                            <select type="text" class="form-control form-control-sm form-select" formControlName="role">
                               <option value="">Role</option>
                               <option *ngIf="role" value="Admin">Admin</option>
                               <option value="Collection Staff">Collection Staff</option>
@@ -127,7 +126,7 @@
                         <label for="region" class="form-control-label">Route Id 
                             <!-- <span class="required" *ngIf="staffsForm.get('region').hasError('required')">*</span> -->
                         </label>
-                        <!-- <ng-select
+                         <ng-select
                             [items]="routes"
                             bindLabel="routeId"
                             bindValue="routeId"
@@ -135,9 +134,7 @@
                             formControlName="routeId"
                             placeholder="Select RouteId"
                         >
-                        </ng-select> -->
-
-                        <input type="text" formControlName="routeId">
+                        </ng-select> 
                     </div>
                 </div>
                 
@@ -155,7 +152,7 @@
                     <div class="col-lg-4">
                         <div class="form-group">
                             <label for="ifscCode" class="form-control-label">IFSC Code <span class="required" *ngIf="staffsForm.get('ifscCode').hasError('required')">*</span></label>
-                            <input type="text" class="form-control form-control-sm"  (input)="onInputChange($event,'AAAA0000000')" formControlName="ifscCode"/>
+                            <input type="text" class="form-control form-control-sm"  (input)="onInputChange($event,'AAAA0000000')" formControlName="ifscCode" placeholder="IFSC Code"/>
                             <div class="invalid-feedback" *ngIf="staffsForm.get('ifscCode').invalid && (staffsForm.get('ifscCode').dirty || staffsForm.get('ifscCode').touched)">
                               <div *ngIf="staffsForm.get('ifscCode').errors.required">IFSC is required.</div>
                               <div *ngIf="staffsForm.get('ifscCode').errors.pattern">IFSC should be in the format: 4 letters followed by 7 digits.</div>
@@ -258,8 +255,8 @@
                    <div class="row">
                     <div class="col-lg-4">
                         <div class="form-group">
-                            <label for="bgVerification" class="form-control-label">BG Verifiction <span class="required" *ngIf="staffsForm.get('bgVerification').hasError('required')">*</span></label>
-                            <select type="text" class="form-control form-control-sm" formControlName="bgVerification">
+                            <label for="bgVerification" class="form-control-label">BG Verification <span class="required" *ngIf="staffsForm.get('bgVerification').hasError('required')">*</span></label>
+                            <select type="text" class="form-control form-control-sm form-select" formControlName="bgVerification">
                               <option value="">BG Verifiction</option>
                               <option value="Verified">Verified</option>
                               <option value="UnVerified">UnVerified</option>
@@ -270,8 +267,8 @@
                 <div class="row">
                     <div class="col-lg-4">
                         <div class="form-group">
-                            <label for="bgVerification_remark" class="form-control-label">BG Verifiction Remarks <span class="required" *ngIf="staffsForm.get('bgVerification_remark').hasError('required')">*</span></label>
-                            <input type="text" placeholder="BG Verifiction Remarks" class="form-control form-control-sm" formControlName="bgVerification_remark"/>
+                            <label for="bgVerification_remark" class="form-control-label">BG Verification Remarks <span class="required" *ngIf="staffsForm.get('bgVerification_remark').hasError('required')">*</span></label>
+                            <input type="text" placeholder="BG Verification Remarks" class="form-control form-control-sm" formControlName="bgVerification_remark"/>
                         </div>
                     </div>
                     </div>
@@ -286,9 +283,9 @@
 
      
                 <div class="row justify-content-center">
-                    <div class="col-lg-12 d-flex justify-content-end mb-2">
-                        <button class="btn nxt-btn btn-outline-secondary" routerLink="/projects/project">Cancel</button>
-                        <button class="btn save-btn" [disabled]="!staffsForm.valid"  type="submit">Submit</button>
+                    <div class="col-lg-12 d-flex justify-content-end">
+                        <button class="btn nxt-btn btn-outline-secondary" routerLink="/staff">Cancel</button>
+                        <button class="btn save-btn" [disabled]="!staffsForm.valid" (click)="onSubmit()" type="submit" >{{submit}}</button>
                     </div>
                 </div>
 

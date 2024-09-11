@@ -7,6 +7,6 @@ export const environment = {
     chitServiceUrl:`${localUrl}/api`,
     staffServiceUrl:`${localUrl}/api`,
     areaServiceUrl:`${baseUrl}/api`,
-    loginServiceUrl:`${localUrl}/api`,
-    accessServiceUrl:`${localUrl}/api`
+    loginServiceUrl:`${baseUrl}/api`,
+    accessServiceUrl:`${baseUrl}/api`
 }

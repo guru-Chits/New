@@ -1,10 +1,10 @@
 <div class="container-fluid" *ngIf="!verified">
     <div class="row d-flex">
-        <div class="col-lg-6 col-md-6 ml-5 mt-10">
-          <div class="login-img">
-            <img src="/assets/login/login.svg"  alt="" >
-          </div>
-            
+      <!-- <div class="col-lg-1 col-md-1 align-self-center">
+        
+      </div> -->
+      <div class="col-lg-6 col-md-6 align-self-center">
+            <img src="/assets/login/login.svg"  alt="" class="img-fluid  clipart">            
           </div>    
       <div class="col-lg-6 col-md-6 flex align-center justify-center">
         <div class="d-flex flex-column gap-4 align-items-center">
@@ -51,7 +51,7 @@
                           </div>
                           <div class="invalid-feedback  col-9">
                             <span  *ngIf="passwordControl.touched && passwordControl.hasError('required')" >
-                              New Password is required
+                            Password is required
                             </span>
                             <span  *ngIf="passwordControl.touched && passwordControl.hasError('pattern')">
                             New password should be  mix of letters, numbers, and specials
@@ -64,8 +64,15 @@
                             </span>
                           </div>
                           </div>
+                          <div class="row justify-content-center">
+                            <div class="col-lg-11 d-flex justify-content-end" >
+                            <p   routerLink="/login/forgot-password" style="color:#3E3A97;cursor: pointer;">Forgot Password ?</p>
+
+                          </div>
+
+                        </div>
               </div>
-              <button type="submit" class="btn btn-primary col-lg-12 col-md-12 mb-3 mt-3" (click)="onSubmit()">Login</button>
+              <button type="submit" class="btn login col-lg-12 col-md-12 mb-3 mt-3" [disabled]="!loginForm.valid" (click)="onSubmit()">Login</button>
               
             </form>
           </div>

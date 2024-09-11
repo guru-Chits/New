@@ -5,6 +5,7 @@ import { AreaService } from '../../area/shared/service/area.service';
 import { PaymentService } from '../shared/service/payment.service';
 import { ITableColumn } from '../../shared/interface/list-table';
 import { CellClickedEvent } from 'ag-grid-community';
+import { AuthService } from '../../shared/service/auth.service';
 
 @Component({
   selector: 'app-collections',
@@ -27,16 +28,20 @@ export class CollectionsComponent implements OnInit {
   paymentData: any = {};  
   avlData: any[] = [];
   canData: any[] = [];
+  paymentDetail:any
+  canDelete:any
   searchImg:string='assets/table/black search.svg'
   filterImg:string='assets/table/black filter.svg'
   search:boolean=true
   showCancelledPayments = false;
+  selectStaff:any
   paymentBody:any
   passbooknumber:any
   constructor(private formBuilder:FormBuilder,
     private staffService:StaffService,
     private routeService:AreaService,
     private service:PaymentService,
+    private authService:AuthService,
   ){}
   ngOnInit(): void {
     this.collectionForm = this.formBuilder.group({
@@ -58,6 +63,13 @@ export class CollectionsComponent implements OnInit {
       //   staffName:staffDetails.firstName
       //  }))
       //  })
+
+      this.authService.checkAccess('Payments', 'delete').subscribe((hasAccess: boolean) => {
+        if (hasAccess) {
+          this.canDelete=true
+        }
+      });
+
       this.staffs=localStorage.getItem('name')
       this.staffs=this.staffs.replace(/"/g, ''); 
       console.log(this.staffs);
@@ -94,7 +106,7 @@ export class CollectionsComponent implements OnInit {
       
               // Listen for changes in 'selectedStaff' field
               this.collectionForm.get('selectedStaff')?.valueChanges.subscribe(selectStaff => {
-                
+                this.selectStaff=selectStaff
                 // Fetch total amount based on date, routeId, and selectedStaff
                 this.service.getTotal(this.date, this.routeId, selectStaff).subscribe(amount => {
                   this.collectedAmount = amount;
@@ -223,21 +235,29 @@ export class CollectionsComponent implements OnInit {
       label: 'Serial No',
       field: 'sno',
       filterList:false,
+      onCellClicked: (event: CellClickedEvent) => this.getPaymentById(event.data.id)
+
     },
     {
       label: 'Receipt Number',
       field: 'receiptNumber',
       filterList:false,
+      onCellClicked: (event: CellClickedEvent) => this.getPaymentById(event.data.id)
+
     },
     {
       label: 'Passbook Number',
       field: 'passbooknumber',
       filterList:true,
+      onCellClicked: (event: CellClickedEvent) => this.getPaymentById(event.data.id)
+
     },
     {
       label: 'Group Id',
       field: 'groupId',
       filterList:true,
+      onCellClicked: (event: CellClickedEvent) => this.getPaymentById(event.data.id)
+
     },
     
     {
@@ -245,6 +265,8 @@ export class CollectionsComponent implements OnInit {
       field: 'amount',
       filterList:false,
       cellStyle: { color: '#12B76A' },
+      onCellClicked: (event: CellClickedEvent) => this.getPaymentById(event.data.id)
+
     },
   ];
   
@@ -281,7 +303,16 @@ export class CollectionsComponent implements OnInit {
   togglePayments() {
     this.showCancelledPayments = !this.showCancelledPayments;
   }
-  
+  getPaymentById(id: string): void {
+    this.service.getPaymentById(id).subscribe(
+      data => {
+        this.paymentDetail = data;
+      },
+      error => {
+        console.error('Error fetching payment', error);
+      }
+    );
+  }
   onSubmit(){
      const payload=this.collectionForm.value
      const balance = this.collectionForm.get('balance')?.value;
@@ -326,4 +357,48 @@ export class CollectionsComponent implements OnInit {
        this.collectionForm.reset()
      })
   }
+
+  cancel(){
+    this.paymentDetail=null
+  }
+   
+  delete(id) {
+    if (confirm('Are you sure you want to cancel this payment?')) {
+      // Mark the payment as cancelled
+      this.paymentDetail.cancelled = true;
+      let cancelled = this.paymentDetail;
+      console.log(cancelled);
+  
+      this.service.savePaymentDetails(cancelled, id).subscribe(
+        (response: any) => {
+          console.log(response);
+          // After successfully canceling the payment, refresh the table and form values
+          this.refreshTableAndForm();
+        },
+        (error) => {
+          console.error('Failed to cancel the payment:', error);
+        }
+      );
+    }
+    this.paymentDetail = null;
+  }
+  
+  refreshTableAndForm() {
+    // Call getAllPayment to refresh the table with new data
+    this.getAllPayment(this.date, this.routeId, this.selectStaff);
+  
+    // After refreshing the payments, update the form with new collectionAmount and serialNumberCount
+    this.service.getTotal(this.date, this.routeId, this.selectStaff).subscribe((amount) => {
+      this.collectedAmount = amount;
+  
+      // Patch the form with the updated values
+      this.collectionForm.patchValue({
+        collectionAmount: this.collectedAmount.totalAmount,
+        serialNumberCount: this.collectedAmount.length,
+      });
+  
+      console.log('Form updated with new collection amount and serial number count');
+    });
+  }
+  
 }

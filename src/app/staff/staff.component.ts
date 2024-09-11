@@ -113,7 +113,7 @@ export class StaffComponent implements OnInit{
       sortable:true,
       filterList:false,
       cellStyle: function (params: any) {
-        return { color: '#50A1A5' };
+        return { color: '#50A1A5' ,cursor:'pointer'};
       }, 
       onCellClicked: (event: CellClickedEvent) => this.getStaffById(event.data.id)
     },

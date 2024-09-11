@@ -3,6 +3,7 @@ import { ITableColumn } from '../../shared/interface/list-table';
 import { Router ,ActivatedRoute } from '@angular/router';
 import { ChitService } from '../shared/service/chit.service';
 import { PaymentService } from '../../payments/shared/service/payment.service';
+import { AuthService } from '../../shared/service/auth.service';
 @Component({
   selector: 'app-chit-view',
   templateUrl: './chit-view.component.html',
@@ -20,8 +21,9 @@ export class ChitViewComponent implements OnInit{
   walletBalance:any
   chitSubscriberTotal = 0;
   addSubscriberTotal = 0;
+  canCreate: boolean = false;
 
-  constructor(private activatedRoute:ActivatedRoute,private router:Router, private service: ChitService,private paymentService:PaymentService){}
+  constructor(private activatedRoute:ActivatedRoute,private router:Router, private service: ChitService,private paymentService:PaymentService,private authService:AuthService){}
 
   getAllChit(){
     this.service.getAllChit().subscribe((data)=>{
@@ -40,6 +42,11 @@ export class ChitViewComponent implements OnInit{
 
   ngOnInit(): void {
     this.getAllChit()
+    this.authService.checkAccess('Chit Management', 'create').subscribe((hasAccess: boolean) => {
+      if (hasAccess) {
+        this.canCreate=true
+      }
+    })
     this.activatedRoute?.params.subscribe(paramData => {
       if (Object.keys(paramData).length) {
       this.service.getChitById(paramData.id).subscribe((data) => {

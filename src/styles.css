@@ -5,6 +5,9 @@
         font-family: 'Outfit';
     }
 
+    ::-webkit-scrollbar {
+        display: none;
+      }
 .body .cta-filled{
     color: #3E3A97;
     background-color: #FFFFFF;

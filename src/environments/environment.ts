@@ -2,7 +2,7 @@
 const baseUrl = 'https://chitfundapi.onrender.com';
 const localUrl='http://localhost:8000'
 export const environment = {
-    paymentServiceUrl: `${baseUrl}/api`,
+    paymentServiceUrl: `${localUrl}/api`,
     subscriberServiceUrl:`${baseUrl}/api`,
     chitServiceUrl:`${baseUrl}/api`,
     staffServiceUrl:`${localUrl}/api`,

@@ -2,6 +2,7 @@ import { HttpBackend, HttpClient } from '@angular/common/http';
 import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { LoginService } from '../shared/serive/login.service';
 
 interface IForgotPassword {
   verifyCode:FormControl<string | null>
@@ -14,7 +15,7 @@ interface IForgotPassword {
 export class VerifyComponent implements OnInit{
 verifyForm:FormGroup<IForgotPassword>
 verifyPattern:RegExp=/^[0-9]$/;
-constructor(private fb:FormBuilder,private router :Router,private httpClient:HttpClient){}
+constructor(private fb:FormBuilder,private router :Router,private httpClient:HttpClient,private  service:LoginService){}
 get verifyCodeControl() { return this.verifyForm.get('verifyCode'); };
 @Input() mobileNumber:number
 ngOnInit(): void {
@@ -34,17 +35,27 @@ onSubmit(){
   this.httpClient.get(verificationUrl).subscribe(
     (verificationResponse: any) => {
       console.log('OTP verified successfully:', verificationResponse);
-      if (verificationResponse.Status=='Error') {
-        window.alert("invalid")
-      }
-      else if(verificationResponse.Status=='Success'){
-        this.router.navigate([ "/","subscriber"]);
+      if (verificationResponse.Status === 'Error') {
+        window.alert("Invalid OTP, please try again.");
+        this.verifyForm.reset();  // Optionally reset the form
+      } else if (verificationResponse.Status === 'Success') {
+        const role = sessionStorage.getItem('userRole')?.replace(/"/g, '');  // Clean up stored role string
+        this.service.markAsVerified();
+        sessionStorage.setItem('isVerified',"Verified" );
+
+        if (role === "Collection Staff") {
+          this.router.navigate(['/payment']);
+        } else {
+          this.router.navigate(['/subscriber']);  // Navigate after OTP success
+        }
       }
     },
     (error) => {
       console.error('Error verifying OTP:', error);
+      window.alert("Error verifying OTP, please try again later.");
     }
-  ); 
+  );
+  
 }
 }
 

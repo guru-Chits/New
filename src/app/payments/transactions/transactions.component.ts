@@ -26,6 +26,7 @@ export class TransactionsComponent implements OnInit{
   routes:any[]=[]
   data:any[]=[]
   worksheetData:any
+  fileName:string
   downloadData:any[]=[]
   transData:any
   searchImg:string='assets/table/black search.svg'
@@ -170,6 +171,8 @@ handleDateChange(fromDate: string, toDate: string) {
       minimumFractionDigits: 2,
       maximumFractionDigits: 2
     });
+
+    this.fileName=`${fromDate}-${toDate}`
     
     this.worksheetData = [
       // Add the first row for the title
@@ -249,6 +252,8 @@ fetchDataByRoute(fromDate: string, toDate: string, routeId: string) {
       minimumFractionDigits: 2,
       maximumFractionDigits: 2
     });
+
+    this.fileName=`${fromDate}-${toDate}-${routeId}`
     this.worksheetData = [
       // Add the first row for the title
       [{v: 'Collection Summary', s: {font: {sz: 14, bold: true}, alignment: {horizontal: 'center'},}}],
@@ -299,7 +304,8 @@ exportToExcel(): void {
   };
 
   // Export the workbook to Excel file
-  XLSX.writeFile(workbook, 'Collection_Summary.xlsx');
+
+  XLSX.writeFile(workbook, `${this.fileName}.xlsx`);
 }
 
 // Function to calculate the total amount

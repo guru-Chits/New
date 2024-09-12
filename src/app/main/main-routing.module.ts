@@ -46,8 +46,8 @@ const routes: Routes = [
       {
         path: 'settings',
         loadChildren: () => import('../../app/settings/settings.module').then(m => m.SettingsModule),
-        // data: { accKey: 'Reports' },
-        // canActivate: [AuthGuard]
+        data: { accKey: 'Settings' },
+        canActivate: [AuthGuard]
       },
       {
         path: 'access',

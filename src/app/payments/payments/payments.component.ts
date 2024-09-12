@@ -34,6 +34,8 @@ export class PaymentsComponent implements OnInit {
   paymentDetail:any
   totalPayment:any
   month:string
+  year:number
+ 
   accessPrivData: any;
   subscriberDetail:any
   serialNumberCounter:number;
@@ -382,6 +384,7 @@ console.log(this.staffs);
   
   incrementInstallmentMonth(currentMonth: string): string {
     const date = new Date(currentMonth);
+
     date.setMonth(date.getMonth() + 1);
     return this.datePipe.transform(date, 'MM-MMMM');
   }
@@ -389,6 +392,12 @@ console.log(this.staffs);
     const payload = this.paymentForm.value
     this.service.savePaymentDetails(payload).subscribe((response:any) => {
       this.receiptData = response.newPayment;
+      const date = new Date( response.newPayment.date);
+
+      this.month=date.toLocaleString('default', { month: 'long' }); 
+      this.year=date.getFullYear();
+  
+
       console.log(response);
     });
     this.router.navigate(["/payment"]);

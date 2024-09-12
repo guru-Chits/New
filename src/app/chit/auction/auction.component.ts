@@ -22,6 +22,7 @@ export class AuctionComponent implements OnInit {
   activeTab: string = 'regular'; // Default active tab
   auctionForm: FormGroup;
   auctionData:any = {};
+  selectedTicketId:any
   searchImg: string = 'assets/table/black search.svg';
   filterImg: string = 'assets/table/black filter.svg';
   search: boolean = true;
@@ -49,7 +50,12 @@ export class AuctionComponent implements OnInit {
     private paymentService:PaymentService 
   ) {
   }
-
+  onTicketIdChange(ticketId: string) {
+    console.log("Ticket ID received from child:", ticketId);
+    // You can now use the ticketId as needed
+    this.selectedTicketId=ticketId
+  }
+  
   ngOnInit(): void {
     this.auctionForm = this.fb.group({
       groupId: ['',[Validators.required]],
@@ -219,7 +225,9 @@ export class AuctionComponent implements OnInit {
 
   incrementAuctionCycle(): void{
     // debugger
-    const groupId=this.chitData?.chitAmount;
+    const groupId=this.chitData?.chitGroupId;
+    console.log(groupId);
+    
     if(groupId){
       this.service.getAuctionCycleByGroupId(groupId).subscribe((data) => {
         const cycle = data
@@ -265,7 +273,7 @@ export class AuctionComponent implements OnInit {
       console.log(response);
     });
 
-    this.auctionForm.reset()
+    // this.auctionForm.reset()
   }
 
   profileImageWithIdRenderer(params: any): string {

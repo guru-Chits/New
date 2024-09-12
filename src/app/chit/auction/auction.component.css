@@ -77,3 +77,7 @@ border-radius: 3px;
 .highlighted-row {
   background-color: lightgreen !important;
 }
+
+.green-background {
+  background-color: green !important;
+}

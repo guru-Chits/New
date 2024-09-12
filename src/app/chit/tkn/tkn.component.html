@@ -1,1 +1,84 @@
-<p>tkn works!</p>
+<form [formGroup]="tknForm" >
+  <div class="row justify-content-around">
+    <div class="col-lg-4">
+      <div class="form-group">
+        <label for="groupId" class="form-control-label">Group ID</label>
+        <input type="text" placeholder="Group Id" class="form-control form-control-sm" formControlName="groupId" readonly/>
+      </div>
+    </div>
+
+    <div class="col-lg-4">
+      <div class="form-group">
+        <label for="walletBalance" class="form-control-label">Wallet Balance</label>
+        <input type="text" placeholder="Wallet Balance" class="form-control form-control-sm" formControlName="walletBalance" readonly/>
+      </div>
+    </div>
+
+    <div class="col-lg-4">
+      <div class="form-group">
+        <label for="foremanCommision" class="form-control-label">Foreman Commission</label>
+        <input type="text" placeholder="Foreman Commission" class="form-control form-control-sm" formControlName="foremanCommision" readonly/>
+      </div>
+    </div>
+  </div>
+  <div class="row justify-content-around">
+    <div class="col-lg-4">
+      <div class="form-group">
+        <label for="winnningBid" class="form-control-label">Winning Bid</label>
+        <input type="text" placeholder="Winning Bid" class="form-control form-control-sm" formControlName="winnningBid" (change)="getRouteNameValue()"/>
+      </div>
+    </div>
+
+    <div class="col-lg-4">
+      <div class="form-group">
+        <label for="prizedAmmount" class="form-control-label">Prized Amount</label>
+        <input type="text" placeholder="Prizes Amount" class="form-control form-control-sm" formControlName="prizedAmmount"  />
+      </div>
+    </div>
+
+    <div class="col-lg-4">
+      <div class="form-group">
+        <label for="ticketId" class="form-control-label">Ticket Id</label>
+        <input type="text" placeholder="Ticket Id" class="form-control form-control-sm" formControlName="ticketId" />
+      </div>
+      <div *ngIf="tknForm.hasError('ticketIdOutOfRange') && tknForm.get('ticketId')?.touched">
+        <small class="text-danger">{{ tknForm.getError('ticketIdOutOfRange') }}</small>
+      </div>
+
+    </div>
+  </div>
+      <div class="row justify-content-around">
+        <div class="col-lg-4">
+          <div class="form-group">
+            <label for="subscriberName" class="form-control-label">Prized Subscriber Name</label>
+            <input type="text" placeholder="Prized Subscriber Name" class="form-control form-control-sm" formControlName="subscriberName" readonly />
+          </div>
+        </div>
+
+        <div class="col-lg-4">
+          <div class="form-group">
+            <label for="passbiokNumber" class="form-control-label">Passbook Number</label>
+            <input type="text" placeholder="Passbook Number" class="form-control form-control-sm" formControlName="passbookNumber"  readonly/>
+          </div>
+        </div>
+
+        <div class="col-lg-4">
+          <div class="form-group">
+            <label for="auctionCycle" class="form-control-label">Auction Cycle</label>
+            <input type="text" placeholder="Auction Cycle" class="form-control form-control-sm" formControlName="auctionCycle" />
+          </div>
+        </div>
+      </div>
+  
+      <div class="row">
+        <div class="col-lg-3">
+        <div class="form-check form-switch">
+            <input class="form-check-input" type="checkbox" formControlName="isActive" role="switch" id="flexSwitchCheckChecked"  (change)="toggleFormControls()" >
+            <label class="form-check-label" for="flexSwitchCheckChecked">Auction Status</label>
+          </div>                       
+         </div>                  
+         <div class="col-lg-9 d-flex justify-content-end">
+            <button type="submit" class="btn px-2  py-2" data-bs-toggle="modal" data-bs-target="#auctionModal" [disabled]="!tknForm.valid"   (click)="onSubmit()">TKN Company Done</button>
+        </div>
+      </div>
+    </form>

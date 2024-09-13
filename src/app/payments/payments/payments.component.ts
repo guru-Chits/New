@@ -216,101 +216,6 @@ console.log(this.staffs);
     });
   }
   
-
-  
-  // handleAmountChange(amount: number, expectedInstallmentAmount: number) {
-  //   // Fetch the last payment or set default values if no previous payment exists
-  //   const lastPayment = this.payments?.[this.payments.length - 1] || null;
-  //   const previousAmountPaid = lastPayment ? lastPayment.amount || 0 : 0;
-  
-  //   let balanceAmount = 0;
-  //   let currentInstallmentMonth = this.datePipe.transform(this.subDetail.auctionDate, 'dd-MMMM') || '';
-  
-  //   // If there's no previous payment, set balanceAmount to 0
-  //   if (!lastPayment) {
-  //     balanceAmount = 0;  // No balance to carry forward for the first payment
-  //   } else if (previousAmountPaid < expectedInstallmentAmount) {
-  //     // If there was a previous payment but it was less than expected, calculate the pending balance
-  //     balanceAmount = expectedInstallmentAmount - previousAmountPaid;
-  //     console.log(`Previous balance for ${lastPayment.installmentMonth}: ${balanceAmount}`);
-  //     currentInstallmentMonth = lastPayment.installmentMonth;  // Keep the same month
-  //   } else {
-  //     // If the previous payment was equal to or more than expected, move to the next month
-  //     currentInstallmentMonth = this.incrementInstallmentMonth(lastPayment.installmentMonth);
-  //   }
-  
-  //   const subscriberDetails = this.subDetail.subscriberDetails;
-  //   let installmentMonths = currentInstallmentMonth;  // Start with the current month
-  //   let remainingAmount = amount;
-  //   let receiptNumber = this.receiptNo;
-  //   let receiptNumber2 = '';
-  //   let nextInstallmentMonth = '';
-  //   let appliedAmountForMonth = 0;
-  //   let excessAmount = 0;
-  
-  //   // Apply the amount first to any pending balance
-  //   if (remainingAmount > balanceAmount) {
-  //     appliedAmountForMonth = balanceAmount;
-  //     console.log(balanceAmount);
-      
-  //     remainingAmount -= balanceAmount;
-  //     console.log(`Amount applied for previous month (${currentInstallmentMonth}): ${appliedAmountForMonth}`);
-  //   } else {
-  //     appliedAmountForMonth = remainingAmount;
-  //     remainingAmount = 0;
-  //     console.log(`Amount applied for previous month (${currentInstallmentMonth}): ${appliedAmountForMonth}`);
-  //   }
-  
-  //   // Iterate and apply remaining amount across multiple months
-  //   while (remainingAmount > 0) {
-  //     if (remainingAmount >= expectedInstallmentAmount) {
-  //       // Full installment for the next month
-  //       remainingAmount -= expectedInstallmentAmount;
-  //       appliedAmountForMonth = expectedInstallmentAmount;
-  
-  //       // Move to the next month
-  //       nextInstallmentMonth = this.incrementInstallmentMonth(currentInstallmentMonth);
-  //       installmentMonths += `, ${nextInstallmentMonth}`;
-  //       console.log(`Amount applied for ${nextInstallmentMonth}: ${appliedAmountForMonth}`);
-        
-  //       currentInstallmentMonth = nextInstallmentMonth;
-  
-  //       // Increment the receipt number for the next month
-  //       receiptNumber;
-  //     } else {
-  //       // Partial installment for the next month
-  //       appliedAmountForMonth = remainingAmount;
-  //       console.log(appliedAmountForMonth);
-        
-  //       console.log(`Amount applied for partial month (${currentInstallmentMonth}): ${appliedAmountForMonth}`);
-        
-  //       // Move to the next month
-  //       nextInstallmentMonth = this.incrementInstallmentMonth(currentInstallmentMonth);
-  //       installmentMonths += `, ${nextInstallmentMonth}`;
-        
-  //       remainingAmount = 0;
-  //     }
-  //   }
-  
-  //   // Patch the form with the final installment months and receipt number
-  //   this.paymentForm.patchValue({
-  //     installmentMonth: installmentMonths,  // Patch all the months
-  //     // receiptNumber: this.receiptNo  // First receipt number
-  //   });
-  
-  //   // If multiple receipt numbers are required, patch them too
-  //   // if (receiptNumber > this.receiptNo) {
-  //   //   this.paymentForm.patchValue({
-  //   //     nextReceiptNumber: this.formatSerialNumber(receiptNumber)
-  //   //   });
-  //   // }
-  
-  //   // Log for debugging
-  //   console.log(`Installment Month(s): ${installmentMonths}`);
-  //   console.log(`Final Receipt Number: ${this.formatSerialNumber(this.receiptNo)}`);
-  // }
-  
-  // Helper method to increment the installment month
   handleAmountChange(amount: number, expectedInstallmentAmount: number) {
     // Fetch the last payment or set default values if no previous payment exists
     const lastPayment = this.payments?.[this.payments.length - 1] || null;
@@ -383,11 +288,37 @@ console.log(this.staffs);
   
   
   incrementInstallmentMonth(currentMonth: string): string {
-    const date = new Date(currentMonth);
-
-    date.setMonth(date.getMonth() + 1);
-    return this.datePipe.transform(date, 'MM-MMMM');
+    const dateParts = currentMonth.split('-');
+    const day = dateParts[0]; // Keep the day
+    const monthName = dateParts[1]; // Extract the month name
+    const monthIndex = this.getMonthIndex(monthName); // Convert month name to index (0-11)
+    
+    // Create a new Date object with the same day, increment the month
+    let nextMonthIndex = (monthIndex + 1) % 12; // Increment month, wrap to 0 after December
+    let year = new Date().getFullYear(); // Use the current year
+    if (monthIndex === 11) {
+      // If it's December, move to January and increment the year
+      year += 1;
+    }
+  
+    const nextMonth = this.getMonthName(nextMonthIndex); // Convert back to month name
+  
+    // Return the new date with the same day and incremented month
+    return `${day}-${nextMonth}`;
   }
+  
+  // Helper to convert month name to index
+  getMonthIndex(monthName: string): number {
+    const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+    return months.indexOf(monthName);
+  }
+  
+  // Helper to get month name from index
+  getMonthName(monthIndex: number): string {
+    const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+    return months[monthIndex];
+  }
+  
   onSubmit(): void {
     const payload = this.paymentForm.value
     this.service.savePaymentDetails(payload).subscribe((response:any) => {

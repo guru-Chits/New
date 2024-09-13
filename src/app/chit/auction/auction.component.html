@@ -31,30 +31,30 @@
           
                       <div class="col-lg-4">
                         <div class="form-group">
-                          <label for="walletBal" class="form-control-label">Wallet Balance</label>
-                          <input type="text" placeholder="Wallet Balance" class="form-control form-control-sm" formControlName="walletBal"/>
+                          <label for="walletBalance" class="form-control-label">Wallet Balance</label>
+                          <input type="text" placeholder="Wallet Balance" class="form-control form-control-sm" formControlName="walletBalance"/>
                         </div>
                       </div>
           
                       <div class="col-lg-4">
                         <div class="form-group">
-                          <label for="foreCommission" class="form-control-label">Foreman Commission</label>
-                          <input type="text" placeholder="Foreman Commission" class="form-control form-control-sm" formControlName="foreCommission"/>
+                          <label for="foremanCommision" class="form-control-label">Foreman Commission</label>
+                          <input type="text" placeholder="Foreman Commission" class="form-control form-control-sm" formControlName="foremanCommision"/>
                         </div>
                       </div>
                     </div>
                     <div class="row justify-content-around">
                       <div class="col-lg-4">
                         <div class="form-group">
-                          <label for="winBid" class="form-control-label">Winning Bid</label>
-                          <input type="text" placeholder="Winning Bid" class="form-control form-control-sm" formControlName="winBid" (change)="getRouteNameValue()"/>
+                          <label for="winningBid" class="form-control-label">Winning Bid</label>
+                          <input type="text" placeholder="Winning Bid" class="form-control form-control-sm" formControlName="winningBid" (change)="getRouteNameValue()"/>
                         </div>
                       </div>
           
                       <div class="col-lg-4">
                         <div class="form-group">
-                          <label for="priAm" class="form-control-label">Prized Amount</label>
-                          <input type="text" placeholder="Prizes Amount" class="form-control form-control-sm" formControlName="priAm" />
+                          <label for="prizedAmount" class="form-control-label">Prized Amount</label>
+                          <input type="text" placeholder="Prizes Amount" class="form-control form-control-sm" formControlName="prizedAmount" />
                         </div>
                       </div>
           
@@ -68,14 +68,14 @@
                     <div class="row justify-content-around">
                       <div class="col-lg-4">
                         <div class="form-group">
-                          <label for="prizedSubName" class="form-control-label">Prized Subscriber Name</label>
-                          <input type="text" placeholder="Prized Subscriber Name" class="form-control form-control-sm" formControlName="prizedSubName" />
+                          <label for="subscriberName" class="form-control-label">Prized Subscriber Name</label>
+                          <input type="text" placeholder="Prized Subscriber Name" class="form-control form-control-sm" formControlName="subscriberName" />
                         </div>
                       </div>
           
                       <div class="col-lg-4">
                         <div class="form-group">
-                          <label for="passbiokNumber" class="form-control-label">Passbook Number</label>
+                          <label for="passbookNumber" class="form-control-label">Passbook Number</label>
                           <input type="text" placeholder="Passbook Number" class="form-control form-control-sm" formControlName="passbookNumber" />
                         </div>
                       </div>
@@ -163,36 +163,57 @@
                           <img src="../../../assets/navbar/brand.svg" alt="" width="100px" height="90px">
                           <div class="d-flex flex-column justify-content-center align-items-center">
                               <p class="fs-5 fw-bold m-0">Guru Chits Private Limited</p>
-                              <span>Payment Receipt for March Month 2023</span>
+                              <span>Payment Receipt for {{month}} Month {{year}}</span>
                           </div>
                       </div>
                       <hr class="border border-dark m-0" >
                       <div class="row py-3">
-                          <div class="col-6 d-flex justify-content-around">
-                              <div class="col-5 fw-bold">Group ID</div>
-                              <div class="col-5">{{auctionData.groupId}}</div>
-                          </div>
-                          <div class="col-6 d-flex justify-content-around" >
-                              <div class="col-5 fw-bold">Date & Time</div>
-                              <div class="col-5">{{auctionData.foreCommission}}</div>
-                          </div>
+                        <div class="col-6 d-flex justify-content-around">
+                            <div class="col-5 fw-bold">Group ID</div>
+                            <div class="col-5">{{receipt?.groupId}}</div>
+                        </div>
+                        <div class="col-6 d-flex justify-content-around" >
+                            <div class="col-5 fw-bold">Date & Time</div>
+                            <div class="col-5">{{date}} - {{time}}</div>
+                        </div>
+                    </div>
+                    <div class="row pb-3">
+                        <div class="col-6 d-flex justify-content-around">
+                            <div class="col-5 fw-bold">Prized Amount</div>
+                            <div class="col-5">{{receipt?.prizedAmount}}</div>
+                        </div>
+                        <div class="col-6 d-flex justify-content-around">
+                          <div class="col-5 fw-bold">Prized Subscriber Name</div>
+                          <div class="col-5">{{receipt?.subscriberName}}</div>
+                        </div>
+                    </div>
+                    <div class="row pb-3">
+                        <div class="col-6 d-flex justify-content-around">
+                            <div class="col-5 fw-bold">Passbook Number</div>
+                            <div class="col-5">{{receipt?.passbookNo}}</div>
+                        </div>
+                        <div class="col-6 d-flex justify-content-around">
+                          <div class="col-5 fw-bold">Foreman Commission</div>
+                          <div class="col-5">{{receipt?.foremanCommision}}</div>
                       </div>
-                      <div class="row pb-3">
-                          <div class="col-6 d-flex justify-content-around">
-                              <div class="col-5 fw-bold">Prized Amount</div>
-                              <div class="col-5">{{auctionData.priAm}}</div>
-                          </div>
-                          <div class="col-6 d-flex justify-content-around">
-                            <div class="col-5 fw-bold">Prized Subscriber Name</div>
-                            <div class="col-5">{{auctionData.prizedSubName}}</div>
-                          </div>
+                    </div>
+
+                    <div class="row pb-3">
+                      <div class="col-6 d-flex justify-content-around">
+                          <div class="col-5 fw-bold">Auction Cycle</div>
+                          <div class="col-5">{{receipt?.auctionCycle}}</div>
                       </div>
-                      <div class="row pb-3">
-                          <div class="col-6 d-flex justify-content-around">
-                              <div class="col-5 fw-bold">Passbook Number</div>
-                              <div class="col-5">{{auctionData.ticketId}}</div>
-                          </div>
-                      </div>
+                      <div class="col-6 d-flex justify-content-around">
+                        <div class="col-5 fw-bold">Wallet Balance</div>
+                        <div class="col-5">{{receipt?.walletBalance}}</div>
+                    </div>
+                  </div>
+                  <div class="row pb-3">
+                    <div class="col-6 d-flex justify-content-around">
+                        <div class="col-5 fw-bold">Ticket Id</div>
+                        <div class="col-5">{{ticketId}}</div>
+                    </div>
+                    </div>
                   </div>
               </div>
               <div class="d-flex justify-content-end py-4">

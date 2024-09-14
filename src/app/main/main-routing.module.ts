@@ -9,6 +9,8 @@ const routes: Routes = [
   { 
     path: '',
     component: MainComponent,
+    canActivate: [AuthGuard],
+    data: {accKey: 'Payments'},
     children: [
       {
         path: 'subscriber',

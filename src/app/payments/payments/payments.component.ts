@@ -142,20 +142,20 @@ console.log(this.staffs);
         const date = this.datePipe.transform(this.subDetail.auctionDate, 'dd-MMMM') || '';
   
         this.service.getPaymentByPassbook(passbooknumber).subscribe(paymentData => {
-          this.payments = paymentData || [];
-          this.payments = this.payments.payments || [];
-
-          // Check if there is a previous payment, else set previousAmountPaid to 0
+          // Filter payments where cancelled is false
+          this.paymentData=paymentData
+          this.payments = (this.paymentData?.payments || []).filter(payment => !payment.cancelled);
+  
+          // Check if there is a previous non-cancelled payment, else set previousAmountPaid to 0
           const lastPayment = this.payments.length > 0 ? this.payments[this.payments.length - 1] : null;
           const previousAmountPaid = lastPayment ? lastPayment.amount || 0 : 0;
   
           // Set receipt number and serial number
-          this.receiptNo = paymentData
-          this.receiptNo=this.receiptNo.receiptNo+1
-          console.log(this.receiptNo);
-          
-          // this.receiptNo = this.receiptNo.receiptNo + 1;
+          this.receiptNo = paymentData // Increment receipt number
+          this.receiptNo = this.receiptNo ? this.receiptNo.receiptNo + 1 : 1; // Increment receipt number
 
+          console.log(this.receiptNo);
+  
           let serialNumber = this.formatSerialNumber(this.serialNumberCounter);
   
           // Handle previous pending payments or no previous payments
@@ -170,10 +170,9 @@ console.log(this.staffs);
           }
   
           const subscriberDetails = this.subDetail.subscriberDetails;
-        
+  
           this.receiptNo = this.formatSerialNumber(this.receiptNo);
           this.receiptNo = `${subscriberDetails.passbookNo}-${this.receiptNo}`;
-          // this.receiptNo = receiptNumber1;
   
           let receiptNumber2 = '';
           let secondInstallmentMonth = '';
@@ -185,9 +184,6 @@ console.log(this.staffs);
             excessAmount = currentAmount - (expectedAmountPerInstallment + balanceAmount);
             secondInstallmentMonth = this.incrementInstallmentMonth(nextInstallmentMonth);
             nextInstallmentMonth = `${nextInstallmentMonth}, ${secondInstallmentMonth}`;
-  
-            // const nextReceiptNo = this.receiptNo + 1;
-            // receiptNumber2 = `${subscriberDetails.passbookNo}-${this.formatSerialNumber(nextReceiptNo)}`;
           }
   
           // Patch form with the updated installment month(s) and receipt number(s)

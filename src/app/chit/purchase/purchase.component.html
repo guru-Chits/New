@@ -61,12 +61,12 @@
             <input type="text" placeholder="Passbook Number" class="form-control form-control-sm" formControlName="passbookNumber"readonly />
           </div>
         </div>
-        <div class="col-lg-4">
+        <!-- <div class="col-lg-4">
           <div class="form-group">
             <label for="auctionCycle" class="form-control-label">Auction Cycle</label>
             <input type="text" placeholder="Auction Cycle" class="form-control form-control-sm" formControlName="auctionCycle" />
           </div>
-        </div>
+        </div> -->
       </div>
       
   
@@ -76,7 +76,7 @@
             <input class="form-check-input" type="checkbox" formControlName="isActive" role="switch" id="flexSwitchCheckChecked"  (change)="toggleFormControls()" >
             <label class="form-check-label" for="flexSwitchCheckChecked">Auction Status</label>
           </div>                       
-         </div>                   -->
+         </div>-->
 
              <div class="col-lg-12 d-flex justify-content-end">
             <button type="submit" class="btn px-2  py-2" data-bs-toggle="modal" data-bs-target="#auctionModal" [disabled]="!purchaseForm.valid"   (click)="onSubmit()">Purchase TKN Done</button>

@@ -6,6 +6,7 @@ import { PaymentService } from '../shared/service/payment.service';
 import { ITableColumn } from '../../shared/interface/list-table';
 import { CellClickedEvent } from 'ag-grid-community';
 import { AuthService } from '../../shared/service/auth.service';
+import { ChitService } from '../../chit/shared/service/chit.service';
 
 @Component({
   selector: 'app-collections',
@@ -16,6 +17,8 @@ export class CollectionsComponent implements OnInit {
   Staffs: string[];
   Areas: string[];
   staffs: any
+  addSubscriberTotal:number
+  subscriberTotal:number
   data: any[] = [];
   routeData:any
   routes:any[]=[]
@@ -42,6 +45,7 @@ export class CollectionsComponent implements OnInit {
     private routeService:AreaService,
     private service:PaymentService,
     private authService:AuthService,
+    private chitService:ChitService
   ){}
   ngOnInit(): void {
     this.collectionForm = this.formBuilder.group({
@@ -335,10 +339,27 @@ export class CollectionsComponent implements OnInit {
        serialNumber: payment.serialNumber,
        collectionType: payment.collectionType,
      };
+
+
      console.log(this.paymentBody);
-     
+ 
      this.service.savePaymentDetails(this.paymentBody, payment.id).subscribe(
        (response) => {
+        this.chitService.getByPassbooNo(response.updateDetails.passbooknumber).subscribe((passbookData: any) => {
+          if (passbookData.source === 'chitSubscribers') {
+            // Sum up payments for chitSubscribers (convert amount to number explicitly)
+            this.subscriberTotal=response.updateDetails.amount
+            this.service.saveTransactionDetails(response.updateDetails.groupId, this.subscriberTotal).subscribe(
+              (response)=>{
+                console.log(response);
+              }
+            )
+          } else if (passbookData.source === 'addChitSubscribers') {
+            // Sum up payments for addChitSubscribers (convert amount to number explicitly)
+            this.addSubscriberTotal = this.paymentBody.amount;
+          }
+    
+         });
          console.log(`Payment with ID: ${payment.id} saved successfully.`, response);
        },
        (error) => {
@@ -354,6 +375,7 @@ export class CollectionsComponent implements OnInit {
     //  }
      this.service.saveCollectionDetails(payload).subscribe((response:any)=>{
        console.log(response);
+
        this.collectionForm.reset()
      })
   }

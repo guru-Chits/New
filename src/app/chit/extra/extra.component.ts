@@ -114,7 +114,7 @@ amountLessThanOrEqualChitAmount(ticketIdControl: string) {
       extraPaymentData: {
         foremanCommision:this.extraForm.value.foremanCommision,
         winnningBid:this.extraForm.value.winnningBid,
-        prizedAmmount:this.extraForm.value.prizedAmmount,
+        prizedAmount:this.extraForm.value.prizedAmmount,
         ticketId:this.extraForm.value.ticketId,
         subscriberName:this.extraForm.value.subscriberName,
         passbookNumber:this.extraForm.value.passbookNumber,

@@ -136,11 +136,16 @@ saveCollectionDetails(body: any, id?: string): Observable<any>{
   return this.http.post(savecollectiontUrl, body)
 }
 
-saveTransactionDetails(body: any, id?: string): Observable<any>{
+saveTransactionDetails( groupId: string,
+  walletBalance: number,
+  ): Observable<any>{
+
+    const body: any = { groupId,walletBalance };
+
+    console.log(body);
+    
   let savetransactionUrl: string = `${this.paymentUrl}/addTransaction`
-  if(id){
-    savetransactionUrl = `${savetransactionUrl}/${id}`;
-  }
+
   return this.http.post(savetransactionUrl, body)
 }
 

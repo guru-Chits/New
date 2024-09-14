@@ -38,7 +38,7 @@ constructor( private fb: FormBuilder,private service: ChitService,
     ticketId: ['',[Validators.required]],
     subscriberName: ['',[Validators.required]],
     passbookNumber: ['',[Validators.required]],
-    auctionCycle: ['',[Validators.required]],
+    // auctionCycle: ['',[Validators.required]],
     // isActive: [false]
 
   },  {
@@ -66,7 +66,7 @@ constructor( private fb: FormBuilder,private service: ChitService,
     groupId: groupId,
     foremanCommision: this.chitData?.foremanCommission,
   })
-  this.incrementAuctionCycle()
+  // this.incrementAuctionCycle()
 
   this.purchaseForm.get('ticketId')?.valueChanges.subscribe(() => {
     const ticketId = this.purchaseForm.get('ticketId')?.value;
@@ -86,11 +86,12 @@ constructor( private fb: FormBuilder,private service: ChitService,
 
 })
 
-this.purchaseForm.get('prizedAmmount')?.valueChanges.subscribe(()=>{
-  const prizedAmount=this.purchaseForm.get('prizedAmmount').value
+this.purchaseForm.get('winnningBid')?.valueChanges.subscribe(()=>{
+  const prizedAmount=this.purchaseForm.get('winnningBid').value
   const winnningBid=this.chitData?.chitAmount-prizedAmount
   this.purchaseForm.patchValue({
-    winnningBid:winnningBid   
+    prizedAmmount:winnningBid,
+    // walltetBalance: 
   });
 })
  }
@@ -148,12 +149,12 @@ this.purchaseForm.get('prizedAmmount')?.valueChanges.subscribe(()=>{
     purchaseChitData: {
       foremanCommision:this.purchaseForm.value.foremanCommision,
       winnningBid:this.purchaseForm.value.winnningBid,
-      prizedAmmount:this.purchaseForm.value.prizedAmmount,
+      prizedAmount:this.purchaseForm.value.prizedAmmount,
       ticketId:this.purchaseForm.value.ticketId,
       subscriberName:this.purchaseForm.value.subscriberName,
       passbookNumber:this.purchaseForm.value.passbookNumber,
       // isActive:this.purchaseForm.value.isActive,
-      auctionCycle:this.purchaseForm.value.auctionCycle
+      // auctionCycle:this.purchaseForm.value.auctionCycle
     },
     foremanCommision: this.purchaseForm.value.foremanCommision,
     winnningBid:this.purchaseForm.value.winnningBid,
@@ -175,7 +176,7 @@ this.purchaseForm.get('prizedAmmount')?.valueChanges.subscribe(()=>{
     this.receipt={
       time:this.time,
       date:this.date,
-      prizedAmount:response.data.purchaseChitData.prizedAmmount,
+      prizedAmount:response.data.purchaseChitData.prizedAmount,
       subscriberName:response.data.purchaseChitData.subscriberName,
       groupId:response.data.groupId,
       passbookNo:response.data.purchaseChitData.passbookNumber

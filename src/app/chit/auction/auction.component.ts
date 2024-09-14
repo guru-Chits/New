@@ -83,6 +83,7 @@ export class AuctionComponent implements OnInit {
       this.auctionForm.disable();
       this.auctionForm.get('auctionStart')?.enable();
     }
+
     this.activatedRoute.params.subscribe(paramData => {
       if (Object.keys(paramData).length) {
         this.service.getChitById(paramData.id).subscribe((data) => {
@@ -90,48 +91,20 @@ export class AuctionComponent implements OnInit {
           this.chitData=this.chitData.ChitsGroup;
           this.groupId=this.chitData.chitGroupId;
           console.log(this.chitData.addChitSubscribers);
-          
-          this.paymentService.getTotalByGroupId(this.groupId).subscribe((data: any) => {
-            console.log('Passbook Totals:', data.passbookTotals);
-          
-          
-            // Iterate over each passbook number from the group total data
-            data.passbookTotals.forEach((item: any) => {
-              // Verify passbook number
-              this.paymentService.verifyPassbookNo(item.passbooknumber).subscribe((verifiedpb: any) => {
-                console.log('Verified Passbook:', verifiedpb);
-          
-                if (verifiedpb.verified) {
-                  // Fetch payment details for the passbook
-                  this.paymentService.getPaymentByPassbook(item.passbooknumber).subscribe((responseData: any) => {
-                    console.log('Payments for Passbook:', responseData.payments);
-          
-                    // Check if passbook belongs to chitSubscribers or addChitSubscribers
-                    this.service.getByPassbooNo(item.passbooknumber).subscribe((passbookData: any) => {
-                      if (passbookData.source === 'chitSubscribers') {
-                        // Sum up payments for chitSubscribers (convert amount to number explicitly)
-                        const chitSubTotal = responseData.payments.reduce((acc: number, payment: any) => acc + Number(payment.amount), 0);
-                        this.chitSubscriberTotal += chitSubTotal;
-                      } else if (passbookData.source === 'addChitSubscribers') {
-                        // Sum up payments for addChitSubscribers (convert amount to number explicitly)
-                        const addSubTotal = responseData.payments.reduce((acc: number, payment: any) => acc + Number(payment.amount), 0);
-                        this.addSubscriberTotal += addSubTotal;
-                      }
-          
-                      // Log the totals (or use these totals to update the UI)
-                      console.log('Chit Subscriber Total:', this.chitSubscriberTotal);
-                      console.log('Add Subscriber Total:', this.addSubscriberTotal);
-                      this.auctionForm.patchValue({
-                        walletBalance:this.chitSubscriberTotal
-                      })
-                    });
-                  });
-                } else {
-                  console.log(`Passbook number ${item.passbooknumber} is not verified.`);
-                }
-              });
-            });
-          });
+
+          this.paymentService.getTransactionById(this.groupId).subscribe((response)=>{
+            console.log(response);
+            this.walletBalance=response
+            this.walletBalance=this.walletBalance.payment
+            this.walletBalance.forEach(amount => {
+              this.chitSubscriberTotal=amount.walletBalance
+              console.log(this.chitSubscriberTotal,"red");
+              this.auctionForm.patchValue({
+                walletBalance:this.chitSubscriberTotal
+              })  
+            }); 
+          })
+
         // const winningBid = this.auctionForm.get('winningBid')?.value;
         // const chitAm = this.chitData.chitAmount;
         // if (winningBid !== null && chitAm !== null){
@@ -282,7 +255,8 @@ export class AuctionComponent implements OnInit {
      this.time = createdAtDate.toLocaleTimeString();  // Formats the time
      this.month = createdAtDate.toLocaleString('default', { month: 'long' });  // Full month name
      this.year = createdAtDate.getFullYear();  // Year
- 
+
+
      this.receipt={
       time:this.time,
       date:this.date,
@@ -294,8 +268,12 @@ export class AuctionComponent implements OnInit {
       walletBalance:response.data.walletBalance,
       auctionCycle:response.data.auctionCycle,
     }
-
-
+    const walletBalance=response.data.prizedAmount+response.data.foremanCommision
+    this.paymentService.saveTransactionDetails(response.data.groupId,-walletBalance ).subscribe(
+      (response)=>{
+        console.log(response);
+      }
+    )
     });
 
     // this.auctionForm.reset()

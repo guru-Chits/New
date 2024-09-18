@@ -3,6 +3,7 @@ import { FormGroup, FormBuilder, Validators, AbstractControl, ValidationErrors }
 import { ChitService } from '../shared/service/chit.service';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
+import { PaymentService } from '../../payments/shared/service/payment.service';
 
 @Component({
   selector: 'app-extra',
@@ -12,18 +13,19 @@ import html2canvas from 'html2canvas';
 export class ExtraComponent implements OnInit {
   extraForm : FormGroup;
   groupId:string;
-  walletBalance:any
+  addWalletBalance:any
   data:any
   subDetails:any
   date:any
   time:any
   receipt:any
+  addSubscriberTotal = 0;
+
  month:string
  year:Number
   status:boolean=false
-  constructor( private fb: FormBuilder,private service: ChitService,
+  constructor( private fb: FormBuilder,private paymentService:PaymentService,private service: ChitService,
   ){}
-  @Input() subscriber:any
   @Input() chitData:any
   
   ngOnInit(): void {
@@ -31,8 +33,8 @@ export class ExtraComponent implements OnInit {
       groupId: ['',[Validators.required]],
       walletBalance: ['',[Validators.required]],
       foremanCommision: ['',[Validators.required]],
-      winnningBid: ['',[Validators.required]],
-      prizedAmmount: ['',[Validators.required]],
+      winningBid: ['',[Validators.required]],
+      prizedAmount: ['',[Validators.required]],
       ticketId: ['',[Validators.required]],
       subscriberName: ['',[Validators.required]],
       passbookNumber: ['',[Validators.required]],
@@ -42,13 +44,26 @@ export class ExtraComponent implements OnInit {
     }
   );
   
-    console.log(this.subscriber);
     console.log(this.chitData.chitSubscribers.length);
     
     const groupId=this.chitData?.chitGroupId
+
+    this.paymentService.getAddWallet(groupId).subscribe((response)=>{
+      this.addWalletBalance=response
+      this.addWalletBalance=this.addWalletBalance.payment
+      console.log(this.addWalletBalance,"addwall");
+      
+      this.addWalletBalance.forEach(amount => {
+        this.addSubscriberTotal=amount.addWalletBalance
+        console.log(this.addSubscriberTotal,"red");
+        this.extraForm.patchValue({
+          walletBalance:this.addSubscriberTotal
+        })  
+      }); 
+    })
     
     this.extraForm.patchValue({
-      walletBalance:this.subscriber,
+      walletBalance:this.addSubscriberTotal,
       groupId: groupId,
       foremanCommision: this.chitData?.foremanCommission,
     })
@@ -71,14 +86,23 @@ export class ExtraComponent implements OnInit {
       }
   
   })
-  
-  this.extraForm.get('prizedAmmount')?.valueChanges.subscribe(()=>{
-    const prizedAmount=this.extraForm.get('prizedAmmount').value
-    const winnningBid=this.chitData?.chitAmount-prizedAmount
-    this.extraForm.patchValue({
-      winnningBid:winnningBid   
+
+  this.extraForm.get('winningBid')?.valueChanges.subscribe(()=>{
+    const winningBid=this.extraForm.get('winningBid').value
+    const prizedAmount=this.chitData?.chitAmount-winningBid
+    const finalprizedAmount = this.extraForm.get('prizedAmount').value;
+  const walletBalance = this.addSubscriberTotal
+  const sumOfTwo =prizedAmount+this.chitData.foremanCommission
+  console.log('sum of Two', sumOfTwo)
+  const finalWallet = this.addSubscriberTotal - sumOfTwo
+  console.log('final value', finalWallet)
+
+  this.extraForm.patchValue({
+      prizedAmount:prizedAmount,
+      walletBalance: finalWallet
     });
-  })
+  }) 
+
 }
 
 
@@ -113,43 +137,41 @@ amountLessThanOrEqualChitAmount(ticketIdControl: string) {
       walletBalance: this.extraForm.value.walletBalance,
       extraPaymentData: {
         foremanCommision:this.extraForm.value.foremanCommision,
-        winnningBid:this.extraForm.value.winnningBid,
-        prizedAmount:this.extraForm.value.prizedAmmount,
+        winningBid:this.extraForm.value.winningBid,
+        prizedAmount:this.extraForm.value.prizedAmount,
         ticketId:this.extraForm.value.ticketId,
         subscriberName:this.extraForm.value.subscriberName,
         passbookNumber:this.extraForm.value.passbookNumber,
       },
-      foremanCommision: this.extraForm.value.foremanCommision,
-      winnningBid:this.extraForm.value.winnningBid,
-      prizedAmmount:this.extraForm.value.prizedAmmount,
   }
     this.service.saveAuctionDetails(payload).subscribe((response:any) => {
       console.log(response);
       this.data=response.data
-      if(response.success){
-        console.log(response.data.extraPaymentData);
-        console.log(response.data.createdAt);
-        console.log(response.data.createdAt);
+      
         const createdAtDate = new Date(response.data.createdAt);
         this.month = createdAtDate.toLocaleString('default', { month: 'long' });  // Full month name
         this.year = createdAtDate.getFullYear();  // Year
         this.date =createdAtDate.toISOString().split('T')[0]; // Formats the date
         this.time = createdAtDate.toLocaleTimeString();  // Formats the time
-    
+        const walletBalance=response.data.extraPaymentData.prizedAmount+response.data.extraPaymentData.foremanCommision
+        this.paymentService.addWallet(response.data.groupId,-walletBalance ).subscribe(
+          (response)=>{
+            console.log(response);
+          }
+        )
         this.receipt={
           time:this.time,
           date:this.date,
-          prizedAmount:response.data.extraPaymentData.prizedAmmount,
+          prizedAmount:response.data.extraPaymentData.prizedAmount,
           subscriberName:response.data.extraPaymentData.subscriberName,
           groupId:response.data.groupId,
-          passbookNo:response.data.extraPaymentData.passbookNumber
+          passbookNo:response.data.extraPaymentData.passbookNumber,
+          winningBid:response.data.extraPaymentData.winningBid
         }
-        this.extraForm.reset()
-      }
-      else{
-        this.status=false
-      }
-    });
+        console.log(this.receipt,"receipt");
+        
+
+        });
   
   
    }

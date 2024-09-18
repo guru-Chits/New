@@ -113,13 +113,13 @@
               <app-profit></app-profit>
             </div>
             <div class="items" *ngIf="activeTab === 'purchase'">
-              <app-purchase [subscriber]="chitSubscriberTotal" (ticketIdChange)="onTicketIdChange($event)" [chitData]="chitData"></app-purchase>
+              <app-purchase  (ticketIdChange)="onTicketIdChange($event)" [chitData]="chitData"></app-purchase>
             </div>
             <div class="items" *ngIf="activeTab === 'tkn'">
               <app-tkn [subscriber]="chitSubscriberTotal"  [chitData]="chitData"></app-tkn>
             </div>
             <div class="items" *ngIf="activeTab === 'extra'">
-              <app-extra [subscriber]="addSubscriberTotal"  [chitData]="chitData"></app-extra>
+              <app-extra  [chitData]="chitData"></app-extra>
             </div>
             <div class="my-4">
               <h6 class="ps-3 pb-2">Subscribers</h6>

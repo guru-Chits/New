@@ -24,15 +24,15 @@
       <div class="row justify-content-around">
         <div class="col-lg-4">
           <div class="form-group">
-            <label for="winnningBid" class="form-control-label">Winning Bid</label>
-            <input type="text" placeholder="Winning Bid" class="form-control form-control-sm" formControlName="winnningBid" (change)="getRouteNameValue()"/>
+            <label for="winningBid" class="form-control-label">Winning Bid</label>
+            <input type="text" placeholder="Winning Bid" class="form-control form-control-sm" formControlName="winningBid" (change)="getRouteNameValue()"/>
           </div>
         </div>
 
         <div class="col-lg-4">
           <div class="form-group">
-            <label for="prizedAmmount" class="form-control-label">Prized Amount</label>
-            <input type="text" placeholder="Prizes Amount" class="form-control form-control-sm" formControlName="prizedAmmount" />
+            <label for="prizedAmount" class="form-control-label">Prized Amount</label>
+            <input type="text" placeholder="Prizes Amount" class="form-control form-control-sm" formControlName="prizedAmount" />
           </div>
         </div>
 
@@ -57,7 +57,7 @@
 
         <div class="col-lg-4">
           <div class="form-group">
-            <label for="passbiokNumber" class="form-control-label">Passbook Number</label>
+            <label for="passbookNumber" class="form-control-label">Passbook Number</label>
             <input type="text" placeholder="Passbook Number" class="form-control form-control-sm" formControlName="passbookNumber"readonly />
           </div>
         </div>
@@ -112,7 +112,7 @@
                       <div class="row py-3">
                           <div class="col-6 d-flex justify-content-around">
                               <div class="col-5 fw-bold">Group ID</div>
-                              <div class="col-5">{{receipt.groupId}}</div>
+                              <div class="col-5">{{groupId}}</div>
                           </div>
                           <div class="col-6 d-flex justify-content-around" >
                               <div class="col-5 fw-bold">Date & Time</div>
@@ -134,6 +134,10 @@
                               <div class="col-5 fw-bold">Passbook Number</div>
                               <div class="col-5">{{receipt.passbookNo}}</div>
                           </div>
+                          <div class="col-6 d-flex justify-content-around">
+                            <div class="col-5 fw-bold">Winning Bid</div>
+                            <div class="col-5">{{receipt.winningBid}}</div>
+                        </div>
                       </div>
                   </div>
               </div>

@@ -74,7 +74,7 @@ export class CollectionsComponent implements OnInit {
         }
       });
 
-      this.staffs=localStorage.getItem('name')
+      this.staffs=sessionStorage.getItem('name')
       this.staffs=this.staffs.replace(/"/g, ''); 
       console.log(this.staffs);
       
@@ -355,8 +355,14 @@ export class CollectionsComponent implements OnInit {
               }
             )
           } else if (passbookData.source === 'addChitSubscribers') {
+            this.addSubscriberTotal=response.updateDetails.amount
+            this.service.addWallet(response.updateDetails.groupId, this.addSubscriberTotal).subscribe(
+              (response)=>{
+                console.log(response);
+              }
+            )
             // Sum up payments for addChitSubscribers (convert amount to number explicitly)
-            this.addSubscriberTotal = this.paymentBody.amount;
+            // this.addSubscriberTotal = this.paymentBody.amount;
           }
     
          });

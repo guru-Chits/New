@@ -24,15 +24,15 @@
   <div class="row justify-content-around">
     <div class="col-lg-4">
       <div class="form-group">
-        <label for="winnningBid" class="form-control-label">Winning Bid</label>
-        <input type="text" placeholder="Winning Bid" class="form-control form-control-sm" formControlName="winnningBid" (change)="getRouteNameValue()"/>
+        <label for="winningBid" class="form-control-label">Winning Bid</label>
+        <input type="text" placeholder="Winning Bid" class="form-control form-control-sm" formControlName="winningBid" (change)="getRouteNameValue()"/>
       </div>
     </div>
 
     <div class="col-lg-4">
       <div class="form-group">
-        <label for="prizedAmmount" class="form-control-label">Prized Amount</label>
-        <input type="text" placeholder="Prizes Amount" class="form-control form-control-sm" formControlName="prizedAmmount" />
+        <label for="prizedAmount" class="form-control-label">Prized Amount</label>
+        <input type="text" placeholder="Prizes Amount" class="form-control form-control-sm" formControlName="prizedAmount" />
       </div>
     </div>
 
@@ -56,7 +56,7 @@
 
     <div class="col-lg-4">
       <div class="form-group">
-        <label for="passbiokNumber" class="form-control-label">Passbook Number</label>
+        <label for="passbookNumber" class="form-control-label">Passbook Number</label>
         <input type="text" placeholder="Passbook Number" class="form-control form-control-sm" formControlName="passbookNumber" readonly />
       </div>
     </div>
@@ -71,7 +71,9 @@
     </form>
 
     <div *ngIf="chitData">
-      <div class="modal fade" id="auctionModal"  tabindex="-1" aria-labelledby="auctionModalLabel"  >
+      <div>
+
+        <div class="modal fade" id="auctionModal"  tabindex="-1" aria-labelledby="auctionModalLabel"  >
           <div class="modal-dialog modal-lg modal-dialog-centered">
               <div class="modal-content p-4">
                   <div class="popup-body">
@@ -96,7 +98,7 @@
                           <div class="row py-3">
                               <div class="col-6 d-flex justify-content-around">
                                   <div class="col-5 fw-bold">Group ID</div>
-                                  <div class="col-5">{{receipt.groupId}}</div>
+                                  <div class="col-5">{{receipt?.groupId}}</div>
                               </div>
                               <div class="col-6 d-flex justify-content-around" >
                                   <div class="col-5 fw-bold">Date & Time</div>
@@ -106,18 +108,22 @@
                           <div class="row pb-3">
                               <div class="col-6 d-flex justify-content-around">
                                   <div class="col-5 fw-bold">Prized Amount</div>
-                                  <div class="col-5">{{receipt.prizedAmount}}</div>
+                                  <div class="col-5">{{receipt?.prizedAmount}}</div>
                               </div>
                               <div class="col-6 d-flex justify-content-around">
                                 <div class="col-5 fw-bold">Prized Subscriber Name</div>
-                                <div class="col-5">{{receipt.subscriberName}}</div>
+                                <div class="col-5">{{receipt?.subscriberName}}</div>
                               </div>
                           </div>
                           <div class="row pb-3">
                               <div class="col-6 d-flex justify-content-around">
                                   <div class="col-5 fw-bold">Passbook Number</div>
-                                  <div class="col-5">{{receipt.passbookNo}}</div>
+                                  <div class="col-5">{{receipt?.passbookNo}}</div>
                               </div>
+                              <div class="col-6 d-flex justify-content-around">
+                                <div class="col-5 fw-bold">Winning Bid</div>
+                                <div class="col-5">{{receipt?.winningBid}}</div>
+                            </div>
                           </div>
                       </div>
                   </div>
@@ -126,5 +132,6 @@
                   </div>
               </div>
           </div>
+      </div>
       </div>
       </div>

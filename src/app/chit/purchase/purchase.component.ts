@@ -4,6 +4,7 @@ import { ChitService } from '../shared/service/chit.service';
 import { SubscriberDetails } from '../shared/interface/chit';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
+import { PaymentService } from '../../payments/shared/service/payment.service';
 
 @Component({
   selector: 'app-purchase',
@@ -23,9 +24,9 @@ export class PurchaseComponent implements OnInit {
  ticketId:string
  receipt:any
  @Output() ticketIdChange = new EventEmitter<string>();
-constructor( private fb: FormBuilder,private service: ChitService,
+constructor(private paymentService:PaymentService, private fb: FormBuilder,private service: ChitService,
 ){}
-@Input() subscriber:any
+ subscriber:any
 @Input() chitData:any
 
  ngOnInit(): void {
@@ -33,8 +34,8 @@ constructor( private fb: FormBuilder,private service: ChitService,
     groupId: ['',[Validators.required]],
     walletBalance: ['',[Validators.required]],
     foremanCommision: ['',[Validators.required]],
-    winnningBid: ['',[Validators.required]],
-    prizedAmmount: ['',[Validators.required]],
+    winningBid: ['',[Validators.required]],
+    prizedAmount: ['',[Validators.required]],
     ticketId: ['',[Validators.required]],
     subscriberName: ['',[Validators.required]],
     passbookNumber: ['',[Validators.required]],
@@ -59,19 +60,30 @@ constructor( private fb: FormBuilder,private service: ChitService,
   //   this.purchaseForm.disable();
   //   this.purchaseForm.get('isActive')?.enable();
   // }
-  const groupId=this.chitData?.chitGroupId
-  
-  this.purchaseForm.patchValue({
-    walletBalance:this.subscriber,
-    groupId: groupId,
-    foremanCommision: this.chitData?.foremanCommission,
+  console.log("chitdata",this.chitData);
+  this.groupId=this.chitData?.chitGroupId
+
+  this.paymentService.getTransactionById(this.groupId).subscribe((response)=>{
+    console.log(response);
+    this.walletBalance=response
+    this.walletBalance=this.walletBalance.payment
+    this.walletBalance.forEach(amount => {
+      this.subscriber=amount.walletBalance
+      console.log(this.subscriber,"red");
+      this.purchaseForm.patchValue({
+        walletBalance:this.subscriber,
+        groupId: this.groupId,
+        foremanCommision: this.chitData?.foremanCommission,
+      })
+    }); 
   })
+
   // this.incrementAuctionCycle()
 
   this.purchaseForm.get('ticketId')?.valueChanges.subscribe(() => {
     const ticketId = this.purchaseForm.get('ticketId')?.value;
-    if (ticketId && groupId) {
-      this.service.getSubscriberByTicketId(ticketId, groupId).subscribe((details) => {
+    if (ticketId && this.groupId) {
+      this.service.getSubscriberByTicketId(ticketId, this.groupId).subscribe((details) => {
         console.log(details);
         this.subDetails=details
         console.log(this.subDetails);
@@ -86,11 +98,14 @@ constructor( private fb: FormBuilder,private service: ChitService,
 
 })
 
-this.purchaseForm.get('winnningBid')?.valueChanges.subscribe(()=>{
-  const prizedAmount=this.purchaseForm.get('winnningBid').value
-  const winnningBid=this.chitData?.chitAmount-prizedAmount
+this.purchaseForm.get('winningBid')?.valueChanges.subscribe(()=>{
+  const winningBid=this.purchaseForm.get('winningBid').value
+  const prizedAmount=this.chitData?.chitAmount-winningBid
+  const finalprizedAmount = prizedAmount;
+  const walletBalance = this.subscriber
+
   this.purchaseForm.patchValue({
-    prizedAmmount:winnningBid,
+    prizedAmount:prizedAmount,
     // walltetBalance: 
   });
 })
@@ -148,17 +163,12 @@ this.purchaseForm.get('winnningBid')?.valueChanges.subscribe(()=>{
     walletBalance: this.purchaseForm.value.walletBalance,
     purchaseChitData: {
       foremanCommision:this.purchaseForm.value.foremanCommision,
-      winnningBid:this.purchaseForm.value.winnningBid,
-      prizedAmount:this.purchaseForm.value.prizedAmmount,
+      winningBid:this.purchaseForm.value.winningBid,
+      prizedAmount:this.purchaseForm.value.prizedAmount,
       ticketId:this.purchaseForm.value.ticketId,
       subscriberName:this.purchaseForm.value.subscriberName,
       passbookNumber:this.purchaseForm.value.passbookNumber,
-      // isActive:this.purchaseForm.value.isActive,
-      // auctionCycle:this.purchaseForm.value.auctionCycle
     },
-    foremanCommision: this.purchaseForm.value.foremanCommision,
-    winnningBid:this.purchaseForm.value.winnningBid,
-    prizedAmmount:this.purchaseForm.value.prizedAmmount,
 }
   this.service.saveAuctionDetails(payload).subscribe((response:any) => {
     console.log(response.data.purchaseChitData);
@@ -179,8 +189,10 @@ this.purchaseForm.get('winnningBid')?.valueChanges.subscribe(()=>{
       prizedAmount:response.data.purchaseChitData.prizedAmount,
       subscriberName:response.data.purchaseChitData.subscriberName,
       groupId:response.data.groupId,
-      passbookNo:response.data.purchaseChitData.passbookNumber
+      passbookNo:response.data.purchaseChitData.passbookNumber,
+      winningBid:response.data.purchaseChitData.winningBid
     }
+
     });
 
   this.purchaseForm.reset()

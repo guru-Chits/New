@@ -114,6 +114,11 @@ getTransactionById(id: string){
   return this.http.get(url)
 }
 
+getAddWallet(id: string){
+  let url = `${this.paymentUrl}/getAddWall/${id}`;
+  return this.http.get(url)
+}
+
 verifyPassbookNo(passbookno: string): Observable<any> {
   return this.http.get(`${this.paymentUrl}/verifyPassbookNo/${passbookno}`);
 }
@@ -148,6 +153,20 @@ saveTransactionDetails( groupId: string,
 
   return this.http.post(savetransactionUrl, body)
 }
+
+addWallet( groupId: string,
+  addWalletBalance: number,
+  ): Observable<any>{
+
+    const body: any = { groupId,addWalletBalance };
+
+    console.log(body);
+    
+  let savetransactionUrl: string = `${this.paymentUrl}/addWallet`
+
+  return this.http.post(savetransactionUrl, body)
+}
+
 
 deletePayment(id:string){
   let url:string= `${this.paymentUrl}/deletePayment/${id}`

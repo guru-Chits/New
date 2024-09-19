@@ -1,6 +1,6 @@
 <div class="container-fluid d-flex flex-column">
   <div class="row">     
-    <div class="col-lg-9">
+    <div class="col-lg-8">
       <div class="row">
         <div class="col-lg-12 d-flex justify-content-between py-3">
           <app-breadcrumb [data]="breadcrumsData"></app-breadcrumb>
@@ -102,17 +102,17 @@
         </div>
       </div>
     </div> 
-    <div class="col-lg-3">
+    <div class="col-lg-4">
       <app-auction-sidebar [dataFromParent]="showChitDetails" (dataToParent)="recieveChildBoolean($event)"></app-auction-sidebar>
       <div class="chit-details" *ngIf="showChitDetails">
         <div class="card p-3 mt-2">
             <h5 class="title text-center fw-bold fs-4">Chit Group {{selectedChit}}</h5>
-            <table class="table-chit px-3">
+            <table class="table-chit px-3 d-flex flex-stretch">
                 <tbody>
                   <tr>
                     <td><strong>Group ID </strong></td>
                     <!-- <td><a href="#">{{subscriberDetail.Subscriber.subscriberId }}</a></td> -->
-                    <td>{{specificChitData?.chitGroupId}}</td>
+                    <td style="color: #50A1A5;">{{specificChitData?.chitGroupId}}</td>
                   </tr>
                   <tr>
                     <td><strong>Auction Completion Count </strong></td>
@@ -148,13 +148,15 @@
               </table>
               <div class="mb-2">
                 <!-- <button class="btn clear-btn"  (click)="addToGroup(subscriberDetail.Subscriber._id)">Add to Group</button> -->
-                 <div class="row">
-                  <div class="col-6">
-                    <button class="btn view-btn" (click)="navigate(specificChitData?._id)">View More Details</button>
+                 <div class=" d-flex justify-content-around">
+                  <div class="">
+                    <button class="btn view-btn px-4" (click)="navigate(specificChitData?._id)">View More Details</button>
                   </div>
-                 <div class="col-6">
-                  <button class="btn auc-btn" (click)="auctionEntry(specificChitData?._id)" >Auction Entry</button> 
-                  </div>  
+
+                  <div class="">
+                    <button type="button" class="btn auc-btn fw-bold px-4" (click)="auctionEntry(specificChitData?._id)" >Auction Entry</button> 
+                  </div>
+              
                 </div>                
             </div>   
         </div>

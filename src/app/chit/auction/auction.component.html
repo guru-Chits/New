@@ -61,8 +61,17 @@
                       <div class="col-lg-4">
                         <div class="form-group">
                           <label for="ticketId" class="form-control-label">Ticket Id</label>
-                          <input type="text" placeholder="Ticket Id" class="form-control form-control-sm" formControlName="ticketId" />
+                          <input type="text" placeholder="Ticket Id" class="form-control form-control-sm" formControlName="ticketId"
+                          [ngClass]="{'is-invalid': auctionForm.get('ticketId')?.invalid && auctionForm.get('ticketId')?.touched}"
+                           />
+                           <div *ngIf="auctionForm.get('ticketId')?.hasError('ticketExists')" class="invalid-feedback">
+                            This ticket is already in use for this group.
+                          </div>
+                          <div *ngIf="auctionForm.hasError('ticketIdOutOfRange') && auctionForm.get('ticketId')?.touched">
+                            <small class="text-danger">{{ auctionForm.getError('ticketIdOutOfRange') }}</small>
+                          </div>
                         </div>
+
                       </div>
                     </div>
                     <div class="row justify-content-around">

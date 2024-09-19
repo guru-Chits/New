@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormGroup, ValidationErrors, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { ITableColumn } from '../../shared/interface/list-table';
 import { ChitService } from '../shared/service/chit.service';
@@ -74,7 +74,11 @@ export class AuctionComponent implements OnInit {
       passbookNumber: ['',[Validators.required]],
       auctionCycle: ['',[Validators.required]],
       auctionStart: [false]
-    });
+    },
+    {
+      validator: this.amountLessThanOrEqualChitAmount('ticketId') // Add custom validator here
+    }
+  );
 
     const auctionStart = this.auctionForm.get('auctionStart')?.value;
     if (auctionStart) {
@@ -160,8 +164,20 @@ export class AuctionComponent implements OnInit {
     this.incrementAuctionCycle()
     this.auctionForm.patchValue(chitDetails);
 
-    this.auctionForm.get('ticketId')?.valueChanges.subscribe(() => {
-      this.fetchSubscriberDetails();
+    this.auctionForm.get('ticketId')?.valueChanges.subscribe((ticketId) => {
+      this.service.findTicketInGroup(this.groupId,ticketId).subscribe((res)=>{
+        console.log("res tickeer id",res.result);
+        if (res.result === true) {
+          // Set a validation error if the ticket already exists
+          this.auctionForm.get('ticketId')?.setErrors({ ticketExists: true });
+        } else {
+          // Clear the validation error if the ticket does not exist
+          this.auctionForm.get('ticketId')?.setErrors(null);
+        }
+    
+        // You can call this after validation to handle other logic
+        this.fetchSubscriberDetails();
+      })
     });
   }
 
@@ -169,13 +185,29 @@ export class AuctionComponent implements OnInit {
   //   this.auctionForm.get('auctionCycle')?.setValue(this.auctionCycle++);
   // }
 
-
+  amountLessThanOrEqualChitAmount(ticketIdControl: string) {
+    return (formGroup: AbstractControl): ValidationErrors | null => {
+      const ticketId = formGroup.get(ticketIdControl)?.value;
+  
+      const maxLen = 20
+      const minLen = 1
+  
+      // Check if ticketId is a number and falls between minLen and maxLen
+      if (ticketId !== null && (ticketId < minLen || ticketId > maxLen)) {
+        // Return validation error if the ticketId is out of range
+        return { ticketIdOutOfRange: `Ticket ID must be between ${minLen} and ${maxLen}` };
+      }
+  
+      // No error if validation passes
+      return null;
+    };
+  }
   getRouteNameValue() {
     const winningBid = this.auctionForm.get('winningBid').value;
     const prizedAmount = `${this.chitData.chitAmount - winningBid}`
     console.log('minus value', prizedAmount)
     this.auctionForm.get('prizedAmount').patchValue(prizedAmount)
-    // debugger;
+
     const finalprizedAmount = this.auctionForm.get('prizedAmount').value;
     const walletBalance = this.chitSubscriberTotal
     const sumOfTwo = Number(finalprizedAmount) + Number(this.chitData.foremanCommission);

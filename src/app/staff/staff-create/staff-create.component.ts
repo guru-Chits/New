@@ -4,6 +4,7 @@ import { StaffService } from '../shared/service/staff.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AreaService } from '../../area/shared/service/area.service';
 import { NgSelectModule, NgLabelTemplateDirective, NgOptionTemplateDirective } from '@ng-select/ng-select';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-staff-create',
@@ -24,7 +25,8 @@ export class StaffCreateComponent implements OnInit{
     private activatedRoute:ActivatedRoute,
     private service: StaffService,
     private router:Router,
-    private routeService:AreaService
+    private routeService:AreaService,
+    private HttpClient:HttpClient
   
   ) { }
 routeId:[]
@@ -358,21 +360,34 @@ onSubmit(): void {
       formData.append(key, formValue[key]);
     }
   }
+  const mobile=this.staffsForm.get('contact')?.value
+  const password = this.staffsForm.get('password')?.value;
+  const loginLink = 'http://13.127.210.25/login/forgot-password';
+  this.service.sendSms(mobile,password,loginLink)
+
+  const otpUrl = `https://2factor.in/API/R1/?module=TRANS_SMS&apikey=b1037ef1-2ed8-11ef-8b60-0200cd936042&to=${mobile}&from=KNGCPL&templatename=Onboarding&${password}=VAR1_VALUE&${loginLink}=VAR2_VALUE`;
+
+  // Send OTP
+  this.HttpClient.get(otpUrl).subscribe(
+    (otpResponse: any) => {
+      console.log('OTP sent successfully:', otpResponse);
+     },
+    (error) => {
+      console.error('Error sending OTP:', error);
+    }
+  );
+
 
   this.service.savestaffDetails(formData, this.staffId).subscribe((data) => {
-    if (isNewStaff) {
-      // Send notification (OTP API or Email) with employeeId, password, and link
-      // const employeeId = this.staffsForm.get('employeeId')?.value;
-      // const password = this.staffsForm.get('password')?.value;
-      // const loginLink = 'http://13.127.210.25/login/forgot-password';
-      
+    // if (isNewStaff) {
+      const employeeId = this.staffsForm.get('employeeId')?.value;
+      const password = this.staffsForm.get('password')?.value;
+      const loginLink = 'http://13.127.210.25/login/forgot-password';
+      this.service.sendSms(mobile,password,loginLink)
+
       // let message = `Your employee ID is ${employeeId} and your temporary password is ${password}. Use the following link to login and reset your password: ${loginLink}`;
-    }
+    // }
       // Assuming the service has a method to send SMS or email notifications
-      this.service.sendSms(
-         formValue.contact,
-         `Your employee ID is ${ this.staffsForm.get('employeeId')?.value} and your temporary password is ${this.staffsForm.get('password')?.value}. Use the following link to login and reset your password: ${'http://13.127.210.25/login/forgot-password'}`,
-      )
     
     // Navigate to staff list after saving
     this.router.navigate(["/staff"]);

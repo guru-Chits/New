@@ -9,7 +9,10 @@ import { Observable } from 'rxjs';
 export class StaffService {
   delete:string=environment.staffServiceUrl+'/staff/deleteStaff/666fe548e419feb9c05e422d'
   staffUrl:string=environment.staffServiceUrl+"/staff/getStaffDetails"
-  private apiUrl = 'https://2factor.in/API/V1/b1037ef1-2ed8-11ef-8b60-0200cd936042/SMS';
+  private apiUrl = 'https://2factor.in/API/R1/';
+  private apiKey = 'b1037ef1-2ed8-11ef-8b60-0200cd936042'; // Your API key
+  private senderId = 'KNGCPL'; // Sender ID
+  private templateName = 'Onboarding'; // Template name
 
   constructor(private http:HttpClient) { }
 
@@ -30,17 +33,9 @@ export class StaffService {
     return this.http.post(savesubscribeUrl, body)
   }
 
-  sendSms(mobileNumber: string, message: string): void {
-    const url = `${this.apiUrl}/${mobileNumber}/AUTOGEN/YourTemplateWithUsernamePasswordAndLink/${message}`;
-
-    this.http.get(url).subscribe(
-      (response) => {
-        console.log('SMS sent successfully:', response);
-      },
-      (error) => {
-        console.error('Error sending SMS:', error);
-      }
-    );
+  sendSms(clientNumber: string, var1: string, var2: string): Observable<any> {
+    const url = `${this.apiUrl}?module=TRANS_SMS&apikey=${this.apiKey}&to=${clientNumber}&from=${this.senderId}&templatename=${this.templateName}&var1=${var1}&var2=${var2}`;
+    return this.http.get<any>(url);
   }
 }
 

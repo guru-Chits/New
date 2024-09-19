@@ -82,19 +82,37 @@ constructor(private paymentService:PaymentService, private fb: FormBuilder,priva
 
   this.purchaseForm.get('ticketId')?.valueChanges.subscribe(() => {
     const ticketId = this.purchaseForm.get('ticketId')?.value;
-    if (ticketId && this.groupId) {
-      this.service.getSubscriberByTicketId(ticketId, this.groupId).subscribe((details) => {
-        console.log(details);
-        this.subDetails=details
-        console.log(this.subDetails);
+    this.service.findTicketInGroup(this.groupId,ticketId).subscribe((res)=>{
+      console.log("res tickeer id",res.purchase);
+      if (res.purchase===true) {
+        // Set a validation error if the ticket already exists
+        console.log('error');
         
-        this.purchaseForm.patchValue({
-          subscriberName: `${this.subDetails.chitDetails.firstName} ${this.subDetails.chitDetails.aliasName}`,
-          passbookNumber: this.subDetails.chitDetails.passbookNo,
-         
+        this.purchaseForm.get('ticketId')?.setErrors({ ticketExists: true });
+      } else if (res.result === true) {
+        // Set a validation error if the ticket already exists
+        this.purchaseForm.get('ticketId')?.setErrors({ ticketExists: true });
+      }
+      else {
+        // Clear the validation error if the ticket does not exist
+        this.purchaseForm.get('ticketId')?.setErrors(null);
+      }
+  
+      // You can call this after validation to handle other logic
+      if (ticketId && this.groupId) {
+        this.service.getSubscriberByTicketId(ticketId, this.groupId).subscribe((details) => {
+          console.log(details);
+          this.subDetails=details
+          console.log(this.subDetails);
+          
+          this.purchaseForm.patchValue({
+            subscriberName: `${this.subDetails.chitDetails.firstName} ${this.subDetails.chitDetails.aliasName}`,
+            passbookNumber: this.subDetails.chitDetails.passbookNo,
+           
+          });
         });
-      });
-    }
+      }
+      })
 
 })
 

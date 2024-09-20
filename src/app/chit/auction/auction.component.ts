@@ -41,6 +41,7 @@ export class AuctionComponent implements OnInit {
   chitSubscriberTotal = 0;
   addSubscriberTotal = 0;
   subDetails:any
+  purchase:boolean=false
   column: ITableColumn[] = [
     { field: 'Ticket Id', sortable: false, filter: false },
     { field: 'Name', sortable: false, filter: false },
@@ -170,7 +171,12 @@ export class AuctionComponent implements OnInit {
         if (res.result === true) {
           // Set a validation error if the ticket already exists
           this.auctionForm.get('ticketId')?.setErrors({ ticketExists: true });
-        } else {
+        } 
+        
+         else if(res.purchase===true) {
+          this.purchase=true
+        }  
+        else {
           // Clear the validation error if the ticket does not exist
           this.auctionForm.get('ticketId')?.setErrors(null);
         }
@@ -212,7 +218,7 @@ export class AuctionComponent implements OnInit {
     const walletBalance = this.chitSubscriberTotal
     const sumOfTwo = Number(finalprizedAmount) + Number(this.chitData.foremanCommission);
     console.log('sum of Two', sumOfTwo)
-    const finalWallet = `${walletBalance - sumOfTwo}`
+    const finalWallet = this.chitSubscriberTotal - sumOfTwo
     console.log('final value', finalWallet)
     this.auctionForm.get('walletBalance').patchValue(finalWallet)
   }

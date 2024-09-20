@@ -105,8 +105,8 @@
                         </div>                       
                        </div>
           
-                      <div class="col-lg-3">
-                          <button class="btn px-2 py-2" >Redeem TKN A/C</button>
+                       <div class="col-lg-3">
+                        <button class="btn btn-primary px-2 py-2" *ngIf="purchase" (click)="onSubmit()" data-bs-toggle="modal" data-bs-target="#auctionModal">Redeem TKN A/C</button>
                       </div>
                       <div class="col-lg-3">
                           <button class="btn px-2  py-2" >TKN Company</button>
@@ -119,7 +119,7 @@
             </div>
 
             <div *ngIf="activeTab === 'profit'">
-              <app-profit></app-profit>
+              <app-profit-chit   [chitData]="chitData"></app-profit-chit>
             </div>
             <div class="items" *ngIf="activeTab === 'purchase'">
               <app-purchase  (ticketIdChange)="onTicketIdChange($event)" [chitData]="chitData"></app-purchase>

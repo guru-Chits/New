@@ -1,87 +1,111 @@
-<form [formGroup]="profitForm" >
-    <div class="row justify-content-around">
-        <div class="col-lg-4">
-          <div class="form-group">
-            <label for="groupId" class="form-control-label">Group ID</label>
-            <input type="text" placeholder="Group Id" class="form-control form-control-sm" formControlName="groupId"/>
-          </div>
-        </div>
+<form [formGroup]="profitForm">
+  </form>
+  <form [formGroup]="chitForm">
 
-        <div class="col-lg-4">
-          <div class="form-group">
-            <label for="walletBal" class="form-control-label">Wallet Balance</label>
-            <input type="text" placeholder="Wallet Balance" class="form-control form-control-sm" formControlName="walletBal"/>
-          </div>
-        </div>
-
-        <div class="col-lg-4">
-          <div class="form-group">
-            <label for="foreCommission" class="form-control-label">Foreman Commission</label>
-            <input type="text" placeholder="Foreman Commission" class="form-control form-control-sm" formControlName="foreCommission"/>
-          </div>
+  <div class="row justify-content-around">
+      <div class="col-lg-4">
+        <div class="form-group">
+          <label for="groupId" class="form-control-label">Group ID</label>
+          <input type="text" placeholder="Group Id" class="form-control form-control-sm" formControlName="groupId"/>
         </div>
       </div>
-      <div class="row justify-content-around">
-        <div class="col-lg-4">
-          <div class="form-group">
-            <label for="winBid" class="form-control-label">Winning Bid</label>
-            <input type="text" placeholder="Winning Bid" class="form-control form-control-sm" formControlName="winBid" (change)="getRouteNameValue()"/>
-          </div>
-        </div>
 
-        <div class="col-lg-4">
-          <div class="form-group">
-            <label for="priAm" class="form-control-label">Prized Amount</label>
-            <input type="text" placeholder="Prizes Amount" class="form-control form-control-sm" formControlName="priAm" />
-          </div>
-        </div>
-
-        <div class="col-lg-4">
-          <div class="form-group">
-            <label for="ticketId" class="form-control-label">Ticket Id</label>
-            <input type="text" placeholder="Ticket Id" class="form-control form-control-sm" formControlName="ticketId" />
-          </div>
-        </div>
+ 
+    <div class="col-lg-4">
+      <div class="form-group">
+        <label for="walletBalance" class="form-control-label">Wallet Balance</label>
+        <input type="text" placeholder="Wallet Balance" class="form-control form-control-sm" formControlName="walletBalance"/>
       </div>
-      <div class="row justify-content-around">
-        <div class="col-lg-4">
-          <div class="form-group">
-            <label for="prizedSubName" class="form-control-label">Prized Subscriber Name</label>
-            <input type="text" placeholder="Prized Subscriber Name" class="form-control form-control-sm" formControlName="prizedSubName" />
-          </div>
-        </div>
 
-        <div class="col-lg-4">
-          <div class="form-group">
-            <label for="passbiokNumber" class="form-control-label">Passbook Number</label>
-            <input type="text" placeholder="Passbook Number" class="form-control form-control-sm" formControlName="passbookNumber" />
-          </div>
-        </div>
+    </div>
 
-        <div class="col-lg-4">
-          <div class="form-group">
-            <label for="ticketId" class="form-control-label">Auction Cycle</label>
-            <input type="text" placeholder="Auction Cycle" class="form-control form-control-sm" formControlName="auctionCycle" />
-          </div>
-        </div>
+    <div class="col-lg-4">
+      <div class="form-group">
+        <label for="foremanCommision" class="form-control-label">Foreman Commission</label>
+        <input type="text" placeholder="Foreman Commission" class="form-control form-control-sm" formControlName="foremanCommision"/>
       </div>
-  
-      <div class="row justify-content-around">
-        <div class="col-lg-3">
-        <div class="form-check form-switch">
-            <input class="form-check-input" type="checkbox" formControlName="auctionStart" role="switch" id="flexSwitchCheckChecked"  (change)="toggleFormControls()" >
-            <label class="form-check-label" for="flexSwitchCheckChecked">Auction Status</label>
-          </div>                       
-         </div>
 
-        <div class="col-lg-3">
-            <button class="btn px-2 py-2" >Redeem TKN A/C</button>
-        </div>
-        <div class="col-lg-3">
-            <button class="btn px-2  py-2" >TKN Company</button>
-        </div>                       
-         <div class="col-lg-3">
-            <button type="submit" class="btn px-2  py-2" data-bs-toggle="modal" data-bs-target="#auctionModal" [disabled]="!profitForm.valid"   (click)="onSubmit()">Create Invoice</button>
-        </div>
+    </div>
+
+</div>
+  <div class="row justify-content-around">
+    <div class="col-lg-4">
+      <div class="form-group">
+        <label for="winningBid" class="form-control-label">Winning Bid</label>
+        <input type="text" placeholder="Winning Bid" class="form-control form-control-sm" formControlName="winningBid" (change)="getRouteNameValue()"/>
       </div>
-    </form>
+      </div>
+
+    <div class="col-lg-4">
+      <div class="form-group">
+        <label for="prizedAmount" class="form-control-label">Prized Amount</label>
+        <input type="text" placeholder="Prizes Amount" class="form-control form-control-sm" formControlName="prizedAmount" />
+      </div>
+
+    </div>
+
+    <div class="col-lg-4">
+      <div class="form-group">
+        <label for="ticketId" class="form-control-label">Ticket Id</label>
+        <input type="text" placeholder="Ticket Id" class="form-control form-control-sm" formControlName="ticketId"
+        [ngClass]="{'is-invalid': profitForm.get('ticketId')?.invalid && profitForm.get('ticketId')?.touched}"
+         />
+         <div *ngIf="profitForm.get('ticketId')?.hasError('ticketExists')" class="invalid-feedback">
+          This ticket is already in use for this group.
+        </div>
+        <!-- <div *ngIf="profitForm.hasError('ticketIdOutOfRange') && profitForm.get('ticketId')?.touched">
+          <small class="text-danger">{{ profitForm.getError('ticketIdOutOfRange') }}</small>
+        </div> -->
+      </div>
+
+    </div>
+  </div>
+
+  <div class="row justify-content-around">
+    <div class="col-lg-4">
+      <div class="form-group">
+        <label for="subscriberName" class="form-control-label">Prized Subscriber Name</label>
+        <input type="text" placeholder="Prized Subscriber Name" class="form-control form-control-sm" formControlName="subscriberName" />
+      </div>
+
+    </div>
+
+    <div class="col-lg-4">
+      <div class="form-group">
+        <label for="passbookNumber" class="form-control-label">Passbook Number</label>
+        <input type="text" placeholder="Passbook Number" class="form-control form-control-sm" formControlName="passbookNumber" />
+      </div>
+
+    </div>
+
+    <div class="col-lg-4">
+      <div class="form-group">
+        <label for="ticketId" class="form-control-label">Auction Cycle</label>
+        <input type="text" placeholder="Auction Cycle" class="form-control form-control-sm" formControlName="auctionCycle" />
+      </div>
+   </div>
+  </div>
+
+  <div class="row justify-content-around">
+    <div class="col-lg-3">
+      <div class="form-check form-switch">
+        <input class="form-check-input" type="checkbox" formControlName="auctionStart" role="switch" id="flexSwitchCheckChecked"  (change)="toggleFormControls()" >
+        <label class="form-check-label" for="flexSwitchCheckChecked">Auction Status</label>
+      </div>                       
+    </div>
+    <div class="col-lg-3">
+      <button class="btn btn-primary px-2 py-2">Redeem TKN A/C</button>
+    </div>
+
+    <div class="col-lg-3">
+      <button
+        type="submit"
+        class="btn btn-primary px-2 py-2"
+        [disabled]="!profitForm.valid"
+        (click)="onSubmit()"
+      >
+        Create Invoice
+      </button>
+    </div>
+  </div>
+</form>

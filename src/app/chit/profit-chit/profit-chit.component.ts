@@ -2,6 +2,8 @@ import { Component, Input, OnInit } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, ValidationErrors, Validators } from '@angular/forms';
 import { ChitService } from '../shared/service/chit.service';
 import { PaymentService } from '../../payments/shared/service/payment.service';
+import html2canvas from 'html2canvas';
+import jsPDF from 'jspdf';
 
 @Component({
   selector: 'app-profit-chit',
@@ -211,6 +213,56 @@ onSubmit(){
       }
       console.log(this.receipt,"receipt");
       });
+      this.purchase=false
+}
 
+downloadAsPDF() {
+  const element = document.getElementById('print-section');
+
+  // Set the width to ensure correct layout
+  element.style.width = '700px';  // Adjust according to your modal's size
+
+  html2canvas(element, {
+    scale: 2, // Increase the scale to improve image quality
+    useCORS: true,  // Enable cross-origin resource sharing if images are hosted externally
+    allowTaint: true // Allow cross-origin images to be rendered into the canvas
+  }).then((canvas) => {
+    const imgData = canvas.toDataURL('image/png');
+
+    // Initialize jsPDF (Portrait orientation, Millimeters, A4 size)
+    const pdf = new jsPDF('p', 'mm', 'a4');
+
+    // Calculate the width and height to fit the content on A4 page size
+    const pageWidth = pdf.internal.pageSize.getWidth();
+    const pageHeight = pdf.internal.pageSize.getHeight();
+    
+    const canvasWidth = canvas.width;
+    const canvasHeight = canvas.height;
+
+    const ratio = Math.min(pageWidth / canvasWidth, pageHeight / canvasHeight);
+
+    const imgWidth = canvasWidth * ratio;
+    const imgHeight = canvasHeight * ratio;
+
+    pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
+
+    // pdf.save(`${this.auctionCycle}.pdf`);
+    element.style.width = '';
+  });
+}
+print() {
+  const printContent = document.getElementById('print-section').innerHTML;
+  const originalContent = document.body.innerHTML;
+  console.log(originalContent);
+  
+  // Replace body content with modal content
+  document.body.innerHTML = printContent;
+
+  // Trigger print
+  window.print();
+
+  // Revert body content
+  document.body.innerHTML = originalContent;
+  window.location.reload(); // Reload to restore state
 }
 }

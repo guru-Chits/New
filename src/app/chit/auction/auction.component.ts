@@ -305,6 +305,7 @@ export class AuctionComponent implements OnInit {
       foremanCommision:response.data.foremanCommision,
       walletBalance:response.data.walletBalance,
       auctionCycle:response.data.auctionCycle,
+      winningBid:response.data.winningBid
     }
     const walletBalance=response.data.prizedAmount+response.data.foremanCommision
     this.paymentService.saveTransactionDetails(response.data.groupId,-walletBalance ).subscribe(
@@ -313,7 +314,7 @@ export class AuctionComponent implements OnInit {
       }
     )
     });
-
+    this.purchase=false
     // this.auctionForm.reset()
   }
 

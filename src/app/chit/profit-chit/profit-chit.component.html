@@ -83,7 +83,7 @@
       </div>                       
     </div>
     <div class="col-lg-3">
-      <button class="btn btn-primary px-2 py-2" *ngIf="purchase" (click)="onSubmit()" data-bs-toggle="modal" data-bs-target="#auctionModal">Redeem TKN A/C</button>
+      <button class="btn btn-primary px-2 py-2"  [disabled]="!purchase" (click)="onSubmit()" data-bs-toggle="modal" data-bs-target="#auctionModal">Redeem TKN A/C</button>
     </div>
 
     <div class="col-lg-3">

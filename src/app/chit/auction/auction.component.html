@@ -106,11 +106,11 @@
                        </div>
           
                        <div class="col-lg-3">
-                        <button class="btn btn-primary px-2 py-2" *ngIf="purchase" (click)="onSubmit()" data-bs-toggle="modal" data-bs-target="#auctionModal">Redeem TKN A/C</button>
+                        <button class="btn btn-primary px-2 py-2"  [disabled]="!purchase" (click)="onSubmit()" data-bs-toggle="modal" data-bs-target="#auctionModal">Redeem TKN A/C</button>
                       </div>
-                      <div class="col-lg-3">
+                      <!-- <div class="col-lg-3">
                           <button class="btn px-2  py-2" >TKN Company</button>
-                      </div>                       
+                      </div>                        -->
                        <div class="col-lg-3">
                           <button type="submit" class="btn px-2  py-2" data-bs-toggle="modal" data-bs-target="#auctionModal" [disabled]="!auctionForm.valid"   (click)="onSubmit()">Create Invoice</button>
                       </div>
@@ -222,6 +222,10 @@
                         <div class="col-5 fw-bold">Ticket Id</div>
                         <div class="col-5">{{ticketId}}</div>
                     </div>
+                    <div class="col-6 d-flex justify-content-around">
+                      <div class="col-5 fw-bold">Winning Bid</div>
+                      <div class="col-5">{{receipt?.winningBid}}</div>
+                  </div>
                     </div>
                   </div>
               </div>

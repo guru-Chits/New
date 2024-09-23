@@ -9,10 +9,10 @@
 
     <form class="form row d-flex" [formGroup]="reactiveForm">
         <label class="form-check-label normalText mb-2">Collection Name </label>
-        <input class="form-control ms-2 me-2" type="text" placeholder="Monthly" formControllerName="collectionCreate">
+        <input class="form-control ms-2 me-2" type="text" placeholder="Monthly" formControlName="collectionType">
         <label class="form-check-label normalText mt-3 mb-2">Collection Description </label>
-        <input class="form-control ms-2 me-2" type="text" placeholder="Loem ipsum" formControllerName="collectiondescription">
-        <button type="submit" class="btn buttoncreate align-items-center ms-2 me-2 mb-3 mt-3">Create Role</button>
+        <input class="form-control ms-2 me-2" type="text" placeholder="Enter Description" formControlName="collectionDescription">
+        <button type="submit" class="btn buttoncreate align-items-center ms-2 me-2 mb-3 mt-3" (click)="submit()">Create Collection</button>
         <button type="submit" class="btn button align-items-center ms-2 me-2 mb-3">Cancel</button>
     </form>
 

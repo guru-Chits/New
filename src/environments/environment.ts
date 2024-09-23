@@ -4,10 +4,11 @@ const localUrl='http://localhost:8000'
 export const environment = {
     paymentServiceUrl: `${localUrl}/api`,
     subscriberServiceUrl:`${baseUrl}/api`,
-    chitServiceUrl:`${localUrl}/api`,
-    staffServiceUrl:`${localUrl}/api`,
+    chitServiceUrl:`${baseUrl}/api`,
+    staffServiceUrl:`${baseUrl}/api`,
     areaServiceUrl:`${baseUrl}/api`,
-    loginServiceUrl:`${baseUrl}/api`,
-    accessServiceUrl:`${baseUrl}/api`,
-    auctionServiceUrl:`${localUrl}/api`
+    loginServiceUrl:`${localUrl}/api`,
+    accessServiceUrl:`${localUrl}/api`,
+    auctionServiceUrl:`${baseUrl}/api`,
+    settingsServiceUrl:`${localUrl}/api/settings`
 }

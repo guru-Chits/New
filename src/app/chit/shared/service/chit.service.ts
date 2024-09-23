@@ -48,6 +48,11 @@ export class ChitService {
     let url:string = `${environment.auctionServiceUrl}/chit_management/getAuction/${groupId}`
     return this.http.get(url)
   }
+  getTicketById(id:string,groupId:string){
+    let url: string = `${environment.chitServiceUrl}/getByTicketId/${groupId}/${id}`
+    return this.http.get(url)
+    console.log(url);
+  }
 
   findTicketInGroup(groupId:string,ticketId:number):Observable<any>{
     let url:string = `${environment.auctionServiceUrl}/chit_management/findTicketInGroup/${groupId}/${ticketId}`

@@ -72,7 +72,8 @@ export class PaymentsComponent implements OnInit {
       selectStaff: ['',[Validators.required]],
       chitAmount:['',[Validators.required]],
       cancelled:['',[Validators.required]],
-      verified:['',Validators.required]
+      verified:['',Validators.required],
+      deleteReason: [""]
       },
       {
         validator: this.amountLessThanOrEqualChitAmount('amount', 'chitAmount') // Add custom validator here

@@ -5,6 +5,7 @@ import { SubscriberService } from '../../subscriber/shared/service/subscriber.se
 import { FormControl, FormGroup } from '@angular/forms';
 import { ChitService } from '../shared/service/chit.service';
 import { Router } from '@angular/router';
+import { ServiceService } from '../../settings/shared/service.service';
 // import { SubscriberDetails } from '../shared/interface/chit';
 
 @Component({
@@ -44,8 +45,11 @@ export class ChitCreateComponent {
   searchInput:string=""
   chitGroupForm:FormGroup
   displayedChits: any[];
-  constructor( private subService:SubscriberService, private chitService:ChitService, private router:Router,) {
-
+  collectionTypes: any;
+  collectionTypeForm: FormGroup
+  constructor( private subService:SubscriberService,
+    private settings: ServiceService,
+    private chitService:ChitService, private router:Router,) {
   }
 
   ngOnInit(): void{
@@ -58,7 +62,17 @@ export class ChitCreateComponent {
       chitSubscribers: new FormControl([]),
       addChitSubscribers: new FormControl([])
     });
+    this.collectionTypeForm = new FormGroup({
+      collectionType: new FormControl(''),
+    });
 
+    this.settings.getAllCollection().subscribe(
+      (data)=>{
+        this.collectionTypes=data
+        this.collectionTypes=this.collectionTypes.res
+        console.log(this.collectionTypes,"Collection Type");
+      }
+    )
 
     this.subService.getsubscriberAll().subscribe((data)=>{
       this.subscriberData=data;
@@ -71,8 +85,7 @@ export class ChitCreateComponent {
         subscriberProfile:subscriberDetails?.profileImageUrl
       }))
       this.displayedSubscribers = this.data;
-      console.log(this.displayedSubscribers);
-      
+      console.log(this.displayedSubscribers);      
     })
   }
   profileImageWithIdRenderer(params: any): string {
@@ -190,7 +203,8 @@ export class ChitCreateComponent {
             aliasName: this.subData.Subscriber.lastName,
             firstName: this.subData.Subscriber.firstName,
             place: this.subData.Subscriber.routeId,
-            occupation: this.subData.Subscriber.occupation
+            occupation: this.subData.Subscriber.occupation,
+            collectionType:this.collectionTypeForm.get('collectionType')?.value
           };
   
           if (chitSubscribers.some(sub => sub.subscriberId === newSubscriber.subscriberId)) {
@@ -224,7 +238,8 @@ export class ChitCreateComponent {
     { label: 'Alias Name', field: 'aliasName', sortable: true },
     { label: 'First Name', field: 'firstName', sortable: true },
     { label: 'Place', field: 'place', sortable: true },
-    { label: 'Occupation', field: 'occupation', sortable: true }
+    { label: 'Occupation', field: 'occupation', sortable: true },
+    { label: 'Collection Type', field: 'collectionType', sortable: true },
   ];  
 
   addSubcolumn: ITableColumn[] = [
@@ -235,7 +250,8 @@ export class ChitCreateComponent {
     { label: 'Alias Name', field: 'aliasName', sortable: true },
     { label: 'First Name', field: 'firstName', sortable: true },
     { label: 'Place', field: 'place', sortable: true },
-    { label: 'Occupation', field: 'occupation', sortable: true }
+    { label: 'Occupation', field: 'occupation', sortable: true },
+    { label: 'Collection Type', field: 'collectionType', sortable: true },
   ];
 
  
@@ -261,7 +277,8 @@ export class ChitCreateComponent {
             aliasName: this.addSubData.Subscriber.lastName,
             firstName: this.addSubData.Subscriber.firstName,
             place: this.addSubData.Subscriber.routeId,
-            occupation: this.addSubData.Subscriber.occupation
+            occupation: this.addSubData.Subscriber.occupation,
+            collectionType:this.collectionTypeForm.get('collectionType')?.value
           };
   
           // Check for duplicate subscriber ID in both addChitSubscribers and chitSubscribers

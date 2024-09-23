@@ -149,6 +149,42 @@
                     </tr>
                   </tbody>
                 </table>
+                <div *ngIf = "viewSubscriber">
+                    <div class="card">
+                        <div class=" card-body">
+                            <h4 class="text-center my-4"><strong>Ticket Id {{viewSubscriber.chitDetails.ticketId}} </strong></h4>
+                            <table class="table p-5">
+                                <tbody>
+                                    <tr>
+                                        <td><b>Name</b></td>
+                                        <td>{{viewSubscriber.chitDetails.aliasName}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td><b>Alias Name</b></td>
+                                        <td>{{viewSubscriber.chitDetails.firstName}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td><b>Passbook Number</b></td>
+                                        <td>{{viewSubscriber.chitDetails.passbookNo}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td><b>Place</b></td>
+                                        <td>{{viewSubscriber.chitDetails.place}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td><b>Occupation</b></td>
+                                        <td>{{viewSubscriber.chitDetails.occupation}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td><b>Collection Type</b></td>
+                                        <td>{{viewSubscriber.chitDetails.occupation}}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            
+                        </div>
+                    </div>
+                </div>
             </div>
         </div> 
     </div> 

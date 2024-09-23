@@ -263,6 +263,20 @@
                           <td><strong>Contact No</strong></td>
                           <td>{{subscriberDetail.Subscriber.contact}}</td>
                         </tr>
+                        <tr>
+                           <td><strong>Collection Type</strong></td>
+                           <td>
+                            <form [formGroup] = "collectionTypeForm">
+                              <div class="form-group">
+                                <select class="form-control form-control-sm form-select" formControlName="collectionType"  placeholder = "select type"> 
+                                  <!-- <option value="">Select Type</option> -->
+                                  <option *ngFor="let type of collectionTypes" [value]="type.collectionType">{{ type.collectionType }}</option>        
+                              </select>
+                            </div>
+                          </form>
+
+                            </td>
+                        </tr>
                       </tbody>
                     </table>
                     <div class="text-center mb-2">

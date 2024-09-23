@@ -5,7 +5,7 @@ import { HttpClient } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root'
-})
+})     
 export class AreaService {
  areaUrl:string=environment.areaServiceUrl+"/route/getRouteDetails"
  routeUrl:string=environment.areaServiceUrl+"/route/getRegionDetails"

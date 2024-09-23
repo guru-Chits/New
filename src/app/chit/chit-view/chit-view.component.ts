@@ -4,6 +4,7 @@ import { Router ,ActivatedRoute } from '@angular/router';
 import { ChitService } from '../shared/service/chit.service';
 import { PaymentService } from '../../payments/shared/service/payment.service';
 import { AuthService } from '../../shared/service/auth.service';
+import { CellClickedEvent } from 'ag-grid-community';
 @Component({
   selector: 'app-chit-view',
   templateUrl: './chit-view.component.html',
@@ -23,6 +24,7 @@ export class ChitViewComponent implements OnInit{
   chitSubscriberTotal = 0;
   addSubscriberTotal = 0;
   canCreate: boolean = false;
+  viewSubscriber : any
 
   constructor(private activatedRoute:ActivatedRoute,private router:Router, private service: ChitService,private paymentService:PaymentService,private authService:AuthService){}
 
@@ -115,9 +117,22 @@ export class ChitViewComponent implements OnInit{
   });
 }
 });
+  }
 
+  getTickedByID(id: string, gropid: string): void{
+    this.service.getSubscriberByTicketId(gropid,id).subscribe(
+     data =>{
+      this.viewSubscriber = data
+     },
+     error => {
+      console.error("Error occured",error);
+     } 
+     
+    );
 
   }
+
+
   profileImageWithIdRenderer(params: any): string {
     const imageUrl = params.data.profileImageUrl;
     const ticketId = params.data.ticketId;
@@ -135,7 +150,13 @@ export class ChitViewComponent implements OnInit{
       field: 'Ticket ID',
       filter:false,
       cellRenderer: this.profileImageWithIdRenderer,
-    },  { label: 'Name', field: 'firstName' },
+    }, 
+  { label: 'Name', field: 'firstName', filterList:false, 
+    onCellClicked:(event: CellClickedEvent) => 
+      this.getTickedByID(this.groupId, event.data.ticketId)
+  // console.log(event.data)
+  
+  },
   { label: 'Alias Name', field: 'aliasName' },
   { label: 'Passbook Number', field: 'passbookNo' },
   { label: 'Place', field: 'place' },

@@ -47,7 +47,27 @@
   width: 300px;
 }
 
+.table thead th {
+  border-bottom: 2px solid #dee2e6;
+}
 
+.table tbody tr td {
+  vertical-align: middle;
+  white-space: nowrap;
+  /* padding-bottom: 20px; */
+}
+
+.table tbody tr td a {
+  color: #50A1A5;
+}
+
+strong{
+  padding-left: 20px;
+}
+
+a{
+  text-decoration: none;
+}
 .search-bar input {
   /* border: none;*/
   outline: none; 
@@ -58,7 +78,7 @@
   /* width:%; */
 } 
 
-.table{
+.table-group{
   border-left: 4px solid #50a1a5;
   flex: auto;
   height:70px;

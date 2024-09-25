@@ -42,7 +42,11 @@ export class ChitViewComponent implements OnInit{
   modalErrorMessage: string = '';
   addSubData:any={}
   ticketId: number= 1;
-  viewSubscriber : any
+  viewSubscriber : any;
+  bidHistory: any;
+  filteredHistory: any;
+  showBidHistory: boolean = false;
+  displayedChit:any[]=[]
   constructor(private activatedRoute:ActivatedRoute,private router:Router, private service: ChitService,private paymentService:PaymentService,private authService:AuthService, private subservice:SubscriberService){}
 
   getAllChit(){
@@ -62,6 +66,7 @@ export class ChitViewComponent implements OnInit{
 
   ngOnInit(): void {
     this.getAllChit()
+    this.getAllAuction()
     this.authService.checkAccess('Chit Management', 'create').subscribe((hasAccess: boolean) => {
       if (hasAccess) {
         this.canCreate=true
@@ -220,6 +225,22 @@ export class ChitViewComponent implements OnInit{
     });
   } 
 
+  applyFilterchit(filterValue: string) {
+    this.displayedChit= this.totalChitData;
+    console.log("displaying chit ===", this.displayedChit)
+    if (!filterValue || !this.data) {
+      console.log(this.displayedChit);
+      
+      return;
+    }
+  
+    this.displayedChit = this.totalChitData.filter(subscriber => {
+      const groupId = subscriber.chitGroupId ? subscriber.chitGroupId.toString().toLowerCase() : '';
+      // const subscriberName = subscriber.subscriberName ? subscriber.subscriberName.toLowerCase() : '';
+      return groupId.includes(filterValue.toLowerCase());
+    });
+  }
+
   addSelectedSubscriber(subscriber: any): void {
     if (this.listId == subscriber) {
       if (this.currentListType === 'additional') {
@@ -288,6 +309,33 @@ export class ChitViewComponent implements OnInit{
     const modal = document.getElementById('duplicateModal');
     modal.style.display = 'none';
   }
+
+  removeSubscriber(){
+    let subscriberId = this.filteredSubscribers[0]?.subscriberId
+
+    let chitgroupId = this.chitData.chitGroupId
+    console.log(subscriberId, chitgroupId)
+    this.service.deleteSubscriber(chitgroupId, subscriberId).subscribe((res) => {
+      console.log(res)
+    })
+  }
+
+  getAllAuction(){
+    this.service.getAllChitAuction().subscribe((res) => {
+      console.log("AUCTION ALL DATA",res)
+      this.bidHistory = res.data;
+      const history =this.bidHistory
+      this.filteredHistory = this.bidHistory.filter(data => !data?.TKNData);
+      
+      console.log(this.filteredHistory);
+    })
+  }
+
+  openBidHistory(){
+    this.showBidHistory = !this.showBidHistory
+    console.log(this.showBidHistory)
+  }
+
   profileImageWithIdRenderer(params: any): string {
     const imageUrl = params.data.profileImageUrl;
     const ticketId = params.data.ticketId;
@@ -336,8 +384,12 @@ export class ChitViewComponent implements OnInit{
   //   console.log("DATA", id)
     
   // }
+
+  auctionEntry(id: any){
+    this.router.navigate([`chit/auction/${id}`])
+  }
+
   getChitById(id: string){
-    // Log the id received
     console.log("DATA", id);
     this.showTicket = true;
     // Filter the subscriberDetails by matching id
@@ -384,13 +436,13 @@ export class ChitViewComponent implements OnInit{
 
   DummyData = [
     {
-      label: 'Auction No', field: 'auctionNo'
+      label: 'Auction No', field: 'auctionCycle'
     },
     {
-      label: 'Ticket ID', field: 'ticketID'
+      label: 'Ticket ID', field: 'ticketId'
     },
     {
-      label: 'Prized Subscriber', field: 'PrizedSub'
+      label: 'Prized Subscriber', field: 'subscriberName'
     },
     {
       label: 'Winning Bid ', field: 'winningBid'
@@ -400,9 +452,4 @@ export class ChitViewComponent implements OnInit{
     }
   ]
 
-  DummyrowData = [{auctionNo: '1', ticketID: '12', PrizedSub: 'John', winningBid:'10000', prizedAmount:'50000'},
-    {auctionNo: '1', ticketID: '12', PrizedSub: 'John', winningBid:'10000', prizedAmount:'50000'},
-    {auctionNo: '1', ticketID: '12', PrizedSub: 'John', winningBid:'10000', prizedAmount:'50000'},
-    {auctionNo: '1', ticketID: '12', PrizedSub: 'John', winningBid:'10000', prizedAmount:'50000'},
-  ]
 }

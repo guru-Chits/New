@@ -4,7 +4,7 @@
             <div class="row">
                 <div class="col-lg-12 d-flex justify-content-between py-3">
                     <app-breadcrumb [data]="breadcrumsData"></app-breadcrumb>
-                    <button class="btn next-btn px-4 py-3 fw-bold" routerLink="/chit/auction" *ngIf="canCreate">Auction Entry</button>
+                    <button class="btn next-btn px-4 py-3 fw-bold" (click)="auctionEntry(chitData?._id)" *ngIf="canCreate">Auction Entry</button>
                 </div>
             </div>
             <div class="card py-3  px-4">
@@ -93,28 +93,32 @@
                         </div>
                     </div>
                 </div>
-                <button class="pay-his btn py-1 toggle mb-3 me-2" type="button" >Bid History
-                    <img src="assets/subscriber/down arrow.svg">
-                    <img src="assets/subscriber/right arrow.svg" alt="">
+                <button class="pay-his btn py-1 toggle mb-3 me-2 d-flex justify-content-around" type="button" (click)="openBidHistory()"><p class="m-0">Bid History</p>
+                    <div>
+                        <img *ngIf="!showBidHistory" src="assets/subscriber/down arrow.svg">
+                        <img *ngIf="showBidHistory" src="assets/subscriber/right arrow.svg">
+                    </div>            
                 </button>
-                <table class="table table-bordered">
-                    <thead>
-                      <tr>
-                        <th *ngFor="let column of DummyData">
-                          {{ column.label }}
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr *ngFor="let row of DummyrowData">
-                        <td *ngFor="let column of DummyData">
-                          {{ row[column.field] }}
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
+                <div  *ngIf="showBidHistory" class="border rounded shadow-sm">
+                    <table class="table rounded m-0">
+                        <thead class="rounded">
+                          <tr>
+                            <th *ngFor="let column of DummyData" class="rounded">
+                              {{ column.label }}
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr *ngFor="let row of filteredHistory">
+                            <td *ngFor="let column of DummyData">
+                              {{ row[column.field] }}
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                </div>
+
                   
-                <app-ag-grid  [columns]="DummyData" [rowData]="DummyrowData" class="p-0" width="100%" height="300px" ></app-ag-grid>
                 <div class="row">
                     <p class="fw-bold fs-4 mt-4">Subscribers</p>
                     <app-ag-grid [columns]="subscriberColumn" [rowData]="subscribers" class="p-0" width="100%"  [pageSize]="20"></app-ag-grid>   
@@ -138,7 +142,7 @@
                 <h5 class="text-center fw-bold my-2">Chit Groups</h5>
                 <div class="search-bar align-self-center my-3">
                   <span class="search-icon"><img src="assets/subscriber/search-icon.svg"></span>
-                  <input width="100%" height="20" type="text" class="border-0" placeholder="Search" >
+                  <input width="100%" height="20" type="text" class="border-0" placeholder="Search" (input)="applyFilterchit($event.target.value)">
                   <!-- (input)="applyFilter($event.target.value)" -->
                 </div>
                 
@@ -216,7 +220,7 @@
                         <!-- <button class="btn clear-btn"  (click)="addToGroup(subscriberDetail.Subscriber._id)">Add to Group</button> <td>{{subscriberDetail.Subscriber.aliasName}} </td> -->
                          <div class=" d-flex justify-content-center">
                           <div class="me-1">
-                            <button class="btn view-btn-red" >Remove from Group</button><!--(click)="navigate(specificChitData?._id)"-->
+                            <button class="btn view-btn-red" (click)="removeSubscriber()">Remove from Group</button><!--(click)="navigate(specificChitData?._id)"-->
                           </div>
         
                           <div class="ms-1">

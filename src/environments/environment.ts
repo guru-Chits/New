@@ -9,5 +9,6 @@ export const environment = {
     areaServiceUrl:`${localUrl}/api`,
     loginServiceUrl:`${localUrl}/api`,
     accessServiceUrl:`${localUrl}/api`,
-    auctionServiceUrl:`${localUrl}/api`
+    auctionServiceUrl:`${localUrl}/api`,
+    settingsServiceUrl:`${localUrl}/api`
 }

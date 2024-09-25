@@ -208,17 +208,17 @@
                 <div class="row justify-content-around">
                     <div class="col-lg-4">
                         <div class="form-group">
-                          <label for="aadharNumber" class="form-control-label">Aadhar Card Number</label>
-                          <input type="text" placeholder="Aadhar" class="form-control form-control-sm" formControlName="aadharNumber" />
+                          <label for="aadharNumber" class="form-control-label">Aadhaar Card Number</label>
+                          <input type="text" placeholder="Aadhaar" class="form-control form-control-sm" formControlName="aadharNumber" />
                           <div class="invalid-feedback" *ngIf="subscriberForm.get('aadharNumber').invalid && (subscriberForm.get('aadharNumber').dirty || subscriberForm.get('aadharNumber').touched)">
-                            <div *ngIf="subscriberForm.get('aadharNumber').errors.required">Aadhar is required.</div>
-                            <div *ngIf="subscriberForm.get('aadharNumber').errors.pattern">Aadhar should be in the format: 4 digits followed by a space, another 4 digits, another space, and another 4 digits.</div>
+                            <div *ngIf="subscriberForm.get('aadharNumber').errors.required">Aadhaar is required.</div>
+                            <div *ngIf="subscriberForm.get('aadharNumber').errors.pattern">Aadhaar should be in the format: 4 digits followed by a space, another 4 digits, another space, and another 4 digits.</div>
                           </div>
                         </div>
                       </div>
                      <div class="col-lg-4">
                       <div class="form-group">
-                        <label for="aadharUrl" class="form-control-label">Aadhar Card</label>
+                        <label for="aadharUrl" class="form-control-label">Aadhaar Card</label>
                         <input type="file" (change)="onFileChange($event, 'aadharUrl')" class="form-control form-control-sm" formControlName="aadharUrl" />
                       </div>
                     </div>
@@ -343,8 +343,8 @@
                   <!-- Nominee Aadhar -->
                   <div class="col-lg-4">
                     <div class="form-group">
-                      <label for="nomineeAadhar" class="form-control-label">Nominee Aadhar</label>
-                      <input type="text" placeholder="Nominee Aadhar" class="form-control form-control-sm" formControlName="nomineeAadhar" />
+                      <label for="nomineeAadhar" class="form-control-label">Nominee Aadhaar</label>
+                      <input type="text" placeholder="Nominee Aadhaar" class="form-control form-control-sm" formControlName="nomineeAadhar" />
                       <div class="invalid-feedback" *ngIf="subscriberForm.get('nomineeAadhar').invalid && (subscriberForm.get('nomineeAadhar').dirty || subscriberForm.get('nomineeAadhar').touched)">
                         <div *ngIf="subscriberForm.get('nomineeAadhar').errors.required">Nominee Aadhar is required.</div>
                         <div *ngIf="subscriberForm.get('nomineeAadhar').errors.pattern">Nominee Aadhar should be in the format: 4 digits followed by a space, another 4 digits, another space, and another 4 digits.</div>

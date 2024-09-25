@@ -44,6 +44,8 @@ ngOnInit(): void {
   const auctionStart = this.profitForm.get('auctionStart')?.value;
   if (auctionStart) {
     this.profitForm.enable();
+    this.profitForm.get('auctionStart')?.enable();
+
   } else {
     this.profitForm.disable();
     this.profitForm.get('auctionStart')?.enable();
@@ -81,17 +83,23 @@ ngOnInit(): void {
       if (res.extra===true) {
         // Set a validation error if the ticket already exists
         console.log('error');
-        
+        this.purchase=false
+
         this.profitForm.get('ticketId')?.setErrors({ ticketExists: true });
       }else if(res.purchase===true) {
         this.purchase=true
       }  
       else if (res.result === true) {
         // Set a validation error if the ticket already exists
+        this.purchase=false
+
         this.profitForm.get('ticketId')?.setErrors({ ticketExists: true });
+
       }
       else {
         // Clear the validation error if the ticket does not exist
+        this.purchase=false
+
         this.profitForm.get('ticketId')?.setErrors(null);
       }
   
@@ -168,7 +176,7 @@ toggleFormControls(){
     this.profitForm.enable();
   } else {
     this.profitForm.disable();
-    // this.auctionForm.get('auctionStart')?.enable();
+    this.profitForm.get('auctionStart')?.enable();
   }
 
 }

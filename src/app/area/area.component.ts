@@ -82,6 +82,14 @@ totalCount:number;
 
  
 }
+delete(id:any){
+
+}
+edit(id: any){
+  console.log(id);
+  this.router.navigate([`area/routeedit/${id}`]);
+  }
+
 getrouteById(id: string): void {
   this.service.getrouteById(id).subscribe(
     data => {

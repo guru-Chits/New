@@ -4,7 +4,7 @@
             <div class="row">
                 <div class="col-lg-12 d-flex justify-content-between py-3">
                     <app-breadcrumb [data]="breadcrumsData"></app-breadcrumb>
-                    <button class="btn next-btn px-4 py-3 fw-bold" routerLink="/chit/auction" *ngIf="canCreate">Auction Entry</button>
+                    <button class="btn next-btn px-4 py-3 fw-bold" (click)="auctionEntry(chitData?._id)" *ngIf="canCreate">Auction Entry</button>
                 </div>
             </div>
             <div class="card py-3  px-4">
@@ -93,24 +93,44 @@
                         </div>
                     </div>
                 </div>
+                <button class="pay-his btn py-1 toggle mb-3 me-2 d-flex justify-content-around" type="button" (click)="openBidHistory()"><p class="m-0">Bid History</p>
+                    <div>
+                        <img *ngIf="!showBidHistory" src="assets/subscriber/down arrow.svg">
+                        <img *ngIf="showBidHistory" src="assets/subscriber/right arrow.svg">
+                    </div>            
+                </button>
+                <div  *ngIf="showBidHistory" class="border rounded shadow-sm">
+                    <table class="table rounded m-0">
+                        <thead class="rounded">
+                          <tr>
+                            <th *ngFor="let column of DummyData" class="rounded">
+                              {{ column.label }}
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr *ngFor="let row of filteredHistory">
+                            <td *ngFor="let column of DummyData">
+                              {{ row[column.field] }}
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                </div>
+
+                  
                 <div class="row">
-                    <div class="py-3 ">
-                        Bid History 
-
-                    </div>
-                    <h5>Subscribers</h5>
-                    <app-ag-grid [columns]="subscriberColumn" [rowData]="subscribers" class="px-3" width="100%"  [pageSize]="20"></app-ag-grid>   
-                    <h5 class="mt-2">Additional Subscribers</h5>
-
-                    <div my-4>
-                        <app-ag-grid [columns]="addSubscriberColumn" [rowData]="addSubscribers" class="px-3" width="100%" height="300px" [pageSize]="5"></app-ag-grid>   
-
-                    </div>
-
+                    <p class="fw-bold fs-4 mt-4">Subscribers</p>
+                    <app-ag-grid [columns]="subscriberColumn" [rowData]="subscribers" class="p-0" width="100%"  [pageSize]="20"></app-ag-grid>   
+                    <p class="fw-bold fs-4 mt-4">Additional Subscribers</p>
+                    <app-ag-grid [columns]="addSubscriberColumn" [rowData]="addSubscribers" class="p-0" width="100%" height="300px" [pageSize]="5"></app-ag-grid>                  
+                    <div class="col-lg-12 d-flex justify-content-end py-3">
+                        <button class="btn next-btn px-4 py-3 fw-bold" (click)="showSubscriberList('additional')">Add Additional Subscribers</button>
+                    </div>              
                 </div>
             </div>
         </div> 
-        <div class="col-lg-3">
+        <div class="col-lg-3 p-0">
             <!-- <div class="card p-3">
                 <h5 class="text-center my-2">Add Subscribers</h5>
                 <div class="search-bar align-self-center mb-3">
@@ -118,27 +138,27 @@
                   <input width="20" height="20" type="text" class="border-0" placeholder="Search Subscriber ID, Name"> (input)="applyFilter($event.target.value)"
                 </div>
             </div> -->
-            <div class="card">
-                <h5 class="text-center my-2">Chit Groups</h5>
-                <div class="search-bar align-self-center mb-3">
+            <div class="card p-3">
+                <h5 class="text-center fw-bold my-2">Chit Groups</h5>
+                <div class="search-bar align-self-center my-3">
                   <span class="search-icon"><img src="assets/subscriber/search-icon.svg"></span>
-                  <input width="20" height="20" type="text" class="border-0" placeholder="Search" >
+                  <input width="100%" height="20" type="text" class="border-0" placeholder="Search" (input)="applyFilterchit($event.target.value)">
                   <!-- (input)="applyFilter($event.target.value)" -->
                 </div>
                 
                 <table class="subscriber-table ">
                   <tbody>
                     <tr *ngFor="let subscriber of totalChitData;let i =index" >
-                   <div class="card shadow-sm border-0 mb-2 mt-3">
+                   <div class="card shadow-sm border mb-2 mt-2 chit-card" type="button" (click)="navigate(subscriber._id)" >
                     <div class="card-body align-self-center">
-                        <div class="row">
+                        <div class="row" >
                             <!-- <div class="col-lg-2 col-md-2">
                                 <img class="profile-list-img" src="subscriber.subscriberProfile"> 
                             </div> -->
                             <div class="col-lg-6 col-md-6 chitHeader">
                                 <!-- <p class="fs-6 fw-bold m-0">{{ subscriber.subscriberId }}</p> -->
                                 <!-- {{ subscriber.subscriberName }} -->
-                                <p class="fs-6 fw-bold m-0">Chit Group{{i+1}}</p>
+                                <p class="fs-6 fw-bold m-0">Chit Group {{i+1}}</p>
                                 </div>
                             <!-- <div class="col-lg-4 col-md-4">
                                 <button  class="viewbtn align-left" (click)="onButtonClick(subscriber.id)">View Details</button>
@@ -149,44 +169,142 @@
                     </tr>
                   </tbody>
                 </table>
-                <div *ngIf = "viewSubscriber">
-                    <div class="card">
-                        <div class=" card-body">
-                            <h4 class="text-center my-4"><strong>Ticket Id {{viewSubscriber.chitDetails.ticketId}} </strong></h4>
-                            <table class="table p-5">
-                                <tbody>
-                                    <tr>
-                                        <td><b>Name</b></td>
-                                        <td>{{viewSubscriber.chitDetails.aliasName}}</td>
-                                    </tr>
-                                    <tr>
-                                        <td><b>Alias Name</b></td>
-                                        <td>{{viewSubscriber.chitDetails.firstName}}</td>
-                                    </tr>
-                                    <tr>
-                                        <td><b>Passbook Number</b></td>
-                                        <td>{{viewSubscriber.chitDetails.passbookNo}}</td>
-                                    </tr>
-                                    <tr>
-                                        <td><b>Place</b></td>
-                                        <td>{{viewSubscriber.chitDetails.place}}</td>
-                                    </tr>
-                                    <tr>
-                                        <td><b>Occupation</b></td>
-                                        <td>{{viewSubscriber.chitDetails.occupation}}</td>
-                                    </tr>
-                                    <tr>
-                                        <td><b>Collection Type</b></td>
-                                        <td>{{viewSubscriber.chitDetails.occupation}}</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                            
-                        </div>
-                    </div>
+                <div class="d-flex justify-content-center align-items-center pt-3">
+                    <button type="button" class="btn view-btn px-4">View More</button>
+                </div>
+                
+            </div>
+            <div class="chit-details" *ngIf="showTicket">
+                <div class="card d-flex px-3 py-4 mt-2">
+                    <h5 class="title text-center fw-bold fs-4 m-0 py-3">Ticket ID {{filteredSubscribers[0]?.ticketId}} Details</h5><!-- {{selectedChit}}-->
+                    <div class="text-center">
+                        <img src="{{filteredSubscribers[0]?.profileImageUrl || filteredAdditionalSubs[0]?.profileImageUrl}}" class="img-fluid rounded-circle" alt="Subscriber Image"><!--src="{{subscriberDetail.Subscriber.profileImageUrl}}"-->
+                      </div>
+                    <table class="table mt-2">
+                        <tbody>
+                          <tr>
+                            <td class="py-3"><strong>Name</strong></td>
+                            <td class="py-3">{{filteredSubscribers[0]?.firstName || filteredAdditionalSubs[0].firstName}}</td><!--{{specificChitData?.chitGroupId}}-->
+                          </tr>
+                          <tr>
+                            <td class="py-3"><strong>Alias Name</strong></td>
+                            <td class="py-3">{{filteredSubscribers[0]?.aliasName || filteredAdditionalSubs[0]?.aliasName}}</td>
+                          </tr>
+                          <tr>
+                            <td class="py-3"><strong>Prized Amount</strong></td>
+                            <td class="py-3">2</td>
+                          </tr>
+                          <tr>
+                            <td class="py-3"><strong>Winning Bid</strong></td>
+                            <td class="py-3">150000</td>
+                          </tr>
+                          <tr>
+                            <td class="py-3"><strong>Current Chit Payment</strong></td>
+                            <td class="py-3">30000</td>
+                          </tr>
+                          <tr>
+                            <td class="py-3"><strong>Balance</strong></td>
+                            <td class="py-3">56000</td>
+                          </tr>
+                          <tr>
+                            <td class="py-3"><strong>Other Enrolments</strong></td>
+                            <td class="py-3">45000</td>
+                          </tr>
+                          <tr>
+                            <td class="py-3"><strong>Collection Type</strong></td>
+                            <td class="py-3">45000</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                      <div class="mb-2">
+                        <!-- <button class="btn clear-btn"  (click)="addToGroup(subscriberDetail.Subscriber._id)">Add to Group</button> <td>{{subscriberDetail.Subscriber.aliasName}} </td> -->
+                         <div class=" d-flex justify-content-center">
+                          <div class="me-1">
+                            <button class="btn view-btn-red" (click)="removeSubscriber()">Remove from Group</button><!--(click)="navigate(specificChitData?._id)"-->
+                          </div>
+        
+                          <div class="ms-1">
+                            <button type="button" class="btn view-btn px-4" (click)="closeTicket('close')">Cancel</button> <!--(click)="auctionEntry(specificChitData?._id)"-->
+                          </div>
+                      
+                        </div>                
+                    </div>   
                 </div>
             </div>
+
+            <div class="card details p-3 mt-4" *ngIf="isSubscriberListVisible">
+                <h5 class="text-center fw-bold my-2">Add Additional Subscribers</h5>
+                <div class="search-bar align-self-center mb-3">
+                <span class="search-icon"><img src="assets/subscriber/search-icon.svg"></span>
+                <input width="20" height="20" type="text" class="border-0" placeholder="Search" (input)="applyFilter($event.target.value)">
+                </div>
+                <table class="subscriber-table">
+                <tbody>
+                    <tr *ngFor="let subscriber of displayedSubscribers">
+                    <td>
+                        <div class="card view-all mb-2">
+                        <div class="card-body p-3">
+                            <div class="row">
+                            <div class="col-lg-3 col-md-3 pe-0">
+                                <img class="profile-list-img" src="{{subscriber.subscriberProfile}}">
+                            </div>
+                            <div class="col-lg-5 col-md-5 p-0">
+                                <p class="id fw-bold mb-1">{{ subscriber.subscriberName }}</p>
+
+                                {{ subscriber.subscriberId }}
+
+                            </div>
+                            <div class="col-lg-4 col-md-3 p-0">
+                                <button class="viewbtn p-0" (click)="onButtonClick(subscriber.id)">View Details</button>
+                            </div>
+                            </div>
+                        </div>
+                        </div>
+            
+                        <!-- Show details only for the selected subscriber -->
+
+                    </td>
+                    </tr>
+                    <div *ngIf="subscriberDetail" class="subscriber-details">
+                    <h5 class="title text-center fw-bold fs-4 my-4">Subscriber Details</h5>
+                    <div class="text-center">
+                        <img src="{{subscriberDetail.Subscriber.profileImageUrl}}" class="img-fluid rounded-circle pb-4" alt="Subscriber Image">
+                    </div>
+                    <table class="table px-3">
+                        <tbody>
+                        <tr>
+                            <td><strong>Subscriber ID</strong></td>
+                            <td class="highlight">{{subscriberDetail.Subscriber.subscriberId}}</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Alias Name</strong></td>
+                            <td>{{subscriberDetail.Subscriber.aliasName}}</td>
+                        </tr>
+                        <tr>
+                            <td><strong>First Name</strong></td>
+                            <td>{{subscriberDetail.Subscriber.firstName}}</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Last Name</strong></td>
+                            <td>{{subscriberDetail.Subscriber.lastName}}</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Contact No</strong></td>
+                            <td>{{subscriberDetail.Subscriber.contact}}</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <div class="text-center mb-2">
+                        <button class="btn view-btn" (click)="addSelectedSubscriber(subscriberDetail.Subscriber._id)">Add to Group</button>
+                    </div>
+                    </div>
+                </tbody>
+                </table>
+
+            </div>
+
         </div> 
+
     </div> 
   </div>
   

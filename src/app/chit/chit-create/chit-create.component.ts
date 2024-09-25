@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { ColDef } from 'ag-grid-community';
 import { ITableColumn } from '../../shared/interface/list-table';
 import { SubscriberService } from '../../subscriber/shared/service/subscriber.service';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ChitService } from '../shared/service/chit.service';
 import { Router } from '@angular/router';
 import { ServiceService } from '../../settings/shared/service.service';
@@ -45,19 +45,22 @@ export class ChitCreateComponent {
   searchInput:string=""
   chitGroupForm:FormGroup
   displayedChits: any[];
+  currentDate: any;
+  selectedFileName: string = '';
+  chitSubLength: any;
+  showAnother: any;
   collectionTypes: any;
   collectionTypeForm: FormGroup
-  constructor( private subService:SubscriberService,
-    private settings: ServiceService,
-    private chitService:ChitService, private router:Router,) {
+  constructor( private subService:SubscriberService, private chitService:ChitService, private router:Router, private settings: ServiceService) {
+
   }
 
   ngOnInit(): void{
     this.chitGroupForm = new FormGroup({
-      auctionDate: new FormControl(''),
-      chitAmount: new FormControl(''),
-      foremanCommission: new FormControl(''),
-      monthlyInstall: new FormControl(''),
+      auctionDate: new FormControl('',[Validators.required]),
+      chitAmount: new FormControl('',[Validators.required, Validators.pattern('^[0-9]*$')]),
+      foremanCommission: new FormControl('',[Validators.required]),
+      monthlyInstall: new FormControl('',[Validators.required]),
       document: new FormControl(''),
       chitSubscribers: new FormControl([]),
       addChitSubscribers: new FormControl([])
@@ -73,6 +76,9 @@ export class ChitCreateComponent {
         console.log(this.collectionTypes,"Collection Type");
       }
     )
+    const today = new Date().toISOString().split('T')[0];
+    this.currentDate = today;
+
 
     this.subService.getsubscriberAll().subscribe((data)=>{
       this.subscriberData=data;
@@ -85,8 +91,60 @@ export class ChitCreateComponent {
         subscriberProfile:subscriberDetails?.profileImageUrl
       }))
       this.displayedSubscribers = this.data;
-      console.log(this.displayedSubscribers);      
-    })
+      console.log(this.displayedSubscribers);
+      
+    });
+
+    // this.chitGroupForm.get('chitAmount').valueChanges.subscribe(value => {
+    //   if (value && !isNaN(value)) {
+    //     const commission = value * 0.05;  // 5% of chit amount
+    //     this.chitGroupForm.patchValue({
+    //       foremanCommission: commission,  // Round to 2 decimal places
+    //       monthlyInstall: commission  // Assume a 12-month installment plan
+    //     });
+    //   }
+    // });
+  }
+  // Method to trigger the hidden file input
+  triggerFileInput(): void {
+    const fileInput = document.getElementById('fileInput') as HTMLInputElement;
+    if (fileInput) {
+      fileInput.click();
+    }
+  }
+
+  // Method to handle the file selection and display the file name
+  onFileSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files.length > 0) {
+      const file: File = input.files[0]; // Get the selected file
+      this.selectedFileName = file.name; // Set the file name
+      console.log('Selected file:', this.selectedFileName);
+
+      // Optionally, patch the file to the reactive form control (if needed)
+      this.chitGroupForm.patchValue({ document: file });
+    }
+  }
+  // Prevents typing non-numeric characters
+  preventNonNumeric(event: KeyboardEvent): void {
+    const charCode = event.which ? event.which : event.keyCode;
+
+    // Allow only numbers (charCode between 48 and 57 for numbers, 8 for backspace, 46 for delete)
+    if ((charCode < 48 || charCode > 57) && charCode !== 8 && charCode !== 46) {
+      event.preventDefault();
+    }
+  }
+
+  // If pasted data or invalid input bypasses keypress, this will clean the value
+  filterNonNumericInput(): void {
+    const control = this.chitGroupForm.get('chitAmount');
+    const value = control.value;
+
+    // Replace any non-numeric characters
+    const filteredValue = value.replace(/[^0-9]/g, '');
+
+    // Update the form control value
+    control.setValue(filteredValue);
   }
   profileImageWithIdRenderer(params: any): string {
     const imageUrl = params.data.profileImageUrl;
@@ -101,7 +159,14 @@ export class ChitCreateComponent {
     `;
   }
 
-  onFileSelected(event: any): void {
+  getformanVal(){
+    const chitAmount  = this.chitGroupForm.get("chitAmount").value;
+    const forman = chitAmount * 0.05;
+    this.chitGroupForm.get('foremanCommission').patchValue(forman)
+    this.chitGroupForm.get('monthlyInstall').patchValue(forman)
+  }
+
+  onSelectedFile(event: any): void {
     const file = event.target.files[0];
     if (file) {
       this.chitGroupForm.patchValue({ document: file.name });
@@ -217,6 +282,12 @@ export class ChitCreateComponent {
   
           // Update the table data
           this.chitSubscribersData = [...chitSubscribers];
+          this.chitSubLength = this.chitSubscribersData.length;
+          console.log("Length value", this.chitSubLength)
+          if(this.chitSubLength >= 20){
+            this.isSubscriberListVisible = false;
+            this.showAnother = true
+          }
         },
         error => {
           if (error.status === 400 && error.error.message.includes('Duplicate subscriberId')) {
@@ -230,7 +301,7 @@ export class ChitCreateComponent {
   }
 
   column: ITableColumn[] = [
-    { label: 'profileImageUrl', field: 'Ticket Id', sortable: false ,
+    { label: 'profileImageUrl', field: '', sortable: false ,
       cellRenderer: this.profileImageWithIdRenderer,
     },
     { label: 'TicketId', field: 'ticketId', sortable: true },
@@ -243,7 +314,7 @@ export class ChitCreateComponent {
   ];  
 
   addSubcolumn: ITableColumn[] = [
-    { label: 'Ticket Id', field: 'profileImageUrl', sortable: false ,
+    { label: 'Ticket Id', field: '', sortable: false ,
       cellRenderer: this.profileImageWithIdRenderer,
     },
     { label: 'TicketId', field: 'ticketId', sortable: true },

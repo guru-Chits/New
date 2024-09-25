@@ -1,17 +1,17 @@
 <div class="d-flex align-items-center flex-wrap border-bottom">
-  <ul class="d-flex align-items-center">
+  <ul class="d-flex align-items-center p-0">
     <li *ngFor="let item of data; let i = index" class="d-inline-flex align-items-center">
-      <div *ngIf="!item?.disable" class="d-inline-flex align-items-center">
+      <div *ngIf="!item?.disable" class="{{i== 0 ? 'd-inline-flex align-items-center fw-bold fs-1': 'd-inline-flex align-items-center fs-1'}}">
         <a *ngIf="!item?.onclick"
            [routerLink]="item.routerLink"
            [queryParams]="item?.queryParams"
            (click)="updateIfStepChanges(item)"
-           class="cursor-pointer text-sm link-hover">
+           class="cursor-pointer fs-3 link-hover">
           {{ item.key }}
         </a>
         <p *ngIf="item?.onclick"
            (click)="onClick()"
-           class="cursor-pointer text-sm link-hover">
+           class="cursor-pointer link-hover">
           {{ item.key }}
         </p>
         <img *ngIf="i + 1 !== data.length" src="../../../../assets/breadcrumb/breadcrumb.svg">

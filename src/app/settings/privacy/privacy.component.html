@@ -27,9 +27,9 @@
            formControlName="newPassword">
           <img src="\assets\login\Eye.svg" class="img-fluid mx-1"
            [ngClass]="{' eyebtn-opacity': isPwdEmpty}" *ngIf="!isPasswordVisible"
-           (click)="togglePasswordVisibility()" height="20px" width="20px" >
+           (click)="toggleRePasswordVisibility()" height="20px" width="20px" >
             <img src="\assets\login\Invisible.svg" class="img-fluid mx-1"
-            *ngIf="isPasswordVisible"(click)="togglePasswordVisibility()" height="20px" width="20px" >
+            *ngIf="isPasswordVisible"(click)="toggleRePasswordVisibility()" height="20px" width="20px" >
       </div>
       <div class="invalid-feedback  col-9">
         <span  *ngIf="newPasswordControl.touched && newPasswordControl.hasError('required')" >

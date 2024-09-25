@@ -14,10 +14,6 @@
   text-decoration: none;
 }
 
-.link-hover:hover {
-  color: black;
-  font-weight: 500;
-}
 
 .link-hover:last-child {
   color:black;

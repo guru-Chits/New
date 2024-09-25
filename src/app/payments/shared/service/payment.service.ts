@@ -9,7 +9,9 @@ import { Observable } from 'rxjs';
 export class PaymentService {
   paymentUrl:string=environment.paymentServiceUrl+"/payment"
 
-  constructor(private http:HttpClient) { }
+  constructor(private http:HttpClient) { 
+    
+  }
 
 getPaymentAll(){
   return this.http.get(`${this.paymentUrl}/getPaymentDetails`)

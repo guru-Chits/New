@@ -23,6 +23,7 @@
 .card {
     
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    height: 25%;
   }
 
   .line{
@@ -34,11 +35,15 @@
     height:100%;
   }
  
+  .card-text{
+    font-size: 23px;
+    font-weight: 700;
+  }
+
   .card-title {
-    font-size: 14px;
+    font-size: 17px;
     padding-top: 14px;
-    padding-bottom: 10px;
-    font-weight: 500;
+    font-weight: 400;
   }
 
   .btn1{

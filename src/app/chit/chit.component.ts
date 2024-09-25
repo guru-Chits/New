@@ -38,7 +38,7 @@ export class ChitComponent implements OnInit{
     this.service.getAllChit().subscribe((data)=>{
       this.chitdata=data;
       this.chitdata=this.chitdata?.AllChitGroups
-      console.log(this.chitdata)
+      console.log("chit Data ->",this.chitdata)
       this.total = this.chitdata.length
       console.log(this.total);
       this.displayedChit= this.chitdata;

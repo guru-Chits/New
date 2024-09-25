@@ -51,6 +51,11 @@ export class ChitService {
     let url:string = `${environment.auctionServiceUrl}/chit_management/getAuction/${groupId}`
     return this.http.get(url)
   }
+  getTicketById(id:string,groupId:string){
+    let url: string = `${environment.chitServiceUrl}/getByTicketId/${groupId}/${id}`
+    return this.http.get(url)
+    console.log(url);
+  }
 
   findTicketInGroup(groupId:string,ticketId:number):Observable<any>{
     let url:string = `${environment.auctionServiceUrl}/chit_management/findTicketInGroup/${groupId}/${ticketId}`
@@ -70,4 +75,13 @@ export class ChitService {
     }
   
   
+  deleteSubscriber(groupId: string, ticketId: string):Observable<any>{
+    let url:string = `${environment.chitServiceUrl}/chitgroup/chit_management/chit-group/${groupId}/${ticketId}`
+    return this.http.delete(url)
+  }
+
+  getAllChitAuction(): Observable<any>{
+    let url:string = `${environment.chitServiceUrl}/chit_management/get_all_chit`
+    return this.http.get(url)
+  }
 }

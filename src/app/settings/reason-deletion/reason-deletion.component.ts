@@ -102,5 +102,9 @@ ngOnInit(): void {
     
   }) 
   }
+
+  cancel(){
+    this.reactiveForm.reset()
+  }
 }
 

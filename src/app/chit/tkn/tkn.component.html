@@ -25,18 +25,23 @@
     <div class="col-lg-4">
       <div class="form-group">
         <label for="winnningBid" class="form-control-label">Winning Bid</label>
-        <input type="text" placeholder="Winning Bid" class="form-control form-control-sm" formControlName="winnningBid" (change)="getRouteNameValue()"/>
+        <input type="text" placeholder="Winning Bid" class="form-control form-control-sm" formControlName="winningBid" (change)="getRouteNameValue()"/>
       </div>
     </div>
 
     <div class="col-lg-4">
       <div class="form-group">
         <label for="prizedAmmount" class="form-control-label">Prized Amount</label>
-        <input type="text" placeholder="Prizes Amount" class="form-control form-control-sm" formControlName="prizedAmmount"  />
+        <input type="text" placeholder="Prizes Amount" class="form-control form-control-sm" formControlName="prizedAmount"  />
       </div>
     </div>
-
     <div class="col-lg-4">
+      <div class="form-group">
+        <label for="auctionCycle" class="form-control-label">Auction Cycle</label>
+        <input type="text" placeholder="Auction Cycle" class="form-control form-control-sm" formControlName="auctionCycle" />
+      </div>
+    </div>
+    <!-- <div class="col-lg-4">
       <div class="form-group">
         <label for="ticketId" class="form-control-label">Ticket Id</label>
         <input type="text" placeholder="Ticket Id" class="form-control form-control-sm" formControlName="ticketId" />
@@ -45,9 +50,9 @@
         <small class="text-danger">{{ tknForm.getError('ticketIdOutOfRange') }}</small>
       </div>
 
-    </div>
+    </div> -->
   </div>
-      <div class="row justify-content-around">
+      <!-- <div class="row justify-content-around">
         <div class="col-lg-4">
           <div class="form-group">
             <label for="subscriberName" class="form-control-label">Prized Subscriber Name</label>
@@ -58,17 +63,17 @@
         <div class="col-lg-4">
           <div class="form-group">
             <label for="passbiokNumber" class="form-control-label">Passbook Number</label>
-            <input type="text" placeholder="Passbook Number" class="form-control form-control-sm" formControlName="passbookNumber"  readonly/>
           </div>
         </div>
-
+   <input type="text" placeholder="Passbook Number" class="form-control form-control-sm" formControlName="passbookNumber"  readonly/>
+         
         <div class="col-lg-4">
           <div class="form-group">
             <label for="auctionCycle" class="form-control-label">Auction Cycle</label>
             <input type="text" placeholder="Auction Cycle" class="form-control form-control-sm" formControlName="auctionCycle" />
           </div>
         </div>
-      </div>
+      </div> -->
   
       <div class="row">
         <div class="col-lg-3">
@@ -78,7 +83,217 @@
           </div>                       
          </div>                  
          <div class="col-lg-9 d-flex justify-content-end">
-            <button type="submit" class="btn px-2  py-2" data-bs-toggle="modal" data-bs-target="#auctionModal" [disabled]="!tknForm.valid"   (click)="onSubmit()">TKN Company Done</button>
+            <button type="submit" class="btn px-2  py-2"  data-bs-target="#auctionModal" [disabled]="!tknForm.valid"   (click)="onSubmit()">TKN Company Done</button>
         </div>
       </div>
     </form>
+
+
+<div *ngFor="let data of tknData let i=index">
+  <form [formGroup]="redeemForm" >
+    <div class="row">
+      <div class="col-lg-4">
+      <h6>TKN Company Redeem</h6>
+      </div>
+      <div class="col-lg-3">
+        <div class="form-check form-switch">
+            <input class="form-check-input" type="checkbox" formControlName="redeem" role="switch" id="flexSwitchCheckChecked"   (change)="toggleFormReedem($event.target.value,data)" >
+            <label class="form-check-label" for="flexSwitchCheckChecked">Redeem</label>
+          </div>                       
+         </div>    
+    </div>
+    <div class="row justify-content-around">
+      <div class="col-lg-4">
+        <div class="form-group">
+          <label for="tknWallet" class="form-control-label">TKN Wallet Prized Amount</label>
+          <input type="text" placeholder="Wallet Amount" class="form-control form-control-sm" formControlName="tknWallet" readonly/>
+        </div>
+      </div>
+      <div class="col-lg-4">
+        <div class="form-group">
+          <label for="prizedAmount" class="form-control-label">Prized Amount</label>
+          <input type="text" placeholder="Prizes Amount" class="form-control form-control-sm" formControlName="prizedAmount" (change)="balance($event.target.value,data)" />
+        </div>
+      </div>
+
+      <div class="col-lg-4">
+        <div class="form-group">
+          <label for="balance" class="form-control-label">Balance</label>
+          <input type="text" placeholder="Balance" class="form-control form-control-sm" formControlName="balance" readonly/>
+        </div>
+      </div>
+    </div>
+    <div class="row justify-content-around">
+      <div class="col-lg-4">
+        <div class="form-group">
+          <label for="groupId" class="form-control-label">Group ID</label>
+          <input type="text" placeholder="Group Id" class="form-control form-control-sm" formControlName="groupId" readonly/>
+        </div>
+      </div>
+
+      <div class="col-lg-4">
+        <div class="form-group">
+          <label for="ticketId" class="form-control-label">Ticket Id</label>
+          <input type="text" placeholder="Ticket Id" class="form-control form-control-sm" formControlName="ticketId" (change)="subData($event.target.value,data)" 
+          [ngClass]="{'is-invalid': redeemForm.get('ticketId')?.invalid && redeemForm.get('ticketId')?.touched}"
+          />
+        </div>
+        <div *ngIf="redeemForm.get('ticketId')?.hasError('ticketExists')" class="invalid-feedback">
+          This ticket is already in use for this group.
+        </div>
+
+        <div *ngIf="redeemForm.hasError('ticketIdOutOfRange') && redeemForm.get('ticketId')?.touched">
+          <small class="text-danger">{{ redeemForm.getError('ticketIdOutOfRange') }}</small>
+        </div>
+  
+      </div>
+  
+      <div class="col-lg-4">
+        <div class="form-group">
+          <label for="passbookNumber" class="form-control-label">Passbook Number</label>
+          <input type="text" placeholder="Passbook Number" class="form-control form-control-sm" formControlName="passbookNumber"  />
+        </div>
+      </div>
+    </div>
+        <div class="row">
+          <div class="col-lg-4">
+            <div class="form-group">
+              <label for="subscriberName" class="form-control-label">Prized Subscriber Name</label>
+              <input type="text" placeholder="Prized Subscriber Name" class="form-control form-control-sm" formControlName="subscriberName" readonly />
+            </div>
+          </div>         
+          <div class="row justify-content-end">
+            <div class="col-lg-12 d-flex justify-content-end">
+              <button type="submit" class="btn px-2" data-bs-toggle="modal" data-bs-target="#auctionModal" [disabled]="!redeemForm.valid"   (click)="redeem(data)">Create Invoice</button>
+          </div>
+        </div>
+
+          </div>
+      </form>
+</div>
+<div *ngIf="redeemLen>=1" class="my-3">
+  <h6>TKN Company Redeemed Subscribers in <div style="color:#50A1A5">{{groupId}}</div></h6>
+  <app-ag-grid 
+    [columns]="redeemedColumn" 
+    [rowData]="redeemData" 
+    width="100%" 
+    height="200px" 
+    >
+  </app-ag-grid>
+  
+</div>
+<!-- Modal -->
+
+ <div *ngIf="isChitShow">
+  <div class="modal fade" id="redeemDetailsModal" tabindex="-1" class="modal" role="dialog">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">TKN Redeemed Details</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" (click)="close()"></button>
+        </div>
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-lg-6">
+              <p><strong>Redeemed Date:</strong> {{ date }}</p>
+            </div>
+            <div class="col-lg-6">
+              <p><strong>Time:</strong> {{ time }}</p>
+            </div>
+            <div class="col-lg-6">
+              <p><strong>Ticket ID:</strong> {{ chitDetail?.TKNData?.ticketId }}</p>
+            </div>
+            <div class="col-lg-6">
+              <p><strong>Group ID:</strong> {{ chitDetail?.groupId }}</p>
+            </div>
+            <div class="col-lg-6">
+              <p><strong>Name:</strong> {{ chitDetail?.TKNData?.subscriberName }}</p>
+            </div>
+  
+            <div class="col-lg-6">
+              <p><strong>TKN Wallet Amount:</strong> {{ chitDetail?.TKNData?.tknWallet }}</p>
+            </div>
+            <div class="col-lg-6">
+              <p><strong>Prized Amount:</strong> {{ chitDetail?.TKNData?.prizedAmount }}</p>
+            </div>
+            <div class="col-lg-6">
+              <p><strong>Balance:</strong> {{ chitDetail?.TKNData?.balance }}</p>
+            </div>
+            <div class="col-lg-6">
+              <p><strong>Passbook Number:</strong> {{ chitDetail?.TKNData?.passbookNumber }}</p>
+            </div>
+          </div>
+        </div>
+        <!-- <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" (click)="close()">Close</button>
+        </div> -->
+      </div>
+    </div>
+  </div>
+
+ </div>
+
+
+ <div *ngIf="chitData">
+  <div class="modal fade" id="auctionModal"  tabindex="-1" aria-labelledby="auctionModalLabel"  >
+      <div class="modal-dialog modal-lg modal-dialog-centered">
+          <div class="modal-content p-4">
+              <div class="popup-body">
+                  <div class="text-center pb-2 fs-4 fw-bold">
+                      Invoice Details
+                  </div>
+                  <div class="d-flex justify-content-end py-2">
+                      <button class="btn mx-3 btn-success popup-btn" (click)="print()">
+                          <img src="../../../assets/popup/printer.svg" alt="" width="20px" height="20px" > Generate Receipt</button>
+                      <button class="btn me-3 btn-success popup-btn"  (click)="downloadAsPDF()">
+                          <img src="../../../assets/popup/download.svg" alt="" width="20px" height="20px"> Download</button>
+                  </div>
+                  <div class="border border-dark" id="print-section">
+                      <div class="popup-header">
+                          <img src="../../../assets/navbar/brand.svg" alt="" width="100px" height="90px">
+                          <div class="d-flex flex-column justify-content-center align-items-center">
+                              <p class="fs-5 fw-bold m-0">Guru Chits Private Limited</p>
+                              <span>Payment Receipt for {{month}} Month {{year}}</span>
+                          </div>
+                      </div>
+                      <hr class="border border-dark m-0" >
+                      <div class="row py-3">
+                          <div class="col-6 d-flex justify-content-around">
+                              <div class="col-5 fw-bold">Group ID</div>
+                              <div class="col-5">{{groupId}}</div>
+                          </div>
+                          <div class="col-6 d-flex justify-content-around" >
+                              <div class="col-5 fw-bold">Date & Time</div>
+                              <div class="col-5">{{date}} - {{time}}</div>
+                          </div>
+                      </div>
+                      <div class="row pb-3">
+                          <div class="col-6 d-flex justify-content-around">
+                              <div class="col-5 fw-bold">Prized Amount</div>
+                              <div class="col-5">{{receipt?.prizedAmount}}</div>
+                          </div>
+                          <div class="col-6 d-flex justify-content-around">
+                            <div class="col-5 fw-bold">Prized Subscriber Name</div>
+                            <div class="col-5">{{receipt?.subscriberName}}</div>
+                          </div>
+                      </div>
+                      <div class="row pb-3">
+                          <div class="col-6 d-flex justify-content-around">
+                              <div class="col-5 fw-bold">Passbook Number</div>
+                              <div class="col-5">{{receipt?.passbookNo}}</div>
+                          </div>
+                          <div class="col-6 d-flex justify-content-around">
+                            <div class="col-5 fw-bold">Winning Bid</div>
+                            <div class="col-5">{{receipt?.winningBid}}</div>
+                        </div>
+                      </div>
+                  </div>
+              </div>
+              <div class="d-flex justify-content-end py-4">
+                  <button type="button" class="btn next-btn px-4 py-2 fw-bold" data-bs-dismiss="modal">Close</button>
+              </div>
+          </div>
+      </div>
+  </div>
+  </div>
+

@@ -6,6 +6,7 @@ import { ChitService } from '../shared/service/chit.service';
 import { PaymentService } from '../../payments/shared/service/payment.service';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
+import { ICellRendererParams } from 'ag-grid-community';
 
 interface SubscriberDetails {
   firstName: string;
@@ -42,6 +43,10 @@ export class AuctionComponent implements OnInit {
   addSubscriberTotal = 0;
   subDetails:any
   purchase:boolean=false
+  regId:any[]
+  extraId:any[]
+  purId:any[]
+  breadcrumsData:any
   column: ITableColumn[] = [
     { field: 'Ticket Id', sortable: false, filter: false },
     { field: 'Name', sortable: false, filter: false },
@@ -49,7 +54,6 @@ export class AuctionComponent implements OnInit {
     { field: 'Place', sortable: false, filter: false },
     { field: 'Occupation', sortable: false, filter: false },
   ];
-
   constructor(
     private fb: FormBuilder,
     private activatedRoute: ActivatedRoute,
@@ -62,8 +66,37 @@ export class AuctionComponent implements OnInit {
     // You can now use the ticketId as needed
     this.selectedTicketId=ticketId
   }
+  subscriberColumn: ITableColumn[] = [
+    {
+      label: 'profileImageUrl',
+      field: ' ',
+      filter: false,
+      cellRenderer: this.profileImageWithIdRenderer,
+      maxWidth:80,
+    },
+    {
+      label: 'Ticket Id',
+      field: 'ticketId',
+      filter: false,
+    },
+    { label: 'Name', field: 'firstName' },
+    { label: 'Alias Name', field: 'aliasName' },
+    { label: 'Passbook Number', field: 'passbookNo' },
+    { label: 'Place', field: 'place' },
+    { label: 'Occupation', field: 'occupation' },
+  ];
+  gridOption: any = {
+    // columnDefs: this.subscriberColumn,
+    // rowData: this.subscribers,
+    // getRowStyle: (params) => this.applyRowStyle(params)
+  };
+  
+  // Fetch the ticket IDs before initializing the grid
+
   
   ngOnInit(): void {
+
+
     this.auctionForm = this.fb.group({
       groupId: ['',[Validators.required]],
       walletBalance: ['',[Validators.required]],
@@ -81,22 +114,45 @@ export class AuctionComponent implements OnInit {
     }
   );
 
+
     const auctionStart = this.auctionForm.get('auctionStart')?.value;
     if (auctionStart) {
       this.auctionForm.enable();
+      this.auctionForm.get('auctionStart')?.enable();
+
     } else {
       this.auctionForm.disable();
       this.auctionForm.get('auctionStart')?.enable();
     }
-
     this.activatedRoute.params.subscribe(paramData => {
+
       if (Object.keys(paramData).length) {
         this.service.getChitById(paramData.id).subscribe((data) => {
           this.chitData = data;
           this.chitData=this.chitData.ChitsGroup;
           this.groupId=this.chitData.chitGroupId;
+          this.breadcrumsData = [
+            {
+              key: 'Chit Management',
+              routerLink: '/chit',
+            },
+            {
+              key:`Auction Chit ${this.groupId}`,
+              routerLink: `/chit/auction/${paramData.id}`,
+            },
+          ];
+        
           console.log(this.chitData.addChitSubscribers);
+          this.fetchTicketIds(this.groupId)
 
+          // this.service.getTicketId(this.groupId).subscribe((res)=>{
+          //   this.regId=res.regId
+          //   this.extraId=res.extraId
+          //   this.purId=res.purId
+        
+          //   console.log(res.regId,res);
+            
+          // })
           this.paymentService.getTransactionById(this.groupId).subscribe((response)=>{
             console.log(response);
             this.walletBalance=response
@@ -109,6 +165,8 @@ export class AuctionComponent implements OnInit {
               })  
             }); 
           })
+
+
 
         // const winningBid = this.auctionForm.get('winningBid')?.value;
         // const chitAm = this.chitData.chitAmount;
@@ -170,6 +228,8 @@ export class AuctionComponent implements OnInit {
         console.log("res tickeer id",res.result);
         if (res.result === true) {
           // Set a validation error if the ticket already exists
+         this.purchase=false
+
           this.auctionForm.get('ticketId')?.setErrors({ ticketExists: true });
         } 
         
@@ -179,6 +239,8 @@ export class AuctionComponent implements OnInit {
         else {
           // Clear the validation error if the ticket does not exist
           this.auctionForm.get('ticketId')?.setErrors(null);
+          this.purchase=false
+
         }
     
         // You can call this after validation to handle other logic
@@ -191,6 +253,32 @@ export class AuctionComponent implements OnInit {
   //   this.auctionForm.get('auctionCycle')?.setValue(this.auctionCycle++);
   // }
 
+   // Fetch ticket ids
+   async fetchTicketIds(groupId: string) {
+    const res = await this.service.getTicketId(this.chitData?.chitGroupId).toPromise();
+    this.regId = res?.regId 
+      this.extraId = res?.extraId 
+      this.purId = res?.purId 
+  }
+  applyRowStyle(params: ICellRendererParams): any {
+    const ticketId = params.data.ticketId;
+     this.fetchTicketIds(this.groupId)
+    
+    if (this.regId.includes(ticketId)) {
+      return { color: '#12B76A' }; // Style for regId
+    }
+
+    // Additional styling for extraId and purId
+    if (this.extraId.includes(ticketId)) {
+      return { color: '#F87171' }; // Example style for extraId
+    }
+    if (this.purId.includes(ticketId)) {
+      return { color: '#60A5FA' }; // Example style for purId
+    }
+
+    return null; // Default style
+  }
+  
   amountLessThanOrEqualChitAmount(ticketIdControl: string) {
     return (formGroup: AbstractControl): ValidationErrors | null => {
       const ticketId = formGroup.get(ticketIdControl)?.value;
@@ -263,7 +351,7 @@ export class AuctionComponent implements OnInit {
       this.auctionForm.enable();
     } else {
       this.auctionForm.disable();
-      // this.auctionForm.get('auctionStart')?.enable();
+      this.auctionForm.get('auctionStart')?.enable();
     }
   }
 
@@ -311,24 +399,25 @@ export class AuctionComponent implements OnInit {
     this.paymentService.saveTransactionDetails(response.data.groupId,-walletBalance ).subscribe(
       (response)=>{
         console.log(response);
+        this.purchase=false
+
       }
     )
     });
-    this.purchase=false
     // this.auctionForm.reset()
   }
 
   profileImageWithIdRenderer(params: any): string {
     const imageUrl = params.data.profileImageUrl;
-    const ticketId = params.data.ticketId;
+    // const ticketId = params.data.ticketId;
     return `
       <div style="display: flex; align-items: center;">
-        <img src="${imageUrl}" alt="Profile Image" width="35" height="35" style="border-radius: 50%; margin-right: 10px;">
-        <span style="color: #50A1A5;">${ticketId}</span>
+        <img src="${imageUrl}" alt="Profile Image" width="30" height="30" style="border-radius: 50%; margin-right: 10px;">
+
       </div>
     `;
   }
-
+        // <span style="color: #50A1A5;">${ticketId}</span>
   downloadAsPDF() {
     const element = document.getElementById('print-section');
   
@@ -379,19 +468,8 @@ export class AuctionComponent implements OnInit {
     window.location.reload(); // Reload to restore state
   }
 
-  subscriberColumn : ITableColumn[]= [
-    {
-      label: 'profileImageUrl',
-      field: 'Ticket ID',
-      filter:false,
-      cellRenderer: this.profileImageWithIdRenderer,
-    },  { label: 'Name', field: 'firstName' },
-  { label: 'Alias Name', field: 'aliasName' },
-  { label: 'Passbook Number', field: 'passbookNo' },
-  { label: 'Place', field: 'place' },
-  { label: 'Occupation', field: 'occupation' },
 
-];
+  
 
 // Column definitions for addChitSubscribers
   addSubscriberColumn = [
@@ -408,5 +486,12 @@ export class AuctionComponent implements OnInit {
 
 
   ]
+
+
+
+
+
+
+
 }
 

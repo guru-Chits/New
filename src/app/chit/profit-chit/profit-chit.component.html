@@ -91,7 +91,7 @@
         type="submit"
         class="btn btn-primary px-2 py-2"
         data-bs-toggle="modal" data-bs-target="#auctionModal"
-        [disabled]="!profitForm.valid"
+        [disabled]="!profitForm.valid || purchase"
         (click)="onSubmit()"
       >
         Create Invoice

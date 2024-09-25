@@ -365,8 +365,7 @@ onSubmit(): void {
   const loginLink = 'http://13.127.210.25/login/forgot-password';
   this.service.sendSms(mobile,password,loginLink)
 
-  const otpUrl = `https://2factor.in/API/R1/?module=TRANS_SMS&apikey=b1037ef1-2ed8-11ef-8b60-0200cd936042&to=${mobile}&from=KNGCPL&templatename=Onboarding&${password}=VAR1_VALUE&${loginLink}=VAR2_VALUE`;
-
+  const otpUrl = `https://2factor.in/API/R1/?module=TRANS_SMS&apikey=b1037ef1-2ed8-11ef-8b60-0200cd936042&to=${mobile}&from=KNGCPL&templatename=Onboarding&var1=${password}&var2=${loginLink}`;
   // Send OTP
   this.HttpClient.get(otpUrl).subscribe(
     (otpResponse: any) => {

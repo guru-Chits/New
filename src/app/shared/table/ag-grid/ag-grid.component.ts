@@ -17,8 +17,8 @@ export class AgGridComponent implements OnChanges, OnInit {
   @Input() filterImg:string
   @Input() search:boolean;
   @Input() pageSize: number; // Input for dynamic page size
-
-  defaultPageSize: number = 5; // Default page size
+  @Input() gridOption: any;
+    defaultPageSize: number = 5; // Default page size
   isActiveFilter: boolean = true;
 
   private gridApi!: GridApi;

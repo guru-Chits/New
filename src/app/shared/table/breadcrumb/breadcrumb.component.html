@@ -6,7 +6,7 @@
            [routerLink]="item.routerLink"
            [queryParams]="item?.queryParams"
            (click)="updateIfStepChanges(item)"
-           class="cursor-pointer fs-3 link-hover">
+           class="cursor-pointer fs-6 link-hover">
           {{ item.key }}
         </a>
         <p *ngIf="item?.onclick"

@@ -66,25 +66,7 @@ export class AuctionComponent implements OnInit {
     // You can now use the ticketId as needed
     this.selectedTicketId=ticketId
   }
-  subscriberColumn: ITableColumn[] = [
-    {
-      label: 'profileImageUrl',
-      field: ' ',
-      filter: false,
-      cellRenderer: this.profileImageWithIdRenderer,
-      maxWidth:80,
-    },
-    {
-      label: 'Ticket Id',
-      field: 'ticketId',
-      filter: false,
-    },
-    { label: 'Name', field: 'firstName' },
-    { label: 'Alias Name', field: 'aliasName' },
-    { label: 'Passbook Number', field: 'passbookNo' },
-    { label: 'Place', field: 'place' },
-    { label: 'Occupation', field: 'occupation' },
-  ];
+
   gridOption: any = {
     // columnDefs: this.subscriberColumn,
     // rowData: this.subscribers,
@@ -260,25 +242,50 @@ export class AuctionComponent implements OnInit {
       this.extraId = res?.extraId 
       this.purId = res?.purId 
   }
-  applyRowStyle(params: ICellRendererParams): any {
-    const ticketId = params.data.ticketId;
-     this.fetchTicketIds(this.groupId)
-    
-    if (this.regId.includes(ticketId)) {
-      return { color: '#12B76A' }; // Style for regId
-    }
+  subscriberColumn: ITableColumn[] = [
+    {
+      label: 'profileImageUrl',
+      field: ' ',
+      filter: false,
+      cellRenderer: this.profileImageWithIdRenderer,
+      maxWidth:80,
+    },
+    {
+      label: 'Ticket Id',
+      field: 'ticketId',
+      filter: false,
+    },
+    { label: 'Name', field: 'firstName' },
+    { label: 'Alias Name', field: 'aliasName' },
+    { label: 'Passbook Number', field: 'passbookNo' },
+    { label: 'Place', field: 'place' },
+    { label: 'Occupation', field: 'occupation' },
+  ];
 
-    // Additional styling for extraId and purId
+ getRowStyle(params: any) {
+    const ticketId = params.data.ticketId;
+
+    // Apply styles based on the ticketId values fetched
+    if (this.regId.includes(ticketId)) {
+      return { backgroundColor: '#12B76A' }; // Green for regId
+    }
     if (this.extraId.includes(ticketId)) {
-      return { color: '#F87171' }; // Example style for extraId
+      return { backgroundColor: '#F87171' }; // Red for extraId
     }
     if (this.purId.includes(ticketId)) {
-      return { color: '#60A5FA' }; // Example style for purId
+      return { backgroundColor: '#60A5FA' }; // Blue for purId
     }
 
-    return null; // Default style
+    return null; // Default style for other rows
   }
-  
+
+  // ag-Grid options
+  gridOptions = {
+    columnDefs: this.subscriberColumn,
+    rowData: this.subscribers,
+    getRowStyle: this.getRowStyle.bind(this), // Bind to component context
+  };
+
   amountLessThanOrEqualChitAmount(ticketIdControl: string) {
     return (formGroup: AbstractControl): ValidationErrors | null => {
       const ticketId = formGroup.get(ticketIdControl)?.value;
@@ -472,19 +479,24 @@ export class AuctionComponent implements OnInit {
   
 
 // Column definitions for addChitSubscribers
-  addSubscriberColumn = [
+  addSubscriberColumn: ITableColumn[] = [
     {
       label: 'profileImageUrl',
-      field: 'Ticket ID',
-      filter:false,
+      field: ' ',
+      filter: false,
       cellRenderer: this.profileImageWithIdRenderer,
-    },  { label: 'Name', field: 'firstName' },
-  { label: 'Alias Name', field: 'aliasName' },
-  { label: 'Passbook Number', field: 'passbookNo' },
-  { label: 'Place', field: 'place' },
-  { label: 'Occupation', field: 'occupation' },
-
-
+      maxWidth:80,
+    },
+    {
+      label: 'Ticket Id',
+      field: 'ticketId',
+      filter: false,
+    },
+    { label: 'Name', field: 'firstName' },
+    { label: 'Alias Name', field: 'aliasName' },
+    { label: 'Passbook Number', field: 'passbookNo' },
+    { label: 'Place', field: 'place' },
+    { label: 'Occupation', field: 'occupation' },
   ]
 
 

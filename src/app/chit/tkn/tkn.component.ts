@@ -232,7 +232,7 @@ onSubmit(){
   // Patch the form values with the selected item data
  
     this.redeemForm.patchValue({
-      redeem: true,
+      // redeem: true,
       tknWallet: data.TKNData.tknWallet,
       // balance: data.balance,
       groupId: data.groupId,

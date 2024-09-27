@@ -157,7 +157,7 @@ amountLessThanOrEqualChitAmount(ticketIdControl: string) {
     this.service.saveAuctionDetails(payload).subscribe((response:any) => {
       console.log(response);
       this.data=response.data
-      
+      this.extraForm.reset()
         const createdAtDate = new Date(response.data.createdAt);
         this.month = createdAtDate.toLocaleString('default', { month: 'long' });  // Full month name
         this.year = createdAtDate.getFullYear();  // Year

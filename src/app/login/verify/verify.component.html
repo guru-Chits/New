@@ -1,4 +1,4 @@
-<div class="container-fluid">
+<div class="container-fluid" *ngIf="!resetPage">
     <div class="row d-flex">
       <div class="col-lg-1 col-md-1 align-self-center">
         
@@ -50,4 +50,8 @@
       </div>
     </div>
   </div>
+  <div *ngIf="reset">
+    <app-reset-password [mobileNumber]="mobileNumber" [employeeId]="employeeId" [reset]="resetPage"></app-reset-password>
+  </div>
+
   

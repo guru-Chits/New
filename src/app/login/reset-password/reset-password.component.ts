@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { LoginService } from '../shared/serive/login.service';
 
 interface IResetPassword {
   newPassword:FormControl<string | null>
@@ -13,7 +14,7 @@ interface IResetPassword {
 })
 export class ResetPasswordComponent implements OnInit {
   isPasswordVisible: boolean = false;
-
+  @Input() employeeId:string
   /**
    * Check if the confirm password is visible
    */
@@ -52,7 +53,7 @@ export class ResetPasswordComponent implements OnInit {
   get confirmPasswordControl() { return this.resetForm.get('confirmPassword'); };
 
   resetForm: FormGroup<IResetPassword>
- constructor(private fb:FormBuilder,private router: Router, ){}
+ constructor(private fb:FormBuilder,private router: Router, private service:LoginService){}
 
 ngOnInit(): void {
   this.resetForm=this.fb.group({
@@ -107,7 +108,19 @@ onSubmit(){
  
   if (this.passwordsMatch) {
 
-  this.isPasswordReset = true;
+  if (this.resetForm.valid) {
+    const password  = this.resetForm.get("confirmPassword").value
+    this.service.passwordReset(this.employeeId, password).subscribe(
+      response => {
+        console.log('Password reset successful', response);
+        this.isPasswordReset = true;
+
+      },
+      error => {
+        console.error('Error resetting password', error);
+      }
+    );
+  }
   }
 }
 navigateToLoginPage(): void {

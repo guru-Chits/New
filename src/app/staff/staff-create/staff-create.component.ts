@@ -104,7 +104,7 @@ ngOnInit(){
     bgVerification: ["UnVerified"],
     bgVerification_remark: [""],
     profileUrl:[""],
-    password:[""]
+    password:["Staff@578"]
   });
 
   this.staffsForm.patchValue({
@@ -334,9 +334,9 @@ private getColorForInitial(initial: string): string {
 onSubmit(): void {
   const formData = new FormData();
   
-  this.staffsForm.patchValue({
-    password: this.generateRandomPassword(12)  // Generate a 12-character random password
-  });
+  // this.staffsForm.patchValue({
+  //   password: this.generateRandomPassword(12)  // Generate a 12-character random password
+  // });
   
   const formValue = this.staffsForm.getRawValue();
 
@@ -360,35 +360,29 @@ onSubmit(): void {
       formData.append(key, formValue[key]);
     }
   }
-  const mobile=this.staffsForm.get('contact')?.value
-  const password = this.staffsForm.get('password')?.value;
-  const loginLink = 'http://13.127.210.25/login/forgot-password';
-  this.service.sendSms(mobile,password,loginLink)
 
-  const otpUrl = `https://2factor.in/API/R1/?module=TRANS_SMS&apikey=b1037ef1-2ed8-11ef-8b60-0200cd936042&to=${mobile}&from=KNGCPL&templatename=Onboarding&var1=${password}&var2=${loginLink}`;
-  // Send OTP
-  this.HttpClient.get(otpUrl).subscribe(
-    (otpResponse: any) => {
-      console.log('OTP sent successfully:', otpResponse);
-     },
-    (error) => {
-      console.error('Error sending OTP:', error);
-    }
-  );
 
 
   this.service.savestaffDetails(formData, this.staffId).subscribe((data) => {
-    // if (isNewStaff) {
-      const employeeId = this.staffsForm.get('employeeId')?.value;
+    if(!this.staffId){
+      const mobile=this.staffsForm.get('contact')?.value
       const password = this.staffsForm.get('password')?.value;
-      const loginLink = 'http://13.127.210.25/login/forgot-password';
-      this.service.sendSms(mobile,password,loginLink)
-
-      // let message = `Your employee ID is ${employeeId} and your temporary password is ${password}. Use the following link to login and reset your password: ${loginLink}`;
-    // }
-      // Assuming the service has a method to send SMS or email notifications
+      const loginLink = 'http://13.127.210.25/login';
+      const empId=this.staffsForm.get('employeeId')?.value;
     
-    // Navigate to staff list after saving
+      const otpUrl = `https://2factor.in/API/R1/?module=TRANS_SMS&apikey=b1037ef1-2ed8-11ef-8b60-0200cd936042&to=${mobile}&from=KNGCPL&templatename=Onboarding&var1=${loginLink}&var2=${empId}&var3=${password}`;
+      // Send OTP
+      https://2factor.in/API/R1/?module=TRANS_SMS&apikey=b1037ef1-2ed8-11ef-8b60-0200cd936042&to=+91%206385578470&from=KNGCPL&templatename=Onboarding&var1=login/fb&var2=KNG-E009&var3=zvMc.6%20
+      this.HttpClient.get(otpUrl).subscribe(
+        (otpResponse: any) => {
+          console.log('OTP sent successfully:', otpResponse);
+         },
+        (error) => {
+          console.error('Error sending OTP:', error);
+        }
+      );
+    
+    }
     this.router.navigate(["/staff"]);
 
   })

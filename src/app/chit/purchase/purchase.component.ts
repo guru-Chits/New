@@ -195,6 +195,7 @@ this.purchaseForm.get('winningBid')?.valueChanges.subscribe(()=>{
     console.log(response.data.createdAt);
     console.log(response.data.createdAt);
     const createdAtDate = new Date(response.data.createdAt);
+    this.purchaseForm.reset()
 
     this.date =createdAtDate.toISOString().split('T')[0]; // Formats the date
     this.time = createdAtDate.toLocaleTimeString();  // Formats the time
@@ -213,7 +214,6 @@ this.purchaseForm.get('winningBid')?.valueChanges.subscribe(()=>{
 
     });
 
-  this.purchaseForm.reset()
  }
 
  downloadAsPDF() {

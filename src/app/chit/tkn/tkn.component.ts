@@ -214,6 +214,9 @@ onSubmit(){
 
   this.service.saveAuctionDetails(payload).subscribe((response:any) => {
     console.log(response);
+
+    this.tknForm.reset()
+
     const walletBalance=response.data.TKNData.prizedAmount+response.data.TKNData.foremanCommision
     this.getTicketIdData()
     this.tknForm.reset()
@@ -337,6 +340,7 @@ redeem(data:any){
     console.log(response.data.createdAt);
     const createdAtDate = new Date(response.data.createdAt);
     this.getTicketIdData()
+    this.redeemForm.reset()
 
     this.date =createdAtDate.toISOString().split('T')[0]; // Formats the date
     this.time = createdAtDate.toLocaleTimeString();  // Formats the time
@@ -355,7 +359,6 @@ redeem(data:any){
 
   });
 
-  this.redeemForm.reset()
 
 }
 getDataById(id:any){

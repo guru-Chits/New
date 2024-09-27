@@ -194,7 +194,7 @@ this.profitForm.patchValue({
     this.service.saveAuctionDetails(payload).subscribe((response:any) => {
       console.log(response);
       this.data=response.data
-      
+      this.profitForm.reset()
         const createdAtDate = new Date(response.data.createdAt);
         this.month = createdAtDate.toLocaleString('default', { month: 'long' });  // Full month name
         this.year = createdAtDate.getFullYear();  // Year

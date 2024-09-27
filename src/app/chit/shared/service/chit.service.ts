@@ -60,7 +60,7 @@ export class ChitService {
   } 
 
   deleteSubscriber(groupId: string, ticketId: string):Observable<any>{
-    let url:string = `${environment.chitServiceUrl}/chitgroup/chit_management/chit-group/${groupId}/${ticketId}`
+    let url:string = `${environment.chitServiceUrl}/chitgroup/chit-group/${groupId}/${ticketId}`
     return this.http.delete(url)
   }
 

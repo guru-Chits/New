@@ -107,7 +107,7 @@
       <div class="chit-details" *ngIf="showChitDetails">
         <div class="card d-flex py-4 mt-2">
             <h5 class="title text-center fw-bold fs-4 m-0">Chit Group {{selectedChit}}</h5>
-            <table class="table mt-2">
+            <table class="table mt-2 d-flex">
                 <tbody>
                   <tr>
                     <td class="py-3"><strong>Group ID </strong></td>
@@ -123,11 +123,11 @@
                   </tr>
                   <tr>
                     <td class="py-3"><strong>Wallet Balance</strong></td>
-                    <td>150000</td>
+                    <td>{{chitSubscriberTotal}}</td>
                   </tr>
                   <tr>
                     <td class="py-3"><strong>Additional Wallet Balance</strong></td>
-                    <td>30000</td>
+                    <td>{{addSubscriberTotal}}</td>
                   </tr>
                   <tr>
                     <td class="py-3"><strong>Redeemabale Balance</strong></td>

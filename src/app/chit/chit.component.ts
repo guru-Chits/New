@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { ChitService } from './shared/service/chit.service';
 import { LoginComponent } from '../login/login.component';
 import { AuthService } from '../shared/service/auth.service';
+import { PaymentService } from '../payments/shared/service/payment.service';
 @Component({
   selector: 'app-chit',
   templateUrl: './chit.component.html',
@@ -24,8 +25,11 @@ export class ChitComponent implements OnInit{
   total: any;
   selectedChit:number=1
   canCreate: boolean = false;
+  groupId:string;
+  payment:any;
+  chitSubscriberTotal = 0;
 
-  constructor(private router:Router, private service: ChitService,private authService:AuthService  ){}
+  constructor(private router:Router, private service: ChitService,private authService:AuthService, private paymentService: PaymentService){}
 
   ngOnInit(): void{
     this.authService.checkAccess('Chit Management', 'create').subscribe((hasAccess: boolean) => {
@@ -42,7 +46,8 @@ export class ChitComponent implements OnInit{
       this.total = this.chitdata.length
       console.log(this.total);
       this.displayedChit= this.chitdata;
-
+      // this.groupId=this.chitdata?.AllChitGroups;
+      // console.log("GROUP ID", this.groupId)
       
     })
   }
@@ -77,14 +82,24 @@ export class ChitComponent implements OnInit{
       (data) => {
         
         this.specificChitData=data
-        console.log(this.specificChitData.ChitsGroup)
+        console.log("Specified Data Subscriber",this.specificChitData.ChitsGroup)
         this.specificChitData=this.specificChitData.ChitsGroup
       },
       error => {
         console.error('Error fetching subscriber', error);
       }
     );
-    
+    this.groupId = this.specificChitData?.chitGroupId
+    console.log("_______^^_______",this.groupId)
+    this.paymentService.getTransactionById(this.groupId).subscribe((response)=>{
+      console.log("PAYMENT",response);
+      this.payment=response
+      this.payment=this.payment.payment
+      this.payment.forEach(amount => {
+        this.chitSubscriberTotal=amount.walletBalance
+        console.log(this.chitSubscriberTotal,"red");
+      }); 
+    })
   }
 
   getAllChit(){

@@ -231,13 +231,14 @@ export class ChitCreateComponent {
   }
   
   addSelectedSubscriber(subscriber: any): void {
- 
+    debugger
     if(this.listId==subscriber)
     {
       if (this.currentListType === 'chit') {
         this.addSubscriberById(subscriber);
       } else {
         this.addAdditionalSubscriberById(subscriber);
+
       }
   
     }
@@ -251,6 +252,7 @@ export class ChitCreateComponent {
     if(this.ticketId <= 20)
     {
       const chitSubscribers = this.chitGroupForm.get('chitSubscribers').value || [];
+      console.log("CHIT SUBSCRIBER ADDED ",chitSubscribers)
       this.ticketId=chitSubscribers.length+1
       if (chitSubscribers.length >= 20) {
         this.showModal('Cannot add more than 20 subscribers.');
@@ -328,7 +330,8 @@ export class ChitCreateComponent {
  
 
   addAdditionalSubscriberById(id: string): void {
-    if (this.ticketId > 20) {
+    if (this.ticketId >= 20) {
+      debugger
       const addChitSubscribers = this.chitGroupForm.get('addChitSubscribers').value || [];
       const chitSubscribers = this.chitGroupForm.get('chitSubscribers').value || [];
   
@@ -340,7 +343,7 @@ export class ChitCreateComponent {
       this.subService.getsubscriberById(id).subscribe(
         res => {
           this.addSubData = res;
-  
+          this.ticketId += 1;
           const newSubscriber = {
             ticketId: this.ticketId,
             subscriberId: this.addSubData.Subscriber.subscriberId,
@@ -358,7 +361,7 @@ export class ChitCreateComponent {
             this.showModal('Duplicate subscriber ID detected. This subscriber cannot be added.');
             return;
           }
-          this.ticketId += 1;
+          // this.ticketId += 1;
 
           addChitSubscribers.push(newSubscriber);
           this.chitGroupForm.patchValue({ addChitSubscribers });
@@ -371,6 +374,9 @@ export class ChitCreateComponent {
         }
       );
     }
+    else {
+      console.log("EXIT __________")
+     }
   }
   
   // Method to show modal (assuming you have a modal implementation)

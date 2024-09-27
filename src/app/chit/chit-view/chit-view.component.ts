@@ -41,6 +41,7 @@ export class ChitViewComponent implements OnInit{
   currentListType: 'additional' = 'additional';
   modalErrorMessage: string = '';
   addSubData:any={}
+  subData:any={}
   ticketId: number= 1;
   viewSubscriber : any;
   bidHistory: any;
@@ -246,8 +247,64 @@ export class ChitViewComponent implements OnInit{
       if (this.currentListType === 'additional') {
         this.addAdditionalSubscriberById(subscriber);
       }
+      else{
+        this.addSubscriberById(subscriber)
+      }
       this.subscriberDetail = null;
     }
+  }
+
+  addSubscriberById(id: string): void {
+    if(this.ticketId <= 20)
+    {
+      const addChitSubscribers = this.chitData.addChitSubscribers || [];
+      const chitSubscribers = this.chitData.chitSubscribers || [];
+      console.log("CHIT SUBSCRIBER ADDED ",chitSubscribers)
+      this.ticketId=chitSubscribers.length+1
+      if (chitSubscribers.length >= 20) {
+        this.showModal('Cannot add more than 20 subscribers.');
+        return;
+      }
+  
+      this.subservice.getsubscriberById(id).subscribe(
+        res => {
+          this.subData = res;
+  
+          const newSubscriber = {
+            ticketId: this.ticketId,
+            subscriberId: this.subData.Subscriber.subscriberId,
+            profileImageUrl: this.subData.Subscriber.profileImageUrl,
+            aliasName: this.subData.Subscriber.lastName,
+            firstName: this.subData.Subscriber.firstName,
+            place: this.subData.Subscriber.routeId,
+            occupation: this.subData.Subscriber.occupation,
+          };
+  
+          if (chitSubscribers.some(sub => sub.subscriberId === newSubscriber.subscriberId)) {
+            this.showModal('Duplicate subscriber ID detected. This subscriber cannot be added.');
+            return;
+          }
+  
+          chitSubscribers.push(newSubscriber);
+          
+          // Update the table data
+          // addChitSubscribers.push(newSubscriber);
+  
+          // Update the table data for additional subscribers
+          this.subscribers = [...chitSubscribers];
+          if(this.subscribers.length >= 20){
+            this.isSubscriberListVisible = false;
+          }
+        },
+        error => {
+          if (error.status === 400 && error.error.message.includes('Duplicate subscriberId')) {
+            this.showModal('Duplicate subscriber ID detected. This subscriber cannot be added.');
+          } else {
+            console.error('Error fetching subscriber:', error);
+          }
+        }
+      );
+     }
   }
 
   addAdditionalSubscriberById(id: string): void {
@@ -311,13 +368,34 @@ export class ChitViewComponent implements OnInit{
   }
 
   removeSubscriber(){
-    let subscriberId = this.filteredSubscribers[0]?.subscriberId
+    debugger
+    let subscriberId = this.filteredSubscribers[0]?.subscriberId || this.filteredAdditionalSubs[0]?.subscriberId
 
     let chitgroupId = this.chitData.chitGroupId
+    let remainingSub = this.subscribers.filter(subscriber => subscriber.subscriberId !== this.filteredSubscribers[0]?.subscriberId);
+    let remainingAddSub = this.addSubscribers.filter(subscriber => subscriber.subscriberId !== this.filteredAdditionalSubs[0]?.subscriberId);
+    // console.log("remaining sub",remainingSub)
+    // console.log("remaining Add sub", remainingAddSub)
     console.log(subscriberId, chitgroupId)
     this.service.deleteSubscriber(chitgroupId, subscriberId).subscribe((res) => {
       console.log(res)
     })
+
+    // if (remainingSub.length < 20 && remainingAddSub.length > 0) {
+    //   // Move the first additional subscriber to the subscribers list
+    //   const firstAdditionalSubscriber = remainingAddSub.shift();
+
+    //   // Optionally modify any attributes like ticketId (as per your logic)
+    //   firstAdditionalSubscriber.ticketId = firstAdditionalSubscriber.ticketId - 1//'T' + Math.floor(Math.random() * 1000); // Example of updating ticket ID
+
+    //   // Add this additional subscriber to the main subscriber list
+    //   this.subscribers.push(firstAdditionalSubscriber);
+    //   this.subscribers = [...this.subscribers];
+    //   this.addSubscribers.shift()
+    //   this.addSubscribers = [...this.addSubscribers]
+    //   console.log("Add Subscribers", this.addSubscribers)
+    //   console.log("SUBSCRIBERS", this.subscribers)
+    // }
   }
 
   getAllAuction(){
@@ -333,7 +411,7 @@ export class ChitViewComponent implements OnInit{
 
   openBidHistory(){
     this.showBidHistory = !this.showBidHistory
-    console.log(this.showBidHistory)
+    console.log("BID HISTORY",this.showBidHistory)
   }
 
   profileImageWithIdRenderer(params: any): string {

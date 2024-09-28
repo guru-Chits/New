@@ -68,4 +68,9 @@ export class ChitService {
     let url:string = `${environment.chitServiceUrl}/chit_management/get_all_chit`
     return this.http.get(url)
   }
+
+  getChitAuctionById(groupId: string): Observable<any>{
+    let url:string = `${environment.chitServiceUrl}/chit_management/getchit/${groupId}`
+    return this.http.get(url)
+  }
 }

@@ -51,6 +51,8 @@ export class ChitCreateComponent {
   showAnother: any;
   collectionTypes: any;
   collectionTypeForm: FormGroup
+  minDate: string;
+  maxDate: string;
   constructor( private subService:SubscriberService, private chitService:ChitService, private router:Router, private settings: ServiceService) {
 
   }
@@ -78,8 +80,13 @@ export class ChitCreateComponent {
     )
     const today = new Date().toISOString().split('T')[0];
     this.currentDate = today;
+    const FirstChitDate = new Date()
+    const year = FirstChitDate.getFullYear();
+    const month = FirstChitDate.getMonth() + 1; // Month is zero-based, add 1
+    this.minDate = `${year}-${month < 10 ? '0' + month : month}-01`;
 
-
+    // Set the maximum date to the 10th of the current month
+    this.maxDate = `${year}-${month < 10 ? '0' + month : month}-10`;
     this.subService.getsubscriberAll().subscribe((data)=>{
       this.subscriberData=data;
       console.log("subscriber data",this.subscriberData);

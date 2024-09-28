@@ -28,7 +28,8 @@ export class ChitComponent implements OnInit{
   groupId:string;
   payment:any;
   chitSubscriberTotal = 0;
-
+  bidHistory:any;
+  prizedSubsCount: number = 0;
   constructor(private router:Router, private service: ChitService,private authService:AuthService, private paymentService: PaymentService){}
 
   ngOnInit(): void{
@@ -84,22 +85,37 @@ export class ChitComponent implements OnInit{
         this.specificChitData=data
         console.log("Specified Data Subscriber",this.specificChitData.ChitsGroup)
         this.specificChitData=this.specificChitData.ChitsGroup
+        if(this.specificChitData){
+          this.groupId = this.specificChitData.chitGroupId
+          console.log("_______^^_______",this.groupId)
+          this.paymentService.getTransactionById(this.groupId).subscribe((response)=>{
+            console.log("PAYMENT",response);
+            this.payment=response
+            this.payment=this.payment.payment
+            this.payment.forEach(amount => {
+              this.chitSubscriberTotal=amount.walletBalance
+              console.log(this.chitSubscriberTotal,"red");
+            }); 
+          })
+          this.getAuctionById(this.groupId)
+        }
+
       },
       error => {
         console.error('Error fetching subscriber', error);
       }
     );
-    this.groupId = this.specificChitData?.chitGroupId
-    console.log("_______^^_______",this.groupId)
-    this.paymentService.getTransactionById(this.groupId).subscribe((response)=>{
-      console.log("PAYMENT",response);
-      this.payment=response
-      this.payment=this.payment.payment
-      this.payment.forEach(amount => {
-        this.chitSubscriberTotal=amount.walletBalance
-        console.log(this.chitSubscriberTotal,"red");
-      }); 
-    })
+
+    // console.log("_______^^_______",this.groupId)
+    // this.paymentService.getTransactionById(this.groupId).subscribe((response)=>{
+    //   console.log("PAYMENT",response);
+    //   this.payment=response
+    //   this.payment=this.payment.payment
+    //   this.payment.forEach(amount => {
+    //     this.chitSubscriberTotal=amount.walletBalance
+    //     console.log(this.chitSubscriberTotal,"red");
+    //   }); 
+    // })
   }
 
   getAllChit(){
@@ -119,25 +135,15 @@ export class ChitComponent implements OnInit{
     })
   }
 
-  // getColor(member: string): string {
-  //   const colors = {
-  //     'R': '#5B2C6F',
-  //     'B': '#2874A6',
-  //     'V': '#C0392B',
-  //     'M': '#239B56',
-  //     'G': '#F1C40F',
-  //     'C': '#E74C3C',
-  //     'A': '#2E86C1',
-  //     'S': '#1ABC9C',
-  //     'N': '#7D3C98',
-  //     'D': '#76D7C4',
-  //     'E': '#2980B9',
-  //     'K': '#8E44AD',
-  //     'H': '#F39C12',
-  //     'T': '#E67E22'
-  //   };
-  //   return colors[member] || '#000';
-  // }
+
+  getAuctionById(id: string){
+    this.service.getChitAuctionById(id).subscribe((res) => {
+      this.bidHistory = res.data;
+      this.prizedSubsCount = this.bidHistory.filter(item => item.subscriberName).length;
+      console.log("____________BID__________HISTORY_____________", this.bidHistory)
+    })
+  }
+
   
   navigate(id: any){
     this.router.navigate([`chit/view/${id}`]);

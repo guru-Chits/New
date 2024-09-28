@@ -80,7 +80,7 @@ export class AreaCreateComponent implements OnInit{
     this.routeForm = new FormGroup({
       regionId: new FormControl(null, [
         Validators.required,
-        Validators.pattern('^[A-Z]{3}$') // Exactly 3 capital letters
+        // Validators.pattern('^[A-Z]{3}$') // Exactly 3 capital letters
       ]),
       routeName: new FormControl(null, [
         Validators.required,
@@ -92,9 +92,10 @@ export class AreaCreateComponent implements OnInit{
       ]),
       routeId: new FormControl(null, [
         Validators.required,
-        Validators.pattern('^[A-Z]{3} - [A-Z][a-zA-Z]*$') // "Region ID - Area Name" format
+        // Validators.pattern('^[A-Z]{3} - [A-Z][a-zA-Z]*$') // "Region ID - Area Name" format
       ]),
       routeDesc: new FormControl(null, [
+        Validators.required,
         Validators.minLength(10),
         Validators.maxLength(100),
         Validators.pattern('^[a-zA-Z0-9 ,.!?-]+$') // Valid characters including letters, numbers, and common punctuation

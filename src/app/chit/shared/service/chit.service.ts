@@ -74,7 +74,11 @@ export class ChitService {
       return this.http.get(url);
     }
   
+    getSubAuction(passbooknumber:any):Observable<any> {
+      let url:string= `${environment.auctionServiceUrl}/chit_management/getSubAuction/${passbooknumber}`
   
+      return this.http.get(url);
+    }
   deleteSubscriber(groupId: string, ticketId: string):Observable<any>{
     let url:string = `${environment.chitServiceUrl}/chitgroup/chit_management/chit-group/${groupId}/${ticketId}`
     return this.http.delete(url)

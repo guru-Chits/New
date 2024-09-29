@@ -108,7 +108,7 @@ export class ChitViewComponent implements OnInit{
         this.paymentService.getAddWallet(this.groupId).subscribe((response)=>{
           console.log("PAYMENT",response);
           this.addPayment=response
-          this.addPayment=this.payment.payment
+          this.addPayment=this.addPayment.payment
           this.addPayment.forEach(amount => {
             this.addSubscriberTotal=amount.addWalletBalance
             console.log(amount,"red");

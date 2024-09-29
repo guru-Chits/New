@@ -1,5 +1,22 @@
 /* @import "~@ng-select/ng-select/themes/default.theme.css"; */
+.custom-country-code {
+  background-color: white;
+  border-right: 0;
+}
 
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none; /* Disable number input spinner in Chrome */
+  margin: 0;
+}
+.custom-country-code {
+  background-color: white;
+  font-size: 0.9em;  /* Makes the text a bit smaller */
+  padding: 5px 10px; /* Adjusts padding for better sizing */
+  border-right: 0;
+  border-radius: 0;   /* Removes any border-radius if input group has rounded corners */
+  line-height: 1.5;   /* Keeps the text vertically centered */
+}
 
 .form-group {
     .invalid-feedback {

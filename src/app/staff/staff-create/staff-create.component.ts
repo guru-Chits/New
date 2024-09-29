@@ -92,7 +92,7 @@ ngOnInit(){
       this.conditionalValidator(() => !!this.staffsForm?.get('panCardNumber')?.value, Validators.pattern(/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/))
     ]],
     panUrl: [""],
-    aadharNumber: ['', [
+    aadharNumber: [, [
       this.conditionalValidator(() => !!this.staffsForm?.get('aadharNumber')?.value, Validators.pattern(/^\d{4}\s\d{4}\s\d{4}$/))
     ]],
     aadharUrl: [""],

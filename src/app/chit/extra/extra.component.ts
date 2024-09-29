@@ -157,7 +157,7 @@ amountLessThanOrEqualChitAmount(ticketIdControl: string) {
     this.service.saveAuctionDetails(payload).subscribe((response:any) => {
       console.log(response);
       this.data=response.data
-      this.extraForm.reset()
+      
         const createdAtDate = new Date(response.data.createdAt);
         this.month = createdAtDate.toLocaleString('default', { month: 'long' });  // Full month name
         this.year = createdAtDate.getFullYear();  // Year
@@ -179,8 +179,23 @@ amountLessThanOrEqualChitAmount(ticketIdControl: string) {
           winningBid:response.data.extraPaymentData.winningBid
         }
         console.log(this.receipt,"receipt");
-        
-
+        this.addWalletBalance.forEach(amount => {
+          this.addSubscriberTotal=amount.addWalletBalance
+          console.log(this.addSubscriberTotal,"red");
+          this.extraForm.patchValue({
+            walletBalance:this.addSubscriberTotal
+          })  
+        });
+  
+        this.extraForm.patchValue({
+          
+          ticketId: '',
+          subscriberName: '',
+          passbookNumber: '',
+          auctionStart: false,  // or whatever the default value is
+          winningBid: '',
+          prizedAmount: ''
+        });
         });
   
   

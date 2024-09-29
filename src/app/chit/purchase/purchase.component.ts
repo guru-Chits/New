@@ -195,7 +195,29 @@ this.purchaseForm.get('winningBid')?.valueChanges.subscribe(()=>{
     console.log(response.data.createdAt);
     console.log(response.data.createdAt);
     const createdAtDate = new Date(response.data.createdAt);
-    this.purchaseForm.reset()
+    this.incrementAuctionCycle()
+
+    this.paymentService.getTransactionById(this.groupId).subscribe((response)=>{
+      console.log(response);
+      this.walletBalance=response
+      this.walletBalance=this.walletBalance.payment
+      this.walletBalance.forEach(amount => {
+        this.subscriber=amount.walletBalance
+        console.log(this.subscriber,"red");
+        this.purchaseForm.patchValue({
+          walletBalance:this.subscriber,
+        })
+      }); 
+    })
+      this.purchaseForm.patchValue({
+      
+      ticketId: '',
+      subscriberName: '',
+      passbookNumber: '',
+      auctionStart: false,  // or whatever the default value is
+      winningBid: '',
+      prizedAmount: ''
+    });
 
     this.date =createdAtDate.toISOString().split('T')[0]; // Formats the date
     this.time = createdAtDate.toLocaleTimeString();  // Formats the time

@@ -107,7 +107,7 @@ this.settings.getAllReason().subscribe(
             amount: paymentDetail?.amount,
             receiptNumber: paymentDetail?.receiptNumber,
             cancelled: paymentDetail?.cancelled,
-            deleteReason:paymentDetail?.deleteReason
+            // deleteReason:paymentDetail?.deleteReason
 
           };
   
@@ -116,6 +116,8 @@ this.settings.getAllReason().subscribe(
             this.cancelled.push({
               ...formattedPayment,
               sno: cancelledSno++,
+             deleteReason:paymentDetail?.deleteReason
+
             });
           } else {
             this.data.push({

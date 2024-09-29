@@ -29,7 +29,7 @@
                     <div class="col-4 ">
                         <div class="d-flex flex-column ">
                             <h6><strong>Auctions Completed</strong></h6>
-                            <p class="">1</p>
+                            <p class="">{{bidHistory.length}}</p>
                         </div>
                     </div>
                 </div>
@@ -37,7 +37,7 @@
                     <div class="col-4 ">
                         <div class=" d-flex flex-column ">
                             <h6><strong>Prized Subscribers Count</strong></h6>
-                            <p class="">1</p>
+                            <p class="">{{prizedSubsCount}}</p>
                         </div>
                     </div>
                     <div class="col-4 ">
@@ -57,19 +57,19 @@
                     <div class="col-4 ">
                         <div class=" d-flex flex-column red">
                             <h6><strong>TKN A/C</strong></h6>
-                            <p class="">0</p>
+                            <p class="">{{sumPrizedAmount}}</p>
                         </div>
                     </div>
                     <div class="col-4 ">
                         <div class=" d-flex flex-column ">
                             <h6><strong>TKN Company</strong></h6>
-                            <p class="">0</p>
+                            <p class="">{{sumTKNDataWalletBalance}}</p>
                         </div>
                     </div>
                     <div class="col-4 ">
                         <div class="d-flex flex-column ">
                             <h6><strong>Profit Chit Counts</strong></h6>
-                            <p class="">0</p>
+                            <p class="">{{countProfitChitData}}</p>
                         </div>
                     </div>
                 </div>
@@ -93,7 +93,7 @@
                         </div>
                     </div>
                 </div>
-                <button class="pay-his btn py-1 toggle mb-3 me-2 d-flex justify-content-around" type="button" (click)="openBidHistory()"><p class="m-0">Bid History</p>
+                <button class="pay-his btn py-1 toggle mb-3 me-2 d-flex justify-content-around" type="button" (click)="openBidHistory(groupId)"><p class="m-0">Bid History</p>
                     <div>
                         <img *ngIf="!showBidHistory" src="assets/subscriber/down arrow.svg">
                         <img *ngIf="showBidHistory" src="assets/subscriber/right arrow.svg">
@@ -109,7 +109,7 @@
                           </tr>
                         </thead>
                         <tbody>
-                          <tr *ngFor="let row of filteredHistory">
+                          <tr *ngFor="let row of bidHistory">
                             <td *ngFor="let column of DummyData">
                               {{ row[column.field] }}
                             </td>
@@ -121,11 +121,18 @@
                   
                 <div class="row">
                     <p class="fw-bold fs-4 mt-4">Subscribers</p>
-                    <app-ag-grid [columns]="subscriberColumn" [rowData]="subscribers" class="p-0" width="100%"  [pageSize]="20"></app-ag-grid>   
-                    <p class="fw-bold fs-4 mt-4">Additional Subscribers</p>
-                    <app-ag-grid [columns]="addSubscriberColumn" [rowData]="addSubscribers" class="p-0" width="100%" height="300px" [pageSize]="5"></app-ag-grid>                  
-                    <div class="col-lg-12 d-flex justify-content-end py-3">
-                        <button class="btn next-btn px-4 py-3 fw-bold" (click)="showSubscriberList('additional')">Add Additional Subscribers</button>
+                    <app-ag-grid [columns]="subscriberColumn" [rowData]="subscribers" class="p-0" width="100%"  [pageSize]="20"></app-ag-grid>
+    
+                        <div class="col-lg-12 d-flex justify-content-end py-3 px-4">
+                           <button type="button" class="btn next-btn px-4 py-3 fw-bold"(click)="showSubscriberList('chit')">Add Subscribers</button>
+                        </div>
+                    <div><!-- *ngIf="showAdditionalGrid"-->
+                        <p class="fw-bold fs-4 mt-4">Additional Subscribers</p>
+                        <app-ag-grid [columns]="addSubscriberColumn" [rowData]="addSubscribers" class="p-0"  width="100%" height="300px" [pageSize]="5"></app-ag-grid>                  
+                        <div class="col-lg-12 d-flex justify-content-end py-3">
+                            <button class="btn next-btn px-4 py-3 fw-bold" (click)="showSubscriberList('additional')">Add Additional Subscribers</button>
+                        </div>   
+
                     </div>              
                 </div>
             </div>
@@ -148,7 +155,7 @@
                 
                 <table class="subscriber-table ">
                   <tbody>
-                    <tr *ngFor="let subscriber of totalChitData;let i =index" >
+                    <tr *ngFor="let subscriber of displayedChit ;let i =index" >
                    <div class="card shadow-sm border mb-2 mt-2 chit-card" type="button" (click)="navigate(subscriber._id)" >
                     <div class="card-body align-self-center">
                         <div class="row" >
@@ -158,7 +165,8 @@
                             <div class="col-lg-6 col-md-6 chitHeader">
                                 <!-- <p class="fs-6 fw-bold m-0">{{ subscriber.subscriberId }}</p> -->
                                 <!-- {{ subscriber.subscriberName }} -->
-                                <p class="fs-6 fw-bold m-0">Chit Group {{i+1}}</p>
+                                <!-- <p class="fs-6 fw-bold m-0">Chit Group {{i+1}}</p> -->
+                                <p class="fs-6 fw-bold m-0">{{subscriber.chitGroupId}}</p>
                                 </div>
                             <!-- <div class="col-lg-4 col-md-4">
                                 <button  class="viewbtn align-left" (click)="onButtonClick(subscriber.id)">View Details</button>
@@ -220,7 +228,7 @@
                         <!-- <button class="btn clear-btn"  (click)="addToGroup(subscriberDetail.Subscriber._id)">Add to Group</button> <td>{{subscriberDetail.Subscriber.aliasName}} </td> -->
                          <div class=" d-flex justify-content-center">
                           <div class="me-1">
-                            <button class="btn view-btn-red" (click)="removeSubscriber()">Remove from Group</button><!--(click)="navigate(specificChitData?._id)"-->
+                            <button type="button" class="btn view-btn-red" (click)="removeSubscriber()">Remove from Group</button><!--(click)="navigate(specificChitData?._id)"-->
                           </div>
         
                           <div class="ms-1">

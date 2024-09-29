@@ -80,12 +80,17 @@ export class ChitService {
       return this.http.get(url);
     }
   deleteSubscriber(groupId: string, ticketId: string):Observable<any>{
-    let url:string = `${environment.chitServiceUrl}/chitgroup/chit_management/chit-group/${groupId}/${ticketId}`
+    let url:string = `${environment.chitServiceUrl}/chitgroup/chit-group/${groupId}/${ticketId}`
     return this.http.delete(url)
   }
 
   getAllChitAuction(): Observable<any>{
     let url:string = `${environment.chitServiceUrl}/chit_management/get_all_chit`
+    return this.http.get(url)
+  }
+
+  getChitAuctionById(groupId: string): Observable<any>{
+    let url:string = `${environment.chitServiceUrl}/chit_management/getchit/${groupId}`
     return this.http.get(url)
   }
 }

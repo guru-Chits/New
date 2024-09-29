@@ -38,15 +38,22 @@ export class ChitViewComponent implements OnInit{
   subscriberData:any={}
   listId:any
   subscriberDetail: any;
-  currentListType: 'additional' = 'additional';
+  currentListType: 'chit' | 'additional' = 'chit';
   modalErrorMessage: string = '';
   addSubData:any={}
+  subData:any={}
   ticketId: number= 1;
   viewSubscriber : any;
-  bidHistory: any;
+  bidHistory: any[] = [];
   filteredHistory: any;
   showBidHistory: boolean = false;
   displayedChit:any[]=[]
+  prizedSubsCount: number = 0;
+  countProfitChitData: number = 0;
+  sumTKNDataWalletBalance: number = 0;
+  sumPrizedAmount: number = 0;
+  showAdditionalGrid: boolean;
+  showAddSubButton: boolean;
   addPayment:any
   constructor(private activatedRoute:ActivatedRoute,private router:Router, private service: ChitService,private paymentService:PaymentService,private authService:AuthService, private subservice:SubscriberService){}
 
@@ -57,6 +64,8 @@ export class ChitViewComponent implements OnInit{
       
       this.totalChitData=this.totalChitData?.AllChitGroups
       console.log("TOTAL CHIT DATA", this.totalChitData)
+      this.displayedChit = this.totalChitData
+      console.log("DISPLAYED CHIT", this.displayedChit)
     //   this.data=this.chitdata.AllChitGroups.map((chitDetails,index)=>({
     //     id:chitDetails._id,
        
@@ -79,9 +88,25 @@ export class ChitViewComponent implements OnInit{
         this.chitData = data;
         this.chitData=this.chitData.ChitsGroup;
         this.groupId=this.chitData.chitGroupId;
+        this.service.getChitAuctionById(this.groupId).subscribe((res) => {
+          this.bidHistory = res.data;
+            // Filter and count objects that have a 'subscriberName' key
+          this.prizedSubsCount = this.bidHistory.filter(item => item.subscriberName).length;
+          this.countProfitChitData = this.bidHistory.filter(item => item.profitChitData).length;
+          this.sumTKNDataWalletBalance = this.bidHistory.filter(item => item.TKNData) // Filter items that have TKNData
+          .reduce((sum, item) => sum + item.walletBalance, 0); // Sum up walletBalance
+          this.sumPrizedAmount = this.bidHistory.filter(item => item.purchaseChitData)  // Filter objects that contain purchaseChitData
+          .reduce((sum, item) => sum + item.purchaseChitData.prizedAmount, 0); // Sum the prizedAmount
 
+          console.log('Sum of purchasedChitData prizedAmount:', this.sumPrizedAmount);
+          console.log('Sum of TKNData walletBalance:', this.sumTKNDataWalletBalance);
+          console.log('Count of profitChitData:', this.countProfitChitData);
+          console.log("____________BID__________HISTORY_____________", this.bidHistory)
+        })
         console.log(this.chitData.addChitSubscribers);
         console.log("chit Data =====", this.chitData)
+        // this.displayedChit = this.totalChitData
+        // console.log("DISPLAYED CHIT", this.displayedChit)
         if (this.chitData.addChitSubscribers && this.chitData.addChitSubscribers.length > 0) {
           // Get the last object in the array
           const lastSubscriber = this.chitData.addChitSubscribers[this.chitData.addChitSubscribers.length - 1];
@@ -131,7 +156,7 @@ export class ChitViewComponent implements OnInit{
         
         this.subscribers = this.chitData.chitSubscribers;
         this.addSubscribers = this.chitData.addChitSubscribers;
-  
+
   
         // You can also store these values in separate arrays if needed
         const subscriberDetails = this.subscribers.map(subscriber => ({
@@ -161,9 +186,20 @@ export class ChitViewComponent implements OnInit{
   
         console.log('Subscriber Details:', subscriberDetails);
         console.log('Additional Subscriber Details:', addSubscriberDetails);
+        // console.log("Subscriber Length", subscriberDetails.length)
+        // console.log("Additional Sub Length", addSubscriberDetails.length)
+        // if(subscriberDetails.length >= 20){
+        //   console.log("99999999999999999999999999")
+        //   this.showAdditionalGrid = true
+        // }else if(subscriberDetails.length <= 20){
+        //   this.showAddSubButton = true
+        // }else{
+        //   this.showAdditionalGrid = true
+        // }
   });
 }
 });
+
   }
 
   getTickedByID(id: string, gropid: string): void{
@@ -183,6 +219,8 @@ export class ChitViewComponent implements OnInit{
   }
 
   showSubscriberList(type: 'chit' | 'additional'): void {
+    debugger
+    this.currentListType = type;
     this.isSubscriberListVisible = true;
     this.subservice.getsubscriberAll().subscribe((data)=>{
       this.subscriberData=data;
@@ -248,17 +286,75 @@ export class ChitViewComponent implements OnInit{
     this.displayedChit = this.totalChitData.filter(subscriber => {
       const groupId = subscriber.chitGroupId ? subscriber.chitGroupId.toString().toLowerCase() : '';
       // const subscriberName = subscriber.subscriberName ? subscriber.subscriberName.toLowerCase() : '';
+      console.log(groupId, filterValue)
       return groupId.includes(filterValue.toLowerCase());
     });
   }
 
   addSelectedSubscriber(subscriber: any): void {
+    debugger
     if (this.listId == subscriber) {
-      if (this.currentListType === 'additional') {
+      if (this.currentListType === 'chit') {
+        this.addSubscriberById(subscriber);
+      } else {
         this.addAdditionalSubscriberById(subscriber);
+
       }
       this.subscriberDetail = null;
     }
+  }
+
+  addSubscriberById(id: string): void {
+    if(this.ticketId <= 20)
+    {
+      const addChitSubscribers = this.chitData.addChitSubscribers || [];
+      const chitSubscribers = this.chitData.chitSubscribers || [];
+      console.log("CHIT SUBSCRIBER ADDED ",chitSubscribers)
+      this.ticketId=chitSubscribers.length+1
+      if (chitSubscribers.length >= 20) {
+        this.showModal('Cannot add more than 20 subscribers.');
+        return;
+      }
+  
+      this.subservice.getsubscriberById(id).subscribe(
+        res => {
+          this.subData = res;
+  
+          const newSubscriber = {
+            ticketId: this.ticketId,
+            subscriberId: this.subData.Subscriber.subscriberId,
+            profileImageUrl: this.subData.Subscriber.profileImageUrl,
+            aliasName: this.subData.Subscriber.lastName,
+            firstName: this.subData.Subscriber.firstName,
+            place: this.subData.Subscriber.routeId,
+            occupation: this.subData.Subscriber.occupation,
+          };
+  
+          if (chitSubscribers.some(sub => sub.subscriberId === newSubscriber.subscriberId)) {
+            this.showModal('Duplicate subscriber ID detected. This subscriber cannot be added.');
+            return;
+          }
+  
+          chitSubscribers.push(newSubscriber);
+          
+          // Update the table data
+          // addChitSubscribers.push(newSubscriber);
+  
+          // Update the table data for additional subscribers
+          this.subscribers = [...chitSubscribers];
+          if(this.subscribers.length >= 20){
+            this.isSubscriberListVisible = false;
+          }
+        },
+        error => {
+          if (error.status === 400 && error.error.message.includes('Duplicate subscriberId')) {
+            this.showModal('Duplicate subscriber ID detected. This subscriber cannot be added.');
+          } else {
+            console.error('Error fetching subscriber:', error);
+          }
+        }
+      );
+     }
   }
 
   addAdditionalSubscriberById(id: string): void {
@@ -322,29 +418,73 @@ export class ChitViewComponent implements OnInit{
   }
 
   removeSubscriber(){
-    let subscriberId = this.filteredSubscribers[0]?.subscriberId
+    debugger
+    let subscriberId = this.filteredSubscribers[0]?.subscriberId || this.filteredAdditionalSubs[0]?.subscriberId
 
     let chitgroupId = this.chitData.chitGroupId
+    let remainingSub = this.subscribers.filter(subscriber => subscriber.subscriberId !== this.filteredSubscribers[0]?.subscriberId);
+    let remainingAddSub = this.addSubscribers.filter(subscriber => subscriber.subscriberId !== this.filteredAdditionalSubs[0]?.subscriberId);
+    // console.log("remaining sub",remainingSub)
+    // console.log("remaining Add sub", remainingAddSub)
     console.log(subscriberId, chitgroupId)
     this.service.deleteSubscriber(chitgroupId, subscriberId).subscribe((res) => {
       console.log(res)
     })
+
+    // if (remainingSub.length < 20 && remainingAddSub.length > 0) {
+    //   // Move the first additional subscriber to the subscribers list
+    //   const firstAdditionalSubscriber = remainingAddSub.shift();
+
+    //   // Optionally modify any attributes like ticketId (as per your logic)
+    //   firstAdditionalSubscriber.ticketId = firstAdditionalSubscriber.ticketId - 1//'T' + Math.floor(Math.random() * 1000); // Example of updating ticket ID
+
+    //   // Add this additional subscriber to the main subscriber list
+    //   this.subscribers.push(firstAdditionalSubscriber);
+    //   this.subscribers = [...this.subscribers];
+    //   this.addSubscribers.shift()
+    //   this.addSubscribers = [...this.addSubscribers]
+    //   console.log("Add Subscribers", this.addSubscribers)
+    //   console.log("SUBSCRIBERS", this.subscribers)
+    // }
   }
 
   getAllAuction(){
     this.service.getAllChitAuction().subscribe((res) => {
       console.log("AUCTION ALL DATA",res)
-      this.bidHistory = res.data;
-      const history =this.bidHistory
-      this.filteredHistory = this.bidHistory.filter(data => !data?.TKNData);
+      // this.bidHistory = res.data;
+      // const history =this.bidHistory
+      // this.filteredHistory = this.bidHistory.filter(data => !data?.TKNData);
       
-      console.log(this.filteredHistory);
+      // console.log(this.filteredHistory);
     })
   }
 
-  openBidHistory(){
+  getAuctionById(id: string){
+    this.service.getChitAuctionById(id).subscribe((res) => {
+      this.bidHistory = res.data;
+      this.bidHistory = this.bidHistory.map(data => {
+        // Initialize base fields from top level
+        const result = {
+          auctionCycle: data.auctionCycle || data.TKNData?.auctionCycle || 'N/A',
+          ticketId: data.ticketId || data.extraPaymentData?.ticketId || data.TKNData?.ticketId || data.profitChitData?.ticketId || data.purchaseChitData?.ticketId || 'N/A',
+          subscriberName: data.subscriberName || data.extraPaymentData?.subscriberName || data.TKNData?.subscriberName || data.profitChitData?.subscriberName || data.purchaseChitData?.subscriberName  || 'N/A',
+          winningBid: data.winningBid || data.extraPaymentData?.winningBid || data.TKNData?.winningBid || data.profitChitData?.winningBid || data.purchaseChitData?.winningBid || 'N/A',
+          prizedAmount: data.prizedAmount || data.extraPaymentData?.prizedAmount || data.TKNData?.prizedAmount || data.profitChitData?.prizedAmount || data.purchaseChitData?.prizedAmount || 'N/A',
+          walletBalance: data.walletBalance
+        };
+        console.log("result",result)
+        return result;
+      });
+      console.log("____________BID__________HISTORY_____________", this.bidHistory)
+    })
+  }
+
+  openBidHistory(groupId: string){
     this.showBidHistory = !this.showBidHistory
-    console.log(this.showBidHistory)
+    console.log("BID HISTORY",this.showBidHistory)
+    if(this.showBidHistory){
+      this.getAuctionById(groupId)
+    }
   }
 
   profileImageWithIdRenderer(params: any): string {

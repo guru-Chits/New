@@ -7,7 +7,7 @@
                     <div class="col-lg-4">
                         <div class="form-group">
                             <label for="auctionDate" class="form-control-label">First Auction Date</label>
-                            <input type="date" class="form-control p-2 form-control-sm mt-2" id="auctionDate" formControlName="auctionDate" [min]="currentDate" placeholder="auctionDate"/>
+                            <input type="date" class="form-control p-2 form-control-sm mt-2" id="auctionDate" formControlName="auctionDate" [min]="minDate" [max]="maxDate" placeholder="auctionDate"/><!--[min]="currentDate"-->
                         </div>
                     </div>                   
                     <div class="col-lg-4">

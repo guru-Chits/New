@@ -56,6 +56,8 @@ export class ChitCreateComponent {
   showAnother: any;
   collectionTypes: any;
   collectionTypeForm: FormGroup
+  minDate: string;
+  maxDate: string;
   constructor( private subService:SubscriberService, private chitService:ChitService, private router:Router, private settings: ServiceService) {
 
   }
@@ -83,8 +85,13 @@ export class ChitCreateComponent {
     )
     const today = new Date().toISOString().split('T')[0];
     this.currentDate = today;
+    const FirstChitDate = new Date()
+    const year = FirstChitDate.getFullYear();
+    const month = FirstChitDate.getMonth() + 1; // Month is zero-based, add 1
+    this.minDate = `${year}-${month < 10 ? '0' + month : month}-01`;
 
-
+    // Set the maximum date to the 10th of the current month
+    this.maxDate = `${year}-${month < 10 ? '0' + month : month}-10`;
     this.subService.getsubscriberAll().subscribe((data)=>{
       this.subscriberData=data;
       console.log("subscriber data",this.subscriberData);
@@ -238,13 +245,14 @@ export class ChitCreateComponent {
   }
   
   addSelectedSubscriber(subscriber: any): void {
- 
+    debugger
     if(this.listId==subscriber)
     {
       if (this.currentListType === 'chit') {
         this.addSubscriberById(subscriber);
       } else {
         this.addAdditionalSubscriberById(subscriber);
+
       }
   
     }
@@ -264,6 +272,7 @@ export class ChitCreateComponent {
     if(this.ticketId <= 20)
     {
       const chitSubscribers = this.chitGroupForm.get('chitSubscribers').value || [];
+      console.log("CHIT SUBSCRIBER ADDED ",chitSubscribers)
       this.ticketId=chitSubscribers.length+1
       if (chitSubscribers.length >= 20) {
         this.showModal('Cannot add more than 20 subscribers.');
@@ -341,7 +350,8 @@ export class ChitCreateComponent {
  
 
   addAdditionalSubscriberById(id: string): void {
-    if (this.ticketId > 20) {
+    if (this.ticketId >= 20) {
+      debugger
       const addChitSubscribers = this.chitGroupForm.get('addChitSubscribers').value || [];
       const chitSubscribers = this.chitGroupForm.get('chitSubscribers').value || [];
   
@@ -353,7 +363,7 @@ export class ChitCreateComponent {
       this.subService.getsubscriberById(id).subscribe(
         res => {
           this.addSubData = res;
-  
+          this.ticketId += 1;
           const newSubscriber = {
             ticketId: this.ticketId,
             subscriberId: this.addSubData.Subscriber.subscriberId,
@@ -371,7 +381,7 @@ export class ChitCreateComponent {
             this.showModal('Duplicate subscriber ID detected. This subscriber cannot be added.');
             return;
           }
-          this.ticketId += 1;
+          // this.ticketId += 1;
 
           addChitSubscribers.push(newSubscriber);
           this.chitGroupForm.patchValue({ addChitSubscribers });
@@ -384,6 +394,9 @@ export class ChitCreateComponent {
         }
       );
     }
+    else {
+      console.log("EXIT __________")
+     }
   }
   
   // Method to show modal (assuming you have a modal implementation)

@@ -192,7 +192,7 @@ console.log(this.staffs);
             groupId: this.subDetail.chitGroupId,
             subscriberId: subscriberDetails.subscriberId,
             subscriberName: subscriberDetails.firstName,
-            collectionType: "Monthly",
+            collectionType: subscriberDetails.collectionType,
             installmentMonth: nextInstallmentMonth,
             region: subscriberDetails.place,
             chitAmount: chitAmount,
@@ -290,19 +290,20 @@ console.log(this.staffs);
     const monthName = dateParts[1]; // Extract the month name
     const monthIndex = this.getMonthIndex(monthName); // Convert month name to index (0-11)
     
-    // Create a new Date object with the same day, increment the month
+    // Create a new Date object and increment the month
     let nextMonthIndex = (monthIndex + 1) % 12; // Increment month, wrap to 0 after December
     let year = new Date().getFullYear(); // Use the current year
+
     if (monthIndex === 11) {
-      // If it's December, move to January and increment the year
-      year += 1;
+        // If it's December, move to January and increment the year
+        year += 1;
     }
-  
+
     const nextMonth = this.getMonthName(nextMonthIndex); // Convert back to month name
-  
-    // Return the new date with the same day and incremented month
-    return `${day}-${nextMonth}`;
-  }
+
+    // Return the new date with the same day and the incremented month and year if needed
+    return `${day}-${nextMonth}-${year}`;
+}
   
   // Helper to convert month name to index
   getMonthIndex(monthName: string): number {
@@ -325,11 +326,11 @@ console.log(this.staffs);
       this.month=date.toLocaleString('default', { month: 'long' }); 
       this.year=date.getFullYear();
   
+    this.paymentForm.reset()
+    this.router.navigate(["/payment"]);
 
       console.log(response);
     });
-    this.router.navigate(["/payment"]);
-    this.paymentForm.reset()
 }
 
 validateCurrentDate(control: AbstractControl): { [key: string]: boolean } | null {

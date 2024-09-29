@@ -54,6 +54,7 @@ export class ChitViewComponent implements OnInit{
   sumPrizedAmount: number = 0;
   showAdditionalGrid: boolean;
   showAddSubButton: boolean;
+  addPayment:any
   constructor(private activatedRoute:ActivatedRoute,private router:Router, private service: ChitService,private paymentService:PaymentService,private authService:AuthService, private subservice:SubscriberService){}
 
   getAllChit(){
@@ -126,6 +127,16 @@ export class ChitViewComponent implements OnInit{
           this.payment.forEach(amount => {
             this.chitSubscriberTotal=amount.walletBalance
             console.log(this.chitSubscriberTotal,"red");
+          }); 
+        })
+
+        this.paymentService.getAddWallet(this.groupId).subscribe((response)=>{
+          console.log("PAYMENT",response);
+          this.addPayment=response
+          this.addPayment=this.addPayment.payment
+          this.addPayment.forEach(amount => {
+            this.addSubscriberTotal=amount.addWalletBalance
+            console.log(amount,"red");
           }); 
         })
 

@@ -44,6 +44,8 @@ ngOnInit(): void {
   const auctionStart = this.profitForm.get('auctionStart')?.value;
   if (auctionStart) {
     this.profitForm.enable();
+    this.profitForm.get('auctionStart')?.enable();
+
   } else {
     this.profitForm.disable();
     this.profitForm.get('auctionStart')?.enable();
@@ -81,17 +83,23 @@ ngOnInit(): void {
       if (res.extra===true) {
         // Set a validation error if the ticket already exists
         console.log('error');
-        
+        this.purchase=false
+
         this.profitForm.get('ticketId')?.setErrors({ ticketExists: true });
       }else if(res.purchase===true) {
         this.purchase=true
       }  
       else if (res.result === true) {
         // Set a validation error if the ticket already exists
+        this.purchase=false
+
         this.profitForm.get('ticketId')?.setErrors({ ticketExists: true });
+
       }
       else {
         // Clear the validation error if the ticket does not exist
+        this.purchase=false
+
         this.profitForm.get('ticketId')?.setErrors(null);
       }
   
@@ -168,7 +176,7 @@ toggleFormControls(){
     this.profitForm.enable();
   } else {
     this.profitForm.disable();
-    // this.auctionForm.get('auctionStart')?.enable();
+    this.profitForm.get('auctionStart')?.enable();
   }
 
 }
@@ -190,7 +198,7 @@ onSubmit(){
   this.service.saveAuctionDetails(payload).subscribe((response:any) => {
     console.log(response);
     this.data=response.data
-    
+    this.profitForm.reset()
       const createdAtDate = new Date(response.data.createdAt);
       this.month = createdAtDate.toLocaleString('default', { month: 'long' });  // Full month name
       this.year = createdAtDate.getFullYear();  // Year
@@ -200,6 +208,28 @@ onSubmit(){
       this.paymentService.saveTransactionDetails(response.data.groupId,-walletBalance ).subscribe(
         (response)=>{
           console.log(response);
+          this.incrementAuctionCycle()
+          this.paymentService.getTransactionById(this.groupId).subscribe((response)=>{
+            console.log(response);
+            this.walletBalance=response
+            this.walletBalance=this.walletBalance.payment
+            this.walletBalance.forEach(amount => {
+              this.chitSubscriberTotal=amount.walletBalance
+              console.log(this.chitSubscriberTotal,"red");
+              this.profitForm.patchValue({
+                walletBalance:this.chitSubscriberTotal
+              })  
+            }); 
+          })
+          this.profitForm.patchValue({
+            
+            ticketId: '',
+            subscriberName: '',
+            passbookNumber: '',
+            auctionStart: false,  // or whatever the default value is
+            winningBid: '',
+            prizedAmount: ''
+          });
         }
       )
       this.receipt={

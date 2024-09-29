@@ -84,6 +84,7 @@ export class RegionCreateComponent implements OnInit{
         Validators.pattern('^[A-Z]{3}$') // Exactly 3 capital letters
       ]),
       regionDesc: new FormControl(null, [
+        Validators.required,
         Validators.minLength(10),
         Validators.maxLength(100),
         Validators.pattern('^[a-zA-Z0-9 ,.!?-]+$') // Valid characters including letters, numbers, and common punctuation
@@ -208,7 +209,7 @@ console.log(this.regionData.id);
   
         },
     { label: '', field: 'action', sortable: true , filterList:true,
-      cellStyle: { color: '#50A1A5' },
+      cellStyle: { color: '#50A1A5', cursor:'pointer'},
       onCellClicked: (event: CellClickedEvent) =>
         this.getregionById(event.data.id)
         },

@@ -29,6 +29,8 @@ export class ChitCreateComponent {
   ];
   showList = false;
   listId:any
+  showall = false; // To toggle "View More"
+
   modalErrorMessage: string = '';
   currentListType: 'chit' | 'additional' = 'chit';
   gridApi: any;
@@ -41,6 +43,9 @@ export class ChitCreateComponent {
   chitSubscribersData = [];
   addChitSubscribersData = [];
   displayedSubscribers: any[];
+  selectedSubscriberId:string
+  itemsPerPage = 10; // Subscribers per page
+
   isSubscriberListVisible:boolean = false;
   searchInput:string=""
   chitGroupForm:FormGroup
@@ -97,7 +102,7 @@ export class ChitCreateComponent {
         subscriberName: `${subscriberDetails?.firstName} ${subscriberDetails?.lastName}`,
         subscriberProfile:subscriberDetails?.profileImageUrl
       }))
-      this.displayedSubscribers = this.data;
+      this.displayedSubscribers = this.data.slice(0, this.itemsPerPage);
       console.log(this.displayedSubscribers);
       
     });
@@ -180,23 +185,25 @@ export class ChitCreateComponent {
     }
   }
   applyFilter(filterValue: string) {
-    if (!filterValue || !this.data) {
-      this.displayedSubscribers = this.data; // Show all if there's no filter or data is not defined
-      return;
-    }
-  
-    this.displayedSubscribers = this.data.filter(subscriber => {
-      const subscriberId = subscriber.subscriberId ? subscriber.subscriberId.toString().toLowerCase() : '';
-      const subscriberName = subscriber.subscriberName ? subscriber.subscriberName.toLowerCase() : '';
-      return subscriberId.includes(filterValue.toLowerCase()) || subscriberName.includes(filterValue.toLowerCase());
-    });
+  const filteredSubscribers = this.data.filter(subscriber => {
+    const subscriberId = subscriber.subscriberId?.toString().toLowerCase() || '';
+    const subscriberName = subscriber.subscriberName?.toLowerCase() || '';
+    const email = subscriber.email?.toLowerCase() || '';
+    return subscriberId.includes(filterValue.toLowerCase()) ||
+           subscriberName.includes(filterValue.toLowerCase()) ||
+           email.includes(filterValue.toLowerCase());
+  });
+
+  this.displayedSubscribers = filteredSubscribers.slice(0, this.itemsPerPage);
+
   } 
 
   getSubscribersById(id: string): void {
     this.subService.getsubscriberById(id).subscribe(
       data => {
         this.subscriberDetail = data;
-  
+        this.selectedSubscriberId = this.subscriberDetail.Subscriber.subscriberId;
+
         console.log(this.subscriberDetail)
       },
       error => {
@@ -253,7 +260,13 @@ export class ChitCreateComponent {
     this.subscriberDetail=null
 
   }
-
+  viewMore() {
+    if (!this.showall) {
+      this.displayedSubscribers = this.data; // Show all subscribers
+      this.showall = true;
+    }
+  }
+  
 
   addSubscriberById(id: string): void {
     if(this.ticketId <= 20)

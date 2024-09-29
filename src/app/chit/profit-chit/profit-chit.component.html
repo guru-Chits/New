@@ -3,19 +3,19 @@
         <div class="col-lg-4">
             <div class="form-group">
               <label for="groupId" class="form-control-label">Group ID</label>
-              <input type="text" placeholder="Group Id" class="form-control form-control-sm" formControlName="groupId"/>
+              <input type="text" placeholder="Group Id" class="form-control form-control-sm" formControlName="groupId" readonly/>
           </div>
         </div>
     <div class="col-lg-4">
         <div class="form-group">
           <label for="walletBalance" class="form-control-label">Wallet Balance</label>
-          <input type="text" placeholder="Wallet Balance" class="form-control form-control-sm" formControlName="walletBalance"/>
+          <input type="text" placeholder="Wallet Balance" class="form-control form-control-sm" formControlName="walletBalance" readonly/>
         </div>
     </div>
      <div class="col-lg-4">
         <div class="form-group">
           <label for="foremanCommision" class="form-control-label">Foreman Commission</label>
-          <input type="text" placeholder="Foreman Commission" class="form-control form-control-sm" formControlName="foremanCommision"/>
+          <input type="text" placeholder="Foreman Commission" class="form-control form-control-sm" formControlName="foremanCommision" readonly/>
         </div>
     </div>
 </div> 
@@ -23,14 +23,14 @@
     <div class="col-lg-4">
       <div class="form-group">
         <label for="winningBid" class="form-control-label">Winning Bid</label>
-        <input type="text" placeholder="Winning Bid" class="form-control form-control-sm" formControlName="winningBid"/>
+        <input type="text" placeholder="Winning Bid" class="form-control form-control-sm" formControlName="winningBid" />
       </div>
       </div>
 
     <div class="col-lg-4">
       <div class="form-group">
         <label for="prizedAmount" class="form-control-label">Prized Amount</label>
-        <input type="text" placeholder="Prizes Amount" class="form-control form-control-sm" formControlName="prizedAmount" />
+        <input type="text" placeholder="Prizes Amount" class="form-control form-control-sm" formControlName="prizedAmount" readonly />
       </div>
 
     </div>
@@ -55,7 +55,7 @@
     <div class="col-lg-4">
       <div class="form-group">
         <label for="subscriberName" class="form-control-label">Prized Subscriber Name</label>
-        <input type="text" placeholder="Prized Subscriber Name" class="form-control form-control-sm" formControlName="subscriberName" />
+        <input type="text" placeholder="Prized Subscriber Name" class="form-control form-control-sm" formControlName="subscriberName" readonly/>
       </div>
 
     </div>
@@ -63,7 +63,7 @@
     <div class="col-lg-4">
       <div class="form-group">
         <label for="passbookNumber" class="form-control-label">Passbook Number</label>
-        <input type="text" placeholder="Passbook Number" class="form-control form-control-sm" formControlName="passbookNumber" />
+        <input type="text" placeholder="Passbook Number" class="form-control form-control-sm" formControlName="passbookNumber" readonly/>
       </div>
 
     </div>
@@ -71,7 +71,7 @@
     <div class="col-lg-4">
       <div class="form-group">
         <label for="ticketId" class="form-control-label">Auction Cycle</label>
-        <input type="text" placeholder="Auction Cycle" class="form-control form-control-sm" formControlName="auctionCycle" />
+        <input type="text" placeholder="Auction Cycle" class="form-control form-control-sm" formControlName="auctionCycle"  readonly/>
       </div>
    </div>
   </div>
@@ -91,7 +91,7 @@
         type="submit"
         class="btn btn-primary px-2 py-2"
         data-bs-toggle="modal" data-bs-target="#auctionModal"
-        [disabled]="!profitForm.valid"
+        [disabled]="!profitForm.valid || purchase"
         (click)="onSubmit()"
       >
         Create Invoice

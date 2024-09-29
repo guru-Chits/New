@@ -12,7 +12,7 @@ const routes: Routes = [
     pathMatch: 'full'
   },
   {
-    path: "forgot-password",
+    path: "fp",
     component: ForgotPasswordComponent,
   },
   {

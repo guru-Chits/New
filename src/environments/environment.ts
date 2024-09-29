@@ -6,8 +6,8 @@ export const environment = {
     subscriberServiceUrl:`${baseUrl}/api`,
     chitServiceUrl:`${baseUrl}/api`,
     staffServiceUrl:`${baseUrl}/api`,
-    areaServiceUrl:`${baseUrl}/api`,
-    loginServiceUrl:`${baseUrl}/api`,
+    areaServiceUrl:`${localUrl}/api`,
+    loginServiceUrl:`${localUrl}/api`,
     accessServiceUrl:`${baseUrl}/api`,
     auctionServiceUrl:`${baseUrl}/api`,
     settingsServiceUrl:`${baseUrl}/api/settings`

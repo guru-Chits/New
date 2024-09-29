@@ -407,7 +407,30 @@ export class AuctionComponent implements OnInit {
       (response)=>{
         console.log(response);
         this.purchase=false
-        this.auctionForm.reset()
+        // this.auctionForm.reset()
+        this.incrementAuctionCycle()
+
+        this.paymentService.getTransactionById(this.groupId).subscribe((response)=>{
+          console.log(response);
+          this.walletBalance=response
+          this.walletBalance=this.walletBalance.payment
+          this.walletBalance.forEach(amount => {
+            this.chitSubscriberTotal=amount.walletBalance
+            console.log(this.chitSubscriberTotal,"red");
+            this.auctionForm.patchValue({
+              walletBalance:this.chitSubscriberTotal
+            })  
+          }); 
+        })
+        this.auctionForm.patchValue({
+          
+          ticketId: '',
+          subscriberName: '',
+          passbookNumber: '',
+          auctionStart: false,  // or whatever the default value is
+          winningBid: '',
+          prizedAmount: ''
+        });
       }
     )
     });

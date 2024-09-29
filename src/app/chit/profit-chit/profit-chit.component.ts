@@ -208,6 +208,28 @@ onSubmit(){
       this.paymentService.saveTransactionDetails(response.data.groupId,-walletBalance ).subscribe(
         (response)=>{
           console.log(response);
+          this.incrementAuctionCycle()
+          this.paymentService.getTransactionById(this.groupId).subscribe((response)=>{
+            console.log(response);
+            this.walletBalance=response
+            this.walletBalance=this.walletBalance.payment
+            this.walletBalance.forEach(amount => {
+              this.chitSubscriberTotal=amount.walletBalance
+              console.log(this.chitSubscriberTotal,"red");
+              this.profitForm.patchValue({
+                walletBalance:this.chitSubscriberTotal
+              })  
+            }); 
+          })
+          this.profitForm.patchValue({
+            
+            ticketId: '',
+            subscriberName: '',
+            passbookNumber: '',
+            auctionStart: false,  // or whatever the default value is
+            winningBid: '',
+            prizedAmount: ''
+          });
         }
       )
       this.receipt={

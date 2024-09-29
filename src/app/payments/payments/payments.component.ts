@@ -192,7 +192,7 @@ console.log(this.staffs);
             groupId: this.subDetail.chitGroupId,
             subscriberId: subscriberDetails.subscriberId,
             subscriberName: subscriberDetails.firstName,
-            collectionType: "Monthly",
+            collectionType: subscriberDetails.collectionType,
             installmentMonth: nextInstallmentMonth,
             region: subscriberDetails.place,
             chitAmount: chitAmount,

@@ -51,6 +51,16 @@ export class ProfitComponent {
     // } as AbstractControlOptions
   );
 
+
+  const auctionStart = this.profitForm.get('auctionStart')?.value;
+  if (auctionStart) {
+    this.profitForm.enable();
+    this.profitForm.get('auctionStart')?.enable();
+
+  } else {
+    this.profitForm.disable();
+    this.profitForm.get('auctionStart')?.enable();
+  }
   const groupId=this.chitData?.chitGroupId
   console.log(groupId);
   const chitDetails = {
@@ -155,7 +165,7 @@ this.profitForm.patchValue({
       this.profitForm.enable();
     } else {
       this.profitForm.disable();
-      // this.auctionForm.get('auctionStart')?.enable();
+      this.profitForm.get('auctionStart')?.enable();
     }
 
   }
@@ -194,7 +204,7 @@ this.profitForm.patchValue({
     this.service.saveAuctionDetails(payload).subscribe((response:any) => {
       console.log(response);
       this.data=response.data
-      this.profitForm.reset()
+     
         const createdAtDate = new Date(response.data.createdAt);
         this.month = createdAtDate.toLocaleString('default', { month: 'long' });  // Full month name
         this.year = createdAtDate.getFullYear();  // Year
@@ -204,6 +214,30 @@ this.profitForm.patchValue({
         this.paymentService.saveTransactionDetails(response.data.groupId,-walletBalance ).subscribe(
           (response)=>{
             console.log(response);
+            this.incrementAuctionCycle()
+
+            this.paymentService.getTransactionById(this.groupId).subscribe((response)=>{
+              console.log(response);
+              this.walletBalance=response
+              this.walletBalance=this.walletBalance.payment
+              this.walletBalance.forEach(amount => {
+                this.chitSubscriberTotal=amount.walletBalance
+                console.log(this.chitSubscriberTotal,"red");
+                this.profitForm.patchValue({
+                  walletBalance:this.chitSubscriberTotal
+                })  
+              }); 
+            })
+            this.profitForm.patchValue({
+              
+              ticketId: '',
+              subscriberName: '',
+              passbookNumber: '',
+              auctionStart: false,  // or whatever the default value is
+              winningBid: '',
+              prizedAmount: ''
+            });
+    
           }
         )
         this.receipt={

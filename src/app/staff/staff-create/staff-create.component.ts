@@ -5,11 +5,12 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { AreaService } from '../../area/shared/service/area.service';
 import { NgSelectModule, NgLabelTemplateDirective, NgOptionTemplateDirective } from '@ng-select/ng-select';
 import { HttpClient } from '@angular/common/http';
-
+import { DatePipe } from '@angular/common';
 @Component({
   selector: 'app-staff-create',
   templateUrl: './staff-create.component.html',
   styleUrl: './staff-create.component.css',
+  providers: [DatePipe]
 })
 export class StaffCreateComponent implements OnInit{
   staffsForm: FormGroup;
@@ -26,7 +27,8 @@ export class StaffCreateComponent implements OnInit{
     private service: StaffService,
     private router:Router,
     private routeService:AreaService,
-    private HttpClient:HttpClient
+    private HttpClient:HttpClient,
+    private datePipe: DatePipe
   
   ) { }
 routeId:[]
@@ -258,6 +260,11 @@ ngOnInit(){
     const formattedDate = `${year}-${month}-${day}`;
   
     return formattedDate;
+  }
+  onDateChange(event: any) {
+    // Manually parsing the date and formatting it to dd-MM-yyyy
+    const formattedDate = this.datePipe.transform(event, 'dd-MM-yyyy');
+    this.staffsForm.get('dob').setValue(formattedDate, { emitEvent: false });
   }
   
  conditionalValidator(condition: () => boolean, validator: ValidatorFn): ValidatorFn {

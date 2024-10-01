@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, ValidationErrors, Validators } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ITableColumn } from '../../shared/interface/list-table';
 import { ChitService } from '../shared/service/chit.service';
 import { PaymentService } from '../../payments/shared/service/payment.service';
@@ -47,6 +47,7 @@ export class AuctionComponent implements OnInit {
   extraId:any[]
   purId:any[]
   breadcrumsData:any
+  auctionStart:boolean=false
   column: ITableColumn[] = [
     { field: 'Ticket Id', sortable: false, filter: false },
     { field: 'Name', sortable: false, filter: false },
@@ -58,7 +59,8 @@ export class AuctionComponent implements OnInit {
     private fb: FormBuilder,
     private activatedRoute: ActivatedRoute,
     private service: ChitService,
-    private paymentService:PaymentService 
+    private paymentService:PaymentService,
+    private router:Router 
   ) {
   }
   onTicketIdChange(ticketId: string) {
@@ -101,10 +103,13 @@ export class AuctionComponent implements OnInit {
     if (auctionStart) {
       this.auctionForm.enable();
       this.auctionForm.get('auctionStart')?.enable();
+      this.auctionStart=false
 
     } else {
       this.auctionForm.disable();
       this.auctionForm.get('auctionStart')?.enable();
+      this.auctionStart=true
+
     }
     this.activatedRoute.params.subscribe(paramData => {
 
@@ -356,9 +361,13 @@ export class AuctionComponent implements OnInit {
     const auctionStart = this.auctionForm.get('auctionStart')?.value;
     if (auctionStart) {
       this.auctionForm.enable();
+      this.auctionStart=false
+
     } else {
       this.auctionForm.disable();
       this.auctionForm.get('auctionStart')?.enable();
+      this.auctionStart=true
+
     }
   }
 
@@ -431,6 +440,9 @@ export class AuctionComponent implements OnInit {
           winningBid: '',
           prizedAmount: ''
         });
+        this.auctionForm.disable();
+        this.auctionForm.get('auctionStart')?.enable();
+
       }
     )
     });
@@ -524,7 +536,12 @@ export class AuctionComponent implements OnInit {
   ]
 
 
+cancel(){
+  this.activatedRoute.params.subscribe(paramData => {
+    this.router.navigate([`chit/view/${paramData.id}`]);
 
+  })
+}
 
 
 

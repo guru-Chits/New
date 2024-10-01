@@ -119,22 +119,23 @@ ngOnInit(): void {
       }
       })
 })
-    this.profitForm.get('winningBid')?.valueChanges.subscribe(()=>{
-      const winningBid=this.profitForm.get('winningBid').value
-      const prizedAmount=this.chitData?.chitAmount-winningBid
-      const finalprizedAmount = this.profitForm.get('prizedAmount').value;
-    const walletBalance = this.chitSubscriberTotal
-    const sumOfTwo =prizedAmount+this.chitData.foremanCommission
-    console.log('sum of Two', sumOfTwo)
-    const finalWallet = this.chitSubscriberTotal - sumOfTwo
-    console.log('final value', finalWallet)
 
-    this.profitForm.patchValue({
-        prizedAmount:prizedAmount,
-        walletBalance: finalWallet
-      });
-    }) 
 
+}
+winningBidChange(){
+    const winningBid=this.profitForm.get('winningBid').value
+    const prizedAmount=this.chitData?.chitAmount-winningBid
+    const finalprizedAmount = this.profitForm.get('prizedAmount').value;
+  const walletBalance = this.chitSubscriberTotal
+  const sumOfTwo =prizedAmount+this.chitData.foremanCommission
+  console.log('sum of Two', sumOfTwo)
+  const finalWallet = this.chitSubscriberTotal - sumOfTwo
+  console.log('final value', finalWallet)
+
+  this.profitForm.patchValue({
+      prizedAmount:prizedAmount,
+      walletBalance: finalWallet
+    });
 }
 amountLessThanOrEqualChitAmount(ticketIdControl: string) {
   return (formGroup: AbstractControl): ValidationErrors | null => {
@@ -230,6 +231,9 @@ onSubmit(){
             winningBid: '',
             prizedAmount: ''
           });
+          this.profitForm.disable();
+          this.profitForm.get('auctionStart')?.enable();
+
         }
       )
       this.receipt={

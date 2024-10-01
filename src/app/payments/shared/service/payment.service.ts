@@ -109,6 +109,12 @@ getTotalByGroupId(groupId:string): Observable<any> {
   return this.http.get(url)
 
 }
+getAmountByMonth(passbooknumber:string,installmentMonth:any): Observable<any> {
+  let url=`${this.paymentUrl}/getAmountByMonth/${passbooknumber}/${installmentMonth}`
+  return this.http.get(url)
+
+}
+
 
 getPassbookNo(date:Date,routeId:string,selectStaff:string){
   let url=`${this.paymentUrl}/getPassbookNo/${date}/${routeId}/${selectStaff}`

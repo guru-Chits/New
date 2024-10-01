@@ -112,21 +112,7 @@ this.redeemForm = this.fb.group({
   })
   this.incrementAuctionCycle()
 
-this.tknForm.get('winningBid')?.valueChanges.subscribe(()=>{
-  const winningBid=this.tknForm.get('winningBid').value
-  const prizedAmount=this.chitData?.chitAmount-winningBid
-  const finalprizedAmount = this.tknForm.get('prizedAmount').value;
-const walletBalance = this.chitSubscriberTotal
-const sumOfTwo =prizedAmount+this.chitData.foremanCommission
-console.log('sum of Two', sumOfTwo)
-const finalWallet = this.chitSubscriberTotal - sumOfTwo
-console.log('final value', finalWallet)
 
-this.tknForm.patchValue({
-    prizedAmount:prizedAmount,
-    walletBalance: finalWallet
-  });
-}) 
 
 // if(groupId){
 //   this.service.getAuctionCycleByGroupId(groupId).subscribe((data) => {
@@ -143,7 +129,20 @@ this.tknForm.patchValue({
 
 
  
-getRouteNameValue(){
+winningBidChange(){
+    const winningBid=this.tknForm.get('winningBid').value
+    const prizedAmount=this.chitData?.chitAmount-winningBid
+    const finalprizedAmount = this.tknForm.get('prizedAmount').value;
+  const walletBalance = this.chitSubscriberTotal
+  const sumOfTwo =prizedAmount+this.chitData.foremanCommission
+  console.log('sum of Two', sumOfTwo)
+  const finalWallet = this.chitSubscriberTotal - sumOfTwo
+  console.log('final value', finalWallet)
+  
+  this.tknForm.patchValue({
+      prizedAmount:prizedAmount,
+      walletBalance: finalWallet
+    });
     
 }
 amountLessThanOrEqualChitAmount(ticketIdControl: string) {
@@ -239,10 +238,13 @@ onSubmit(){
     })
     this.tknForm.patchValue({
       
-      auctionStart: false,  // or whatever the default value is
+      isActive: false,  // or whatever the default value is
       winningBid: '',
       prizedAmount: ''
     });
+    this.tknForm.disable();
+    this.tknForm.get('isActive')?.enable();
+
 
       }
     )

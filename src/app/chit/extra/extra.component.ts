@@ -196,6 +196,7 @@ amountLessThanOrEqualChitAmount(ticketIdControl: string) {
           winningBid: '',
           prizedAmount: ''
         });
+        
         });
   
   

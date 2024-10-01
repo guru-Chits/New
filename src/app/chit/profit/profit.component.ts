@@ -237,7 +237,9 @@ this.profitForm.patchValue({
               winningBid: '',
               prizedAmount: ''
             });
-    
+            this.profitForm.disable();
+            this.profitForm.get('auctionStart')?.enable();
+
           }
         )
         this.receipt={

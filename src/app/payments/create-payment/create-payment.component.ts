@@ -7,6 +7,8 @@ import { ITableColumn } from '../../shared/interface/list-table';
 import { PaymentService } from '../shared/service/payment.service';
 import { AuthService } from '../../shared/service/auth.service';
 import { ServiceService } from '../../settings/shared/service.service';
+import { interval } from 'rxjs';
+
 @Component({
   selector: 'app-create-payment',
   templateUrl: './create-payment.component.html',
@@ -84,51 +86,53 @@ this.settings.getAllReason().subscribe(
   }
 
   
+
   getAllPayment() {
-    this.service.getTodayPayment().subscribe((data) => {
-      this.paymentData = data;
-      console.log(this.deletedPayments, "deleted");
+    // Polling interval (every 10 seconds in this example)
+    const pollingInterval = interval(10000);
   
-      // Initialize arrays for available and cancelled payments
-      this.data = [];
-      this.cancelled = [];
+    pollingInterval.subscribe(() => {
+      this.service.getTodayPayment().subscribe((data) => {
+        this.paymentData = data;
   
-      // Counters for serial numbers
-      let availableSno = 1;
-      let cancelledSno = 1;
+        // Reset arrays for available and cancelled payments
+        this.data = [];
+        this.cancelled = [];
   
-      if (this.paymentData.AllPayment) {
-        // Separate payments based on the cancelled status
-        this.paymentData.AllPayment.forEach((paymentDetail) => {
-          const formattedPayment = {
-            id: paymentDetail?._id,
-            passbooknumber: paymentDetail?.passbooknumber,
-            groupId: paymentDetail?.groupId,  
-            amount: paymentDetail?.amount,
-            receiptNumber: paymentDetail?.receiptNumber,
-            cancelled: paymentDetail?.cancelled,
-            // deleteReason:paymentDetail?.deleteReason
-
-          };
+        // Counters for serial numbers
+        let availableSno = 1;
+        let cancelledSno = 1;
   
-          // Push to appropriate array based on the cancelled status
-          if (paymentDetail?.cancelled) {
-            this.cancelled.push({
-              ...formattedPayment,
-              sno: cancelledSno++,
-             deleteReason:paymentDetail?.deleteReason
-
-            });
-          } else {
-            this.data.push({
-              ...formattedPayment,
-              sno: availableSno++,
-            });
-          }
-        });
-      }
+        if (this.paymentData.AllPayment) {
+          this.paymentData.AllPayment.forEach((paymentDetail) => {
+            const formattedPayment = {
+              id: paymentDetail?._id,
+              passbooknumber: paymentDetail?.passbooknumber,
+              groupId: paymentDetail?.groupId,
+              amount: paymentDetail?.amount,
+              receiptNumber: paymentDetail?.receiptNumber,
+              cancelled: paymentDetail?.cancelled,
+            };
+  
+            // Push to appropriate array based on cancelled status
+            if (paymentDetail?.cancelled) {
+              this.cancelled.push({
+                ...formattedPayment,
+                sno: cancelledSno++,
+                deleteReason: paymentDetail?.deleteReason,
+              });
+            } else {
+              this.data.push({
+                ...formattedPayment,
+                sno: availableSno++,
+              });
+            }
+          });
+        }
+      });
     });
   }
+  
   
   togglePayments() {
   this.showCancelledPayments = !this.showCancelledPayments;

@@ -168,6 +168,7 @@ export class ChitViewComponent implements OnInit{
           subscriberId:subscriber.subscriberId,
           ticketId:subscriber.ticketId,
           profileImageUrl:subscriber.profileImageUrl,
+          collectionType:subscriber.collectionType,
           id: subscriber._id
 
         }));
@@ -180,6 +181,7 @@ export class ChitViewComponent implements OnInit{
           occupation: subscriber.occupation,
           subscriberId:subscriber.subscriberId,
           ticketId:subscriber.ticketId,
+          collectionType:subscriber.collectionType,
           profileImageUrl:subscriber.profileImageUrl
 
         }));
@@ -219,7 +221,7 @@ export class ChitViewComponent implements OnInit{
   }
 
   showSubscriberList(type: 'chit' | 'additional'): void {
-    debugger
+  
     this.currentListType = type;
     this.isSubscriberListVisible = true;
     this.subservice.getsubscriberAll().subscribe((data)=>{
@@ -565,6 +567,7 @@ export class ChitViewComponent implements OnInit{
   { label: 'Passbook Number', field: 'passbookNo', onCellClicked: (event: CellClickedEvent) => this.getChitById(event.data._id) },
   { label: 'Place', field: 'place', onCellClicked: (event: CellClickedEvent) => this.getChitById(event.data._id) },
   { label: 'Occupation', field: 'occupation', onCellClicked: (event: CellClickedEvent) => this.getChitById(event.data._id) },
+  { label: 'Collection Type', field: 'collectionType', onCellClicked: (event: CellClickedEvent) => this.getChitById(event.data._id) },
 
 ];
 
@@ -581,6 +584,7 @@ export class ChitViewComponent implements OnInit{
   { label: 'Passbook Number', field: 'passbookNo', onCellClicked: (event: CellClickedEvent) => this.getChitById(event.data._id) },
   { label: 'Place', field: 'place', onCellClicked: (event: CellClickedEvent) => this.getChitById(event.data._id) },
   { label: 'Occupation', field: 'occupation', onCellClicked: (event: CellClickedEvent) => this.getChitById(event.data._id) },
+  { label: 'Collection Type', field: 'collectionType', onCellClicked: (event: CellClickedEvent) => this.getChitById(event.data._id) },
 
 
   ]

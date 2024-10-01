@@ -71,8 +71,8 @@ export class PaymentsComponent implements OnInit {
       region:  ['',[Validators.required]],
       selectStaff: ['',[Validators.required]],
       chitAmount:['',[Validators.required]],
-      cancelled:['',[Validators.required]],
-      verified:['',Validators.required],
+      cancelled:[''],
+      verified:[''],
       deleteReason: [""]
       },
       {
@@ -91,18 +91,18 @@ export class PaymentsComponent implements OnInit {
         if (passbooknumber) {
           this.getSubByPassbookNo(passbooknumber);
         }
-      });
+     
 
       this.paymentForm.get('amount')?.valueChanges.subscribe((amount) => {
         const chitAmount = this.paymentForm.get('chitAmount')?.value;
         if (chitAmount && amount > 0) {
           const expectedInstallmentAmount = chitAmount / 20;  // Monthly installment calculation
           
-          this.handleAmountChange(amount, expectedInstallmentAmount);
+          this.handleAmountChange(amount, expectedInstallmentAmount,passbooknumber);
         }
       });
 
-
+    });
       this.service.getTodayPayment().subscribe((data)=>{
         this.totalPayment=data
         this.serialNumberCounter=this.totalPayment.AllPayment.length+1
@@ -213,13 +213,18 @@ console.log(this.staffs);
     });
   }
   
-  handleAmountChange(amount: number, expectedInstallmentAmount: number) {
+  handleAmountChange(amount: number, expectedInstallmentAmount: number,passbooknumber:any) {
     // Fetch the last payment or set default values if no previous payment exists
     const lastPayment = this.payments?.[this.payments.length - 1] || null;
     const previousAmountPaid = lastPayment ? lastPayment.amount || 0 : 0;
     
     let balanceAmount = 0;
     let currentInstallmentMonth = this.datePipe.transform(this.subDetail.auctionDate, 'dd-MMMM') || '';
+
+    this.service.getAmountByMonth(passbooknumber,currentInstallmentMonth).subscribe((data)=>{
+      console.log(data);
+      
+    })
   
     // If there's no previous payment, set balanceAmount to 0
     if (!lastPayment) {
@@ -327,8 +332,8 @@ console.log(this.staffs);
       this.year=date.getFullYear();
   
     this.paymentForm.reset()
-    this.router.navigate(["/payment"]);
-
+  
+    
       console.log(response);
     });
 }

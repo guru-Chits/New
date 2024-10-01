@@ -81,7 +81,7 @@
         </div>
       </div> -->
 
-      <div class="container p-0 mt-3" *ngIf="chitdata">
+      <!-- <div class="container p-0 mt-3" *ngIf="chitdata">
         <div class="search-bar align-self-center mb-3">
           <span class="search-icon"><img src="assets/table/search.svg"></span>
           <input width="20" height="20" type="text" class="border-0" placeholder="Search" (input)="applyFilter($event.target.value)">
@@ -100,7 +100,35 @@
             </div>
             </div>
         </div>
+      </div> -->
+      <div class="container p-0 mt-3" *ngIf="chitdata">
+        <div class="search-bar align-self-center mb-3">
+          <span class="search-icon"><img src="assets/table/search.svg"></span>
+          <input width="20" height="20" type="text" class="border-0" placeholder="Search" (input)="applyFilter($event.target.value)">
+        </div>
+      
+        <div *ngFor="let group of displayedChit | slice:(currentPage - 1) * itemsPerPage:(currentPage) * itemsPerPage; let i = index" class="mb-1">
+          <div class="table-group my-2 px-3 d-flex justify-content-between align-items-center rounded-end" (click)="handleChitGropDetails(group._id, i)">
+            <div>
+              <span class="fw-bold fs-5">{{ group.chitGroupId }}</span>
+            </div>
+            <div class="d-flex overlap-images">
+              <div *ngFor="let subscriber of group.addChitSubscribers">
+                <img [src]="subscriber.profileImageUrl" class="rounded-circle" [alt]="subscriber.initials" width="50" height="50">
+              </div>
+              <div class="fw-bold ms-2">+{{ group.chitSubscribers.length - 5 }}</div>
+            </div>
+          </div>
+        </div>
+      
+        <!-- Pagination Controls -->
+        <div class="d-flex justify-content-center align-items-center mt-3">
+          <button class="btn next-btn " (click)="previousPage()" [disabled]="currentPage === 1">Previous</button>
+          <span class="px-4">Page {{ currentPage }} of {{ totalPages }}</span>
+          <button class="btn next-btn " (click)="nextPage()" [disabled]="currentPage === totalPages">Next</button>
+        </div>
       </div>
+      
     </div> 
     <div class="col-lg-4">
       <app-auction-sidebar [dataFromParent]="showChitDetails" (dataToParent)="recieveChildBoolean($event)"></app-auction-sidebar>
@@ -143,11 +171,11 @@
                 <!-- <button class="btn clear-btn"  (click)="addToGroup(subscriberDetail.Subscriber._id)">Add to Group</button> <td>{{subscriberDetail.Subscriber.aliasName}} </td> -->
                  <div class=" d-flex justify-content-center">
                   <div class="me-1">
-                    <button class="btn view-btn px-4" (click)="navigate(specificChitData?._id)">View More Details</button>
+                    <button class="btn view-btn" (click)="navigate(specificChitData?._id)">View More Details</button>
                   </div>
 
                   <div class="ms-1">
-                    <button type="button" class="btn auc-btn fw-bold px-4" (click)="auctionEntry(specificChitData?._id)" >Auction Entry</button> 
+                    <button type="button" class="btn auc-btn fw-bold" (click)="auctionEntry(specificChitData?._id)" >Auction Entry</button> 
                   </div>
               
                 </div>                

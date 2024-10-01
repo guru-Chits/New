@@ -53,6 +53,8 @@ export class ChitCreateComponent {
   collectionTypeForm: FormGroup
   minDate: string;
   maxDate: string;
+  minDay = 1;
+  maxDay = 10;
   constructor( private subService:SubscriberService, private chitService:ChitService, private router:Router, private settings: ServiceService) {
 
   }
@@ -83,10 +85,16 @@ export class ChitCreateComponent {
     const FirstChitDate = new Date()
     const year = FirstChitDate.getFullYear();
     const month = FirstChitDate.getMonth() + 1; // Month is zero-based, add 1
-    this.minDate = `${year}-${month < 10 ? '0' + month : month}-01`;
+    // Set minimum date to the first day of the current year
+    this.minDate = `${year}-01-01`;
 
-    // Set the maximum date to the 10th of the current month
-    this.maxDate = `${year}-${month < 10 ? '0' + month : month}-10`;
+    // Set maximum date to the end of the year
+    this.maxDate = `${year}-12-31`;
+
+
+    console.log("Min Date:", this.minDate);
+    console.log("Max Date:", this.maxDate);
+
     this.subService.getsubscriberAll().subscribe((data)=>{
       this.subscriberData=data;
       console.log("subscriber data",this.subscriberData);
@@ -426,8 +434,28 @@ export class ChitCreateComponent {
       console.warn('Form is invalid.');
     }
     this.router.navigate(["/chit"]);
+  }
 
+  validateDate(event: Event) {
+    const input = event.target as HTMLInputElement;
+    let selectedDate = new Date(input.value);
 
+    if (selectedDate.getDate() < this.minDay) {
+      // Set to the 1st of the selected month if less than minimum day
+      selectedDate.setDate(this.minDay);
+    } else if (selectedDate.getDate() > this.maxDay) {
+      // Set to the 10th of the selected month if greater than maximum day
+      selectedDate.setDate(this.maxDay);
+    }
 
+    // Update the input value if changed
+    input.value = this.formatDate(selectedDate);
+  }
+
+  formatDate(date: Date): string {
+    const year = date.getFullYear();
+    const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Ensure two digits for the month
+    const day = date.getDate().toString().padStart(2, '0'); // Ensure two digits for the day
+    return `${year}-${month}-${day}`;
   }
 }

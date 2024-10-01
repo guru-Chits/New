@@ -30,9 +30,17 @@ export class ChitComponent implements OnInit{
   chitSubscriberTotal = 0;
   bidHistory:any;
   prizedSubsCount: number = 0;
+  auctionDates: (string)[] = [];
+  upcomingDates: (string | null)[] = [];
+    // Pagination properties
+  itemsPerPage: number = 5;
+  currentPage: number = 1;
+  totalPages: number = 0;
   constructor(private router:Router, private service: ChitService,private authService:AuthService, private paymentService: PaymentService){}
 
   ngOnInit(): void{
+    // this.incrementMonth();
+    // this.filterUpcomingDates();
     this.authService.checkAccess('Chit Management', 'create').subscribe((hasAccess: boolean) => {
       if (hasAccess) {
         this.canCreate=true
@@ -47,11 +55,109 @@ export class ChitComponent implements OnInit{
       this.total = this.chitdata.length
       console.log(this.total);
       this.displayedChit= this.chitdata;
+      this.totalPages = Math.ceil(this.displayedChit.length / this.itemsPerPage);
+      // this.auctionDates = this.chitdata.map((chit: any) => chit.auctionDate);
+      // this.auctionDates = this.auctionDates.map(dateString => {
+      //   if (dateString) {
+      //     // Parse the date string
+      //     const [day, month, year] = dateString.split('-').map(Number);
+      //     const date = new Date(year, month - 1, day); // month is zero-based in Date object
+  
+      //     // Increment the month by 1
+      //     date.setMonth(date.getMonth() + 1);
+  
+      //     // Format back to 'DD-MM-YYYY'
+      //     const updatedDay = date.getDate().toString().padStart(2, '0');
+      //     const updatedMonth = (date.getMonth() + 1).toString().padStart(2, '0');
+      //     const updatedYear = date.getFullYear();
+  
+      //     return `${updatedDay}-${updatedMonth}-${updatedYear}`;
+      //   }
+      //   return null;
+      // });
+      // console.log("Auction Dates ->", this.auctionDates);
       // this.groupId=this.chitdata?.AllChitGroups;
       // console.log("GROUP ID", this.groupId)
-      
+      // const today = new Date();
+      // console.log("TODAY", today)
+      // this.upcomingDates = this.auctionDates.filter(dateString => {
+      //   if (dateString) {
+      //     // Split the date into day, month, and year
+      //     const [day, month, year] = dateString.split('-').map(Number);
+      //     const date = new Date(year, month - 1, day); // Month is zero-based
+  
+      //     // Compare with today's date
+      //     return date > today;
+      //   }
+      //   return false;
+      // });
+  
+      // console.log('Upcoming Dates ->', this.upcomingDates);
+
     })
   }
+    // Move to the next page
+  nextPage() {
+    if (this.currentPage < this.totalPages) {
+      this.currentPage++;
+    }
+  }
+
+  // Move to the previous page
+  previousPage() {
+    if (this.currentPage > 1) {
+      this.currentPage--;
+    }
+  }
+
+  // incrementMonth(): void {
+  //   this.auctionDates = this.auctionDates.map(dateString => {
+  //     if (dateString) {
+  //       // Split the date into day, month, and year
+  //       const [day, month, year] = dateString.split('-');
+
+  //       // Convert the month and year to numbers, then increment the month
+  //       let newMonth = parseInt(month) + 1;
+  //       let newYear = parseInt(year);
+
+  //       // If the new month exceeds 12, adjust the year and reset the month to 1
+  //       if (newMonth > 12) {
+  //         newMonth = 1;
+  //         newYear += 1;
+  //       }
+
+  //       // Format the new day, month, and year to ensure two digits for day and month
+  //       const updatedDay = day.padStart(2, '0');
+  //       const updatedMonth = newMonth.toString().padStart(2, '0');
+  //       const updatedYear = newYear.toString();
+
+  //       // Return the updated date in 'DD-MM-YYYY' format
+  //       return `${updatedDay}-${updatedMonth}-${updatedYear}`;
+  //     }
+  //     return null; // Keep null values as they are
+  //   });
+
+  //   console.log('Updated Dates ->', this.auctionDates);
+  // }
+
+  // filterUpcomingDates(): void {
+  //   const today = new Date();
+
+  //   this.upcomingDates = this.auctionDates.filter(dateString => {
+  //     if (dateString) {
+  //       // Split the date into day, month, and year
+  //       const [day, month, year] = dateString.split('-').map(Number);
+  //       const date = new Date(year, month - 1, day); // Month is zero-based
+
+  //       // Compare with today's date
+  //       return date > today;
+  //     }
+  //     return false;
+  //   });
+
+  //   console.log('Upcoming Dates ->', this.upcomingDates);
+  // }
+
   recieveChildBoolean(event:boolean){
   this.showChitDetails=event
   }
@@ -143,7 +249,7 @@ export class ChitComponent implements OnInit{
       console.log("____________BID__________HISTORY_____________", this.bidHistory)
     })
   }
-
+  
   
   navigate(id: any){
     this.router.navigate([`chit/view/${id}`]);

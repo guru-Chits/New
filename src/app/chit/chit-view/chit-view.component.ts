@@ -90,7 +90,7 @@ export class ChitViewComponent implements OnInit{
         this.service.getChitAuctionById(this.groupId).subscribe((res) => {
           this.bidHistory = res.data;
             // Filter and count objects that have a 'subscriberName' key
-          this.prizedSubsCount = this.bidHistory.filter(item => item.subscriberName).length;
+          this.prizedSubsCount = this.bidHistory.filter(item => item.subscriberName || item.extraPaymentData?.subscriberName || item.TKNData?.subscriberName || item.profitChitData?.subscriberName || item.purchaseChitData?.subscriberName).length;
           this.countProfitChitData = this.bidHistory.filter(item => item.profitChitData).length;
           this.sumTKNDataWalletBalance = this.bidHistory.filter(item => item.TKNData) // Filter items that have TKNData
           .reduce((sum, item) => sum + item.walletBalance, 0); // Sum up walletBalance

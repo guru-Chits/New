@@ -4,12 +4,21 @@
             <app-breadcrumb [data]="breadcrumsData"></app-breadcrumb>
             <form  [formGroup]="chitGroupForm">
                 <div class="row justify-content-around pe-3">
-                    <div class="col-lg-4">
+                    <!-- <div class="col-lg-4">
                         <div class="form-group">
                             <label for="auctionDate" class="form-control-label">First Auction Date</label>
-                            <input type="date" class="form-control p-2 form-control-sm mt-2" id="auctionDate" formControlName="auctionDate" [min]="minDate" [max]="maxDate" placeholder="auctionDate"/><!--[min]="currentDate"-->
+                            <input type="date" class="form-control p-2 form-control-sm mt-2" id="auctionDate" formControlName="auctionDate" [min]="currentDate" placeholder="auctionDate"/>
                         </div>
-                    </div>                   
+                    </div> -->
+                    <div class="col-lg-4">
+                      <div class="form-group">
+                          <label for="auctionDate" class="form-control-label">First Auction Date</label>
+                          <input type="date" class="form-control p-2 form-control-sm mt-2" id="auctionDate" formControlName="auctionDate" (change)="validateDate($event)" placeholder="auctionDate"/>
+                          <!-- <p>The minimum date is: {{ FirstChitDate | date:'dd/MM/yyyy' }}</p> -->
+                      </div>
+                  </div> 
+                  
+                                       
                     <div class="col-lg-4">
                         <div class="form-group">
                             <label for="chitAmount" class="form-control-label">Chit Amount</label>

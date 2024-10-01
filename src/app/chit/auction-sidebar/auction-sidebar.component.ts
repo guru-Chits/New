@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Input, Output, SimpleChanges } from '@angular/core';
+import { ChitService } from '../shared/service/chit.service';
 
 @Component({
   selector: 'app-auction-sidebar',
@@ -9,29 +10,136 @@ export class AuctionSidebarComponent {
   @Input() dataFromParent: boolean;
   finalArray:any[]=[];
   @Output() dataToParent = new EventEmitter<boolean>();
+
+  chitdata:any;
+  constructor(private service:ChitService){}
   
   ngOnChanges(changes: SimpleChanges) {
     if (changes['dataFromParent']) {
       console.log('Boolean value changed:', this.dataFromParent);
       if(this.dataFromParent === true){
         this.finalArray=[]
-        for(let i=0;i<this.auction.length;i++){
-          if(i===0 || i=== this.auction.length-1){
-            this.finalArray.push(this.auction[i])
+        for(let i=0;i<this.finalArray.length;i++){
+          if(i===0 || i=== this.finalArray.length-1){
+            this.finalArray.push(this.finalArray[i])
           }
         }
       }else{
-        this.finalArray=this.auction
+        this.finalArray=this.finalArray
      }
     }
   }
-  ngOnInit(){
-    this.finalArray=this.auction
+  // ngOnInit(){
+  //   this.finalArray=this.auction
+    
+  //   this.service.getAllChit().subscribe((data)=>{
+  //     // this.chitdata=data;
+  //     // this.chitdata=this.chitdata?.AllChitGroups
+  //     // console.log("AUCTION SIDEBAR", this.chitdata)
+  //     //   // Transform chitdata to contain groupId and createdAt
+  //     // this.finalArray = this.chitdata.map((item: any) => {
+  //     //   return {
+  //     //     groupId: item.chitGroupId,
+  //     //     auctionDate : item.auctionDate,
+  //     //   };
+  //     // });
+  //     this.chitdata = data;
+  //     this.chitdata = this.chitdata?.AllChitGroups || []; // Ensure chitdata is an array
+    
+  //     console.log("AUCTION SIDEBAR", this.chitdata);
+    
+  //     // Get today's date in the required format (DD-MM-YYYY)
+  //     const today = new Date();
+  //     const formattedToday = `${today.getDate().toString().padStart(2, '0')}-${(today.getMonth() + 1).toString().padStart(2, '0')}-${today.getFullYear()}`;
+    
+  //     // Filter chitdata for today's auction dates
+  //     this.finalArray = this.chitdata
+  //       .filter(item => item.auctionDate === formattedToday) // Keep only today's auctions
+  //       .map(item => ({
+  //         groupId: item.chitGroupId,
+  //         createdAt: item.createdAt,
+  //       }));
+    
+  //     // Optional: Log the final array to see today's auctions
+  //     console.log("Today's Auctions ->", this.finalArray);
+  //   })
+  //   // this.service.getAllChit().subscribe((data) => {
+  //   //   this.chitdata = data?.AllChitGroups;
+  //   // //   this.chitdata=this.chitdata?.AllChitGroups
+
+  //   //   console.log("AUCTION SIDEBAR", this.chitdata);
+  //     this.updateFinalArray();
+  //   // });
+  // }
+  ngOnInit() {
+    this.service.getAllChit().subscribe((data) => {
+      this.chitdata = data;
+      this.chitdata = this.chitdata?.AllChitGroups || []; // Ensure chitdata is an array
+  
+      console.log("AUCTION SIDEBAR Before Update:", this.chitdata);
+  
+      // Update auction dates to next month
+      this.chitdata.forEach((item: any) => {
+        if (item.auctionDate) {
+          // Split auctionDate to get day, month, and year
+          const [day, month, year] = item.auctionDate.split('-').map(Number);
+  
+          // Create a Date object and increment the month
+          const newDate = new Date(year, month, day);
+          newDate.setMonth(newDate.getMonth()); // Increase month by 1 (month is zero-based)
+  
+          // Format the updated date as DD-MM-YYYY
+          const updatedDay = newDate.getDate().toString().padStart(2, '0');
+          const updatedMonth = (newDate.getMonth() + 1).toString().padStart(2, '0');
+          const updatedYear = newDate.getFullYear();
+  
+          // Update the item's auctionDate
+          item.auctionDate = `${updatedDay}-${updatedMonth}-${updatedYear}`;
+          console.log("AUCTION DATE", item.auctionDate)
+        }
+      });
+  
+      console.log("AUCTION SIDEBAR After Update:", this.chitdata);
+  
+      // Get today's date in the required format (DD-MM-YYYY)
+      const today = new Date();
+      const formattedToday = `${today.getDate().toString().padStart(2, '0')}-${(today.getMonth() + 1).toString().padStart(2, '0')}-${today.getFullYear()}`;
+  
+      // Filter chitdata for today's auction dates
+      this.finalArray = this.chitdata
+        .filter(item => item.auctionDate === formattedToday) // Keep only today's auctions
+        .map(item => ({
+          groupId: item.chitGroupId,
+          createdAt: item.createdAt,
+        }));
+  
+      // Optional: Log the final array to see today's auctions
+      console.log("Today's Auctions ->", this.finalArray);
+    });
   }
+  
+
+  updateFinalArray() {
+    // Format today's date to match 'DD-MM-YYYY'
+    const today = new Date();
+    const formattedToday = `${today.getDate().toString().padStart(2, '0')}-${(today.getMonth() + 1).toString().padStart(2, '0')}-${today.getFullYear()}`;
+
+    // Filter chitdata to include only those with auctionDate equal to today
+    this.finalArray = this.chitdata
+      .filter(item => item.auctionDate === formattedToday)
+      .map(item => ({
+        groupId: item.chitGroupId,
+        createdAt: item.createdAt,
+      }));
+
+    console.log('Filtered Final Array ->', this.finalArray);
+  }
+
   fullAuction(){
     // this.dataFromParent=false;
     this.dataToParent.emit(false);
     // this.finalArray=this.auction
+    this.ngOnInit()
   }
 
   auction = [

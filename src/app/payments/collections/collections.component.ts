@@ -365,6 +365,7 @@ export class CollectionsComponent implements OnInit {
             this.service.addWallet(response.updateDetails.groupId, this.addSubscriberTotal).subscribe(
               (response)=>{
                 console.log(response);
+                this.collectionForm.reset()
               }
             )
             // Sum up payments for addChitSubscribers (convert amount to number explicitly)

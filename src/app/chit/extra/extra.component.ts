@@ -179,8 +179,23 @@ amountLessThanOrEqualChitAmount(ticketIdControl: string) {
           winningBid:response.data.extraPaymentData.winningBid
         }
         console.log(this.receipt,"receipt");
-        
-
+        this.addWalletBalance.forEach(amount => {
+          this.addSubscriberTotal=amount.addWalletBalance
+          console.log(this.addSubscriberTotal,"red");
+          this.extraForm.patchValue({
+            walletBalance:this.addSubscriberTotal
+          })  
+        });
+  
+        this.extraForm.patchValue({
+          
+          ticketId: '',
+          subscriberName: '',
+          passbookNumber: '',
+          auctionStart: false,  // or whatever the default value is
+          winningBid: '',
+          prizedAmount: ''
+        });
         });
   
   

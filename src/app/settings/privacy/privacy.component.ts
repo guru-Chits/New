@@ -93,6 +93,11 @@ togglePasswordVisibility(): void {
   this.isPasswordVisible = !this.isPasswordVisible;
 }
 
+toggleRePasswordVisibility(): void {
+  this.isPasswordVisible = !this.isPasswordVisible;
+}
+
+
 /**
  * Toggle confirm password visibility
  */

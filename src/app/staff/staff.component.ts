@@ -24,7 +24,13 @@ export class StaffComponent implements OnInit{
   canEdit: boolean = false;
   canDelete: boolean = false;
   canView:boolean=false
-  
+  breadcrumsData: any = [
+    {
+      key: 'Staffs',
+      routerLink: 'staff',
+    },
+  ];
+
     constructor(
       private service:StaffService,
       private router:Router,

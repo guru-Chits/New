@@ -96,6 +96,14 @@ getDataByDate(fromDate: any, toDate:any,region?: string , collectionType?:string
   return this.http.get(url);
 }
 
+getDataByCollection(fromDate: any, toDate:any,region?: string , collectionType?:string){
+  let url=`${this.paymentUrl}/getDataByCollection/${fromDate}/${toDate}/${region}/${collectionType}`
+  // if(region&&!collectionType){
+  //   url+=`/${region}`;
+  // }
+  return this.http.get(url);
+}
+
 getTotalByGroupId(groupId:string): Observable<any> {
   let url=`${this.paymentUrl}/getTotalByGroupId/${groupId}`
   return this.http.get(url)

@@ -18,6 +18,11 @@ verifyPattern:RegExp=/^[0-9]$/;
 constructor(private fb:FormBuilder,private router :Router,private httpClient:HttpClient,private  service:LoginService){}
 get verifyCodeControl() { return this.verifyForm.get('verifyCode'); };
 @Input() mobileNumber:number
+@Input() reset:boolean
+@Input() employeeId:string
+resetPage:boolean=false
+
+
 ngOnInit(): void {
   this.verifyForm=this.fb.group({
     verifyCode:['',[Validators.required]]
@@ -27,7 +32,8 @@ ngOnInit(): void {
 onSubmit(){
   const payload = this.verifyForm.value;
   console.log(payload.verifyCode);
-  
+  console.log(this.reset);
+
   // Prepare the URL with the mobile number and verifyCode
   const verificationUrl = `https://2factor.in/API/V1/b1037ef1-2ed8-11ef-8b60-0200cd936042/SMS/VERIFY3/${this.mobileNumber}/${payload.verifyCode}`;
   
@@ -42,8 +48,15 @@ onSubmit(){
         const role = sessionStorage.getItem('userRole')?.replace(/"/g, '');  // Clean up stored role string
         this.service.markAsVerified();
         sessionStorage.setItem('isVerified',"Verified" );
+        console.log(this.reset);
 
-        if (role === "Collection Staff") {
+        if(this.reset===true){
+          this.resetPage=true
+          // this.router.navigate(['/login/reset-password']);
+
+        }
+
+        else if (role === "Collection Staff") {
           this.router.navigate(['/payment']);
         } else {
           this.router.navigate(['/subscriber']);  // Navigate after OTP success

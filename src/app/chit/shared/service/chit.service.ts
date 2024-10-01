@@ -15,8 +15,11 @@ export class ChitService {
     return this.http.get(this.chitUrl)
   }
 
-  saveChitDetails(chitDetails: any): Observable<any> {
-    const url = `${environment.subscriberServiceUrl}/chitgroup/addchitGroup`;
+  saveChitDetails(chitDetails: any,id?: string): Observable<any> {
+    let url = `${environment.subscriberServiceUrl}/chitgroup/addchitGroup`;
+    if(id){
+      url = `${url}/${id}`;
+    }
     return this.http.post<any>(url, chitDetails);
   }
 
@@ -59,6 +62,23 @@ export class ChitService {
     return this.http.get(url)
   } 
 
+  getTicketId(groupId:any):Observable<any>{
+    console.log(groupId);
+    
+    let url:string= `${environment.auctionServiceUrl}/chit_management/getTicketId/${groupId}`
+    return this.http.get(url)
+  }
+  getAuctionById(id:any):Observable<any> {
+      let url:string= `${environment.auctionServiceUrl}/chit_management/getchit/${id}`
+  
+      return this.http.get(url);
+    }
+  
+    getSubAuction(passbooknumber:any):Observable<any> {
+      let url:string= `${environment.auctionServiceUrl}/chit_management/getSubAuction/${passbooknumber}`
+  
+      return this.http.get(url);
+    }
   deleteSubscriber(groupId: string, ticketId: string):Observable<any>{
     let url:string = `${environment.chitServiceUrl}/chitgroup/chit-group/${groupId}/${ticketId}`
     return this.http.delete(url)

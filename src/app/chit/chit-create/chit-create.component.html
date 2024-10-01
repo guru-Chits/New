@@ -274,6 +274,53 @@
                               <button class="viewbtn p-0" (click)="onButtonClick(subscriber.id)">View Details</button>
                             </div>
                           </div>
+                          <div  *ngIf="selectedSubscriberId === subscriber?.subscriberId && subscriberDetail?.Subscriber?.subscriberId" class="subscriber-details">
+                            <h5 class="title text-center fw-bold fs-4 my-4">Subscriber Details</h5>
+                            <div class="text-center">
+                              <img src="{{subscriberDetail.Subscriber.profileImageUrl}}" class="img-fluid rounded-circle pb-4" alt="Subscriber Image">
+                            </div>
+                            <table class="table px-3">
+                              <tbody>
+                                <tr>
+                                  <td><strong>Subscriber ID</strong></td>
+                                  <td class="highlight">{{subscriberDetail.Subscriber.subscriberId}}</td>
+                                </tr>
+                                <tr>
+                                  <td><strong>Alias Name</strong></td>
+                                  <td>{{subscriberDetail.Subscriber.aliasName}}</td>
+                                </tr>
+                                <tr>
+                                  <td><strong>First Name</strong></td>
+                                  <td>{{subscriberDetail.Subscriber.firstName}}</td>
+                                </tr>
+                                <tr>
+                                  <td><strong>Last Name</strong></td>
+                                  <td>{{subscriberDetail.Subscriber.lastName}}</td>
+                                </tr>
+                                <tr>
+                                  <td><strong>Contact No</strong></td>
+                                  <td>{{subscriberDetail.Subscriber.contact}}</td>
+                                </tr>
+                                <tr>
+                                   <td><strong>Collection Type</strong></td>
+                                   <td>
+                                    <form [formGroup] = "collectionTypeForm">
+                                      <div class="form-group">
+                                        <select class="form-control form-control-sm form-select" formControlName="collectionType"  placeholder = "select type"> 
+                                          <!-- <option value="">Select Type</option> -->
+                                          <option *ngFor="let type of collectionTypes" [value]="type.collectionType">{{ type.collectionType }}</option>        
+                                      </select>
+                                    </div>
+                                  </form>
+        
+                                    </td>
+                                </tr>
+                              </tbody>
+                            </table>
+                            <div class="text-center mb-2">
+                              <button class="btn clear-btn" (click)="addSelectedSubscriber(subscriberDetail.Subscriber._id)">Add to Group</button>
+                            </div>
+                          </div>
                         </div>
                       </div>
           
@@ -281,56 +328,13 @@
 
                     </td>
                   </tr>
-                  <div *ngIf="subscriberDetail" class="subscriber-details">
-                    <h5 class="title text-center fw-bold fs-4 my-4">Subscriber Details</h5>
-                    <div class="text-center">
-                      <img src="{{subscriberDetail.Subscriber.profileImageUrl}}" class="img-fluid rounded-circle pb-4" alt="Subscriber Image">
-                    </div>
-                    <table class="table px-3">
-                      <tbody>
-                        <tr>
-                          <td><strong>Subscriber ID</strong></td>
-                          <td class="highlight">{{subscriberDetail.Subscriber.subscriberId}}</td>
-                        </tr>
-                        <tr>
-                          <td><strong>Alias Name</strong></td>
-                          <td>{{subscriberDetail.Subscriber.aliasName}}</td>
-                        </tr>
-                        <tr>
-                          <td><strong>First Name</strong></td>
-                          <td>{{subscriberDetail.Subscriber.firstName}}</td>
-                        </tr>
-                        <tr>
-                          <td><strong>Last Name</strong></td>
-                          <td>{{subscriberDetail.Subscriber.lastName}}</td>
-                        </tr>
-                        <tr>
-                          <td><strong>Contact No</strong></td>
-                          <td>{{subscriberDetail.Subscriber.contact}}</td>
-                        </tr>
-                        <tr>
-                           <td><strong>Collection Type</strong></td>
-                           <td>
-                            <form [formGroup] = "collectionTypeForm">
-                              <div class="form-group">
-                                <select class="form-control form-control-sm form-select" formControlName="collectionType"  placeholder = "select type"> 
-                                  <!-- <option value="">Select Type</option> -->
-                                  <option *ngFor="let type of collectionTypes" [value]="type.collectionType">{{ type.collectionType }}</option>        
-                              </select>
-                            </div>
-                          </form>
 
-                            </td>
-                        </tr>
-                      </tbody>
-                    </table>
-                    <div class="text-center mb-2">
-                      <button class="btn clear-btn" (click)="addSelectedSubscriber(subscriberDetail.Subscriber._id)">Add to Group</button>
-                    </div>
-                  </div>
                 </tbody>
               </table>
-
+              <div *ngIf="showall === false" class="text-center my-3">
+                <button class="btn view" (click)="viewMore()">View More</button>
+              </div>
+      
             </div>
           </div>
           

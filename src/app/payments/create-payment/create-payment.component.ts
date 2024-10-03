@@ -30,6 +30,7 @@ export class CreatePaymentComponent{
   filterImg:string='assets/table/black filter.svg'
   search:boolean=true
   modalErrorMessage: string = '';
+  popup:boolean=false
   breadcrumsData:any = [
     {
       key: 'Payments',
@@ -267,6 +268,7 @@ showModal(message: string): void {
   modal.style.display = 'block';
 }
 deleteConfirm(id){
+
   if (confirm)
     {
       this.paymentDetail.cancelled=true
@@ -276,18 +278,22 @@ deleteConfirm(id){
       this.service.savePaymentDetails( cancelled,id).subscribe(
         (response:any) => {
           console.log(response);
+          this.popup=false
           
         },
       );
     }
     this.paymentDetail = null;
     this.getAllPayment();
+
     this.router.navigate(["/payment"]);
 }
 
 delete(id) {
   if (confirm)
      {
+      this.popup=true
+   
     this.showModal("Do you want to delete?")
     // this.paymentDetail.cancelled=true
     // let cancelled=this.paymentDetail

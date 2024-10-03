@@ -94,6 +94,8 @@ export class AreaCreateComponent implements OnInit{
       routeDesc: new FormControl(null, [
         Validators.required,
         Validators.minLength(10),
+        // Validators.maxLength(100),
+        // Validators.pattern('^[a-zA-Z0-9 ,.!?-]+$') // Valid characters including letters, numbers, and common punctuation
         Validators.maxLength(100),
        // Valid characters including letters, numbers, and common punctuation
       ]),

@@ -25,7 +25,7 @@ export class TknComponent implements OnInit {
   walletBalance:any
   subDetails:any
   redeemForm: FormGroup;
-  chitSubscriberTotal:any
+  chitSubscriberTotal:number=0
   redeemData:any
   tknData:any
   chitDetail:any
@@ -35,6 +35,8 @@ export class TknComponent implements OnInit {
   month:any
   year:any
   isChitShow:boolean= false;
+  auctionStart:boolean=false
+
   constructor(
     private fb: FormBuilder,
     private service: ChitService,
@@ -52,10 +54,27 @@ ngOnInit(): void {
     // subscriberName: ['',[Validators.required]],
     // passbookNumber: ['',[Validators.required]],
     auctionCycle: ['',[Validators.required]],
-    isActive: [false]
+    isActive: [,[Validators.required]]
   },
 
 );
+const isActive=this.tknForm.get('isActive')?.value;
+console.log(isActive);
+
+if (isActive) {
+
+  this.tknForm.enable();
+  this.tknForm.get('isActive')?.enable();
+  this.auctionStart=false
+
+
+} else {
+  this.tknForm.disable();
+  this.tknForm.get('isActive')?.enable();
+  this.auctionStart=true
+
+}
+
 this.redeemForm = this.fb.group({
   tknWallet: ['',[Validators.required]],
   balance: ['',[Validators.required]],
@@ -71,18 +90,6 @@ this.redeemForm = this.fb.group({
 }
 
 )
-  const isActive=this.tknForm.get('isActive')?.value;
-  console.log(isActive);
-  
-  if (isActive) {
-  
-    this.tknForm.enable();
-    this.tknForm.get('isActive')?.enable();
-
-  } else {
-    this.tknForm.disable();
-    this.tknForm.get('isActive')?.enable();
-  }
   // this.tknForm.get('isActive')?.valueChanges.subscribe(() => {
   //   console.log(this.tknForm.get('isActive')?.value);
 
@@ -188,12 +195,18 @@ toggleFormControls(): void {
   const isActive = this.tknForm.get('isActive')?.value;
   if (isActive) {
     this.tknForm.enable();
+    this.auctionStart=false
+
   } else {
-    this.tknForm.disable();
+    // this.tknForm.disable();
     this.tknForm.get('isActive')?.enable();
+    this.auctionStart=true
+
   }
 }
 onSubmit(){
+  this.tknForm.get('isActive')?.enable();
+
   const payload = {
     groupId: this.tknForm.value.groupId,
     walletBalance: this.tknForm.value.walletBalance,
@@ -210,6 +223,7 @@ onSubmit(){
       redeem:false
     },
 }      
+console.log(this.tknForm.value);
 
   this.service.saveAuctionDetails(payload).subscribe((response:any) => {
     console.log(response);
@@ -222,7 +236,7 @@ onSubmit(){
       (response)=>{
         console.log(response);
 
-            this.incrementAuctionCycle()
+    this.incrementAuctionCycle()
 
     this.paymentService.getTransactionById(this.groupId).subscribe((response)=>{
       console.log(response);
@@ -429,8 +443,12 @@ close(){
 }
 
 showModal(): void {
-  const modal = document.getElementById('redeemDetailsModal');
-  modal.style.display = 'block';
+  setTimeout(() => {
+    const modal = document.getElementById('purchaseDetailModel');
+    if (modal) {
+      modal.style.display = 'block';
+    }
+  }, 0);
 }
 
 downloadAsPDF() {

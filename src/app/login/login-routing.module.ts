@@ -19,10 +19,7 @@ const routes: Routes = [
     path: "verify",
     component: VerifyComponent,
   },
-  {
-    path:"reset-password",
-    component:ResetPasswordComponent
-  }
+
 ];
 
 @NgModule({

@@ -74,8 +74,47 @@ export class CreatePaymentComponent{
         this.canDelete=true
       }
     });
-this.getAllPayment()
-this.settings.getAllReason().subscribe(
+   
+    this.service.getTodayPayment().subscribe((data) => {
+      this.paymentData = data;
+
+      // Reset arrays for available and cancelled payments
+      this.data = [];
+      this.cancelled = [];
+
+      // Counters for serial numbers
+      let availableSno = 1;
+      let cancelledSno = 1;
+
+      if (this.paymentData.AllPayment) {
+        this.paymentData.AllPayment.forEach((paymentDetail) => {
+          const formattedPayment = {
+            id: paymentDetail?._id,
+            passbooknumber: paymentDetail?.passbooknumber,
+            groupId: paymentDetail?.groupId,
+            amount: paymentDetail?.amount,
+            receiptNumber: paymentDetail?.receiptNumber,
+            cancelled: paymentDetail?.cancelled,
+          };
+
+          // Push to appropriate array based on cancelled status
+          if (paymentDetail?.cancelled) {
+            this.cancelled.push({
+              ...formattedPayment,
+              sno: cancelledSno++,
+              deleteReason: paymentDetail?.deleteReason,
+            });
+          } else {
+            this.data.push({
+              ...formattedPayment,
+              sno: availableSno++,
+            });
+          }
+        });
+      }
+    });
+    this.getAllPayment()
+    this.settings.getAllReason().subscribe(
   (data)=>{
     this.reasonData=data
     this.reasonData=this.reasonData.res

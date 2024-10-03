@@ -1,8 +1,8 @@
-<form [formGroup]="tknForm" >
+<form [formGroup]="tknForm">
   <div class="row justify-content-around">
     <div class="col-lg-4">
       <div class="form-group">
-        <label for="groupId" class="form-control-label">Group ID</label>
+        <label for="groupId" class="form-control-label">Chit Group ID</label>
         <input type="text" placeholder="Group Id" class="form-control form-control-sm" formControlName="groupId" readonly/>
       </div>
     </div>
@@ -25,7 +25,7 @@
     <div class="col-lg-4">
       <div class="form-group">
         <label for="winnningBid" class="form-control-label">Winning Bid</label>
-        <input type="text" placeholder="Winning Bid" class="form-control form-control-sm" formControlName="winningBid" (change)="winningBidChange()"/>
+        <input type="text" placeholder="Winning Bid" class="form-control form-control-sm man" formControlName="winningBid" (change)="winningBidChange()"/>
       </div>
     </div>
 
@@ -40,6 +40,8 @@
         <label for="auctionCycle" class="form-control-label">Auction Cycle</label>
         <input type="text" placeholder="Auction Cycle" class="form-control form-control-sm" formControlName="auctionCycle" readonly />
       </div>
+                      
+
     </div>
     <!-- <div class="col-lg-4">
       <div class="form-group">
@@ -80,10 +82,13 @@
         <div class="form-check form-switch">
             <input class="form-check-input" type="checkbox" formControlName="isActive" role="switch" id="flexSwitchCheckChecked"  (change)="toggleFormControls()" >
             <label class="form-check-label" for="flexSwitchCheckChecked">Auction Status</label>
-          </div>                       
+          </div>   
+          <h6 style="color: red;">
+            * Turn On Auction Status
+          </h6>                       
          </div>                  
          <div class="col-lg-9 d-flex justify-content-end">
-            <button type="submit" class="btn px-2  py-2"  data-bs-target="#auctionModal" [disabled]="!tknForm.valid"   (click)="onSubmit()">TKN Company Done</button>
+            <button type="submit" class="btn px-2  py-2"  data-bs-target="#auctionModal" [disabled]= "!tknForm.valid || !auctionStart"   (click)="onSubmit()">TKN Company Done</button>
         </div>
       </div>
     </form>

@@ -2,9 +2,14 @@
   <div class="navbar-left">
     <img src="assets/logo.png" alt="Company Logo" class="navbar-logo">
   </div>
+
   <div class="navbar-right">
     <div class="notification-icon">
       <img class="bell-image" src="../../../assets/navbar/bell.svg">
+    </div>
+    <div class="navbar-right me-4" (click)="logout()" style="cursor: pointer;">
+      <img src="../../../assets/navbar/log-out.svg" class="sidebar-menu-icon">
+      <span class="sidebar-menu-text">Logout</span>
     </div>
     <div class="navbar-user">
       <img [src]="profile" alt="User" class="profile-image">

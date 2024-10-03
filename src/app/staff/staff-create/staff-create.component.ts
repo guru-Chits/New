@@ -55,7 +55,7 @@ staff:any=true
 private staffIdPrefix: string = 'KNG-';
  staffIdCounter: string='E00'
  displayedStaffs: any[];
-
+ workingStatus:boolean=false
  inputText = '';
  role:boolean=false
 ngOnInit(){
@@ -75,7 +75,7 @@ ngOnInit(){
     lastName: ["", [Validators.required,Validators.pattern(/^[A-Z][a-zA-Z]+$/),Validators.maxLength(25),Validators.minLength(2)]],
     gender: ["", [Validators.required]],
     role: ["", [Validators.required]],
-    contact: ["", [Validators.required, Validators.pattern(/^\+91\s?\d{10}$/)]],
+    contact: ["+91 ", [Validators.required, Validators.pattern(/^\+91\s?\d{10}$/)]],
     address: ["", [Validators.required, Validators.pattern(/^[a-zA-Z0-9\s,.'-]+$/)]],
     emailId:["", [Validators.required, Validators.email, Validators.minLength(10), Validators.maxLength(100)]],
     dob: ['', [Validators.required,
@@ -94,15 +94,15 @@ ngOnInit(){
       this.conditionalValidator(() => !!this.staffsForm?.get('panCardNumber')?.value, Validators.pattern(/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/))
     ]],
     panUrl: [""],
-    aadharNumber: [, [
+    aadharNumber: [, [Validators.required,
       this.conditionalValidator(() => !!this.staffsForm?.get('aadharNumber')?.value, Validators.pattern(/^\d{4}\s\d{4}\s\d{4}$/))
     ]],
-    aadharUrl: [""],
+    aadharUrl: ["",[Validators.required]],
     drivingLicenseUrl: [""],
     drivingLicenseNumber: ["", this.conditionalValidator(() => !!this.staffsForm?.get('drivingLicenseNumber')?.value, Validators.pattern(/^[A-Z]{2}[- ]?[A-Z0-9]{2}[ ]?[0-9]{4}[ ]?[0-9]{7}$/))],
     bankName: [""],
     passbookUrl: [""],
-    workingStatus: [false, [Validators.required]],
+    workingStatus: ["", [Validators.required]],
     bgVerification: ["UnVerified"],
     bgVerification_remark: [""],
     profileUrl:[""],
@@ -174,6 +174,36 @@ ngOnInit(){
         
        })
  
+  }
+
+  onContactChange(event: any) {
+    let inputValue = event.target.value;
+
+    // Remove all non-numeric characters except the prefix
+    let numbersOnly = inputValue.replace(/[^\d]/g, '');
+
+    // Ensure the value starts with +91 and limit the length to 10 digits after the prefix
+    if (numbersOnly.startsWith('91')) {
+      numbersOnly = '+91 ' + numbersOnly.substring(2, 12); // Take only 10 digits after +91
+    } else {
+      numbersOnly = '+91 ';
+    }
+
+    // Patch the value back to the form control
+    this.staffsForm.patchValue({
+      contact: numbersOnly
+    });
+  }
+  blockPrefix(event: any) {
+    const inputValue = this.staffsForm.get('contact')?.value;
+
+    // Prevent deletion or modification of the '+91 ' prefix
+    if (event.target.selectionStart < 4 && event.key !== 'Tab') {
+      event.preventDefault();
+    }
+  }
+  working(event:any){
+   this.workingStatus= this.staffsForm.get('workingStatus')?.value;
   }
 
   onInputChange(event: any,placeholder:string) {

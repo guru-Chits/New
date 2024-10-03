@@ -112,6 +112,13 @@
             <div>
               <span class="fw-bold fs-5">{{ group.chitGroupId }}</span>
             </div>
+            <div *ngIf="group?.chitSubscribers?.length < 20" style="color: red;">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-exclamation-circle" viewBox="0 0 16 16">
+                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
+                <path d="M7.002 11a1 1 0 1 1 2 0 1 1 0 0 1-2 0M7.1 4.995a.905.905 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0z"/>
+              </svg>
+  
+            </div>
             <div class="d-flex overlap-images">
               <div *ngFor="let subscriber of group.addChitSubscribers">
                 <img [src]="subscriber.profileImageUrl" class="rounded-circle" [alt]="subscriber.initials" width="50" height="50">
@@ -173,9 +180,9 @@
                   <div class="me-1">
                     <button class="btn view-btn" (click)="navigate(specificChitData?._id)">View More Details</button>
                   </div>
-
-                  <div class="ms-1">
-                    <button type="button" class="btn auc-btn fw-bold" (click)="auctionEntry(specificChitData?._id)" >Auction Entry</button> 
+                  <div class="ms-1" >
+                   
+                    <button type="button" class="btn auc-btn fw-bold" *ngIf="specificChitData.chitSubscribers.length >= 20" (click)="auctionEntry(specificChitData?._id)" [disabled]="">Auction Entry</button> 
                   </div>
               
                 </div>                

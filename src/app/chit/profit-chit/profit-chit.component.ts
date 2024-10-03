@@ -24,6 +24,8 @@ export class ProfitChitComponent implements OnInit {
   month:string
   year:Number
   purchase:boolean=false
+  auctionStart:boolean=false
+
   constructor(private formBuiler:FormBuilder,private paymentService:PaymentService 
 ,private service: ChitService, ){}
 ngOnInit(): void {
@@ -45,10 +47,13 @@ ngOnInit(): void {
   if (auctionStart) {
     this.profitForm.enable();
     this.profitForm.get('auctionStart')?.enable();
+    this.auctionStart=false
 
   } else {
     this.profitForm.disable();
     this.profitForm.get('auctionStart')?.enable();
+    this.auctionStart=true
+
   }
   const groupId=this.chitData?.chitGroupId
   this.groupId=groupId
@@ -175,9 +180,13 @@ toggleFormControls(){
   const auctionStart = this.profitForm.get('auctionStart')?.value;
   if (auctionStart) {
     this.profitForm.enable();
+    this.auctionStart=false
+
   } else {
-    this.profitForm.disable();
+    // this.profitForm.disable();
     this.profitForm.get('auctionStart')?.enable();
+    this.auctionStart=true
+
   }
 
 }

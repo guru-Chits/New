@@ -60,7 +60,7 @@ export class PaymentsComponent implements OnInit {
       date: ['', [Validators.required, this.validateCurrentDate]],
       serialNumber:  ['',[Validators.required]],
       receiptNumber:  ['',[Validators.required]],
-      passbooknumber:  ['',[Validators.required]],
+      passbooknumber:  ['PB-',[Validators.required]],
       groupId:  ['',[Validators.required]],
       amount:  ['',[Validators.required]],
       collectionType:  ['',[Validators.required]],
@@ -132,6 +132,30 @@ console.log(this.staffs);
       }
       return null; // No error if validation passes
     };
+  }
+
+  onInputChange(event: any) {
+    let inputValue = event.target.value;
+
+    
+
+    // Ensure the value starts with PB- and limit the length to 8 digits after the prefix
+    if (!inputValue.startsWith('PB-')) {
+      this.paymentForm.patchValue({
+        passbooknumber: 'PB-'
+      });
+    }
+
+    // Patch the value back to the form control
+
+  }
+
+  blockPrefix(event: any) {
+    const inputValue = this.paymentForm.get('passbooknumber')?.value;
+
+    if (event.target.selectionStart < 3 && event.key !== 'Tab') {
+      event.preventDefault();
+    }
   }
 
   getSubByPassbookNo(passbooknumber: string): void {

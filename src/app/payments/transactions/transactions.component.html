@@ -38,23 +38,23 @@
                 <label class="form-control-label">Collection Type</label>
                 <select class="form-control p-2 form-control-sm " formControlName="collectionType">
                 <option value="" disabled selected>Collection Type</option>
-                <option value="monthly">monthly</option>
-                <option value="daily">daily</option>
+                <!-- <option value="monthly">monthly</option>
+                <option value="daily">daily</option> -->
 
-                <!-- <option *ngFor="let collection of Collections" [value]="collection">{{collection}}</option> -->
+                <option *ngFor="let collection of collectionTypes" [value]="collection.collectionType">{{collection.collectionType}}</option>
                 </select>
             </div>
         </div>
         <div class="col-lg-4">
             <div class="form-group">
                 <label for="collectionAmount" class="form-control-label">Collection Type Count</label>
-                <input class="form-control p-2 form-control-sm" id="collectionAmount" formControlName="collectionTypeCount" placeholder="Collection Type Count"/>
+                <input class="form-control p-2 form-control-sm" id="collectionAmount" formControlName="collectionTypeCount" placeholder="Collection Type Count" readonly/>
             </div>
         </div>
         <div class="col-lg-4">
             <div class="form-group">
                 <label for="amountCollected" class="form-control-label"> Collection Type Amount</label>
-                <input class="form-control p-2 form-control-sm" id="amountCollected" formControlName="collectionTypeAmount" placeholder="Collection Type Amount"/>
+                <input class="form-control p-2 form-control-sm" id="amountCollected" formControlName="collectionTypeAmount" placeholder="Collection Type Amount" readonly/>
             </div>
         </div>
 
@@ -63,13 +63,13 @@
         <div class="col-lg-4">
             <div class="form-group">
                 <label for="balanace" class="form-control-label">Total Serial Number Count </label>
-                <input class="form-control p-2 form-control-sm" id="balance" formControlName="totalSerialNumberCount" placeholder="Total Serial Number Count"/>
+                <input class="form-control p-2 form-control-sm" id="balance" formControlName="totalSerialNumberCount" placeholder="Total Serial Number Count" readonly/>
             </div>
         </div>
         <div class="col-lg-4">
             <div class="form-group">
                 <label for="serialNumCount" class="form-control-label">Grand Total Amount</label>
-                <input class="form-control p-2 form-control-sm" id="serialNumCount" formControlName="grandTotalAmount" placeholder="Grand Total Amount"/>
+                <input class="form-control p-2 form-control-sm" id="serialNumCount" formControlName="grandTotalAmount" placeholder="Grand Total Amount" readonly/>
             </div>
         </div>  
     </div>

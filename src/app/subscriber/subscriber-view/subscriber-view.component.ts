@@ -32,7 +32,8 @@ export class SubscriberViewComponent implements OnInit{
  showAll = false;
  paymentHistoryToggled: boolean[] = [];
  canEdit=false
-constructor(private service:SubscriberService,    private authService:AuthService, private activatedRoute:ActivatedRoute,private router:Router,private chitService:ChitService,private paymentService:PaymentService){}
+ aucData:any
+constructor(private service:SubscriberService,private authService:AuthService, private activatedRoute:ActivatedRoute,private router:Router,private chitService:ChitService,private paymentService:PaymentService){}
 
 ngOnInit(): void {
 
@@ -54,12 +55,37 @@ ngOnInit(): void {
       console.log(this.subscriberDetail)
       console.log("sib",this.subscriberDetail);
 
-      this.service.getChitGroupById(this.subscriberDetail.Subscriber.subscriberId).subscribe(
-        response => {
-          this.chitGroup=response
-          console.log(this.chitGroup,"ghit");
-        },
-      );
+      this.service.getChitGroupById(this.subscriberDetail.Subscriber.subscriberId).subscribe(data => {
+        this.chitGroup = data;  // Array of chit groups
+        console.log(this.chitGroup, "chit groups");
+      
+        // Iterate through each group and fetch its auction data
+        this.chitGroup.forEach((group, index) => {
+          this.chitService.getSubAuction(group.passbookNo).subscribe(response => {
+      
+            // Assign auction data to the correct group in chitGroup array
+            if (response.subscriberAuc.passbookNumber) {
+              this.chitGroup[index].chitAuc = response.subscriberAuc;
+      
+            }
+           else if (response.subscriberAuc.profitChitData) {
+              this.chitGroup[index].chitAuc = response.subscriberAuc.profitChitData;
+            } else if (response.subscriberAuc.TKNData) {
+                if(response.subscriberAuc?.TKNData?.passbookNumber){
+                  this.chitGroup[index].chitAuc = response.subscriberAuc.TKNData;
+                }
+              } else if (response.subscriberAuc.extraPaymentData) {
+              this.chitGroup[index].chitAuc = response.subscriberAuc.extraPaymentData;
+            } else if (response.subscriberAuc.passbookNumber) {
+              this.chitGroup[index].chitAuc = response.subscriberAuc;
+            
+            }
+            console.log(this.chitGroup);
+          });
+        });
+      });
+      
+      
        })
 
        this.breadcrumsData = [
@@ -124,6 +150,7 @@ ngOnInit(): void {
           receiptNumber:paymentDetail.receiptNumber,
           amount:paymentDetail.amount,
           groupId:paymentDetail.groupId,
+          collectionType:paymentDetail.collectionType
           }))
           
          })

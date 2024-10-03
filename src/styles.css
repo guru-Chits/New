@@ -3,11 +3,11 @@
 
  *{
         font-family: 'Outfit';
+        -ms-overflow-style: none; /* IE and Edge */
+         scrollbar-width: none; /* Firefox */
     }
 
-    ::-webkit-scrollbar {
-        display: none;
-      }
+
 .body .cta-filled{
     color: #3E3A97;
     background-color: #FFFFFF;

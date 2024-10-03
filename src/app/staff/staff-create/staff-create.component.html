@@ -79,7 +79,10 @@
                     <div class="col-lg-4">
                         <div class="form-group">
                             <label for="contact" class="form-control-label">Contact Number <span class="required" *ngIf="staffsForm.get('contact').hasError('required')">*</span></label>
-                            <input type="text" placeholder="Contact Number" class="form-control form-control-sm" formControlName="contact"/>
+                            <input type="tel" placeholder="Contact Number" class="form-control form-control-sm" formControlName="contact"  [value]="staffsForm.get('contact').value" 
+                            (input)="onContactChange($event)"
+                            maxlength="14"  
+                            (keydown)="blockPrefix($event)" />
                             <div class="invalid-feedback" *ngIf="staffsForm.get('contact').invalid && (staffsForm.get('contact').dirty || staffsForm.get('contact').touched)">
                               <div *ngIf="staffsForm.get('contact').errors.required">Contact Number is required.</div>
                               <div *ngIf="staffsForm.get('contact').errors.pattern">Contact Number should be exactly 10 digits.</div>
@@ -110,7 +113,8 @@
                     <div class="col-lg-4">
                         <div class="form-group">
                             <label for="dob" class="form-control-label">DOB <span class="required" *ngIf="staffsForm.get('dob').hasError('required')">*</span></label>
-                            <input type="date" class="form-control form-control-sm" formControlName="dob"/>
+                            <input type="date" class="form-control form-control-sm" formControlName="dob"
+                            />
                             <div class="invalid-feedback" *ngIf="staffsForm.get('dob').invalid && (staffsForm.get('dob').dirty || staffsForm.get('dob').touched)">
                               <div *ngIf="staffsForm.get('dob').errors.required">Date of Birth is required.</div>
                               <div *ngIf="staffsForm.get('dob').errors.invalidDate">Invalid Date of Birth.</div>
@@ -192,7 +196,7 @@
                       <div class="form-group">
                         <label for="aadharNumber" class="form-control-label">Aadhar Card Number <span class="required" *ngIf="staffsForm.get('aadharNumber').hasError('required')">*</span></label>
                         <input type="text" placeholder="Aadhar Card Number" class="form-control form-control-sm" formControlName="aadharNumber" />
-                        <div class="invalid-feedback" *ngIf="staffsForm.get('ifscCode').invalid && (staffsForm.get('ifscCode').dirty || staffsForm.get('ifscCode').touched)">
+                        <div class="invalid-feedback" *ngIf="staffsForm.get('aadharNumber').invalid && (staffsForm.get('aadharNumber').dirty || staffsForm.get('aadharNumber').touched)">
                           <div *ngIf="staffsForm.get('aadharNumber').errors.required">Aadhar is required.</div>
                         </div>
 
@@ -203,10 +207,7 @@
                       <div class="form-group">
                         <label for="aadharUrl" class="form-control-label">Aadhar Card <span class="required" *ngIf="staffsForm.get('aadharUrl').hasError('required')">*</span></label>
                         <input type="file" class="form-control form-control-sm file-upload" [value]="aadharUrl" (change)="onFileSelected($event, 'aadharUrl')" formControlName="aadharUrl"/>
-                        <div class="invalid-feedback" *ngIf="staffsForm.get('ifscCode').invalid && (staffsForm.get('ifscCode').dirty || staffsForm.get('ifscCode').touched)">
-                          <div *ngIf="staffsForm.get('aadharUrl').errors.required">Aadhar Card is required.</div>
-                        </div>
-
+          
                       </div>
                     </div>
                     <div class="col-lg-4 mt-4">
@@ -275,7 +276,7 @@
                 <div class="row  my-2">
                     <div class="col-lg-4">
                         <div class="form-check form-switch">
-                            <input class="form-check-input" type="checkbox" formControlName="workingStatus" role="switch" id="flexSwitchCheckChecked" checked>
+                            <input class="form-check-input" type="checkbox" formControlName="workingStatus" role="switch" id="flexSwitchCheckChecked" checked (change)="working($event)">
                             <label class="form-check-label" for="flexSwitchCheckChecked">Working Status <span class="required" *ngIf="staffsForm.get('workingStatus').hasError('required')">*</span></label>
                           </div>
                     </div>
@@ -283,9 +284,9 @@
 
      
                 <div class="row justify-content-center">
-                    <div class="col-lg-12 d-flex justify-content-end">
+                    <div class="col-lg-12 d-flex justify-content-end mb-2">
                         <button class="btn nxt-btn btn-outline-secondary" routerLink="/staff">Cancel</button>
-                        <button class="btn save-btn" [disabled]="!staffsForm.valid" (click)="onSubmit()" type="submit" >{{submit}}</button>
+                        <button class="btn save-btn " [disabled]="!staffsForm.valid || !workingStatus" (click)="onSubmit()" type="submit" >{{submit}}</button>
                     </div>
                 </div>
 

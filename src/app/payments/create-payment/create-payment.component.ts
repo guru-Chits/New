@@ -1,11 +1,14 @@
 import { AfterViewInit, Component } from '@angular/core';
 import { CellClickedEvent, ColDef } from 'ag-grid-community';
 import { IPaymentForm } from '../shared/interface/payment-form';
-import { AbstractControl, FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ITableColumn } from '../../shared/interface/list-table';
 import { PaymentService } from '../shared/service/payment.service';
 import { AuthService } from '../../shared/service/auth.service';
+import { ServiceService } from '../../settings/shared/service.service';
+import { interval } from 'rxjs';
+
 @Component({
   selector: 'app-create-payment',
   templateUrl: './create-payment.component.html',
@@ -18,6 +21,7 @@ export class CreatePaymentComponent{
   paymentData: any = {};  
 
   data: any[] = [];
+  reasonData: any
   cancelled:any[]=[];
   paymentDetail:any
   accessPrivData: any;
@@ -25,6 +29,8 @@ export class CreatePaymentComponent{
   searchImg:string='assets/table/black search.svg'
   filterImg:string='assets/table/black filter.svg'
   search:boolean=true
+  modalErrorMessage: string = '';
+  popup:boolean=false
   breadcrumsData:any = [
     {
       key: 'Payments',
@@ -33,6 +39,7 @@ export class CreatePaymentComponent{
   ];
   activeTab: string = 'home'; 
   canCreate: boolean = false;
+  reasonCancelForm:FormGroup;
   canEdit: boolean = false;
   canDelete: boolean = false;
   canView:boolean=false 
@@ -41,9 +48,11 @@ export class CreatePaymentComponent{
     private formBuilder: FormBuilder,
     private activatedRoute: ActivatedRoute,
     private authService:AuthService,
+    private settings: ServiceService,
     private service: PaymentService) { }
 
   ngOnInit(): void {
+    this.reasonCancelForm=new FormGroup({deleteReason:new FormControl(null)})
     this.authService.checkAccess('Payments', 'create').subscribe((hasAccess: boolean) => {
       if (hasAccess) {
         this.canCreate=true
@@ -66,40 +75,35 @@ export class CreatePaymentComponent{
         this.canDelete=true
       }
     });
-this.getAllPayment()
-  }
-
-  
-  getAllPayment() {
+   
     this.service.getTodayPayment().subscribe((data) => {
       this.paymentData = data;
-      console.log(this.deletedPayments, "deleted");
-  
-      // Initialize arrays for available and cancelled payments
+
+      // Reset arrays for available and cancelled payments
       this.data = [];
       this.cancelled = [];
-  
+
       // Counters for serial numbers
       let availableSno = 1;
       let cancelledSno = 1;
-  
+
       if (this.paymentData.AllPayment) {
-        // Separate payments based on the cancelled status
         this.paymentData.AllPayment.forEach((paymentDetail) => {
           const formattedPayment = {
             id: paymentDetail?._id,
             passbooknumber: paymentDetail?.passbooknumber,
-            groupId: paymentDetail?.groupId,  
+            groupId: paymentDetail?.groupId,
             amount: paymentDetail?.amount,
             receiptNumber: paymentDetail?.receiptNumber,
             cancelled: paymentDetail?.cancelled,
           };
-  
-          // Push to appropriate array based on the cancelled status
+
+          // Push to appropriate array based on cancelled status
           if (paymentDetail?.cancelled) {
             this.cancelled.push({
               ...formattedPayment,
               sno: cancelledSno++,
+              deleteReason: paymentDetail?.deleteReason,
             });
           } else {
             this.data.push({
@@ -110,7 +114,65 @@ this.getAllPayment()
         });
       }
     });
+    this.getAllPayment()
+    this.settings.getAllReason().subscribe(
+  (data)=>{
+    this.reasonData=data
+    this.reasonData=this.reasonData.res
+    console.log(this.reasonData,"Delete Reason")
+
   }
+)
+  }
+
+  
+
+  getAllPayment() {
+    // Polling interval (every 10 seconds in this example)
+    const pollingInterval = interval(10000);
+  
+    pollingInterval.subscribe(() => {
+      this.service.getTodayPayment().subscribe((data) => {
+        this.paymentData = data;
+  
+        // Reset arrays for available and cancelled payments
+        this.data = [];
+        this.cancelled = [];
+  
+        // Counters for serial numbers
+        let availableSno = 1;
+        let cancelledSno = 1;
+  
+        if (this.paymentData.AllPayment) {
+          this.paymentData.AllPayment.forEach((paymentDetail) => {
+            const formattedPayment = {
+              id: paymentDetail?._id,
+              passbooknumber: paymentDetail?.passbooknumber,
+              groupId: paymentDetail?.groupId,
+              amount: paymentDetail?.amount,
+              receiptNumber: paymentDetail?.receiptNumber,
+              cancelled: paymentDetail?.cancelled,
+            };
+  
+            // Push to appropriate array based on cancelled status
+            if (paymentDetail?.cancelled) {
+              this.cancelled.push({
+                ...formattedPayment,
+                sno: cancelledSno++,
+                deleteReason: paymentDetail?.deleteReason,
+              });
+            } else {
+              this.data.push({
+                ...formattedPayment,
+                sno: availableSno++,
+              });
+            }
+          });
+        }
+      });
+    });
+  }
+  
   
   togglePayments() {
   this.showCancelledPayments = !this.showCancelledPayments;
@@ -125,6 +187,7 @@ getPaymentById(id: string): void {
     }
   );
 }
+
 column: ITableColumn[] = [
   {
     label: 'Serial No',
@@ -188,25 +251,64 @@ columnCancelled: ITableColumn[] = [
     filterList:false,
     cellStyle: { color: 'red' },
   },
+
+  {
+    label: 'Reason Cancellation',
+    field: 'deleteReason',
+    filterList:false,
+    cellStyle: { color: 'red' },
+  },
 ];
 
+
+
+showModal(message: string): void {
+  this.modalErrorMessage = message;
+  const modal = document.getElementById('deleteTypeModal');
+  modal.style.display = 'block';
+}
+deleteConfirm(id){
+
+  if (confirm)
+    {
+      this.paymentDetail.cancelled=true
+      this.paymentDetail.deleteReason=this.reasonCancelForm.get('deleteReason')?.value
+      let cancelled=this.paymentDetail
+      console.log(cancelled);
+      this.service.savePaymentDetails( cancelled,id).subscribe(
+        (response:any) => {
+          console.log(response);
+          this.popup=false
+          
+        },
+      );
+    }
+    this.paymentDetail = null;
+    this.getAllPayment();
+
+    this.router.navigate(["/payment"]);
+}
+
 delete(id) {
-  if (confirm('Are you sure you want to delete this subscriber?')) {
- 
-    this.paymentDetail.cancelled=true
-    let cancelled=this.paymentDetail
-    console.log(cancelled);
+  if (confirm)
+     {
+      this.popup=true
+   
+    this.showModal("Do you want to delete?")
+    // this.paymentDetail.cancelled=true
+    // let cancelled=this.paymentDetail
+    // console.log(cancelled);
     
-    this.service.savePaymentDetails( cancelled,id).subscribe(
-      (response:any) => {
-        console.log(response);
+    // this.service.savePaymentDetails( cancelled,id).subscribe(
+    //   (response:any) => {
+    //     console.log(response);
         
-      },
-    );
+    //   },
+    // );
   }
-  this.paymentDetail = null;
-  this.getAllPayment();
-  this.router.navigate(["/payment"]);
+  // this.paymentDetail = null;
+  // this.getAllPayment();
+  // this.router.navigate(["/payment"]);
 }
 
  cancel(){

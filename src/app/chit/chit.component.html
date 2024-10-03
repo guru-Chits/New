@@ -1,6 +1,6 @@
 <div class="container-fluid d-flex flex-column">
   <div class="row">     
-    <div class="col-lg-9">
+    <div class="col-lg-8">
       <div class="row">
         <div class="col-lg-12 d-flex justify-content-between py-3">
           <app-breadcrumb [data]="breadcrumsData"></app-breadcrumb>
@@ -81,14 +81,14 @@
         </div>
       </div> -->
 
-      <div class="container p-0 mt-3" *ngIf="chitdata">
+      <!-- <div class="container p-0 mt-3" *ngIf="chitdata">
         <div class="search-bar align-self-center mb-3">
           <span class="search-icon"><img src="assets/table/search.svg"></span>
           <input width="20" height="20" type="text" class="border-0" placeholder="Search" (input)="applyFilter($event.target.value)">
         </div>
 
         <div *ngFor="let group of displayedChit;let i=index" class="mb-1" >
-          <div class="table my-2 px-3 d-flex justify-content-between align-items-center rounded-end" (click)="handleChitGropDetails(group._id,i)">
+          <div class="table-group my-2 px-3 d-flex justify-content-between align-items-center rounded-end" (click)="handleChitGropDetails(group._id,i)">
             <div>
               <span class="fw-bold fs-5" >{{group.chitGroupId}}</span>
             </div>
@@ -100,61 +100,91 @@
             </div>
             </div>
         </div>
+      </div> -->
+      <div class="container p-0 mt-3" *ngIf="chitdata">
+        <div class="search-bar align-self-center mb-3">
+          <span class="search-icon"><img src="assets/table/search.svg"></span>
+          <input width="20" height="20" type="text" class="border-0" placeholder="Search" (input)="applyFilter($event.target.value)">
+        </div>
+      
+        <div *ngFor="let group of displayedChit | slice:(currentPage - 1) * itemsPerPage:(currentPage) * itemsPerPage; let i = index" class="mb-1">
+          <div class="table-group my-2 px-3 d-flex justify-content-between align-items-center rounded-end" (click)="handleChitGropDetails(group._id, i)">
+            <div>
+              <span class="fw-bold fs-5">{{ group.chitGroupId }}</span>
+            </div>
+            <div *ngIf="group?.chitSubscribers?.length < 20" style="color: red;">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-exclamation-circle" viewBox="0 0 16 16">
+                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
+                <path d="M7.002 11a1 1 0 1 1 2 0 1 1 0 0 1-2 0M7.1 4.995a.905.905 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0z"/>
+              </svg>
+  
+            </div>
+            <div class="d-flex overlap-images">
+              <div *ngFor="let subscriber of group.addChitSubscribers">
+                <img [src]="subscriber.profileImageUrl" class="rounded-circle" [alt]="subscriber.initials" width="50" height="50">
+              </div>
+              <div class="fw-bold ms-2">+{{ group.chitSubscribers.length - 5 }}</div>
+            </div>
+          </div>
+        </div>
+      
+        <!-- Pagination Controls -->
+        <div class="d-flex justify-content-center align-items-center mt-3">
+          <button class="btn next-btn " (click)="previousPage()" [disabled]="currentPage === 1">Previous</button>
+          <span class="px-4">Page {{ currentPage }} of {{ totalPages }}</span>
+          <button class="btn next-btn " (click)="nextPage()" [disabled]="currentPage === totalPages">Next</button>
+        </div>
       </div>
+      
     </div> 
-    <div class="col-lg-3">
+    <div class="col-lg-4">
       <app-auction-sidebar [dataFromParent]="showChitDetails" (dataToParent)="recieveChildBoolean($event)"></app-auction-sidebar>
       <div class="chit-details" *ngIf="showChitDetails">
-        <div class="card p-3 mt-2">
-            <h5 class="title text-center fw-bold fs-4">Chit Group {{selectedChit}}</h5>
-            <table class="table-chit px-3">
+        <div class="card d-flex py-4 mt-2">
+            <h5 class="title text-center fw-bold fs-4 m-0">Chit Group {{selectedChit}}</h5>
+            <table class="table mt-2 d-flex">
                 <tbody>
                   <tr>
-                    <td><strong>Group ID </strong></td>
-                    <!-- <td><a href="#">{{subscriberDetail.Subscriber.subscriberId }}</a></td> -->
-                    <td>{{specificChitData?.chitGroupId}}</td>
+                    <td class="py-3"><strong>Group ID </strong></td>
+                    <td><a href="">{{specificChitData?.chitGroupId}}</a></td>
                   </tr>
                   <tr>
-                    <td><strong>Auction Completion Count </strong></td>
-                    <!-- <td>{{subscriberDetail.Subscriber.aliasName}} </td> -->
-                    <td>24</td>
+                    <td class="py-3"><strong>Auction Completion Count </strong></td>
+                    <td>{{bidHistory.length}}</td>
                   </tr>
                   <tr>
-                    <td><strong>Prized Subscriber Count</strong></td>
-                    <!-- <td>{{subscriberDetail.Subscriber.firstName}} </td> -->
-                    <td>2</td>
+                    <td class="py-3"><strong>Prized Subscriber Count</strong></td>
+                    <td>{{prizedSubsCount}}</td>
                   </tr>
                   <tr>
-                    <td><strong>Wallet Balance</strong></td>
-                    <!-- <td>{{ subscriberDetail.Subscriber.lastName }}</td> -->
-                    <td>150000</td>
+                    <td class="py-3"><strong>Wallet Balance</strong></td>
+                    <td>{{chitSubscriberTotal}}</td>
                   </tr>
                   <tr>
-                    <td><strong>Additional Wallet Balance</strong></td>
-                    <!-- <td>{{ subscriberDetail.Subscriber.contact }}</td> -->
-                    <td>20000</td>
+                    <td class="py-3"><strong>Additional Wallet Balance</strong></td>
+                    <td>{{addSubscriberTotal}}</td>
                   </tr>
                   <tr>
-                    <td><strong>Redeemabale Balance</strong></td>
-                    <!-- <td>{{ subscriberDetail.Subscriber.contact }}</td> -->
+                    <td class="py-3"><strong>Redeemabale Balance</strong></td>
                     <td>56000</td>
                   </tr>
                   <tr>
-                    <td><strong>Phantom Entry Amount</strong></td>
-                    <!-- <td>{{ subscriberDetail.Subscriber.contact }}</td> -->
+                    <td class="py-3"><strong>Phantom Entry Amount</strong></td>
                     <td>45000</td>
                   </tr>
                 </tbody>
               </table>
               <div class="mb-2">
-                <!-- <button class="btn clear-btn"  (click)="addToGroup(subscriberDetail.Subscriber._id)">Add to Group</button> -->
-                 <div class="row">
-                  <div class="col-6">
+                <!-- <button class="btn clear-btn"  (click)="addToGroup(subscriberDetail.Subscriber._id)">Add to Group</button> <td>{{subscriberDetail.Subscriber.aliasName}} </td> -->
+                 <div class=" d-flex justify-content-center">
+                  <div class="me-1">
                     <button class="btn view-btn" (click)="navigate(specificChitData?._id)">View More Details</button>
                   </div>
-                 <div class="col-6">
-                  <button class="btn auc-btn" (click)="auctionEntry(specificChitData?._id)" >Auction Entry</button> 
-                  </div>  
+                  <div class="ms-1" >
+                   
+                    <button type="button" class="btn auc-btn fw-bold" *ngIf="specificChitData.chitSubscribers.length >= 20" (click)="auctionEntry(specificChitData?._id)" [disabled]="">Auction Entry</button> 
+                  </div>
+              
                 </div>                
             </div>   
         </div>

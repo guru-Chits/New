@@ -13,6 +13,7 @@ import { saveAs } from 'file-saver';
 import html2canvas from 'html2canvas';
 import 'jspdf-autotable'; 
 import { DatePipe } from '@angular/common';
+import { ServiceService } from '../../settings/shared/service.service';
 
 @Component({
   selector: 'app-transactions',
@@ -24,6 +25,8 @@ import { DatePipe } from '@angular/common';
 export class TransactionsComponent implements OnInit{
   routeData:any
   routes:any[]=[]
+
+  colData:any
   data:any[]=[]
   worksheetData:any
   fileName:string
@@ -35,6 +38,7 @@ export class TransactionsComponent implements OnInit{
   totalAmount: number = 0;
   totalRecords: number = 0;
   transactionForm:FormGroup
+  collectionTypes:any
   private readonly EXCEL_TYPE = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
   constructor(private router: Router,
     private formBuilder: FormBuilder,
@@ -42,7 +46,9 @@ export class TransactionsComponent implements OnInit{
     private staffService:StaffService,
     private chitService:ChitService,
     private datePipe: DatePipe,
-    private routeService:AreaService) { }
+    private routeService:AreaService,
+    private settings :ServiceService
+  ) { }
 
 ngOnInit(): void {
   this.transactionForm=this.formBuilder.group({
@@ -56,6 +62,13 @@ ngOnInit(): void {
     grandTotalAmount:['', [Validators.required]],
   })
 
+  this.settings.getAllCollection().subscribe(
+    (data)=>{
+      this.collectionTypes=data
+      this.collectionTypes=this.collectionTypes.res
+      console.log(this.collectionTypes,"Collection Type");
+    }
+  )
  this.formChanges()
 
 
@@ -118,6 +131,32 @@ formChanges() {
 
       // Fetch data filtered by date range and routeId
       this.fetchDataByRoute(fromDate, toDate, routeId);
+
+      this.transactionForm.get('collectionType').valueChanges.subscribe(collectionType=>{
+        const colType=collectionType
+        this.service.getDataByCollection(fromDate,toDate,routeId,colType).subscribe(data=>{
+          if(data){
+            console.log(data);
+            this.colData=data
+            const grandTotal = this.colData.details.reduce((total, item) => total + parseFloat(item.amount), 0);
+            const formattedGrandTotal = grandTotal.toLocaleString('en-US', {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2
+            });
+            console.log(formattedGrandTotal);
+            
+            this.transactionForm.patchValue({
+              collectionTypeCount: this.colData.details.length,
+              collectionTypeAmount: formattedGrandTotal
+            });
+          }
+
+          
+        })
+
+      })
+
+
     }
   });
 }
@@ -224,7 +263,11 @@ handleDateChange(fromDate: string, toDate: string) {
 fetchDataByRoute(fromDate: string, toDate: string, routeId: string) {
   this.service.getDataByDate(fromDate, toDate, routeId).subscribe(data => {
     this.transData = data;
-
+    this.transactionForm.patchValue({
+      collectionType:'',
+      collectionTypeCount: '',
+      collectionTypeAmount: ''
+    });
     // Map filtered data
     this.data = this.transData.details.map((transDetails, index) => ({
       id: transDetails._id,

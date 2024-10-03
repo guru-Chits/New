@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { ChitService } from './shared/service/chit.service';
 import { LoginComponent } from '../login/login.component';
 import { AuthService } from '../shared/service/auth.service';
+import { PaymentService } from '../payments/shared/service/payment.service';
 @Component({
   selector: 'app-chit',
   templateUrl: './chit.component.html',
@@ -24,10 +25,22 @@ export class ChitComponent implements OnInit{
   total: any;
   selectedChit:number=1
   canCreate: boolean = false;
-
-  constructor(private router:Router, private service: ChitService,private authService:AuthService  ){}
+  groupId:string;
+  payment:any;
+  chitSubscriberTotal = 0;
+  bidHistory:any;
+  prizedSubsCount: number = 0;
+  auctionDates: (string)[] = [];
+  upcomingDates: (string | null)[] = [];
+    // Pagination properties
+  itemsPerPage: number = 5;
+  currentPage: number = 1;
+  totalPages: number = 0;
+  constructor(private router:Router, private service: ChitService,private authService:AuthService, private paymentService: PaymentService){}
 
   ngOnInit(): void{
+    // this.incrementMonth();
+    // this.filterUpcomingDates();
     this.authService.checkAccess('Chit Management', 'create').subscribe((hasAccess: boolean) => {
       if (hasAccess) {
         this.canCreate=true
@@ -38,14 +51,113 @@ export class ChitComponent implements OnInit{
     this.service.getAllChit().subscribe((data)=>{
       this.chitdata=data;
       this.chitdata=this.chitdata?.AllChitGroups
-      console.log(this.chitdata)
+      console.log("chit Data ->",this.chitdata)
       this.total = this.chitdata.length
       console.log(this.total);
       this.displayedChit= this.chitdata;
+      this.totalPages = Math.ceil(this.displayedChit.length / this.itemsPerPage);
+      // this.auctionDates = this.chitdata.map((chit: any) => chit.auctionDate);
+      // this.auctionDates = this.auctionDates.map(dateString => {
+      //   if (dateString) {
+      //     // Parse the date string
+      //     const [day, month, year] = dateString.split('-').map(Number);
+      //     const date = new Date(year, month - 1, day); // month is zero-based in Date object
+  
+      //     // Increment the month by 1
+      //     date.setMonth(date.getMonth() + 1);
+  
+      //     // Format back to 'DD-MM-YYYY'
+      //     const updatedDay = date.getDate().toString().padStart(2, '0');
+      //     const updatedMonth = (date.getMonth() + 1).toString().padStart(2, '0');
+      //     const updatedYear = date.getFullYear();
+  
+      //     return `${updatedDay}-${updatedMonth}-${updatedYear}`;
+      //   }
+      //   return null;
+      // });
+      // console.log("Auction Dates ->", this.auctionDates);
+      // this.groupId=this.chitdata?.AllChitGroups;
+      // console.log("GROUP ID", this.groupId)
+      // const today = new Date();
+      // console.log("TODAY", today)
+      // this.upcomingDates = this.auctionDates.filter(dateString => {
+      //   if (dateString) {
+      //     // Split the date into day, month, and year
+      //     const [day, month, year] = dateString.split('-').map(Number);
+      //     const date = new Date(year, month - 1, day); // Month is zero-based
+  
+      //     // Compare with today's date
+      //     return date > today;
+      //   }
+      //   return false;
+      // });
+  
+      // console.log('Upcoming Dates ->', this.upcomingDates);
 
-      
     })
   }
+    // Move to the next page
+  nextPage() {
+    if (this.currentPage < this.totalPages) {
+      this.currentPage++;
+    }
+  }
+
+  // Move to the previous page
+  previousPage() {
+    if (this.currentPage > 1) {
+      this.currentPage--;
+    }
+  }
+
+  // incrementMonth(): void {
+  //   this.auctionDates = this.auctionDates.map(dateString => {
+  //     if (dateString) {
+  //       // Split the date into day, month, and year
+  //       const [day, month, year] = dateString.split('-');
+
+  //       // Convert the month and year to numbers, then increment the month
+  //       let newMonth = parseInt(month) + 1;
+  //       let newYear = parseInt(year);
+
+  //       // If the new month exceeds 12, adjust the year and reset the month to 1
+  //       if (newMonth > 12) {
+  //         newMonth = 1;
+  //         newYear += 1;
+  //       }
+
+  //       // Format the new day, month, and year to ensure two digits for day and month
+  //       const updatedDay = day.padStart(2, '0');
+  //       const updatedMonth = newMonth.toString().padStart(2, '0');
+  //       const updatedYear = newYear.toString();
+
+  //       // Return the updated date in 'DD-MM-YYYY' format
+  //       return `${updatedDay}-${updatedMonth}-${updatedYear}`;
+  //     }
+  //     return null; // Keep null values as they are
+  //   });
+
+  //   console.log('Updated Dates ->', this.auctionDates);
+  // }
+
+  // filterUpcomingDates(): void {
+  //   const today = new Date();
+
+  //   this.upcomingDates = this.auctionDates.filter(dateString => {
+  //     if (dateString) {
+  //       // Split the date into day, month, and year
+  //       const [day, month, year] = dateString.split('-').map(Number);
+  //       const date = new Date(year, month - 1, day); // Month is zero-based
+
+  //       // Compare with today's date
+  //       return date > today;
+  //     }
+  //     return false;
+  //   });
+
+  //   console.log('Upcoming Dates ->', this.upcomingDates);
+  // }
+
   recieveChildBoolean(event:boolean){
   this.showChitDetails=event
   }
@@ -77,14 +189,39 @@ export class ChitComponent implements OnInit{
       (data) => {
         
         this.specificChitData=data
-        console.log(this.specificChitData.ChitsGroup)
+        console.log("Specified Data Subscriber",this.specificChitData.ChitsGroup)
         this.specificChitData=this.specificChitData.ChitsGroup
+        if(this.specificChitData){
+          this.groupId = this.specificChitData.chitGroupId
+          console.log("_______^^_______",this.groupId)
+          this.paymentService.getTransactionById(this.groupId).subscribe((response)=>{
+            console.log("PAYMENT",response);
+            this.payment=response
+            this.payment=this.payment.payment
+            this.payment.forEach(amount => {
+              this.chitSubscriberTotal=amount.walletBalance
+              console.log(this.chitSubscriberTotal,"red");
+            }); 
+          })
+          this.getAuctionById(this.groupId)
+        }
+
       },
       error => {
         console.error('Error fetching subscriber', error);
       }
     );
-    
+
+    // console.log("_______^^_______",this.groupId)
+    // this.paymentService.getTransactionById(this.groupId).subscribe((response)=>{
+    //   console.log("PAYMENT",response);
+    //   this.payment=response
+    //   this.payment=this.payment.payment
+    //   this.payment.forEach(amount => {
+    //     this.chitSubscriberTotal=amount.walletBalance
+    //     console.log(this.chitSubscriberTotal,"red");
+    //   }); 
+    // })
   }
 
   getAllChit(){
@@ -104,25 +241,15 @@ export class ChitComponent implements OnInit{
     })
   }
 
-  // getColor(member: string): string {
-  //   const colors = {
-  //     'R': '#5B2C6F',
-  //     'B': '#2874A6',
-  //     'V': '#C0392B',
-  //     'M': '#239B56',
-  //     'G': '#F1C40F',
-  //     'C': '#E74C3C',
-  //     'A': '#2E86C1',
-  //     'S': '#1ABC9C',
-  //     'N': '#7D3C98',
-  //     'D': '#76D7C4',
-  //     'E': '#2980B9',
-  //     'K': '#8E44AD',
-  //     'H': '#F39C12',
-  //     'T': '#E67E22'
-  //   };
-  //   return colors[member] || '#000';
-  // }
+
+  getAuctionById(id: string){
+    this.service.getChitAuctionById(id).subscribe((res) => {
+      this.bidHistory = res.data;
+      this.prizedSubsCount = this.bidHistory.filter(item => item.subscriberName).length;
+      console.log("____________BID__________HISTORY_____________", this.bidHistory)
+    })
+  }
+  
   
   navigate(id: any){
     this.router.navigate([`chit/view/${id}`]);

@@ -78,17 +78,17 @@ span{
     
 .viewbtn{
     border:none;
-    font-size: 10px;
+    font-size: 12px;
     color:#50A1A5;
     background: transparent;
     }       
 
     .view-all{
         background-color: #ECEBF5;
-        font-size: 8px;
+        font-size: 12px;
       }
 .id{
-    font-size: 10px;
+    font-size: 12px;
 }
 /* Center the modal vertically and horizontally */
 

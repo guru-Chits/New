@@ -1,5 +1,5 @@
 <label class="head-text mt-3 ms-2">
-    Reason for Deletion
+    Reason for Cancelation
 </label>
 <div class="container">
 <div class="row d-flex lg12 mx-3 my-3">
@@ -9,11 +9,11 @@
 
     <form class="form row d-flex" [formGroup]="reactiveForm">
         <label class="form-check-label normalText mb-2">Reason </label>
-        <input class="form-control ms-2 me-2" type="text" placeholder="Enter Reasom" formControllerName="reasonCreate">
-        <label class="form-check-label normalText mt-3 mb-2">Reaason Description </label>
-        <input class="form-control ms-2 me-2" type="text" placeholder="Enter Reason Description" formControllerName="reasondescription">
-        <button type="submit" class="btn buttoncreate align-items-center ms-2 me-2 mb-3 mt-3">Create Role</button>
-        <button type="submit" class="btn button align-items-center ms-2 me-2 mb-3">Cancel</button>
+        <input class="form-control ms-2 me-2" type="text" placeholder="Enter Reason" formControlName="deleteType">
+        <label class="form-check-label normalText mt-3 mb-2">Reason Description </label>
+        <input class="form-control ms-2 me-2" type="text" placeholder="Enter Reason Description" formControlName="deleteDescription">
+        <button type="submit" class="btn buttoncreate align-items-center ms-2 me-2 mb-3 mt-3" (click)="submit()">Create Reason</button>
+        <button type="submit" class="btn button align-items-center ms-2 me-2 mb-3" (click)="cancel()">Cancel</button>
     </form>
 
     <app-ag-grid [columns]="collectioncolumn" [rowData]="data"   width="100%" height="280px" [searchImg]="searchImg" [filterImg]="filterImg" [search]="search"></app-ag-grid>

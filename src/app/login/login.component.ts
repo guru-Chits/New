@@ -19,9 +19,10 @@ export class LoginComponent {
   employeeId: string;
   isemployeeIdEmpty: boolean = false;
   isRegisteredemployeeId: boolean = true;
-
+  response:any
+  password:any
   isPasswordVisible: boolean = false;
-
+  newStaff:boolean=false
   /**
    * Check if the confirm password is visible
    */
@@ -54,7 +55,8 @@ export class LoginComponent {
    * Check if the password is reset
    */
   isPasswordReset: boolean = false;
- 
+  reset:boolean
+
   mobileNumber:any
   passwordPattern: RegExp = /^(?=.*[!@#$%^&*(),.?":{}|<>])(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$/;
 
@@ -103,45 +105,56 @@ onSubmit() {
   
   this.service.getLoginDetail(payload.employeeId).subscribe(response => {
     console.log("User details fetched:", response);
+    this.response=response
+    this.employeeId=this.response.user.employeeId
+    
+    console.log(this.response.user);
+    
+    let password=this.loginForm.get('password').value
+    if(password==="Staff@578"){
+      this.newStaff=true
+      this.reset=true
 
-    if (response) {
-      this.userdata = response;
-      sessionStorage.setItem('profile', JSON.stringify(this.userdata.userProfile));
-      sessionStorage.setItem('name', JSON.stringify(this.userdata.userName));
-      
-      this.mobileNumber = this.userdata.mobileNumber;
-      this.role = this.userdata.role;
-      sessionStorage.setItem('userRole', JSON.stringify(this.role));
-
-      // Check if the user has access before proceeding
-      this.accessService.getAccessByRole(this.role).subscribe(roleResponse => {
-        this.roleAccess=roleResponse
-        if ( this.roleAccess && this.roleAccess.roleAccess.roleDetails) {
-          console.log("Role access granted:", roleResponse);
+    }else{
+      if (this.response.success===true &&password=== this.response.user.password) {
+        this.userdata = response;
+        sessionStorage.setItem('profile', JSON.stringify(this.userdata.userProfile));
+        sessionStorage.setItem('name', JSON.stringify(this.userdata.userName));
+        
+        this.mobileNumber = this.userdata.mobileNumber;
+        this.role = this.userdata.role;
+        sessionStorage.setItem('userRole', JSON.stringify(this.role));
+        
+        // Check if the user has access before proceeding
+        this.accessService.getAccessByRole(this.role).subscribe(roleResponse => {
+          this.roleAccess=roleResponse
+          if ( this.roleAccess && this.roleAccess.roleAccess.roleDetails) {
+            console.log("Role access granted:", roleResponse);
+    
+            const otpUrl = `https://2factor.in/API/V1/b1037ef1-2ed8-11ef-8b60-0200cd936042/SMS/${this.mobileNumber}/AUTOGEN/OTPTemplate`;
   
-          const otpUrl = `https://2factor.in/API/V1/b1037ef1-2ed8-11ef-8b60-0200cd936042/SMS/${this.mobileNumber}/AUTOGEN/OTPTemplate`;
-
-          // Send OTP
-          this.HttpClient.get(otpUrl).subscribe(
-            (otpResponse: any) => {
-              console.log('OTP sent successfully:', otpResponse);
-              this.verified = true;
-             },
-            (error) => {
-              console.error('Error sending OTP:', error);
-            }
-          );
-        } else {
-          console.log("No role access, denying login.");
-          alert('Access denied. Please contact admin.');
-          // Optionally, you can clear the form or perform other actions
-        }
-      }, error => {
-        console.error("Error fetching role access:", error);
-      });
-    } else {
-      console.log("No user details found.");
+            this.HttpClient.get(otpUrl).subscribe(
+              (otpResponse: any) => {
+                console.log('OTP sent successfully:', otpResponse);
+                this.verified = true;
+               },
+              (error) => {
+                console.error('Error sending OTP:', error);
+              }
+            );
+          } else {
+            console.log("No role access, denying login.");
+            alert('Access denied. Please contact admin.');
+            // Optionally, you can clear the form or perform other actions
+          }
+        }, error => {
+          console.error("Error fetching role access:", error);
+        });
+      } else{
+        alert("No user details found.");
+      }
     }
+
   }, error => {
     console.error("Error fetching login details:", error);
   });

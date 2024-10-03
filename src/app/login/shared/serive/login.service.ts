@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from '../../../../environments/environment';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -27,5 +28,9 @@ loginUrl:string=environment.loginServiceUrl+'/login/'
     console.log(this.isVerified,"cer");
     
     return this.isVerified;
+  }
+  passwordReset(employeeId: string, password: string): Observable<any> {
+    const payload = { employeeId, password };
+    return this.http.post(`${this.loginUrl}/passwordReset`, payload);
   }
 }

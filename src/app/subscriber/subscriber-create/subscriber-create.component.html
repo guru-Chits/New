@@ -1,5 +1,5 @@
 <div class="container">
-    <div class="row">
+    <div class="row pt-3">
       <app-breadcrumb [data]="breadcrumsData"></app-breadcrumb>
 
     <div  [ngClass]="{'col-md-9 col-lg-9': isSubscriberListVisible, 'col-md-12 col-lg-12': !isSubscriberListVisible}">
@@ -25,7 +25,7 @@
                 <div class="row justify-content-around">
                   <div class="col-lg-4">
                     <div class="form-group">
-                      <label for="subscriberId" class="form-control-label">Subscriber ID</label>
+                      <label for="subscriberId" class="form-control-label">Subscriber ID<span class="required" *ngIf="subscriberForm.get('subscriberId').hasError('required')">*</span></label>
                       <input type="text" placeholder="Subscriber Id" class="form-control form-control-sm" formControlName="subscriberId" readonly/>
                       <!-- <div  class="invalid-feedback" *ngIf="subscriberForm.get('subscriberId').invalid && (subscriberForm.get('subscriberId').dirty || subscriberForm.get('subscriberId').touched)">
                         <div *ngIf="subscriberForm.get('subscriberId').errors.required">Subscriber Id is required.</div>
@@ -38,7 +38,7 @@
                   <!-- First Name -->
                   <div class="col-lg-4">
                     <div class="form-group">
-                      <label for="firstName" class="form-control-label">First Name</label>
+                      <label for="firstName" class="form-control-label">First Name<span class="required" *ngIf="subscriberForm.get('firstName').hasError('required')">*</span></label>
                       <input type="text" placeholder="First Name" class="form-control form-control-sm" formControlName="firstName" />
                       <div class="invalid-feedback" *ngIf="subscriberForm.get('firstName').invalid && (subscriberForm.get('firstName').dirty || subscriberForm.get('firstName').touched)">
                         <div *ngIf="subscriberForm.get('firstName').errors.required">First Name is required.</div>
@@ -50,7 +50,7 @@
                   <!-- Last Name -->
                   <div class="col-lg-4">
                     <div class="form-group">
-                      <label for="lastName" class="form-control-label">Last Name</label>
+                      <label for="lastName" class="form-control-label">Last Name<span class="required" *ngIf="subscriberForm.get('lastName').hasError('required')">*</span></label>
                       <input type="text" placeholder="Last Name" class="form-control form-control-sm" formControlName="lastName" />
                       <div class="invalid-feedback" *ngIf="subscriberForm.get('lastName').invalid && (subscriberForm.get('lastName').dirty || subscriberForm.get('lastName').touched)">
                         <div *ngIf="subscriberForm.get('lastName').errors.required">Last Name is required.</div>
@@ -63,7 +63,7 @@
                 <div class="row justify-content-around">
                   <div class="col-lg-4">
                     <div class="form-group">
-                      <label for="aliasName" class="form-control-label">Alias Name</label>
+                      <label for="aliasName" class="form-control-label">Alias Name <span class="required" *ngIf="subscriberForm.get('aliasName').hasError('required')">*</span></label>
                       <input type="text" placeholder="Alias Name" class="form-control form-control-sm" formControlName="aliasName" />
                       <div class="invalid-feedback" *ngIf="subscriberForm.get('aliasName').invalid && (subscriberForm.get('aliasName').dirty || subscriberForm.get('aliasName').touched)">
                         <div *ngIf="subscriberForm.get('aliasName').errors.pattern">Alias Name should only contain alphabetic characters, "/", "-", "(", ")" and spaces, and start with a capital letter.</div>
@@ -73,8 +73,8 @@
                   <!-- Contact Number -->
                   <div class="col-lg-4">
                     <div class="form-group">
-                      <label for="contact" class="form-control-label">Contact Number</label>
-                      <input type="text" placeholder="Contact Number" class="form-control form-control-sm" formControlName="contact" />
+                      <label for="contact" class="form-control-label">Contact Number<span class="required" *ngIf="subscriberForm.get('contact').hasError('required')">*</span></label>
+                      <input type="tel" placeholder="Contact Number" class="form-control form-control-sm" formControlName="contact" />
                       <div class="invalid-feedback" *ngIf="subscriberForm.get('contact').invalid && (subscriberForm.get('contact').dirty || subscriberForm.get('contact').touched)">
                         <div *ngIf="subscriberForm.get('contact').errors.required">Contact Number is required.</div>
                         <div *ngIf="subscriberForm.get('contact').errors.pattern">Contact Number should be exactly 10 digits.</div>
@@ -84,7 +84,7 @@
                   <!-- Address -->
                   <div class="col-lg-4">
                     <div class="form-group">
-                      <label for="place" class="form-control-label">Place/Address</label>
+                      <label for="place" class="form-control-label">Place/Address<span class="required" *ngIf="subscriberForm.get('place').hasError('required')">*</span></label>
                       <input type="text" placeholder="Place/Address" class="form-control form-control-sm" formControlName="place" />
                       <div class="invalid-feedback" *ngIf="subscriberForm.get('place').invalid && (subscriberForm.get('place').dirty || subscriberForm.get('place').touched)">
                         <div *ngIf="subscriberForm.get('place').errors.required">Address is required.</div>
@@ -114,8 +114,8 @@
                   <!-- DOB -->
                   <div class="col-lg-4">
                     <div class="form-group">
-                      <label for="dob" class="form-control-label">Date of Birth</label>
-                      <input type="date" class="form-control form-control-sm" formControlName="dob" />
+                      <label for="dob" class="form-control-label">Date of Birth<span class="required" *ngIf="subscriberForm.get('dob').hasError('required')">*</span></label>
+                      <input type="date"  placeholder="dd/mm/yyyy" class="form-control form-control-sm" formControlName="dob" (ngModelChange)="validateDate($event)" />
                       <div class="invalid-feedback" *ngIf="subscriberForm.get('dob').invalid && (subscriberForm.get('dob').dirty || subscriberForm.get('dob').touched)">
                         <div *ngIf="subscriberForm.get('dob').errors.required">Date of Birth is required.</div>
                         <div *ngIf="subscriberForm.get('dob').errors.invalidDate">Invalid Date of Birth.</div>
@@ -126,7 +126,7 @@
                   <!-- Occupation -->
                   <div class="col-lg-4">
                     <div class="form-group">
-                      <label for="occupation" class="form-control-label">Occupation</label>
+                      <label for="occupation" class="form-control-label">Occupation <span class="required" *ngIf="subscriberForm.get('occupation').hasError('required')">*</span></label>
                       <input type="text" placeholder="Occupation" class="form-control form-control-sm" formControlName="occupation" />
                       <div class="invalid-feedback" *ngIf="subscriberForm.get('occupation').invalid && (subscriberForm.get('occupation').dirty || subscriberForm.get('occupation').touched)">
                         <div *ngIf="subscriberForm.get('occupation').errors.required">Occupation is required.</div>
@@ -153,7 +153,7 @@
                   <!-- Account Number -->
                   <div class="col-lg-4">
                     <div class="form-group">
-                      <label for="accountNumber" class="form-control-label">Account Number</label>
+                      <label for="accountNumber" class="form-control-label">Account Number<span class="required" *ngIf="subscriberForm.get('accountNumber').hasError('required')">*</span></label>
                       <input type="text" placeholder="Account Number" class="form-control form-control-sm" formControlName="accountNumber" />
                       <div class="invalid-feedback" *ngIf="subscriberForm.get('accountNumber').invalid && (subscriberForm.get('accountNumber').dirty || subscriberForm.get('accountNumber').touched)">
                         <div *ngIf="subscriberForm.get('accountNumber').errors.required">Account Number is required.</div>
@@ -164,11 +164,10 @@
                   <!-- IFSC -->
                   <div class="col-lg-4">
                     <div class="form-group">
-                      <label for="ifsc" class="form-control-label">IFSC Code</label>
+                      <label for="ifsc" class="form-control-label">IFSC Code<span class="required" *ngIf="subscriberForm.get('ifsc').hasError('required')">*</span></label>
                       <input type="text" placeholder="IFSC Code" class="form-control form-control-sm" formControlName="ifsc" />
                       <div class="invalid-feedback" *ngIf="subscriberForm.get('ifsc').invalid && (subscriberForm.get('ifsc').dirty || subscriberForm.get('ifsc').touched)">
                         <div *ngIf="subscriberForm.get('ifsc').errors.required">IFSC is required.</div>
-                        <div *ngIf="subscriberForm.get('ifsc').errors.pattern">IFSC should be in the format: 4 letters followed by 7 digits.</div>
                       </div>
                     </div>
                   </div>
@@ -177,7 +176,7 @@
                     <!-- UPI -->
                     <div class="col-lg-4">
                       <div class="form-group">
-                        <label for="upi_id" class="form-control-label">UPI</label>
+                        <label for="upi_id" class="form-control-label">UPI<span class="required" *ngIf="subscriberForm.get('upi_id').hasError('required')">*</span></label>
                         <input type="text" placeholder="UPI" class="form-control form-control-sm" formControlName="upi_id" />
                       </div>
                     </div>
@@ -187,7 +186,7 @@
   
                   <div class="col-lg-4">
                     <div class="form-group">
-                      <label for="panCardNumber" class="form-control-label">PAN Card Number</label>
+                      <label for="panCardNumber" class="form-control-label">PAN Card Number<span class="required" *ngIf="subscriberForm.get('panCardNumber').hasError('required')">*</span></label>
                       <input type="text" placeholder="PAN" class="form-control form-control-sm" formControlName="panCardNumber" />
                       <div class="invalid-feedback" *ngIf="subscriberForm.get('panCardNumber').invalid && (subscriberForm.get('panCardNumber').dirty || subscriberForm.get('panCardNumber').touched)">
                         <div *ngIf="subscriberForm.get('panCardNumber').errors.pattern">PAN should be in the format: 5 letters followed by 4 digits and 1 letter.</div>
@@ -196,7 +195,7 @@
                   </div>
                   <div class="col-lg-4">
                     <div class="form-group">
-                      <label for="panUrl" class="form-control-label">PAN Card</label>
+                      <label for="panUrl" class="form-control-label">PAN Card<span class="required" *ngIf="subscriberForm.get('panUrl').hasError('required')">*</span></label>
                       <input type="file" (change)="onFileChange($event, 'panUrl')" class="form-control form-control-sm" formControlName="panUrl" />
                     </div>
                   </div>
@@ -208,17 +207,17 @@
                 <div class="row justify-content-around">
                     <div class="col-lg-4">
                         <div class="form-group">
-                          <label for="aadharNumber" class="form-control-label">Aadhar Card Number</label>
-                          <input type="text" placeholder="Aadhar" class="form-control form-control-sm" formControlName="aadharNumber" />
+                          <label for="aadharNumber" class="form-control-label">Aadhaar Card Number<span class="required" *ngIf="subscriberForm.get('aadharNumber').hasError('required')">*</span></label>
+                          <input type="text" placeholder="Aadhaar" class="form-control form-control-sm" formControlName="aadharNumber" />
                           <div class="invalid-feedback" *ngIf="subscriberForm.get('aadharNumber').invalid && (subscriberForm.get('aadharNumber').dirty || subscriberForm.get('aadharNumber').touched)">
-                            <div *ngIf="subscriberForm.get('aadharNumber').errors.required">Aadhar is required.</div>
-                            <div *ngIf="subscriberForm.get('aadharNumber').errors.pattern">Aadhar should be in the format: 4 digits followed by a space, another 4 digits, another space, and another 4 digits.</div>
+                            <div *ngIf="subscriberForm.get('aadharNumber').errors.required">Aadhaar is required.</div>
+                            <div *ngIf="subscriberForm.get('aadharNumber').errors.pattern">Aadhaar should be in the format: 4 digits followed by a space, another 4 digits, another space, and another 4 digits.</div>
                           </div>
                         </div>
                       </div>
                      <div class="col-lg-4">
                       <div class="form-group">
-                        <label for="aadharUrl" class="form-control-label">Aadhar Card</label>
+                        <label for="aadharUrl" class="form-control-label">Aadhaar Card <span class="required" *ngIf="subscriberForm.get('aadharUrl').hasError('required')">*</span></label>
                         <input type="file" (change)="onFileChange($event, 'aadharUrl')" class="form-control form-control-sm" formControlName="aadharUrl" />
                       </div>
                     </div>
@@ -235,7 +234,7 @@
                   <!-- Bank Name -->
                   <div class="col-lg-4">
                     <div class="form-group">
-                      <label for="bankName" class="form-control-label">Bank Name</label>
+                      <label for="bankName" class="form-control-label">Bank Name <span class="required" *ngIf="subscriberForm.get('bankName').hasError('required')">*</span></label>
                       <input type="text" placeholder="Bank Name" class="form-control form-control-sm" formControlName="bankName" />
                       <div class="invalid-feedback" *ngIf="subscriberForm.get('bankName').invalid && (subscriberForm.get('bankName').dirty || subscriberForm.get('bankName').touched)">
                         <div *ngIf="subscriberForm.get('bankName').errors.required">Bank Name is required.</div>
@@ -245,7 +244,7 @@
                   </div>
                   <div class="col-lg-4">
                     <div class="form-group">
-                      <label for="passbookUrl" class="form-control-label">Passbook</label>
+                      <label for="passbookUrl" class="form-control-label">Passbook <span class="required" *ngIf="subscriberForm.get('passbookUrl').hasError('required')">*</span></label>
                       <input type="file" (change)="onFileChange($event, 'passbookUrl')" class="form-control form-control-sm" formControlName="passbookUrl" />
                     </div>  
                 </div>
@@ -257,7 +256,7 @@
               <div class="row">
                 <div class="col-lg-4">
                     <div class="form-group">
-                      <label for="referralClient" class="form-control-label">Referral Client</label>
+                      <label for="referralClient" class="form-control-label">Referral Client <span class="required" *ngIf="subscriberForm.get('referralClient').hasError('required')">*</span></label>
                       <div class="input-group">
                         <input type="text" [value]="referralClient" readonly placeholder="Referral Client" class="form-control form-control-sm" formControlName="referralClient" />
                         <div class="input-group-append">
@@ -274,7 +273,7 @@
                   <!-- Nominee Name -->
                   <div class="col-lg-4">
                     <div class="form-group">
-                      <label for="nomineeName" class="form-control-label">Nominee Name</label>
+                      <label for="nomineeName" class="form-control-label">Nominee Name <span class="required" *ngIf="subscriberForm.get('nomineeName').hasError('required')">*</span></label>
                       <input type="text" placeholder="Nominee Name" class="form-control form-control-sm" formControlName="nomineeName" />
                       <div class="invalid-feedback" *ngIf="subscriberForm.get('nomineeName').invalid && (subscriberForm.get('nomineeName').dirty || subscriberForm.get('nomineeName').touched)">
                         <div *ngIf="subscriberForm.get('nomineeName').errors.required">Nominee Name is required.</div>
@@ -300,7 +299,7 @@
                   <!-- Nominee Address -->
                   <div class="col-lg-4">
                     <div class="form-group">
-                      <label for="nomineeAddress" class="form-control-label">Nominee Address</label>
+                      <label for="nomineeAddress" class="form-control-label">Nominee Address <span class="required" *ngIf="subscriberForm.get('nomineeAddress').hasError('required')">*</span></label>
                       <input type="text" placeholder="Nominee Address" class="form-control form-control-sm" formControlName="nomineeAddress" />
                       <div class="invalid-feedback" *ngIf="subscriberForm.get('nomineeAddress').invalid && (subscriberForm.get('nomineeAddress').dirty || subscriberForm.get('nomineeAddress').touched)">
                         <div *ngIf="subscriberForm.get('nomineeAddress').errors.required">Nominee Address is required.</div>
@@ -316,7 +315,7 @@
                   <!-- Nominee Occupation -->
                   <div class="col-lg-4">
                     <div class="form-group">
-                      <label for="nomineeOccupation" class="form-control-label">Nominee Occupation</label>
+                      <label for="nomineeOccupation" class="form-control-label">Nominee Occupation <span class="required" *ngIf="subscriberForm.get('nomineeOccupation').hasError('required')">*</span></label>
                       <input type="text" placeholder="Nominee Occupation" class="form-control form-control-sm" formControlName="nomineeOccupation" />
                       <div class="invalid-feedback" *ngIf="subscriberForm.get('nomineeOccupation').invalid && (subscriberForm.get('nomineeOccupation').dirty || subscriberForm.get('nomineeOccupation').touched)">
                         <div *ngIf="subscriberForm.get('nomineeOccupation').errors.required">Nominee Occupation is required.</div>
@@ -343,8 +342,8 @@
                   <!-- Nominee Aadhar -->
                   <div class="col-lg-4">
                     <div class="form-group">
-                      <label for="nomineeAadhar" class="form-control-label">Nominee Aadhar</label>
-                      <input type="text" placeholder="Nominee Aadhar" class="form-control form-control-sm" formControlName="nomineeAadhar" />
+                      <label for="nomineeAadhar" class="form-control-label">Nominee Aadhaar <span class="required" *ngIf="subscriberForm.get('nomineeAadhar').hasError('required')">*</span></label>
+                      <input type="text" placeholder="Nominee Aadhaar" class="form-control form-control-sm" formControlName="nomineeAadhar" />
                       <div class="invalid-feedback" *ngIf="subscriberForm.get('nomineeAadhar').invalid && (subscriberForm.get('nomineeAadhar').dirty || subscriberForm.get('nomineeAadhar').touched)">
                         <div *ngIf="subscriberForm.get('nomineeAadhar').errors.required">Nominee Aadhar is required.</div>
                         <div *ngIf="subscriberForm.get('nomineeAadhar').errors.pattern">Nominee Aadhar should be in the format: 4 digits followed by a space, another 4 digits, another space, and another 4 digits.</div>
@@ -356,7 +355,7 @@
                 <div class="row">
                   <div class="col-lg-4">
                     <div class="form-group">
-                      <label for="nomineeDOB" class="form-control-label">Nominee Date of Birth</label>
+                      <label for="nomineeDOB" class="form-control-label">Nominee Date of Birth <span class="required" *ngIf="subscriberForm.get('nomineeDOB').hasError('required')">*</span></label>
                       <input type="date" class="form-control form-control-sm" formControlName="nomineeDOB" />
                       <div class="invalid-feedback" *ngIf="subscriberForm.get('nomineeDOB').invalid && (subscriberForm.get('nomineeDOB').dirty || subscriberForm.get('nomineeDOB').touched)">
                         <div *ngIf="subscriberForm.get('nomineeDOB').errors.required">Nominee Date of Birth is required.</div>

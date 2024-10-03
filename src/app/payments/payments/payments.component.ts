@@ -60,7 +60,7 @@ export class PaymentsComponent implements OnInit {
       date: ['', [Validators.required, this.validateCurrentDate]],
       serialNumber:  ['',[Validators.required]],
       receiptNumber:  ['',[Validators.required]],
-      passbooknumber:  ['',[Validators.required]],
+      passbooknumber:  ['PB-',[Validators.required]],
       groupId:  ['',[Validators.required]],
       amount:  ['',[Validators.required]],
       collectionType:  ['',[Validators.required]],
@@ -71,8 +71,9 @@ export class PaymentsComponent implements OnInit {
       region:  ['',[Validators.required]],
       selectStaff: ['',[Validators.required]],
       chitAmount:['',[Validators.required]],
-      cancelled:['',[Validators.required]],
-      verified:['',Validators.required]
+      cancelled:[''],
+      verified:[''],
+      deleteReason: [""]
       },
       {
         validator: this.amountLessThanOrEqualChitAmount('amount', 'chitAmount') // Add custom validator here
@@ -90,18 +91,18 @@ export class PaymentsComponent implements OnInit {
         if (passbooknumber) {
           this.getSubByPassbookNo(passbooknumber);
         }
-      });
+     
 
       this.paymentForm.get('amount')?.valueChanges.subscribe((amount) => {
         const chitAmount = this.paymentForm.get('chitAmount')?.value;
         if (chitAmount && amount > 0) {
           const expectedInstallmentAmount = chitAmount / 20;  // Monthly installment calculation
           
-          this.handleAmountChange(amount, expectedInstallmentAmount);
+          this.handleAmountChange(amount, expectedInstallmentAmount,passbooknumber);
         }
       });
 
-
+    });
       this.service.getTodayPayment().subscribe((data)=>{
         this.totalPayment=data
         this.serialNumberCounter=this.totalPayment.AllPayment.length+1
@@ -131,6 +132,30 @@ console.log(this.staffs);
       }
       return null; // No error if validation passes
     };
+  }
+
+  onInputChange(event: any) {
+    let inputValue = event.target.value;
+
+    
+
+    // Ensure the value starts with PB- and limit the length to 8 digits after the prefix
+    if (!inputValue.startsWith('PB-')) {
+      this.paymentForm.patchValue({
+        passbooknumber: 'PB-'
+      });
+    }
+
+    // Patch the value back to the form control
+
+  }
+
+  blockPrefix(event: any) {
+    const inputValue = this.paymentForm.get('passbooknumber')?.value;
+
+    if (event.target.selectionStart < 3 && event.key !== 'Tab') {
+      event.preventDefault();
+    }
   }
 
   getSubByPassbookNo(passbooknumber: string): void {
@@ -191,7 +216,7 @@ console.log(this.staffs);
             groupId: this.subDetail.chitGroupId,
             subscriberId: subscriberDetails.subscriberId,
             subscriberName: subscriberDetails.firstName,
-            collectionType: "Monthly",
+            collectionType: subscriberDetails.collectionType,
             installmentMonth: nextInstallmentMonth,
             region: subscriberDetails.place,
             chitAmount: chitAmount,
@@ -212,13 +237,18 @@ console.log(this.staffs);
     });
   }
   
-  handleAmountChange(amount: number, expectedInstallmentAmount: number) {
+  handleAmountChange(amount: number, expectedInstallmentAmount: number,passbooknumber:any) {
     // Fetch the last payment or set default values if no previous payment exists
     const lastPayment = this.payments?.[this.payments.length - 1] || null;
     const previousAmountPaid = lastPayment ? lastPayment.amount || 0 : 0;
     
     let balanceAmount = 0;
     let currentInstallmentMonth = this.datePipe.transform(this.subDetail.auctionDate, 'dd-MMMM') || '';
+
+    this.service.getAmountByMonth(passbooknumber,currentInstallmentMonth).subscribe((data)=>{
+      console.log(data);
+      
+    })
   
     // If there's no previous payment, set balanceAmount to 0
     if (!lastPayment) {
@@ -289,19 +319,20 @@ console.log(this.staffs);
     const monthName = dateParts[1]; // Extract the month name
     const monthIndex = this.getMonthIndex(monthName); // Convert month name to index (0-11)
     
-    // Create a new Date object with the same day, increment the month
+    // Create a new Date object and increment the month
     let nextMonthIndex = (monthIndex + 1) % 12; // Increment month, wrap to 0 after December
     let year = new Date().getFullYear(); // Use the current year
+
     if (monthIndex === 11) {
-      // If it's December, move to January and increment the year
-      year += 1;
+        // If it's December, move to January and increment the year
+        year += 1;
     }
-  
+
     const nextMonth = this.getMonthName(nextMonthIndex); // Convert back to month name
-  
-    // Return the new date with the same day and incremented month
-    return `${day}-${nextMonth}`;
-  }
+
+    // Return the new date with the same day and the incremented month and year if needed
+    return `${day}-${nextMonth}-${year}`;
+}
   
   // Helper to convert month name to index
   getMonthIndex(monthName: string): number {
@@ -324,11 +355,11 @@ console.log(this.staffs);
       this.month=date.toLocaleString('default', { month: 'long' }); 
       this.year=date.getFullYear();
   
-
+    this.paymentForm.reset()
+  
+    
       console.log(response);
     });
-    this.router.navigate(["/payment"]);
-    this.paymentForm.reset()
 }
 
 validateCurrentDate(control: AbstractControl): { [key: string]: boolean } | null {

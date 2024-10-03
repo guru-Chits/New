@@ -4,11 +4,13 @@ import { StaffService } from '../shared/service/staff.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AreaService } from '../../area/shared/service/area.service';
 import { NgSelectModule, NgLabelTemplateDirective, NgOptionTemplateDirective } from '@ng-select/ng-select';
-
+import { HttpClient } from '@angular/common/http';
+import { DatePipe } from '@angular/common';
 @Component({
   selector: 'app-staff-create',
   templateUrl: './staff-create.component.html',
   styleUrl: './staff-create.component.css',
+  providers: [DatePipe]
 })
 export class StaffCreateComponent implements OnInit{
   staffsForm: FormGroup;
@@ -24,7 +26,9 @@ export class StaffCreateComponent implements OnInit{
     private activatedRoute:ActivatedRoute,
     private service: StaffService,
     private router:Router,
-    private routeService:AreaService
+    private routeService:AreaService,
+    private HttpClient:HttpClient,
+    private datePipe: DatePipe
   
   ) { }
 routeId:[]
@@ -51,7 +55,7 @@ staff:any=true
 private staffIdPrefix: string = 'KNG-';
  staffIdCounter: string='E00'
  displayedStaffs: any[];
-
+ workingStatus:boolean=false
  inputText = '';
  role:boolean=false
 ngOnInit(){
@@ -71,7 +75,7 @@ ngOnInit(){
     lastName: ["", [Validators.required,Validators.pattern(/^[A-Z][a-zA-Z]+$/),Validators.maxLength(25),Validators.minLength(2)]],
     gender: ["", [Validators.required]],
     role: ["", [Validators.required]],
-    contact: ["", [Validators.required, Validators.pattern(/^\+91\s?\d{10}$/)]],
+    contact: ["+91 ", [Validators.required, Validators.pattern(/^\+91\s?\d{10}$/)]],
     address: ["", [Validators.required, Validators.pattern(/^[a-zA-Z0-9\s,.'-]+$/)]],
     emailId:["", [Validators.required, Validators.email, Validators.minLength(10), Validators.maxLength(100)]],
     dob: ['', [Validators.required,
@@ -90,19 +94,19 @@ ngOnInit(){
       this.conditionalValidator(() => !!this.staffsForm?.get('panCardNumber')?.value, Validators.pattern(/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/))
     ]],
     panUrl: [""],
-    aadharNumber: ['', [
+    aadharNumber: [, [Validators.required,
       this.conditionalValidator(() => !!this.staffsForm?.get('aadharNumber')?.value, Validators.pattern(/^\d{4}\s\d{4}\s\d{4}$/))
     ]],
-    aadharUrl: [""],
+    aadharUrl: ["",[Validators.required]],
     drivingLicenseUrl: [""],
     drivingLicenseNumber: ["", this.conditionalValidator(() => !!this.staffsForm?.get('drivingLicenseNumber')?.value, Validators.pattern(/^[A-Z]{2}[- ]?[A-Z0-9]{2}[ ]?[0-9]{4}[ ]?[0-9]{7}$/))],
     bankName: [""],
     passbookUrl: [""],
-    workingStatus: [false, [Validators.required]],
+    workingStatus: ["", [Validators.required]],
     bgVerification: ["UnVerified"],
     bgVerification_remark: [""],
     profileUrl:[""],
-    password:[""]
+    password:["Staff@578"]
   });
 
   this.staffsForm.patchValue({
@@ -170,6 +174,36 @@ ngOnInit(){
         
        })
  
+  }
+
+  onContactChange(event: any) {
+    let inputValue = event.target.value;
+
+    // Remove all non-numeric characters except the prefix
+    let numbersOnly = inputValue.replace(/[^\d]/g, '');
+
+    // Ensure the value starts with +91 and limit the length to 10 digits after the prefix
+    if (numbersOnly.startsWith('91')) {
+      numbersOnly = '+91 ' + numbersOnly.substring(2, 12); // Take only 10 digits after +91
+    } else {
+      numbersOnly = '+91 ';
+    }
+
+    // Patch the value back to the form control
+    this.staffsForm.patchValue({
+      contact: numbersOnly
+    });
+  }
+  blockPrefix(event: any) {
+    const inputValue = this.staffsForm.get('contact')?.value;
+
+    // Prevent deletion or modification of the '+91 ' prefix
+    if (event.target.selectionStart < 4 && event.key !== 'Tab') {
+      event.preventDefault();
+    }
+  }
+  working(event:any){
+   this.workingStatus= this.staffsForm.get('workingStatus')?.value;
   }
 
   onInputChange(event: any,placeholder:string) {
@@ -257,6 +291,11 @@ ngOnInit(){
   
     return formattedDate;
   }
+  onDateChange(event: any) {
+    // Manually parsing the date and formatting it to dd-MM-yyyy
+    const formattedDate = this.datePipe.transform(event, 'dd-MM-yyyy');
+    this.staffsForm.get('dob').setValue(formattedDate, { emitEvent: false });
+  }
   
  conditionalValidator(condition: () => boolean, validator: ValidatorFn): ValidatorFn {
   return (control: AbstractControl): { [key: string]: any } | null => {
@@ -332,9 +371,9 @@ private getColorForInitial(initial: string): string {
 onSubmit(): void {
   const formData = new FormData();
   
-  this.staffsForm.patchValue({
-    password: this.generateRandomPassword(12)  // Generate a 12-character random password
-  });
+  // this.staffsForm.patchValue({
+  //   password: this.generateRandomPassword(12)  // Generate a 12-character random password
+  // });
   
   const formValue = this.staffsForm.getRawValue();
 
@@ -359,22 +398,28 @@ onSubmit(): void {
     }
   }
 
+
+
   this.service.savestaffDetails(formData, this.staffId).subscribe((data) => {
-    if (isNewStaff) {
-      // Send notification (OTP API or Email) with employeeId, password, and link
-      // const employeeId = this.staffsForm.get('employeeId')?.value;
-      // const password = this.staffsForm.get('password')?.value;
-      // const loginLink = 'http://13.127.210.25/login/forgot-password';
-      
-      // let message = `Your employee ID is ${employeeId} and your temporary password is ${password}. Use the following link to login and reset your password: ${loginLink}`;
-    }
-      // Assuming the service has a method to send SMS or email notifications
-      this.service.sendSms(
-         formValue.contact,
-         `Your employee ID is ${ this.staffsForm.get('employeeId')?.value} and your temporary password is ${this.staffsForm.get('password')?.value}. Use the following link to login and reset your password: ${'http://13.127.210.25/login/forgot-password'}`,
-      )
+    if(!this.staffId){
+      const mobile=this.staffsForm.get('contact')?.value
+      const password = this.staffsForm.get('password')?.value;
+      const loginLink = 'http://13.127.210.25/login';
+      const empId=this.staffsForm.get('employeeId')?.value;
     
-    // Navigate to staff list after saving
+      const otpUrl = `https://2factor.in/API/R1/?module=TRANS_SMS&apikey=b1037ef1-2ed8-11ef-8b60-0200cd936042&to=${mobile}&from=KNGCPL&templatename=Onboarding&var1=${loginLink}&var2=${empId}&var3=${password}`;
+      // Send OTP
+      https://2factor.in/API/R1/?module=TRANS_SMS&apikey=b1037ef1-2ed8-11ef-8b60-0200cd936042&to=+91%206385578470&from=KNGCPL&templatename=Onboarding&var1=login/fb&var2=KNG-E009&var3=zvMc.6%20
+      this.HttpClient.get(otpUrl).subscribe(
+        (otpResponse: any) => {
+          console.log('OTP sent successfully:', otpResponse);
+         },
+        (error) => {
+          console.error('Error sending OTP:', error);
+        }
+      );
+    
+    }
     this.router.navigate(["/staff"]);
 
   })

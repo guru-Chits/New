@@ -2,7 +2,7 @@
   <div class="row justify-content-around">
     <div class="col-lg-4">
       <div class="form-group">
-        <label for="groupId" class="form-control-label">Group ID</label>
+        <label for="groupId" class="form-control-label">Chit Group ID</label>
         <input type="text" placeholder="Group Id" class="form-control form-control-sm" formControlName="groupId" readonly/>
       </div>
     </div>
@@ -25,21 +25,27 @@
     <div class="col-lg-4">
       <div class="form-group">
         <label for="winningBid" class="form-control-label">Winning Bid</label>
-        <input type="text" placeholder="Winning Bid" class="form-control form-control-sm" formControlName="winningBid" (change)="getRouteNameValue()"/>
+        <input type="text" placeholder="Winning Bid" class="form-control form-control-sm man" formControlName="winningBid" (change)="getRouteNameValue()"/>
       </div>
     </div>
 
     <div class="col-lg-4">
       <div class="form-group">
         <label for="prizedAmount" class="form-control-label">Prized Amount</label>
-        <input type="text" placeholder="Prizes Amount" class="form-control form-control-sm" formControlName="prizedAmount" />
+        <input type="text" placeholder="Prizes Amount" class="form-control form-control-sm" formControlName="prizedAmount" readonly />
       </div>
     </div>
 
     <div class="col-lg-4">
       <div class="form-group">
         <label for="ticketId" class="form-control-label">Ticket Id</label>
-        <input type="text" placeholder="Ticket Id" class="form-control form-control-sm" formControlName="ticketId" />
+        <input type="text" placeholder="Ticket Id" class="form-control form-control-sm man" formControlName="ticketId" 
+        [ngClass]="{'is-invalid': extraForm.get('ticketId')?.invalid && extraForm.get('ticketId')?.touched}"
+
+        />
+      </div>
+      <div *ngIf="extraForm.get('ticketId')?.hasError('ticketExists')" class="invalid-feedback">
+        This ticket is already in use for this group.
       </div>
       <div *ngIf="extraForm.hasError('ticketIdOutOfRange') && extraForm.get('ticketId')?.touched">
         <small class="text-danger">{{ extraForm.getError('ticketIdOutOfRange') }}</small>

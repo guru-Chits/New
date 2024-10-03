@@ -19,9 +19,11 @@ export class SubscriberComponent {
       routerLink: 'subscriber',
     },
   ];
-
+  chitGroup:any
 subscriberData:any
 data: any[] = [];
+count:number=0
+chitGroups:any
 selectedId:any
 subscriberDetail:any
 totalCount:number;
@@ -43,11 +45,6 @@ canView:boolean=false
 this.authService.checkAccess('Subscriber Management', 'create').subscribe((hasAccess: boolean) => {
   if (hasAccess) {
     this.canCreate=true
-    // Code to execute when access is granted
-    console.log('Create access granted');
-  } else {
-    // Code to execute when access is denied
-    console.log('Create access denied');
   }
 });
 
@@ -56,29 +53,19 @@ this.authService.checkAccess('Subscriber Management', 'create').subscribe((hasAc
 this.authService.checkAccess('Subscriber Management', 'view').subscribe((hasAccess: boolean) => {
   if (hasAccess) {
     this.canView=true
-    console.log('Delete access granted');
-  } else {
-    console.log('Delete access denied');
   }
 });
 
 this.authService.checkAccess('Subscriber Management', 'delete').subscribe((hasAccess: boolean) => {
   if (hasAccess) {
     this.canDelete=true
-    console.log('Delete access granted');
-  } else {
-    console.log('Delete access denied');
   }
 });
-  
 
-      console.log("subscriber data");
       
       this.service.getsubscriberAll().subscribe((data)=>{
       this.subscriberData=data;
 
-      console.log("subscriber data",this.subscriberData);
-      console.log(this.subscriberData.AllSubscriber.length);
       this.totalCount=this.subscriberData.AllSubscriber.length
       this.data=this.subscriberData.AllSubscriber.map((subscriberDetails,index)=>({
         id:subscriberDetails?._id,
@@ -88,11 +75,22 @@ this.authService.checkAccess('Subscriber Management', 'delete').subscribe((hasAc
         location: subscriberDetails?.place,
         profileImageUrl: subscriberDetails?.profileImageUrl,
         routeId: subscriberDetails?.routeId,
+        enroll: this.service.getChitGroupById(subscriberDetails?.subscriberId).subscribe(
+          response => {
+            this.chitGroups = response;
+            // Check if the chitGroup length is greater than 1
+            if (this.chitGroups.length > 1) {
+              // Increment the totalCount
+              this.count++;
+            }
+          }
+        )
 
       }))
     })
 
 
+    
   }
   profileImageWithIdRenderer(params: any): string {
     const imageUrl = params.data.profileImageUrl;
@@ -144,8 +142,12 @@ this.authService.checkAccess('Subscriber Management', 'delete').subscribe((hasAc
     this.service.getsubscriberById(id).subscribe(
       data => {
         this.subscriberDetail = data;
-  
-        console.log(this.subscriberDetail)
+        this.service.getChitGroupById(this.subscriberDetail.Subscriber.subscriberId).subscribe(
+          response => {
+            this.chitGroup=response
+            this.chitGroup=this.chitGroup.length
+          },
+        );
       },
       error => {
         console.error('Error fetching subscriber', error);

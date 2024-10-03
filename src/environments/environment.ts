@@ -1,13 +1,16 @@
 
-const baseUrl = 'https://chitfundapi.onrender.com';
-const localUrl='http://localhost:8000'
+// const baseUrl = 'http://13.127.210.25';
+const baseUrl='http://localhost:8000'
+const renderUrl='https://chitfundapi.onrender.com'
 export const environment = {
-    paymentServiceUrl: `${localUrl}/api`,
+    paymentServiceUrl: `${baseUrl}/api`,
     subscriberServiceUrl:`${baseUrl}/api`,
     chitServiceUrl:`${baseUrl}/api`,
     staffServiceUrl:`${baseUrl}/api`,
-    areaServiceUrl:`${localUrl}/api`,
-    loginServiceUrl:`${localUrl}/api`,
+    areaServiceUrl:`${baseUrl}/api`,
+    loginServiceUrl:`${baseUrl}/api`,
     accessServiceUrl:`${baseUrl}/api`,
-    auctionServiceUrl:`${baseUrl}/api`
+    auctionServiceUrl:`${baseUrl}/api`,
+    settingsServiceUrl:`${baseUrl}/api/settings`
+
 }

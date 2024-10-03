@@ -14,6 +14,8 @@ export class ViewallComponent implements OnInit {
   displayedStaff:any
   staffDetail:any
   total:number
+  showAll = false;
+  itemsPerPage = 10; // Default items per page
 
 ngOnInit(): void {
   
@@ -27,13 +29,13 @@ ngOnInit(): void {
       staffName: `${staffDetails?.firstName} ${staffDetails?.lastName}`,
       staffProfile:staffDetails?.profileUrl
     }))
-    this.displayedStaff = this.data;
+    this.displayedStaff = this.data.slice(0, this.itemsPerPage);
   })
 }
 
 applyFilter(filterValue: string) {
   if (!filterValue || !this.data) {
-    this.displayedStaff = this.data; // Show all if there's no filter or data is not defined
+    this.displayedStaff = this.data.slice(0, this.itemsPerPage); // Show all if there's no filter or data is not defined
     return;
   }
 
@@ -45,5 +47,13 @@ applyFilter(filterValue: string) {
   }
   getSub(id:any){
     this.router.navigate([`staff/view/${id}`]);
+  }
+
+
+  viewMore() {
+    if (!this.showAll) {
+      this.displayedStaff = this.data; // Show all subscribers
+      this.showAll = true;
+    }
   }
 }

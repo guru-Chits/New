@@ -1,7 +1,7 @@
 <div class="container-fluid d-flex flex-column">
 
-    <div class="row">     
-      <div [ngClass]="{'col-md-9 col-lg-9': subscriberDetail, 'col-md-12 col-lg-12': !subscriberDetail}">     
+    <div class="row mt-3 pl-2">     
+      <div [ngClass]="{'col-md-8 col-lg-8': subscriberDetail, 'col-md-12 col-lg-12': !subscriberDetail}">     
          <!-- <div class="header"> -->
           <app-breadcrumb [data]="breadcrumsData"></app-breadcrumb>
         <button class="btn btn-primary create" *ngIf="canCreate" routerLink="create">Create subscriber</button>
@@ -19,24 +19,24 @@
           <div class="line  p-1 pb-2 text-center">
             <div class="card-body">
               <h5 class="card-title">Subscribers With Multiple Enrollments</h5>
-              <p class="card-text">500</p>
+              <p class="card-text">{{count}}</p>
             </div>
           </div>  
         </div>
       </div>
-      <app-ag-grid [columns]="column" [rowData]="data"   width="100%" height="300px" [searchImg]="searchImg"   [filterImg]="filterImg" [search]="search"></app-ag-grid>
+      <app-ag-grid [columns]="column" [rowData]="data"   width="100%" height="450px" [searchImg]="searchImg"   [filterImg]="filterImg" [search]="search"></app-ag-grid>
     </div>
     <!-- [pageSize]="3" -->
-    <div class="col-md-3 col-lg-3">
+    <div class="col-md-4 col-lg-4">
     <div *ngIf="subscriberDetail">
     <div class="card details">
     <div class="title align-self-center py-2">Subscriber Details</div>
     <img src="{{subscriberDetail.Subscriber.profileImageUrl}}" class="rounded-circle  align-self-center mb-2" width="75" height="75" alt="Subscriber Image">
-    <table class="table flex-column">
+    <table class="table">
         <tbody>
           <tr>
             <td><strong>Subscriber ID:</strong></td>
-            <td><a href="#">{{subscriberDetail.Subscriber.subscriberId}}</a></td>
+            <td (click)="navigate(subscriberDetail.Subscriber._id)" *ngIf="canView" style="color: #50A1A5">{{subscriberDetail.Subscriber.subscriberId}}</td>
           </tr>
           <tr>
             <td><strong>First Name</strong></td>
@@ -58,13 +58,13 @@
             <td><strong>Occupation:</strong></td>
             <td>{{subscriberDetail.Subscriber.occupation}}</td>
           </tr>
-          <tr>
-            <td><strong>Referral Client:</strong></td>
+          <tr *ngIf="subscriberDetail.Subscriber.referralClient">
+            <td ><strong>Referral Client:</strong></td>
             <td>{{subscriberDetail.Subscriber.referralClient}}</td>
           </tr>
           <tr>
             <td><strong>Enrollments:</strong></td>
-            <td>2</td>
+            <td>{{this.chitGroup}}</td>
           </tr>
           <tr>
             <td><strong>Region/Route:</strong></td>

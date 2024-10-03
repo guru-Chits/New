@@ -255,7 +255,7 @@ export class AreaCreateComponent implements OnInit{
       { label: 'Route Name', field: 'routeName', sortable: true , filterList:true,
       
         },      
-      { label: '', field: 'action', sortable: true , filterList:true,      cellStyle: { color: '#50A1A5' },
+      { label: '', field: 'action', sortable: true , filterList:true,      cellStyle: { color: '#50A1A5', cursor:'pointer' },
 
         onCellClicked: (event: CellClickedEvent) =>
           this.getrouteById(event.data.id)

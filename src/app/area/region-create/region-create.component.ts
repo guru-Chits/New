@@ -209,7 +209,7 @@ console.log(this.regionData.id);
   
         },
     { label: '', field: 'action', sortable: true , filterList:true,
-      cellStyle: { color: '#50A1A5' },
+      cellStyle: { color: '#50A1A5', cursor:'pointer'},
       onCellClicked: (event: CellClickedEvent) =>
         this.getregionById(event.data.id)
         },

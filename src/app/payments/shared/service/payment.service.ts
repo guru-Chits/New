@@ -9,7 +9,9 @@ import { Observable } from 'rxjs';
 export class PaymentService {
   paymentUrl:string=environment.paymentServiceUrl+"/payment"
 
-  constructor(private http:HttpClient) { }
+  constructor(private http:HttpClient) { 
+    
+  }
 
 getPaymentAll(){
   return this.http.get(`${this.paymentUrl}/getPaymentDetails`)
@@ -94,11 +96,25 @@ getDataByDate(fromDate: any, toDate:any,region?: string , collectionType?:string
   return this.http.get(url);
 }
 
+getDataByCollection(fromDate: any, toDate:any,region?: string , collectionType?:string){
+  let url=`${this.paymentUrl}/getDataByCollection/${fromDate}/${toDate}/${region}/${collectionType}`
+  // if(region&&!collectionType){
+  //   url+=`/${region}`;
+  // }
+  return this.http.get(url);
+}
+
 getTotalByGroupId(groupId:string): Observable<any> {
   let url=`${this.paymentUrl}/getTotalByGroupId/${groupId}`
   return this.http.get(url)
 
 }
+getAmountByMonth(passbooknumber:string,installmentMonth:any): Observable<any> {
+  let url=`${this.paymentUrl}/getAmountByMonth/${passbooknumber}/${installmentMonth}`
+  return this.http.get(url)
+
+}
+
 
 getPassbookNo(date:Date,routeId:string,selectStaff:string){
   let url=`${this.paymentUrl}/getPassbookNo/${date}/${routeId}/${selectStaff}`

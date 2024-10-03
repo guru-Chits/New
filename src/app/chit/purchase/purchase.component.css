@@ -26,6 +26,9 @@
       .form-group {
         margin-bottom: 1rem;
       }
+      .purchaseDetailModel{
+        display: block;
+      }
       
       .form-control-label {
         font-weight: 500;
@@ -71,4 +74,14 @@
       /* In your styles.css or auction.component.css */
     .highlighted-row {
       background-color: lightgreen !important;
+    }
+    .is-invalid {
+      border-color: #dc3545;
+    }
+    
+    .invalid-feedback {
+      color: #dc3545;
+    }
+    .man{
+      background-color: white;
     }

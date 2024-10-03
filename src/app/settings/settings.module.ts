@@ -11,6 +11,7 @@ import { CreateStaffComponent } from './create-staff/create-staff.component';
 import { CreateRoleComponent } from './create-role/create-role.component';
 import { CollectionTypeComponent } from './collection-type/collection-type.component';
 import { ReasonDeletionComponent } from './reason-deletion/reason-deletion.component';
+import { HttpClientModule } from '@angular/common/http';
 
 
 
@@ -31,7 +32,8 @@ import { ReasonDeletionComponent } from './reason-deletion/reason-deletion.compo
     SettingsRoutingModule,
     FormsModule,
     ReactiveFormsModule,
-    SharedModule
+    SharedModule,
+    HttpClientModule
   ]
 })
 export class SettingsModule { }

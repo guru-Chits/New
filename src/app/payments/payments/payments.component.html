@@ -2,8 +2,9 @@
     <div class="row justify-content-around">
         <div class="col-lg-4">
             <div class="form-group">
-                <label for="date" class="form-control-label">Date/Timestamp <span class="required" *ngIf="paymentForm.get('date').hasError('required')">*</span></label>
-                <input type="date" class="form-control p-2 form-control-sm" id="date" formControlName="date" placeholder="Date"/>
+                <label for="date" class="form-control-label">Date <span class="required" *ngIf="paymentForm.get('date').hasError('required')">*</span></label>
+                <input type="date" class="form-control p-2 form-control-sm man" id="date" formControlName="date" placeholder="Date"  [min]="today" 
+                [max]="today" />
                 <div *ngIf="paymentForm.get('date')?.hasError('invalidDate') && paymentForm.get('date')?.touched">
                     <small class="text-danger">Please select today's date.</small>
                   </div>
@@ -12,7 +13,11 @@
         <div class="col-lg-4">
             <div class="form-group">
                 <label for="passbooknumber" class="form-control-label">Passbook Number <span class="required" *ngIf="paymentForm.get('passbooknumber').hasError('required')">*</span></label>
-                <input class="form-control p-2 form-control-sm" id="passbooknumber" formControlName="passbooknumber" placeholder="Passbook Number"/>
+                <input class="form-control p-2 form-control-sm man" id="passbooknumber" formControlName="passbooknumber" placeholder="Passbook Number"  [value]="paymentForm.get('passbooknumber').value" 
+                (input)="onInputChange($event)" 
+                (keydown)="blockPrefix($event)"
+                maxlength="15"
+                />
             </div>
         </div>
         <div class="col-lg-4">
@@ -65,7 +70,7 @@
         <div class="col-lg-4">
             <div class="form-group">
                 <label class="form-control-label">Select Staff<span class="required" *ngIf="paymentForm.get('selectStaff').hasError('required')">*</span></label>
-                <select class="form-control form-control-sm form-select" formControlName="selectStaff" placeholder="Select Staff">
+                <select class="form-control form-control-sm form-select man" formControlName="selectStaff" placeholder="Select Staff">
                 <option value="" disabled selected>Staffs</option>
                 <option  [value]="staffs">{{staffs}}</option>
                 </select>
@@ -77,7 +82,7 @@
         <div class="col-lg-4">
             <div class="form-group">
                 <label for="amount" class="form-control-label">Amount<span class="required" *ngIf="paymentForm.get('amount').hasError('required')">*</span></label>
-                <input class="form-control p-2 form-control-sm" id="amount" formControlName="amount" placeholder="Amount"/>
+                <input class="form-control p-2 form-control-sm man" id="amount" formControlName="amount" placeholder="Amount"/>
                 <div *ngIf="paymentForm.errors?.amountExceedsChitAmount" style="color: red;">
                     Amount cannot be greater than Chit Amount.
                   </div>

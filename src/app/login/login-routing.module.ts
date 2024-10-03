@@ -12,17 +12,14 @@ const routes: Routes = [
     pathMatch: 'full'
   },
   {
-    path: "forgot-password",
+    path: "fp",
     component: ForgotPasswordComponent,
   },
   {
     path: "verify",
     component: VerifyComponent,
   },
-  {
-    path:"reset-password",
-    component:ResetPasswordComponent
-  }
+
 ];
 
 @NgModule({

@@ -10,7 +10,7 @@
         [ngStyle]="{'background-color': bg}"
         />
       </div>
-        <button class="filter-button"  [ngStyle]="{'background-color': bg}"  (click)="filterTableData($event)" >
+        <button class="filter-button" *ngIf="filter"  [ngStyle]="{'background-color': bg}"  (click)="filterTableData($event)" >
         <img src="{{filterImg}}">
        </button >
        <div class="popup model shadow-lg p-3 mb-5  mt-8 bg-white rounded" *ngIf="showFilter">
@@ -53,6 +53,7 @@
     (gridReady)="onGridReady($event)"
     [pagination]="true"
     [gridOptions]="gridOptions"
+    [gridOptions]="gridOption"
     >
   </ag-grid-angular>
 

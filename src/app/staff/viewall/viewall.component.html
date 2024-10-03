@@ -2,7 +2,7 @@
     <h5 class="text-center my-3">Staffs</h5>
 
     <table class="table-card mx-3">
-      <h6>Total Staffs:{{total}}</h6>
+      <h6>Total Staffs : {{total}}</h6>
 
       <tbody>
         <tr *ngFor="let staff of displayedStaff">
@@ -22,5 +22,5 @@
         </tr>
       </tbody>
     </table>
-    <button class="btn align-self-center  view">View More</button>
+    <button *ngIf="!showAll" class="btn align-self-center  view"  (click)="viewMore()">View More</button>
   </div>

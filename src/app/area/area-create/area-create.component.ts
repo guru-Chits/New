@@ -86,10 +86,7 @@ export class AreaCreateComponent implements OnInit{
         Validators.required,
         Validators.pattern('^[A-Z][a-zA-Z]*$') // First letter capitalized, no spaces at beginning or end, only alphabetic characters
       ]),
-      regionName: new FormControl(null, [
-        Validators.required,
-        Validators.pattern('^[A-Z][a-zA-Z]*$') // First letter capital, rest alphabetic
-      ]),
+
       routeId: new FormControl(null, [
         Validators.required,
         // Validators.pattern('^[A-Z]{3} - [A-Z][a-zA-Z]*$') // "Region ID - Area Name" format
@@ -99,8 +96,10 @@ export class AreaCreateComponent implements OnInit{
         Validators.minLength(10),
         // Validators.maxLength(100),
         // Validators.pattern('^[a-zA-Z0-9 ,.!?-]+$') // Valid characters including letters, numbers, and common punctuation
+        Validators.maxLength(100),
+       // Valid characters including letters, numbers, and common punctuation
       ]),
-      status: new FormControl(null),
+      status: new FormControl(true),
     })
     this.getrouteAll()
  
@@ -255,7 +254,7 @@ export class AreaCreateComponent implements OnInit{
       { label: 'Route Name', field: 'routeName', sortable: true , filterList:true,
       
         },      
-      { label: '', field: 'action', sortable: true , filterList:true,      cellStyle: { color: '#50A1A5' },
+      { label: '', field: 'action', sortable: true , filterList:true,      cellStyle: { color: '#50A1A5', cursor:'pointer' },
 
         onCellClicked: (event: CellClickedEvent) =>
           this.getrouteById(event.data.id)

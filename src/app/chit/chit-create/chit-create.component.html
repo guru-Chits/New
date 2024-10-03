@@ -1,43 +1,85 @@
 <div class="container-fluid">
     <div class="row">
-        <app-breadcrumb [data]="breadcrumsData"></app-breadcrumb>
-        <div [ngClass]="{'col-md-9 col-lg-9': isSubscriberListVisible, 'col-md-12 col-lg-12': !isSubscriberListVisible}">
+          <div [ngClass]="{'col-md-9 col-lg-9': isSubscriberListVisible, 'col-md-12 col-lg-12': !isSubscriberListVisible}">
+            <app-breadcrumb [data]="breadcrumsData"></app-breadcrumb>
             <form  [formGroup]="chitGroupForm">
-                <div class="row justify-content-around">
-                    <div class="col-lg-4">
+                <div class="row justify-content-around pe-3">
+                    <!-- <div class="col-lg-4">
                         <div class="form-group">
                             <label for="auctionDate" class="form-control-label">First Auction Date</label>
-                            <input type="date" class="form-control p-2 form-control-sm mt-2" id="auctionDate" formControlName="auctionDate" placeholder="auctionDate"/>
+                            <input type="date" class="form-control p-2 form-control-sm mt-2" id="auctionDate" formControlName="auctionDate" [min]="currentDate" placeholder="auctionDate"/>
                         </div>
-                    </div>                   
+                    </div> -->
+                    <div class="col-lg-4">
+                      <div class="form-group">
+                          <label for="auctionDate" class="form-control-label">First Auction Date</label>
+                          <input type="date" class="form-control p-2 form-control-sm mt-2" id="auctionDate" formControlName="auctionDate" (change)="validateDate($event)" placeholder="auctionDate"/>
+                          <!-- <p>The minimum date is: {{ FirstChitDate | date:'dd/MM/yyyy' }}</p> -->
+                      </div>
+                  </div> 
+                  
+                                       
                     <div class="col-lg-4">
                         <div class="form-group">
                             <label for="chitAmount" class="form-control-label">Chit Amount</label>
-                            <input class="form-control p-2 form-control-sm mt-2" id="chitAmount" formControlName="chitAmount" placeholder="Chit Amount"/>
+                            <input class="form-control p-2 form-control-sm mt-2" id="chitAmount" formControlName="chitAmount" placeholder="Chit Amount" (change)="getformanVal()"   (keypress)="preventNonNumeric($event)"
+                            (input)="filterNonNumericInput()"/>
+                            <div *ngIf="chitGroupForm.get('chitAmount').invalid && chitGroupForm.get('chitAmount').touched">
+                              <small class="text-danger">Chit Amount must be a valid number.</small>
+                            </div>
                         </div>
                     </div>
                     <div class="col-lg-4">
                         <div class="form-group">
                             <label for="foremanCommission" class="form-control-label">Foreman Commission</label>
-                            <input class="form-control p-2 form-control-sm mt-2" id="foremanCommission" formControlName="foremanCommission" placeholder="Foreman Commission"/>
+                            <input class="form-control p-2 form-control-sm mt-2" id="foremanCommission" formControlName="foremanCommission" placeholder="Foreman Commission" readonly/>
                         </div>
                     </div>
                 </div>
-                <div class="row justify-content-start">
+                <div class="row justify-content-start pe-3">
                     <div class="col-lg-4">
                         <div class="form-group">
                             <label for="monthlyInstall" class="form-control-label ">Monthly Installment</label>
-                            <input class="form-control p-2 form-control-sm mt-2" id="monthlyInstall" formControlName="monthlyInstall" placeholder="Monthly Installment"/>
+                            <input class="form-control p-2 form-control-sm mt-2" id="monthlyInstall" formControlName="monthlyInstall" placeholder="Monthly Installment" readonly/>
                         </div>
                     </div>
                 </div>
                 <div class="row justify-content-start ">
-                    <div class="col-lg-4">
+                    <!-- <div class="col-lg-4">
                         <div class="d-flex justify-content-around align-items-center">
                             <button class="btn btn-upload border border-secondary py-1">Document Upload</button>
                             <span class="doc-name">document.pdf</span>
                         </div>
                     </div>
+                    <div class="col-lg-4">
+                      <div class="d-flex justify-content-around align-items-center">
+                    
+                        <input
+                          type="file"
+                          id="fileInput"
+                          style="display: none;"
+                          (change)="onSelectedFile($event)"/>
+                    
+                  
+                        <button
+                          class="btn btn-upload border border-secondary py-1"
+                          (click)="triggerFileInput()"
+                        >
+                          Document Upload
+                        </button>
+                    
+                      
+                        <span class="doc-name">{{ selectedFileName || 'No file selected' }}</span>
+                      </div>
+                    </div> -->
+                    <div class="col-lg-5">
+                      <div class="d-flex justify-content-around align-items-center">
+                        <input type="file" id="fileInput" style="display: none;" formControlName="document" (change)="onFileSelected($event)"/>
+                        <button type="button" class="btn btn-upload border border-secondary py-1" (click)="triggerFileInput()">Document Upload</button>
+                        <span class="doc-name">{{ selectedFileName || 'No file selected' }}</span>
+                      </div>
+                    </div>
+                    
                 </div>
                 <!-- <div class="row justify-content-start">
                     <div class="col-lg-4">
@@ -49,24 +91,27 @@
                     </div>
                 </div> -->
                 <div class="row">
-                    <div class="col-lg-12 d-flex justify-content-end py-3">
+                    <div class="col-lg-12 d-flex justify-content-end py-3 px-4">
                        <button type="button" class="btn next-btn px-4 py-3 fw-bold"(click)="showSubscriberList('chit')">Add Subscribers</button>
                     </div>
                 </div>
             </form>
             <app-ag-grid [columns]="column" [rowData]="chitSubscribersData" width="100%" height="300px"></app-ag-grid>
-            <div class="row">
-                <div class="col-lg-12 d-flex justify-content-end py-3">
-                    <button type="button" class="btn next-btn px-4 py-3 fw-bold" (click)="showSubscriberList('additional')">Add Additional Subscribers</button>
+            <div class="row ">
+              <div class="col-lg-12 d-flex justify-content-end py-3 px-4" *ngIf="showAnother"><!-- *ngIf="chitSubLength >= 20"-->
+                <button type="button" class="btn next-btn px-4 py-3 fw-bold mt-2" (click)="showSubscriberList('additional')">Add Additional Subscribers</button>
+           
                 </div>
             </div>
-            <app-ag-grid [columns]="addSubcolumn" [rowData]="addChitSubscribersData" width="100%" height="300px"></app-ag-grid>
+            <div *ngIf="showAnother">
+              <app-ag-grid [columns]="addSubcolumn" [rowData]="addChitSubscribersData" width="100%" height="300px"></app-ag-grid>
+            </div>
             <div class="row">
-                <div class="col-lg-12 d-flex justify-content-end py-3">
-                    <button type="button" class="btn next-btn px-4 py-3 fw-bold" (click)="onSubmit()">Create Group</button>
-                </div>
-            </div> 
-        </div>
+              <div class="col-lg-12 d-flex justify-content-end py-3 px-4">
+                <button type="button" class="btn next-btn px-4 py-3 fw-bold" [disabled]="!chitGroupForm.valid" (click)="onSubmit()">Create Group</button>
+              </div>
+            </div>  
+          </div>
         <!-- <div class="col-lg-3 " *ngIf="isSubscriberListVisible">
             <div class="card details p-3">
             <h5 class="text-center my-2">Add Subscribers</h5>
@@ -202,7 +247,7 @@
             </div>
           </div> -->
           
-          <div class="col-lg-3" *ngIf="isSubscriberListVisible">
+          <div class="col-lg-3 p-0" *ngIf="isSubscriberListVisible">
             <div class="card details p-3">
               <h5 class="text-center my-2">Add Subscribers</h5>
               <div class="search-bar align-self-center mb-3">
@@ -214,19 +259,66 @@
                   <tr *ngFor="let subscriber of displayedSubscribers">
                     <td>
                       <div class="card view-all mb-2">
-                        <div class="card-body align-self-center">
+                        <div class="card-body p-3">
                           <div class="row">
-                            <div class="col-lg-3 col-md-3">
+                            <div class="col-lg-3 col-md-3 pe-0">
                               <img class="profile-list-img" src="{{subscriber.subscriberProfile}}">
                             </div>
-                            <div class="col-lg-5 col-md-5">
-                                <p class="id fw-bold m-0">{{ subscriber.subscriberName }}</p>
+                            <div class="col-lg-5 col-md-5 p-0">
+                                <p class="id fw-bold mb-1">{{ subscriber.subscriberName }}</p>
 
                               {{ subscriber.subscriberId }}
 
                             </div>
-                            <div class="col-lg-3 col-md-3">
-                              <button class="viewbtn align-left" (click)="onButtonClick(subscriber.id)">View Details</button>
+                            <div class="col-lg-4 col-md-3 p-0">
+                              <button class="viewbtn p-0" (click)="onButtonClick(subscriber.id)">View Details</button>
+                            </div>
+                          </div>
+                          <div  *ngIf="selectedSubscriberId === subscriber?.subscriberId && subscriberDetail?.Subscriber?.subscriberId" class="subscriber-details">
+                            <h5 class="title text-center fw-bold fs-4 my-4">Subscriber Details</h5>
+                            <div class="text-center">
+                              <img src="{{subscriberDetail.Subscriber.profileImageUrl}}" class="img-fluid rounded-circle pb-4" alt="Subscriber Image">
+                            </div>
+                            <table class="table px-3">
+                              <tbody>
+                                <tr>
+                                  <td><strong>Subscriber ID</strong></td>
+                                  <td class="highlight">{{subscriberDetail.Subscriber.subscriberId}}</td>
+                                </tr>
+                                <tr>
+                                  <td><strong>Alias Name</strong></td>
+                                  <td>{{subscriberDetail.Subscriber.aliasName}}</td>
+                                </tr>
+                                <tr>
+                                  <td><strong>First Name</strong></td>
+                                  <td>{{subscriberDetail.Subscriber.firstName}}</td>
+                                </tr>
+                                <tr>
+                                  <td><strong>Last Name</strong></td>
+                                  <td>{{subscriberDetail.Subscriber.lastName}}</td>
+                                </tr>
+                                <tr>
+                                  <td><strong>Contact No</strong></td>
+                                  <td>{{subscriberDetail.Subscriber.contact}}</td>
+                                </tr>
+                                <tr>
+                                   <td><strong>Collection Type</strong></td>
+                                   <td>
+                                    <form [formGroup] = "collectionTypeForm">
+                                      <div class="form-group">
+                                        <select class="form-control form-control-sm form-select" formControlName="collectionType"  placeholder = "select type"> 
+                                          <!-- <option value="">Select Type</option> -->
+                                          <option *ngFor="let type of collectionTypes" [value]="type.collectionType">{{ type.collectionType }}</option>        
+                                      </select>
+                                    </div>
+                                  </form>
+        
+                                    </td>
+                                </tr>
+                              </tbody>
+                            </table>
+                            <div class="text-center mb-2">
+                              <button class="btn clear-btn" (click)="addSelectedSubscriber(subscriberDetail.Subscriber._id)">Add to Group</button>
                             </div>
                           </div>
                         </div>
@@ -236,42 +328,13 @@
 
                     </td>
                   </tr>
-                  <div *ngIf="subscriberDetail" class="subscriber-details">
-                    <h5 class="title text-center my-4">Subscriber Details</h5>
-                    <div class="text-center">
-                      <img src="{{subscriberDetail.Subscriber.profileImageUrl}}" class="img-fluid" alt="Subscriber Image">
-                    </div>
-                    <table class="table px-3">
-                      <tbody>
-                        <tr>
-                          <td><strong>Subscriber ID</strong></td>
-                          <td class="highlight">{{subscriberDetail.Subscriber.subscriberId}}</td>
-                        </tr>
-                        <tr>
-                          <td><strong>Alias Name</strong></td>
-                          <td>{{subscriberDetail.Subscriber.aliasName}}</td>
-                        </tr>
-                        <tr>
-                          <td><strong>First Name</strong></td>
-                          <td>{{subscriberDetail.Subscriber.firstName}}</td>
-                        </tr>
-                        <tr>
-                          <td><strong>Last Name</strong></td>
-                          <td>{{subscriberDetail.Subscriber.lastName}}</td>
-                        </tr>
-                        <tr>
-                          <td><strong>Contact No</strong></td>
-                          <td>{{subscriberDetail.Subscriber.contact}}</td>
-                        </tr>
-                      </tbody>
-                    </table>
-                    <div class="text-center mb-2">
-                      <button class="btn clear-btn" (click)="addSelectedSubscriber(subscriberDetail.Subscriber._id)">Add to Group</button>
-                    </div>
-                  </div>
+
                 </tbody>
               </table>
-
+              <div *ngIf="showall === false" class="text-center my-3">
+                <button class="btn view" (click)="viewMore()">View More</button>
+              </div>
+      
             </div>
           </div>
           

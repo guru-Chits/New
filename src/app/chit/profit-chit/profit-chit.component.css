@@ -66,12 +66,24 @@
     color: white;
     border-radius: 3px;
       }
- 
+      .nxt-btn
+      {
+        background-color: white;
+        color: #3E3A97;
+        border: 1px solid #3E3A97;
+      }
     
       /* In your styles.css or auction.component.css */
     .highlighted-row {
       background-color: lightgreen !important;
     }
-    .man{
-      background-color: white;
-    }
+    .is-invalid {
+        border-color: #dc3545;
+      }
+      
+      .invalid-feedback {
+        color: #dc3545;
+      }
+      .man{
+        background-color: white;
+      }

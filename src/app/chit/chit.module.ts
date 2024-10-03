@@ -13,6 +13,7 @@ import { ProfitComponent } from './profit/profit.component';
 import { PurchaseComponent } from './purchase/purchase.component';
 import { TknComponent } from './tkn/tkn.component';
 import { ExtraComponent } from './extra/extra.component';
+import { ProfitChitComponent } from './profit-chit/profit-chit.component';
 
 @NgModule({
   declarations: [
@@ -24,7 +25,8 @@ import { ExtraComponent } from './extra/extra.component';
     ProfitComponent,
     PurchaseComponent,
     TknComponent,
-    ExtraComponent
+    ExtraComponent,
+    ProfitChitComponent
   ],
   imports: [
     CommonModule,

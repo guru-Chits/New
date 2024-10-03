@@ -1,10 +1,12 @@
 <div class="container-fluid d-flex flex-column">
 
     <div class="row">     
-      <div [ngClass]="{'col-md-9 col-lg-9': staffDetail, 'col-md-12 col-lg-12': !staffDetail}">    
-        <div class="header mt-3">Staffs
+      <div [ngClass]="{'col-md-8 col-lg-8': staffDetail, 'col-md-12 col-lg-12': !staffDetail}">    
+        <div class="mt-3">
+          <app-breadcrumb [data]="breadcrumsData"></app-breadcrumb>
+
                     <button class="btn btn-primary create" *ngIf="canCreate" routerLink="create">Create New Staffs</button>
-                </div>
+          </div>
       <div class="row mt-3">
         <div class="col-md-4 col-lg-4">
           <div class="line text-center mb-4">
@@ -13,9 +15,9 @@
             </div>
         </div>
       </div>
-      <app-ag-grid [columns]="column" [rowData]="data"  [searchImg]="searchImg" [filterImg]="filterImg" [search]="search"  [pageSize]="7"  width="100%" height="370px"></app-ag-grid>
+      <app-ag-grid [columns]="column" [rowData]="data"  [searchImg]="searchImg" [filterImg]="filterImg" [search]="search"  [pageSize]="7"  width="100%" height="450px"></app-ag-grid>
     </div>
-    <div class="col-md-3 col-lg-3">
+    <div class="col-md-4 col-lg-4">
       <div *ngIf="staffDetail">
     <div class="card details">
     <div class="title align-self-center py-2">Staff Details</div>
@@ -44,7 +46,8 @@
           </tr>
           <tr>
             <td><strong>BGV Status</strong></td>
-            <td>{{staffDetail.Staff.bgVerification}}</td>
+            <td *ngIf="staffDetail.Staff.bgVerification" style="color:#12B76A">Verified</td>
+            <td *ngIf="!staffDetail.Staff.bgVerification" style="color:#F04438">Un Verified</td>
           </tr>
           <tr>
             <td><strong>Working Status</strong></td>
@@ -52,12 +55,8 @@
             <td *ngIf="!staffDetail.Staff.workingStatus" style="color:#F04438">InActive</td>
           </tr>
           <tr>
-            <td><strong>Enrollments </strong></td>
-            <td>{{staffDetail.Staff.lastName}}</td>
-          </tr>
-          <tr>
             <td><strong>Route ID</strong></td>
-            <td style="color: #50A1A5">{{staffDetail.Staff.lastName}}</td>
+            <td style="color: #50A1A5">{{staffDetail.Staff.routeId}}</td>
           </tr>
         </tbody>
       </table>

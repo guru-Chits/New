@@ -2,9 +2,10 @@ import { Component } from '@angular/core';
 import { ColDef } from 'ag-grid-community';
 import { ITableColumn } from '../../shared/interface/list-table';
 import { SubscriberService } from '../../subscriber/shared/service/subscriber.service';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ChitService } from '../shared/service/chit.service';
 import { Router } from '@angular/router';
+import { ServiceService } from '../../settings/shared/service.service';
 // import { SubscriberDetails } from '../shared/interface/chit';
 
 @Component({
@@ -28,6 +29,8 @@ export class ChitCreateComponent {
   ];
   showList = false;
   listId:any
+  showall = false; // To toggle "View More"
+
   modalErrorMessage: string = '';
   currentListType: 'chit' | 'additional' = 'chit';
   gridApi: any;
@@ -40,25 +43,62 @@ export class ChitCreateComponent {
   chitSubscribersData = [];
   addChitSubscribersData = [];
   displayedSubscribers: any[];
+  selectedSubscriberId:string
+  itemsPerPage = 10; // Subscribers per page
+
   isSubscriberListVisible:boolean = false;
   searchInput:string=""
   chitGroupForm:FormGroup
   displayedChits: any[];
-  constructor( private subService:SubscriberService, private chitService:ChitService, private router:Router,) {
+  currentDate: any;
+  selectedFileName: string = '';
+  chitSubLength: any;
+  showAnother: any;
+  collectionTypes: any;
+  collectionTypeForm: FormGroup
+  minDate: string;
+  maxDate: string;
+  minDay = 1;
+  maxDay = 10;
+  constructor( private subService:SubscriberService, private chitService:ChitService, private router:Router, private settings: ServiceService) {
 
   }
 
   ngOnInit(): void{
     this.chitGroupForm = new FormGroup({
-      auctionDate: new FormControl(''),
-      chitAmount: new FormControl(''),
-      foremanCommission: new FormControl(''),
-      monthlyInstall: new FormControl(''),
+      auctionDate: new FormControl('',[Validators.required]),
+      chitAmount: new FormControl('',[Validators.required, Validators.pattern('^[0-9]*$')]),
+      foremanCommission: new FormControl('',[Validators.required]),
+      monthlyInstall: new FormControl('',[Validators.required]),
       document: new FormControl(''),
       chitSubscribers: new FormControl([]),
       addChitSubscribers: new FormControl([])
     });
+    this.collectionTypeForm = new FormGroup({
+      collectionType: new FormControl(''),
+    });
 
+    this.settings.getAllCollection().subscribe(
+      (data)=>{
+        this.collectionTypes=data
+        this.collectionTypes=this.collectionTypes.res
+        console.log(this.collectionTypes,"Collection Type");
+      }
+    )
+    const today = new Date().toISOString().split('T')[0];
+    this.currentDate = today;
+    const FirstChitDate = new Date()
+    const year = FirstChitDate.getFullYear();
+    const month = FirstChitDate.getMonth() + 1; // Month is zero-based, add 1
+    // Set minimum date to the first day of the current year
+    this.minDate = `${year}-01-01`;
+
+    // Set maximum date to the end of the year
+    this.maxDate = `${year}-12-31`;
+
+
+    console.log("Min Date:", this.minDate);
+    console.log("Max Date:", this.maxDate);
 
     this.subService.getsubscriberAll().subscribe((data)=>{
       this.subscriberData=data;
@@ -70,10 +110,61 @@ export class ChitCreateComponent {
         subscriberName: `${subscriberDetails?.firstName} ${subscriberDetails?.lastName}`,
         subscriberProfile:subscriberDetails?.profileImageUrl
       }))
-      this.displayedSubscribers = this.data;
+      this.displayedSubscribers = this.data.slice(0, this.itemsPerPage);
       console.log(this.displayedSubscribers);
       
-    })
+    });
+
+    // this.chitGroupForm.get('chitAmount').valueChanges.subscribe(value => {
+    //   if (value && !isNaN(value)) {
+    //     const commission = value * 0.05;  // 5% of chit amount
+    //     this.chitGroupForm.patchValue({
+    //       foremanCommission: commission,  // Round to 2 decimal places
+    //       monthlyInstall: commission  // Assume a 12-month installment plan
+    //     });
+    //   }
+    // });
+  }
+  // Method to trigger the hidden file input
+  triggerFileInput(): void {
+    const fileInput = document.getElementById('fileInput') as HTMLInputElement;
+    if (fileInput) {
+      fileInput.click();
+    }
+  }
+
+  // Method to handle the file selection and display the file name
+  onFileSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files.length > 0) {
+      const file: File = input.files[0]; // Get the selected file
+      this.selectedFileName = file.name; // Set the file name
+      console.log('Selected file:', this.selectedFileName);
+
+      // Optionally, patch the file to the reactive form control (if needed)
+      this.chitGroupForm.patchValue({ document: file });
+    }
+  }
+  // Prevents typing non-numeric characters
+  preventNonNumeric(event: KeyboardEvent): void {
+    const charCode = event.which ? event.which : event.keyCode;
+
+    // Allow only numbers (charCode between 48 and 57 for numbers, 8 for backspace, 46 for delete)
+    if ((charCode < 48 || charCode > 57) && charCode !== 8 && charCode !== 46) {
+      event.preventDefault();
+    }
+  }
+
+  // If pasted data or invalid input bypasses keypress, this will clean the value
+  filterNonNumericInput(): void {
+    const control = this.chitGroupForm.get('chitAmount');
+    const value = control.value;
+
+    // Replace any non-numeric characters
+    const filteredValue = value.replace(/[^0-9]/g, '');
+
+    // Update the form control value
+    control.setValue(filteredValue);
   }
   profileImageWithIdRenderer(params: any): string {
     const imageUrl = params.data.profileImageUrl;
@@ -88,30 +179,39 @@ export class ChitCreateComponent {
     `;
   }
 
-  onFileSelected(event: any): void {
+  getformanVal(){
+    const chitAmount  = this.chitGroupForm.get("chitAmount").value;
+    const forman = chitAmount * 0.05;
+    this.chitGroupForm.get('foremanCommission').patchValue(forman)
+    this.chitGroupForm.get('monthlyInstall').patchValue(forman)
+  }
+
+  onSelectedFile(event: any): void {
     const file = event.target.files[0];
     if (file) {
       this.chitGroupForm.patchValue({ document: file.name });
     }
   }
   applyFilter(filterValue: string) {
-    if (!filterValue || !this.data) {
-      this.displayedSubscribers = this.data; // Show all if there's no filter or data is not defined
-      return;
-    }
-  
-    this.displayedSubscribers = this.data.filter(subscriber => {
-      const subscriberId = subscriber.subscriberId ? subscriber.subscriberId.toString().toLowerCase() : '';
-      const subscriberName = subscriber.subscriberName ? subscriber.subscriberName.toLowerCase() : '';
-      return subscriberId.includes(filterValue.toLowerCase()) || subscriberName.includes(filterValue.toLowerCase());
-    });
+  const filteredSubscribers = this.data.filter(subscriber => {
+    const subscriberId = subscriber.subscriberId?.toString().toLowerCase() || '';
+    const subscriberName = subscriber.subscriberName?.toLowerCase() || '';
+    const email = subscriber.email?.toLowerCase() || '';
+    return subscriberId.includes(filterValue.toLowerCase()) ||
+           subscriberName.includes(filterValue.toLowerCase()) ||
+           email.includes(filterValue.toLowerCase());
+  });
+
+  this.displayedSubscribers = filteredSubscribers.slice(0, this.itemsPerPage);
+
   } 
 
   getSubscribersById(id: string): void {
     this.subService.getsubscriberById(id).subscribe(
       data => {
         this.subscriberDetail = data;
-  
+        this.selectedSubscriberId = this.subscriberDetail.Subscriber.subscriberId;
+
         console.log(this.subscriberDetail)
       },
       error => {
@@ -153,13 +253,14 @@ export class ChitCreateComponent {
   }
   
   addSelectedSubscriber(subscriber: any): void {
- 
+    debugger
     if(this.listId==subscriber)
     {
       if (this.currentListType === 'chit') {
         this.addSubscriberById(subscriber);
       } else {
         this.addAdditionalSubscriberById(subscriber);
+
       }
   
     }
@@ -167,12 +268,19 @@ export class ChitCreateComponent {
     this.subscriberDetail=null
 
   }
-
+  viewMore() {
+    if (!this.showall) {
+      this.displayedSubscribers = this.data; // Show all subscribers
+      this.showall = true;
+    }
+  }
+  
 
   addSubscriberById(id: string): void {
     if(this.ticketId <= 20)
     {
       const chitSubscribers = this.chitGroupForm.get('chitSubscribers').value || [];
+      console.log("CHIT SUBSCRIBER ADDED ",chitSubscribers)
       this.ticketId=chitSubscribers.length+1
       if (chitSubscribers.length >= 20) {
         this.showModal('Cannot add more than 20 subscribers.');
@@ -190,7 +298,8 @@ export class ChitCreateComponent {
             aliasName: this.subData.Subscriber.lastName,
             firstName: this.subData.Subscriber.firstName,
             place: this.subData.Subscriber.routeId,
-            occupation: this.subData.Subscriber.occupation
+            occupation: this.subData.Subscriber.occupation,
+            collectionType:this.collectionTypeForm.get('collectionType')?.value
           };
   
           if (chitSubscribers.some(sub => sub.subscriberId === newSubscriber.subscriberId)) {
@@ -203,6 +312,12 @@ export class ChitCreateComponent {
   
           // Update the table data
           this.chitSubscribersData = [...chitSubscribers];
+          this.chitSubLength = this.chitSubscribersData.length;
+          console.log("Length value", this.chitSubLength)
+          if(this.chitSubLength >= 20){
+            this.isSubscriberListVisible = false;
+            this.showAnother = true
+          }
         },
         error => {
           if (error.status === 400 && error.error.message.includes('Duplicate subscriberId')) {
@@ -216,7 +331,7 @@ export class ChitCreateComponent {
   }
 
   column: ITableColumn[] = [
-    { label: 'profileImageUrl', field: 'Ticket Id', sortable: false ,
+    { label: 'profileImageUrl', field: '', sortable: false ,
       cellRenderer: this.profileImageWithIdRenderer,
     },
     { label: 'TicketId', field: 'ticketId', sortable: true },
@@ -224,24 +339,27 @@ export class ChitCreateComponent {
     { label: 'Alias Name', field: 'aliasName', sortable: true },
     { label: 'First Name', field: 'firstName', sortable: true },
     { label: 'Place', field: 'place', sortable: true },
-    { label: 'Occupation', field: 'occupation', sortable: true }
+    { label: 'Occupation', field: 'occupation', sortable: true },
+    { label: 'Collection Type', field: 'collectionType', sortable: true },
   ];  
 
   addSubcolumn: ITableColumn[] = [
-    { label: 'Ticket Id', field: 'profileImageUrl', sortable: false ,
+    { label: 'Ticket Id', field: '', sortable: false ,
       cellRenderer: this.profileImageWithIdRenderer,
     },
     { label: 'TicketId', field: 'ticketId', sortable: true },
     { label: 'Alias Name', field: 'aliasName', sortable: true },
     { label: 'First Name', field: 'firstName', sortable: true },
     { label: 'Place', field: 'place', sortable: true },
-    { label: 'Occupation', field: 'occupation', sortable: true }
+    { label: 'Occupation', field: 'occupation', sortable: true },
+    { label: 'Collection Type', field: 'collectionType', sortable: true },
   ];
 
  
 
   addAdditionalSubscriberById(id: string): void {
-    if (this.ticketId > 20) {
+    if (this.ticketId >= 20) {
+      debugger
       const addChitSubscribers = this.chitGroupForm.get('addChitSubscribers').value || [];
       const chitSubscribers = this.chitGroupForm.get('chitSubscribers').value || [];
   
@@ -253,7 +371,7 @@ export class ChitCreateComponent {
       this.subService.getsubscriberById(id).subscribe(
         res => {
           this.addSubData = res;
-  
+          this.ticketId += 1;
           const newSubscriber = {
             ticketId: this.ticketId,
             subscriberId: this.addSubData.Subscriber.subscriberId,
@@ -261,7 +379,8 @@ export class ChitCreateComponent {
             aliasName: this.addSubData.Subscriber.lastName,
             firstName: this.addSubData.Subscriber.firstName,
             place: this.addSubData.Subscriber.routeId,
-            occupation: this.addSubData.Subscriber.occupation
+            occupation: this.addSubData.Subscriber.occupation,
+            collectionType:this.collectionTypeForm.get('collectionType')?.value
           };
   
           // Check for duplicate subscriber ID in both addChitSubscribers and chitSubscribers
@@ -270,7 +389,7 @@ export class ChitCreateComponent {
             this.showModal('Duplicate subscriber ID detected. This subscriber cannot be added.');
             return;
           }
-          this.ticketId += 1;
+          // this.ticketId += 1;
 
           addChitSubscribers.push(newSubscriber);
           this.chitGroupForm.patchValue({ addChitSubscribers });
@@ -283,6 +402,9 @@ export class ChitCreateComponent {
         }
       );
     }
+    else {
+      console.log("EXIT __________")
+     }
   }
   
   // Method to show modal (assuming you have a modal implementation)
@@ -325,8 +447,28 @@ export class ChitCreateComponent {
       console.warn('Form is invalid.');
     }
     this.router.navigate(["/chit"]);
+  }
 
+  validateDate(event: Event) {
+    const input = event.target as HTMLInputElement;
+    let selectedDate = new Date(input.value);
 
+    if (selectedDate.getDate() < this.minDay) {
+      // Set to the 1st of the selected month if less than minimum day
+      selectedDate.setDate(this.minDay);
+    } else if (selectedDate.getDate() > this.maxDay) {
+      // Set to the 10th of the selected month if greater than maximum day
+      selectedDate.setDate(this.maxDay);
+    }
 
+    // Update the input value if changed
+    input.value = this.formatDate(selectedDate);
+  }
+
+  formatDate(date: Date): string {
+    const year = date.getFullYear();
+    const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Ensure two digits for the month
+    const day = date.getDate().toString().padStart(2, '0'); // Ensure two digits for the day
+    return `${year}-${month}-${day}`;
   }
 }

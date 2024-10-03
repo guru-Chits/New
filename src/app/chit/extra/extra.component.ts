@@ -44,9 +44,11 @@ export class ExtraComponent implements OnInit {
     }
   );
   
+  
     console.log(this.chitData.chitSubscribers.length);
     
     const groupId=this.chitData?.chitGroupId
+
 
     this.paymentService.getAddWallet(groupId).subscribe((response)=>{
       this.addWalletBalance=response
@@ -70,7 +72,17 @@ export class ExtraComponent implements OnInit {
   
     this.extraForm.get('ticketId')?.valueChanges.subscribe(() => {
       const ticketId = this.extraForm.get('ticketId')?.value;
-  
+      this.service.findTicketInGroup(groupId,ticketId).subscribe((res)=>{
+        console.log(res);
+        if (res.extra===true) {
+          // Set a validation error if the ticket already exists
+          console.log('error');
+          
+          this.extraForm.get('ticketId')?.setErrors({ ticketExists: true });
+        } else {
+          // Clear the validation error if the ticket does not exist
+          this.extraForm.get('ticketId')?.setErrors(null);
+        }
       if (ticketId && groupId) {
         this.service.getSubscriberByTicketId(ticketId, groupId).subscribe((details) => {
           console.log(details);
@@ -84,7 +96,7 @@ export class ExtraComponent implements OnInit {
           });
         });
       }
-  
+    })
   })
 
   this.extraForm.get('winningBid')?.valueChanges.subscribe(()=>{
@@ -111,7 +123,7 @@ amountLessThanOrEqualChitAmount(ticketIdControl: string) {
     const ticketId = formGroup.get(ticketIdControl)?.value;
 
     const maxLen = this.chitData.chitSubscribers.length + this.chitData.addChitSubscribers.length;
-    const minLen = this.chitData.chitSubscribers.length;
+    const minLen = this.chitData.chitSubscribers.length+1;
 
     // Check if ticketId is a number and falls between minLen and maxLen
     if (ticketId !== null && (ticketId < minLen || ticketId > maxLen)) {
@@ -169,8 +181,24 @@ amountLessThanOrEqualChitAmount(ticketIdControl: string) {
           winningBid:response.data.extraPaymentData.winningBid
         }
         console.log(this.receipt,"receipt");
+        this.addWalletBalance.forEach(amount => {
+          this.addSubscriberTotal=amount.addWalletBalance
+          console.log(this.addSubscriberTotal,"red");
+          this.extraForm.patchValue({
+            walletBalance:this.addSubscriberTotal
+          })  
+        });
+  
+        this.extraForm.patchValue({
+          
+          ticketId: '',
+          subscriberName: '',
+          passbookNumber: '',
+          auctionStart: false,  // or whatever the default value is
+          winningBid: '',
+          prizedAmount: ''
+        });
         
-
         });
   
   

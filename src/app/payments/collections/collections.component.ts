@@ -48,6 +48,7 @@ export class CollectionsComponent implements OnInit {
     private chitService:ChitService
   ){}
   ngOnInit(): void {
+
     this.collectionForm = this.formBuilder.group({
       date: ['', [Validators.required,this.validatePastOrTodayDate]],
       routeId:  ['', [Validators.required]],
@@ -60,6 +61,7 @@ export class CollectionsComponent implements OnInit {
       passbookno: this.formBuilder.array([]),
       verified:[false]
       });
+
 
       // this.staffService.getstaffAll().subscribe((data)=>{
       //   this.staffs=data  
@@ -79,8 +81,12 @@ export class CollectionsComponent implements OnInit {
       console.log(this.staffs);
       
 
-       this.collectionForm.get('date')?.valueChanges.subscribe(date => {
+       this.collectionForm.get('date').valueChanges.subscribe(date => {
         this.date = date;
+        console.log("fij");
+
+        console.log(date,"date");
+        
         
         // Reset dependent form controls when the date changes
         this.collectionForm.controls['routeId'].reset();
@@ -359,6 +365,7 @@ export class CollectionsComponent implements OnInit {
             this.service.addWallet(response.updateDetails.groupId, this.addSubscriberTotal).subscribe(
               (response)=>{
                 console.log(response);
+                this.collectionForm.reset()
               }
             )
             // Sum up payments for addChitSubscribers (convert amount to number explicitly)

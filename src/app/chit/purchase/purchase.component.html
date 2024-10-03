@@ -2,7 +2,7 @@
     <div class="row justify-content-around">
         <div class="col-lg-4">
           <div class="form-group">
-            <label for="groupId" class="form-control-label">Group ID</label>
+            <label for="groupId" class="form-control-label">Chit Group ID</label>
             <input type="text" placeholder="Group Id" class="form-control form-control-sm" formControlName="groupId" readonly/>
           </div>
         </div>
@@ -25,21 +25,26 @@
         <div class="col-lg-4">
           <div class="form-group">
             <label for="winningBid" class="form-control-label">Winning Bid</label>
-            <input type="text" placeholder="Winning Bid" class="form-control form-control-sm" formControlName="winningBid" (change)="getRouteNameValue()"/>
+            <input type="text" placeholder="Winning Bid" class="form-control form-control-sm man" formControlName="winningBid" (change)="getRouteNameValue()"/>
           </div>
         </div>
 
         <div class="col-lg-4">
           <div class="form-group">
             <label for="prizedAmount" class="form-control-label">Prized Amount</label>
-            <input type="text" placeholder="Prizes Amount" class="form-control form-control-sm" formControlName="prizedAmount" />
+            <input type="text" placeholder="Prizes Amount" class="form-control form-control-sm" formControlName="prizedAmount" readonly/>
           </div>
         </div>
 
         <div class="col-lg-4">
           <div class="form-group">
             <label for="ticketId" class="form-control-label">Ticket Id</label>
-            <input type="text" placeholder="Ticket Id" class="form-control form-control-sm" formControlName="ticketId" />
+            <input type="text" placeholder="Ticket Id" class="form-control form-control-sm man" formControlName="ticketId" 
+            [ngClass]="{'is-invalid': purchaseForm.get('ticketId')?.invalid && purchaseForm.get('ticketId')?.touched}"
+            />
+          </div>
+          <div *ngIf="purchaseForm.get('ticketId')?.hasError('ticketExists')" class="invalid-feedback">
+            This ticket is already in use for this group.
           </div>
           <div *ngIf="purchaseForm.hasError('ticketIdOutOfRange') && purchaseForm.get('ticketId')?.touched">
             <small class="text-danger">{{ purchaseForm.getError('ticketIdOutOfRange') }}</small>
@@ -85,12 +90,67 @@
       </div>
     </form>
 
+    <h6>Purchased Subscriber (TKN A/C) in <p style="color:#50A1A5">{{groupId}}</p></h6>
+
+    <app-ag-grid 
+    [columns]="redeemedColumn" 
+    [rowData]="purchaseData" 
+    width="100%" 
+    height="200px" 
+    >
+  </app-ag-grid>
+  <div *ngIf="isChitShow">
+    <div class="modal fade" id="purchaseDetailModel" tabindex="-1" class="modal" role="dialog">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">TKN Redeemed Details</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" (click)="close()"></button>
+          </div>
+          <div class="modal-body">
+            <div class="row">
+              <div class="col-lg-6">
+                <p><strong>Redeemed Date:</strong> {{ recDate }}</p>
+              </div>
+              <div class="col-lg-6">
+                <p><strong>Time:</strong> {{ recTime }}</p>
+              </div>
+              <div class="col-lg-6">
+                <p><strong>Ticket ID:</strong> {{ chitDetail?.purchaseChitData?.ticketId }}</p>
+              </div>
+              <div class="col-lg-6">
+                <p><strong>Group ID:</strong> {{ chitDetail?.groupId }}</p>
+              </div>
+              <div class="col-lg-6">
+                <p><strong>Name:</strong> {{ chitDetail?.purchaseChitData?.subscriberName }}</p>
+              </div>
     
+              <div class="col-lg-6">
+                <p><strong>Prized Amount:</strong> {{ chitDetail?.purchaseChitData?.prizedAmount }}</p>
+              </div>
+              <div class="col-lg-6">
+                <p><strong>Balance:</strong> {{ chitDetail?.purchaseChitData?.winningBid }}</p>
+              </div>
+              <div class="col-lg-6">
+                <p><strong>Passbook Number:</strong> {{ chitDetail?.purchaseChitData?.passbookNumber }}</p>
+              </div>
+            </div>
+          </div>
+          <!-- <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" (click)="close()">Close</button>
+          </div> -->
+        </div>
+      </div>
+    </div>
+  
+   </div>
 <div *ngIf="chitData">
   <div class="modal fade" id="auctionModal"  tabindex="-1" aria-labelledby="auctionModalLabel"  >
       <div class="modal-dialog modal-lg modal-dialog-centered">
           <div class="modal-content p-4">
-              <div class="popup-body">
+            <p>Purchase TKN Done!</p>
+
+              <!-- <div class="popup-body">
                   <div class="text-center pb-2 fs-4 fw-bold">
                       Invoice Details
                   </div>
@@ -122,29 +182,29 @@
                       <div class="row pb-3">
                           <div class="col-6 d-flex justify-content-around">
                               <div class="col-5 fw-bold">Prized Amount</div>
-                              <div class="col-5">{{receipt.prizedAmount}}</div>
+                              <div class="col-5">{{receipt?.prizedAmount}}</div>
                           </div>
                           <div class="col-6 d-flex justify-content-around">
                             <div class="col-5 fw-bold">Prized Subscriber Name</div>
-                            <div class="col-5">{{receipt.subscriberName}}</div>
+                            <div class="col-5">{{receipt?.subscriberName}}</div>
                           </div>
                       </div>
                       <div class="row pb-3">
                           <div class="col-6 d-flex justify-content-around">
                               <div class="col-5 fw-bold">Passbook Number</div>
-                              <div class="col-5">{{receipt.passbookNo}}</div>
+                              <div class="col-5">{{receipt?.passbookNo}}</div>
                           </div>
                           <div class="col-6 d-flex justify-content-around">
                             <div class="col-5 fw-bold">Winning Bid</div>
-                            <div class="col-5">{{receipt.winningBid}}</div>
+                            <div class="col-5">{{receipt?.winningBid}}</div>
                         </div>
                       </div>
                   </div>
-              </div>
+              </div> -->
               <div class="d-flex justify-content-end py-4">
                   <button type="button" class="btn next-btn px-4 py-2 fw-bold" data-bs-dismiss="modal">Close</button>
               </div>
           </div>
       </div>
-  </div>
+    </div>
   </div>

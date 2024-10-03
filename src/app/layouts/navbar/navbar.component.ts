@@ -1,6 +1,7 @@
 import { Component, OnInit, ElementRef, EventEmitter, Output } from '@angular/core';
 import { NavigationMenus } from '../shared/constants/navigation-menus';
 import { Location } from '@angular/common';
+import { Route, Router } from '@angular/router';
 
 @Component({
   selector: 'app-navbar',
@@ -35,7 +36,7 @@ users:any
    * Constructor
    * @param location - Location
    */
-  constructor(location: Location) {
+  constructor(location: Location,private router :Router) {
     this.location = location;
   }
 
@@ -63,6 +64,10 @@ users:any
 
     return this.users;
   }
+logout(){
+  sessionStorage.clear();
+  this.router.navigate(['/login']);
 
+}
 
 }

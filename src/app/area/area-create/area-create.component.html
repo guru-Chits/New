@@ -35,7 +35,7 @@
                   
                     <div class="col-lg-4">
                       <label class="simple-text">Route ID</label>
-                      <input class="form-control" placeholder="Route ID" formControlName="routeId">
+                      <input class="form-control" placeholder="Route ID" formControlName="routeId" readonly>
                       <div *ngIf="routeForm.get('routeId').touched && routeForm.get('routeId').invalid">
                         <small *ngIf="routeForm.get('routeId').errors?.required" class="text-danger">Route Id is required.</small>
                       </div>

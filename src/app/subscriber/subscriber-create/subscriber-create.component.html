@@ -115,7 +115,7 @@
                   <div class="col-lg-4">
                     <div class="form-group">
                       <label for="dob" class="form-control-label">Date of Birth<span class="required" *ngIf="subscriberForm.get('dob').hasError('required')">*</span></label>
-                      <input type="date" class="form-control form-control-sm" formControlName="dob" />
+                      <input type="date"  placeholder="dd/mm/yyyy" class="form-control form-control-sm" formControlName="dob" (ngModelChange)="validateDate($event)" />
                       <div class="invalid-feedback" *ngIf="subscriberForm.get('dob').invalid && (subscriberForm.get('dob').dirty || subscriberForm.get('dob').touched)">
                         <div *ngIf="subscriberForm.get('dob').errors.required">Date of Birth is required.</div>
                         <div *ngIf="subscriberForm.get('dob').errors.invalidDate">Invalid Date of Birth.</div>

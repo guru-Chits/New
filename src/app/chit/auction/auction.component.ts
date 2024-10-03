@@ -91,7 +91,7 @@ export class AuctionComponent implements OnInit {
       subscriberName: ['',[Validators.required]],
       passbookNumber: ['',[Validators.required]],
       auctionCycle: ['',[Validators.required]],
-      auctionStart: [false]
+      auctionStart: []
     },
     {
       validator: this.amountLessThanOrEqualChitAmount('ticketId') // Add custom validator here
@@ -124,7 +124,11 @@ export class AuctionComponent implements OnInit {
               routerLink: '/chit',
             },
             {
-              key:`Auction Chit ${this.groupId}`,
+              key: `Chit Group Details ${this.groupId}`,
+              routerLink: `chit/view/${paramData.id}`,
+            },
+            {
+              key:`Chit Auction`,
               routerLink: `/chit/auction/${paramData.id}`,
             },
           ];
@@ -140,6 +144,9 @@ export class AuctionComponent implements OnInit {
           //   console.log(res.regId,res);
             
           // })
+          const groupId=this.chitData?.chitGroupId
+          this.groupId=groupId
+        
           this.paymentService.getTransactionById(this.groupId).subscribe((response)=>{
             console.log(response);
             this.walletBalance=response
@@ -153,7 +160,11 @@ export class AuctionComponent implements OnInit {
             }); 
           })
 
-
+          this.auctionForm.patchValue({
+            walletBalance:this.chitSubscriberTotal,
+            groupId: groupId,
+            foremanCommision: this.chitData?.foremanCommission,
+          })
 
         // const winningBid = this.auctionForm.get('winningBid')?.value;
         // const chitAm = this.chitData.chitAmount;
@@ -364,7 +375,7 @@ export class AuctionComponent implements OnInit {
       this.auctionStart=false
 
     } else {
-      this.auctionForm.disable();
+      // this.auctionForm.disable();
       this.auctionForm.get('auctionStart')?.enable();
       this.auctionStart=true
 

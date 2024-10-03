@@ -3,14 +3,14 @@
 const baseUrl='http://localhost:8000'
 const renderUrl='https://chitfundapi.onrender.com'
 export const environment = {
-    paymentServiceUrl: `${renderUrl}/api`,
-    subscriberServiceUrl:`${renderUrl}/api`,
-    chitServiceUrl:`${renderUrl}/api`,
-    staffServiceUrl:`${renderUrl}/api`,
-    areaServiceUrl:`${renderUrl}/api`,
-    loginServiceUrl:`${renderUrl}/api`,
-    accessServiceUrl:`${renderUrl}/api`,
-    auctionServiceUrl:`${renderUrl}/api`,
-    settingsServiceUrl:`${renderUrl}/api/settings`
+    paymentServiceUrl: `${baseUrl}/api`,
+    subscriberServiceUrl:`${baseUrl}/api`,
+    chitServiceUrl:`${baseUrl}/api`,
+    staffServiceUrl:`${baseUrl}/api`,
+    areaServiceUrl:`${baseUrl}/api`,
+    loginServiceUrl:`${baseUrl}/api`,
+    accessServiceUrl:`${baseUrl}/api`,
+    auctionServiceUrl:`${baseUrl}/api`,
+    settingsServiceUrl:`${baseUrl}/api/settings`
 
 }

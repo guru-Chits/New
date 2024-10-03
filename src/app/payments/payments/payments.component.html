@@ -2,7 +2,7 @@
     <div class="row justify-content-around">
         <div class="col-lg-4">
             <div class="form-group">
-                <label for="date" class="form-control-label">Date/Timestamp <span class="required" *ngIf="paymentForm.get('date').hasError('required')">*</span></label>
+                <label for="date" class="form-control-label">Date <span class="required" *ngIf="paymentForm.get('date').hasError('required')">*</span></label>
                 <input type="date" class="form-control p-2 form-control-sm" id="date" formControlName="date" placeholder="Date"/>
                 <div *ngIf="paymentForm.get('date')?.hasError('invalidDate') && paymentForm.get('date')?.touched">
                     <small class="text-danger">Please select today's date.</small>
@@ -12,7 +12,11 @@
         <div class="col-lg-4">
             <div class="form-group">
                 <label for="passbooknumber" class="form-control-label">Passbook Number <span class="required" *ngIf="paymentForm.get('passbooknumber').hasError('required')">*</span></label>
-                <input class="form-control p-2 form-control-sm" id="passbooknumber" formControlName="passbooknumber" placeholder="Passbook Number"/>
+                <input class="form-control p-2 form-control-sm" id="passbooknumber" formControlName="passbooknumber" placeholder="Passbook Number"  [value]="paymentForm.get('passbooknumber').value" 
+                (input)="onInputChange($event)" 
+                (keydown)="blockPrefix($event)"
+                
+                />
             </div>
         </div>
         <div class="col-lg-4">

@@ -131,7 +131,7 @@ ngOnInit(): void {
     passbookUrl: [''],
     panUrl: ['']
   });
-  
+    
   // this.subscriberForm.get('profileImageUrl').valueChanges.subscribe(profile=>{
     
   // })
@@ -238,6 +238,16 @@ ngOnInit(): void {
     }))
     this.displayedSubscribers = this.data.slice(0, this.itemsPerPage);
   })
+}
+
+
+validateDate(value: string): void {
+  const pattern = /^(0[1-9]|[12][0-9]|3[01])\/(0[1-9]|1[0-2])\/\d{4}$/;
+  if (!pattern.test(value)) {
+    console.error('Invalid date format. Please use dd/mm/yyyy.');
+  } else {
+    console.log('Valid date:', value);
+  }
 }
 convertDateFormat(dateStr: string): string {
   if (!dateStr) {

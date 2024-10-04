@@ -1,5 +1,5 @@
 
-const baseUrl = 'http://13.127.210.25';
+const baseUrl = 'https://staging.guruchits.com';
 const localUrl='http://localhost:8000'
 export const environment = {
     paymentServiceUrl: `${baseUrl}/api`,

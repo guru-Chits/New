@@ -1,5 +1,5 @@
 
-const baseUrl = 'https://chitfundapi.onrender.com';
+const baseUrl = 'https://staging.guruchits.com';
 const localUrl='http://localhost:8000'
 export const environment = {
     paymentServiceUrl: `${baseUrl}/api`,

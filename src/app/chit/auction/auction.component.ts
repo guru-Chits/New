@@ -29,6 +29,7 @@ export class AuctionComponent implements OnInit {
   search: boolean = true;
   data: any[] = [];
   chitData: any;
+  color:any
   subscribers: any[] = [];
   addSubscribers: any[] = [];
   groupId:string;
@@ -253,10 +254,12 @@ export class AuctionComponent implements OnInit {
 
    // Fetch ticket ids
    async fetchTicketIds(groupId: string) {
-    const res = await this.service.getTicketId(this.chitData?.chitGroupId).toPromise();
-    this.regId = res?.regId 
-      this.extraId = res?.extraId 
-      this.purId = res?.purId 
+    const res = await this.service.getTicketId(groupId).toPromise();
+    this.regId = res?.regId.ticketId
+      this.extraId = res?.extraId
+      this.purId = res?.purId.purchaseChitData.ticketId
+      console.log(res);
+      
   }
   subscriberColumn: ITableColumn[] = [
     {
@@ -264,12 +267,42 @@ export class AuctionComponent implements OnInit {
       field: ' ',
       filter: false,
       cellRenderer: this.profileImageWithIdRenderer,
-      maxWidth:80,
+      maxWidth: 80,
     },
     {
       label: 'Ticket Id',
       field: 'ticketId',
       filter: false,
+      cellRenderer: (params) => {
+        let ticketId = params.value;
+  
+        // Initialize regId, extraId, purId as arrays if not already done
+        this.regId = this.regId || [];
+        this.extraId = this.extraId || [];
+        this.purId = this.purId || [];
+  
+        // Fetch ticket IDs from the service
+        this.service.getTicketId(this.chitData.chitGroupId).subscribe((res) => {
+          // Push each value into the respective array
+          this.regId.push(res?.regId?.ticketId);
+          this.extraId.push(res?.extraId);
+          this.purId.push(res?.purId?.purchaseChitData?.ticketId);
+          
+          console.log(this.regId);
+          
+          // Check if ticketId exists in any of the arrays
+          if (this.regId.includes(ticketId)) {
+            this.color = 'green'; // regId - green
+          } else if (this.extraId.includes(ticketId)) {
+            this.color = 'green'; // extraId - green
+          } else if (this.purId.includes(ticketId)) {
+            this.color = 'red'; // purId - red
+          }
+        });
+  
+        // Return the Ticket ID with the color
+        return `<span style="background-color: ${this.color};">${ticketId}</span>`;
+      },
     },
     { label: 'Name', field: 'firstName' },
     { label: 'Alias Name', field: 'aliasName' },
@@ -277,6 +310,8 @@ export class AuctionComponent implements OnInit {
     { label: 'Place', field: 'place' },
     { label: 'Occupation', field: 'occupation' },
   ];
+  
+  
 
  getRowStyle(params: any) {
     const ticketId = params.data.ticketId;

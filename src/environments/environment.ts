@@ -11,5 +11,4 @@ export const environment = {
     accessServiceUrl:`${baseUrl}/api`,
     auctionServiceUrl:`${baseUrl}/api`,
     settingsServiceUrl:`${baseUrl}/api/settings`
-
 }

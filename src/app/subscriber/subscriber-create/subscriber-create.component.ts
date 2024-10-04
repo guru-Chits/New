@@ -74,7 +74,7 @@ ngOnInit(): void {
 
 
     ]],
-    contact: ["", [Validators.required, Validators.pattern(/^\+91\s?\d{10}$/)]],
+    contact: ["+91 ", [Validators.required, Validators.pattern(/^\+91\s?\d{10}$/)]],
     place: ['', [Validators.required, Validators.minLength(10), Validators.maxLength(100), Validators.pattern(/^[a-zA-Z0-9\s,.'-]+$/)]],
     gender: ['', Validators.required],
     dob: ['', [
@@ -92,7 +92,8 @@ ngOnInit(): void {
     ifsc: ['', [
       this.conditionalValidator(() => !!this.subscriberForm?.get('ifsc')?.value, Validators.pattern(/^[A-Za-z]{4}\d{7}$/))
     ]],
-    upi_id: [''],
+    upi_id: ['',[ this.conditionalValidator(() => !!this.subscriberForm?.get('upi_id')?.value, Validators.pattern(/^[a-zA-Z0-9.\-_]{2,}@[a-zA-Z]{3,}$/))
+    ]],
     panCardNumber: ['', [
       this.conditionalValidator(() => !!this.subscriberForm?.get('panCardNumber')?.value, Validators.pattern(/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/))
     ]],
@@ -131,7 +132,7 @@ ngOnInit(): void {
     passbookUrl: [''],
     panUrl: ['']
   });
-  
+    
   // this.subscriberForm.get('profileImageUrl').valueChanges.subscribe(profile=>{
     
   // })
@@ -239,6 +240,129 @@ ngOnInit(): void {
     this.displayedSubscribers = this.data.slice(0, this.itemsPerPage);
   })
 }
+
+allowValidInput(event: any, pattern: RegExp): void {
+  const inputChar = String.fromCharCode(event.charCode);
+  if (!pattern.test(inputChar)) {
+    event.preventDefault();
+  }
+}
+
+// Use this method on form inputs
+onFirstNameKeyPress(event: KeyboardEvent): void {
+  this.allowValidInput(event, /^[A-Za-z]+$/); // Only letters allowed
+}
+onAccNoKeyPress(event: KeyboardEvent): void {
+  this.allowValidInput(event,/^[0-9]+$/); // Only letters allowed
+}
+
+onIfscKeyPress(event: KeyboardEvent): void {
+  const inputElement = event.target as HTMLInputElement;
+  let input = inputElement.value;
+
+  // Allow only letters (A-Z, a-z) for the first 4 characters
+  if (input.length < 4) {
+    if (!/[a-zA-Z]/.test(event.key)) {
+      event.preventDefault(); // Prevent invalid input for first 4 characters
+    } 
+  }
+
+  // Allow only digits for characters from 5 to 11
+  if (input.length >= 4 && input.length < 11 && !/\d/.test(event.key)) {
+    event.preventDefault(); // Prevent invalid input for digits
+  }
+
+  // Prevent input if length exceeds 11 characters
+  if (input.length >= 11) {
+    event.preventDefault();
+  }
+}
+
+
+
+onPanCardKeyPress(event: KeyboardEvent): void {
+  const inputElement = event.target as HTMLInputElement;
+  let input = inputElement.value;
+
+  // Allow only letters (A-Z, a-z) for the first 5 characters
+  if (input.length < 5) {
+    if (!/[a-zA-Z]/.test(event.key)) {
+      event.preventDefault(); // Prevent invalid input for the first 5 characters
+    } 
+  }
+
+  // Allow only digits for the 6th to 9th characters
+  if (input.length >= 5 && input.length < 9 && !/\d/.test(event.key)) {
+    event.preventDefault(); // Prevent invalid input for the digits part
+  }
+
+  // Allow only a letter (A-Z) for the 10th character
+  if (input.length === 9) {
+    if (!/[a-zA-Z]/.test(event.key)) {
+      event.preventDefault(); // Prevent invalid input for the last letter
+    }
+  }
+
+  // Prevent input if length exceeds 10 characters
+  if (input.length >= 10) {
+    event.preventDefault();
+  }
+}
+
+
+validateDate(value: string): void {
+  const pattern = /^(0[1-9]|[12][0-9]|3[01])\/(0[1-9]|1[0-2])\/\d{4}$/;
+  if (!pattern.test(value)) {
+    console.error('Invalid date format. Please use dd/mm/yyyy.');
+  } else {
+    console.log('Valid date:', value);
+  }
+}
+
+onIFSCAutoUppercase(event: Event): void {
+  const inputElement = event.target as HTMLInputElement;
+  
+  // Convert all letters to uppercase
+  let currentValue = inputElement.value.toUpperCase();
+
+  // Allow only 4 uppercase letters and 7 digits
+  currentValue = currentValue.replace(/[^A-Z\d]/g, ''); // Remove any invalid characters
+
+  // Update the input value with the processed string
+  inputElement.value = currentValue;
+
+  // Restrict the length to a maximum of 11 characters (4 letters + 7 digits)
+
+}
+
+
+onContactChange(event: any) {
+  let inputValue = event.target.value;
+
+  // Remove all non-numeric characters except the prefix
+  let numbersOnly = inputValue.replace(/[^\d]/g, '');
+
+  // Ensure the value starts with +91 and limit the length to 10 digits after the prefix
+  if (numbersOnly.startsWith('91')) {
+    numbersOnly = '+91 ' + numbersOnly.substring(2, 12); // Take only 10 digits after +91
+  } else {
+    numbersOnly = '+91 ';
+  }
+
+  // Patch the value back to the form control
+  this.subscriberForm.patchValue({
+    contact: numbersOnly
+  });
+}
+blockPrefix(event: any) {
+  const inputValue = this.subscriberForm.get('contact')?.value;
+
+  // Prevent deletion or modification of the '+91 ' prefix
+  if (event.target.selectionStart < 4 && event.key !== 'Tab') {
+    event.preventDefault();
+  }
+}
+
 convertDateFormat(dateStr: string): string {
   if (!dateStr) {
     return '';
@@ -256,6 +380,37 @@ convertDateFormat(dateStr: string): string {
   return formattedDate;
 }
 
+formatAadharNumber(): void {
+  let aadhar = this.subscriberForm.get('aadharNumber')?.value.replace(/\D/g, ''); // Remove non-numeric characters
+  if (aadhar.length > 4) {
+    aadhar = aadhar.substring(0, 4) + ' ' + aadhar.substring(4);
+  }
+  if (aadhar.length > 9) {
+    aadhar = aadhar.substring(0, 9) + ' ' + aadhar.substring(9);
+  }
+  this.subscriberForm.patchValue({
+    aadharNumber: aadhar
+  }, { emitEvent: false });
+}
+formatNoAadharNumber(): void {
+  let aadhar = this.subscriberForm.get('nomineeAadhar')?.value.replace(/\D/g, ''); // Remove non-numeric characters
+  if (aadhar.length > 4) {
+    aadhar = aadhar.substring(0, 4) + ' ' + aadhar.substring(4);
+  }
+  if (aadhar.length > 9) {
+    aadhar = aadhar.substring(0, 9) + ' ' + aadhar.substring(9);
+  }
+  this.subscriberForm.patchValue({
+    nomineeAadhar: aadhar
+  }, { emitEvent: false });
+}
+onlyAllowNumbers(event: KeyboardEvent): void {
+  const charCode = event.which ? event.which : event.keyCode;
+  // Prevent non-numeric characters
+  if (charCode < 48 || charCode > 57) {
+    event.preventDefault();
+  }
+}
 
  conditionalValidator(condition: () => boolean, validator: ValidatorFn): ValidatorFn {
   return (control: AbstractControl): { [key: string]: any } | null => {

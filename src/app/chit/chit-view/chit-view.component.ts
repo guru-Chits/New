@@ -14,6 +14,7 @@ import { Subscriber } from 'rxjs';
 })
 export class ChitViewComponent implements OnInit{
   data: any[] = [];
+  length:boolean
   subscribers:any[]=[]
   addSubscribers:any[]=[]
   chitData:any;
@@ -148,7 +149,7 @@ export class ChitViewComponent implements OnInit{
           },
           
           {
-            key: 'Chit Group Details',
+            key: `Chit Group Details ${this.chitData.chitGroupId}`,
             routerLink: `chit/view/${paramData.id}`,
           },
         ];
@@ -168,6 +169,7 @@ export class ChitViewComponent implements OnInit{
           subscriberId:subscriber.subscriberId,
           ticketId:subscriber.ticketId,
           profileImageUrl:subscriber.profileImageUrl,
+          collectionType:subscriber.collectionType,
           id: subscriber._id
 
         }));
@@ -180,6 +182,7 @@ export class ChitViewComponent implements OnInit{
           occupation: subscriber.occupation,
           subscriberId:subscriber.subscriberId,
           ticketId:subscriber.ticketId,
+          collectionType:subscriber.collectionType,
           profileImageUrl:subscriber.profileImageUrl
 
         }));
@@ -200,6 +203,29 @@ export class ChitViewComponent implements OnInit{
 }
 });
 
+  }
+  formatToIndianCurrency(amount: number | string): string {
+    if (!amount) return '';
+
+    let amountStr = amount.toString();
+
+    // Handle negative numbers
+    const isNegative = amountStr.startsWith('-');
+    if (isNegative) {
+      amountStr = amountStr.slice(1);
+    }
+
+    // Split the integer and decimal parts
+    let [integer, decimal] = amountStr.split('.');
+
+    // Regular expression for Indian number system format
+    integer = integer.replace(/\B(?=(\d{3})+(?!\d))/g, ',').replace(/(\d+)(?=(\d{2})+(\d{3})(?!\d))/g, '$1,');
+
+    // Combine the integer and decimal parts (if exists)
+    const formattedAmount = decimal ? `${integer}.${decimal}` : integer;
+
+    // Add back negative sign (if any)
+    return isNegative ? `-${formattedAmount}` : formattedAmount;
   }
 
   getTickedByID(id: string, gropid: string): void{
@@ -236,6 +262,7 @@ export class ChitViewComponent implements OnInit{
   //   })
   // }
   showSubscriberList(type: 'chit' | 'additional'): void {
+  
     this.currentListType = type;
     this.isSubscriberListVisible = true;
     this.subservice.getsubscriberAll().subscribe((data) => {
@@ -599,6 +626,7 @@ export class ChitViewComponent implements OnInit{
   { label: 'Passbook Number', field: 'passbookNo', onCellClicked: (event: CellClickedEvent) => this.getChitById(event.data._id) },
   { label: 'Place', field: 'place', onCellClicked: (event: CellClickedEvent) => this.getChitById(event.data._id) },
   { label: 'Occupation', field: 'occupation', onCellClicked: (event: CellClickedEvent) => this.getChitById(event.data._id) },
+  { label: 'Collection Type', field: 'collectionType', onCellClicked: (event: CellClickedEvent) => this.getChitById(event.data._id) },
 
 ];
 
@@ -615,6 +643,7 @@ export class ChitViewComponent implements OnInit{
   { label: 'Passbook Number', field: 'passbookNo', onCellClicked: (event: CellClickedEvent) => this.getChitById(event.data._id) },
   { label: 'Place', field: 'place', onCellClicked: (event: CellClickedEvent) => this.getChitById(event.data._id) },
   { label: 'Occupation', field: 'occupation', onCellClicked: (event: CellClickedEvent) => this.getChitById(event.data._id) },
+  { label: 'Collection Type', field: 'collectionType', onCellClicked: (event: CellClickedEvent) => this.getChitById(event.data._id) },
 
 
   ]

@@ -29,10 +29,9 @@
                     <div class="col-lg-4">
                         <div class="form-group">
                             <label for="firstName" class="form-control-label">First Name <span class="required" *ngIf="staffsForm.get('firstName').hasError('required')">*</span></label>
-                            <input type="text" placeholder="First Name" class="form-control form-control-sm" formControlName="firstName"/>
+                            <input type="text" placeholder="First Name" class="form-control form-control-sm" formControlName="firstName" (keypress)="onFirstNameKeyPress($event)"   maxlength="25" minlength="2"/>
                             <div class="invalid-feedback" *ngIf="staffsForm.get('firstName').invalid && (staffsForm.get('firstName').dirty || staffsForm.get('firstName').touched)">
                               <div *ngIf="staffsForm.get('firstName').errors.required">First Name is required.</div>
-                              <div *ngIf="staffsForm.get('firstName').errors.pattern">First Name should only contain alphabetic characters and start with a capital letter.</div>
                             </div>
       
                         </div>
@@ -40,10 +39,9 @@
                     <div class="col-lg-4">
                         <div class="form-group">
                             <label for="lastName" class="form-control-label">Last Name<span class="required" *ngIf="staffsForm.get('lastName').hasError('required')">*</span></label>
-                            <input type="text" placeholder="Last Name" class="form-control form-control-sm" formControlName="lastName"/>
+                            <input type="text" placeholder="Last Name" class="form-control form-control-sm" formControlName="lastName" (keypress)="onFirstNameKeyPress($event)"   maxlength="25" minlength="2"/>
                             <div class="invalid-feedback" *ngIf="staffsForm.get('lastName').invalid && (staffsForm.get('lastName').dirty || staffsForm.get('lastName').touched)">
                               <div *ngIf="staffsForm.get('lastName').errors.required">Last Name is required.</div>
-                              <div *ngIf="staffsForm.get('lastName').errors.pattern">Last Name should only contain alphabetic characters and start with a capital letter.</div>
       
                             </div>
 
@@ -79,7 +77,10 @@
                     <div class="col-lg-4">
                         <div class="form-group">
                             <label for="contact" class="form-control-label">Contact Number <span class="required" *ngIf="staffsForm.get('contact').hasError('required')">*</span></label>
-                            <input type="text" placeholder="Contact Number" class="form-control form-control-sm" formControlName="contact"/>
+                            <input type="tel" placeholder="Contact Number" class="form-control form-control-sm" formControlName="contact"  [value]="staffsForm.get('contact').value" 
+                            (input)="onContactChange($event)"
+                            maxlength="14"  
+                            (keydown)="blockPrefix($event)" />
                             <div class="invalid-feedback" *ngIf="staffsForm.get('contact').invalid && (staffsForm.get('contact').dirty || staffsForm.get('contact').touched)">
                               <div *ngIf="staffsForm.get('contact').errors.required">Contact Number is required.</div>
                               <div *ngIf="staffsForm.get('contact').errors.pattern">Contact Number should be exactly 10 digits.</div>
@@ -92,25 +93,23 @@
                     <div class="col-lg-4">
                         <div class="form-group">
                             <label for="address" class="form-control-label">Place/Address<span class="required" *ngIf="staffsForm.get('address').hasError('required')">*</span> </label>
-                            <input type="text" placeholder="Place/Address" class="form-control form-control-sm" formControlName="address"/>
-                            <div class="invalid-feedback" *ngIf="staffsForm.get('address').invalid && (staffsForm.get('address').dirty || staffsForm.get('address').touched)">
+                            <input type="text" placeholder="Place/Address" class="form-control form-control-sm" formControlName="address" maxlength="100" minlength="10"/>
+                            <div class="invalid-feedback" *ngIf="staffsForm.get('address').invalid && (staffsForm.get('address').dirty || staffsForm.get('address').touched) "  >
                               <div *ngIf="staffsForm.get('address').errors.required">Address is required.</div>
-                              <div *ngIf="staffsForm.get('address').errors.minlength">Address must be at least 10 characters long.</div>
-                              <div *ngIf="staffsForm.get('address').errors.maxlength">Address cannot be more than 100 characters long.</div>
-                              <div *ngIf="staffsForm.get('address').errors.pattern">Address contains invalid characters.</div>
                             </div>
                           </div>
                     </div>
                     <div class="col-lg-4">
                         <div class="form-group">
                             <label for="emailId" class="form-control-label">Email Id <span class="required" *ngIf="staffsForm.get('emailId').hasError('required')">*</span></label>
-                            <input type="text" placeholder="mail" class="form-control form-control-sm" formControlName="emailId"/>
+                            <input type="text" placeholder="mail" class="form-control form-control-sm" formControlName="emailId"  maxlength="40" minlength="10"/>
                         </div>
                     </div>
                     <div class="col-lg-4">
                         <div class="form-group">
                             <label for="dob" class="form-control-label">DOB <span class="required" *ngIf="staffsForm.get('dob').hasError('required')">*</span></label>
-                            <input type="date" class="form-control form-control-sm" formControlName="dob"/>
+                            <input type="date" class="form-control form-control-sm" formControlName="dob"
+                            />
                             <div class="invalid-feedback" *ngIf="staffsForm.get('dob').invalid && (staffsForm.get('dob').dirty || staffsForm.get('dob').touched)">
                               <div *ngIf="staffsForm.get('dob').errors.required">Date of Birth is required.</div>
                               <div *ngIf="staffsForm.get('dob').errors.invalidDate">Invalid Date of Birth.</div>
@@ -141,7 +140,7 @@
                     <div class="col-lg-4">
                         <div class="form-group">
                             <label for="accountNumber" class="form-control-label">Account Number</label>
-                            <input type="text" placeholder="Account Number" class="form-control form-control-sm" formControlName="accountNumber"/>
+                            <input type="text" placeholder="Account Number" class="form-control form-control-sm" formControlName="accountNumber" (keypress)="onAccNoKeyPress($event)" maxlength="12" minlength="12"/>
                             <div class="invalid-feedback" *ngIf="staffsForm.get('accountNumber').invalid && (staffsForm.get('accountNumber').dirty || staffsForm.get('accountNumber').touched)">
                               <div *ngIf="staffsForm.get('accountNumber').errors.required">Account Number is required.</div>
                               <div *ngIf="staffsForm.get('accountNumber').errors.pattern">Account Number should be 8 to 12 digits long.</div>
@@ -152,10 +151,10 @@
                     <div class="col-lg-4">
                         <div class="form-group">
                             <label for="ifscCode" class="form-control-label">IFSC Code <span class="required" *ngIf="staffsForm.get('ifscCode').hasError('required')">*</span></label>
-                            <input type="text" class="form-control form-control-sm"  (input)="onInputChange($event,'AAAA0000000')" formControlName="ifscCode" placeholder="IFSC Code"/>
+                            <input type="text" class="form-control form-control-sm"  (input)="onInputChange($event,'AAAA0000000')" formControlName="ifscCode"(keypress)="onIfscKeyPress($event)"  maxlength="11" 
+                            (input)="onIFSCAutoUppercase($event)"  placeholder="IFSC Code (e.g., SBIN0001234)"/>
                             <div class="invalid-feedback" *ngIf="staffsForm.get('ifscCode').invalid && (staffsForm.get('ifscCode').dirty || staffsForm.get('ifscCode').touched)">
                               <div *ngIf="staffsForm.get('ifscCode').errors.required">IFSC is required.</div>
-                              <div *ngIf="staffsForm.get('ifscCode').errors.pattern">IFSC should be in the format: 4 letters followed by 7 digits.</div>
                             </div>
       
                         </div>
@@ -163,7 +162,7 @@
                     <div class="col-lg-4">
                         <div class="form-group">
                             <label for="upiIdOrNumber" class="form-control-label">UPI ID/Number <span class="required" *ngIf="staffsForm.get('upiIdOrNumber').hasError('required')">*</span></label>
-                            <input type="text" placeholder="UPI ID/Number" class="form-control form-control-sm" formControlName="upiIdOrNumber"/>
+                            <input type="text" placeholder="UPI ID/Number" class="form-control form-control-sm" formControlName="upiIdOrNumber" maxlength="35" minlength="6"/>
                         </div>
                     </div>
                 </div>
@@ -172,7 +171,7 @@
                     <div class="col-lg-4">
                       <div class="form-group">
                         <label for="panCardNumber" class="form-control-label">PAN Card Number <span class="required" *ngIf="staffsForm.get('panCardNumber').hasError('required')">*</span></label>
-                        <input type="text" placeholder="Pan Card Number" class="form-control form-control-sm" formControlName="panCardNumber" />
+                        <input type="text" placeholder="Pan Card Number" class="form-control form-control-sm" formControlName="panCardNumber" (input)="onIFSCAutoUppercase($event)" (keypress)="onPanCardKeyPress($event)" />
                       </div>
                     </div>
                     <div class="col-lg-4">
@@ -191,7 +190,9 @@
                     <div class="col-lg-4">
                       <div class="form-group">
                         <label for="aadharNumber" class="form-control-label">Aadhar Card Number <span class="required" *ngIf="staffsForm.get('aadharNumber').hasError('required')">*</span></label>
-                        <input type="text" placeholder="Aadhar Card Number" class="form-control form-control-sm" formControlName="aadharNumber" />
+                        <input type="text" placeholder="Aadhar Card Number" class="form-control form-control-sm" formControlName="aadharNumber" (input)="formatAadharNumber()" 
+                        (keypress)="onlyAllowNumbers($event)" 
+                        maxlength="14"/>
                         <div class="invalid-feedback" *ngIf="staffsForm.get('aadharNumber').invalid && (staffsForm.get('aadharNumber').dirty || staffsForm.get('aadharNumber').touched)">
                           <div *ngIf="staffsForm.get('aadharNumber').errors.required">Aadhar is required.</div>
                         </div>
@@ -216,7 +217,7 @@
                     <div class="col-lg-4">
                       <div class="form-group">
                         <label for="bankName" class="form-control-label">Bank Name <span class="required" *ngIf="staffsForm.get('bankName').hasError('required')">*</span></label>
-                        <input type="text" placeholder="Bank Name" class="form-control form-control-sm" formControlName="bankName" />
+                        <input type="text" placeholder="Bank Name" class="form-control form-control-sm" formControlName="bankName"  (keypress)="onFirstNameKeyPress($event)" maxlength="25" minlength="2"  />
                       </div>
                     </div>
                     <div class="col-lg-4">
@@ -235,7 +236,9 @@
                     <div class="col-lg-4">
                       <div class="form-group">
                         <label for="drivingLicenseNumber" class="form-control-label">Driving License Number <span class="required" *ngIf="staffsForm.get('drivingLicenseNumber').hasError('required')">*</span></label>
-                        <input type="text" placeholder="Driving License Number" class="form-control form-control-sm" formControlName="drivingLicenseNumber" />
+                        <input type="text" placeholder="Driving License Number" class="form-control form-control-sm" formControlName="drivingLicenseNumber"   placeholder="Driving License Number (e.g., AA-XX 1234 1234567)" 
+                        maxlength="18" 
+                        (keypress)="onDrivingLicenseKeyPress($event)" />
                       </div>
                     </div>
                     <div class="col-lg-4">
@@ -272,7 +275,7 @@
                 <div class="row  my-2">
                     <div class="col-lg-4">
                         <div class="form-check form-switch">
-                            <input class="form-check-input" type="checkbox" formControlName="workingStatus" role="switch" id="flexSwitchCheckChecked" checked>
+                            <input class="form-check-input" type="checkbox" formControlName="workingStatus" role="switch" id="flexSwitchCheckChecked" checked (change)="working($event)">
                             <label class="form-check-label" for="flexSwitchCheckChecked">Working Status <span class="required" *ngIf="staffsForm.get('workingStatus').hasError('required')">*</span></label>
                           </div>
                     </div>
@@ -282,7 +285,7 @@
                 <div class="row justify-content-center">
                     <div class="col-lg-12 d-flex justify-content-end mb-2">
                         <button class="btn nxt-btn btn-outline-secondary" routerLink="/staff">Cancel</button>
-                        <button class="btn save-btn " [disabled]="!staffsForm.valid" (click)="onSubmit()" type="submit" >{{submit}}</button>
+                        <button class="btn save-btn " [disabled]="!staffsForm.valid || !workingStatus" (click)="onSubmit()" type="submit" >{{submit}}</button>
                     </div>
                 </div>
 

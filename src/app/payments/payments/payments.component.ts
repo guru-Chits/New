@@ -35,7 +35,8 @@ export class PaymentsComponent implements OnInit {
   totalPayment:any
   month:string
   year:number
- 
+  today: string = '';
+
   accessPrivData: any;
   subscriberDetail:any
   serialNumberCounter:number;
@@ -60,7 +61,7 @@ export class PaymentsComponent implements OnInit {
       date: ['', [Validators.required, this.validateCurrentDate]],
       serialNumber:  ['',[Validators.required]],
       receiptNumber:  ['',[Validators.required]],
-      passbooknumber:  ['',[Validators.required]],
+      passbooknumber:  ['PB-',[Validators.required]],
       groupId:  ['',[Validators.required]],
       amount:  ['',[Validators.required]],
       collectionType:  ['',[Validators.required]],
@@ -71,8 +72,8 @@ export class PaymentsComponent implements OnInit {
       region:  ['',[Validators.required]],
       selectStaff: ['',[Validators.required]],
       chitAmount:['',[Validators.required]],
-      cancelled:['',[Validators.required]],
-      verified:['',Validators.required],
+      cancelled:[''],
+      verified:[''],
       deleteReason: [""]
       },
       {
@@ -81,7 +82,8 @@ export class PaymentsComponent implements OnInit {
     );
 
     
-
+    const today = new Date();
+    this.today = today.toISOString().split('T')[0];
       this.paymentForm.get('cancelled')?.setValue(false) 
       this.paymentForm.get('verified')?.setValue(false)
 
@@ -91,18 +93,18 @@ export class PaymentsComponent implements OnInit {
         if (passbooknumber) {
           this.getSubByPassbookNo(passbooknumber);
         }
-      });
+     
 
       this.paymentForm.get('amount')?.valueChanges.subscribe((amount) => {
         const chitAmount = this.paymentForm.get('chitAmount')?.value;
         if (chitAmount && amount > 0) {
           const expectedInstallmentAmount = chitAmount / 20;  // Monthly installment calculation
           
-          this.handleAmountChange(amount, expectedInstallmentAmount);
+          this.handleAmountChange(amount, expectedInstallmentAmount,passbooknumber);
         }
       });
 
-
+    });
       this.service.getTodayPayment().subscribe((data)=>{
         this.totalPayment=data
         this.serialNumberCounter=this.totalPayment.AllPayment.length+1
@@ -132,6 +134,30 @@ console.log(this.staffs);
       }
       return null; // No error if validation passes
     };
+  }
+
+  onInputChange(event: any) {
+    let inputValue = event.target.value;
+
+    
+
+    // Ensure the value starts with PB- and limit the length to 8 digits after the prefix
+    if (!inputValue.startsWith('PB-')) {
+      this.paymentForm.patchValue({
+        passbooknumber: 'PB-'
+      });
+    }
+
+    // Patch the value back to the form control
+
+  }
+
+  blockPrefix(event: any) {
+    const inputValue = this.paymentForm.get('passbooknumber')?.value;
+
+    if (event.target.selectionStart < 3 && event.key !== 'Tab') {
+      event.preventDefault();
+    }
   }
 
   getSubByPassbookNo(passbooknumber: string): void {
@@ -213,13 +239,18 @@ console.log(this.staffs);
     });
   }
   
-  handleAmountChange(amount: number, expectedInstallmentAmount: number) {
+  handleAmountChange(amount: number, expectedInstallmentAmount: number,passbooknumber:any) {
     // Fetch the last payment or set default values if no previous payment exists
     const lastPayment = this.payments?.[this.payments.length - 1] || null;
     const previousAmountPaid = lastPayment ? lastPayment.amount || 0 : 0;
     
     let balanceAmount = 0;
     let currentInstallmentMonth = this.datePipe.transform(this.subDetail.auctionDate, 'dd-MMMM') || '';
+
+    this.service.getAmountByMonth(passbooknumber,currentInstallmentMonth).subscribe((data)=>{
+      console.log(data);
+      
+    })
   
     // If there's no previous payment, set balanceAmount to 0
     if (!lastPayment) {
@@ -327,8 +358,8 @@ console.log(this.staffs);
       this.year=date.getFullYear();
   
     this.paymentForm.reset()
-    this.router.navigate(["/payment"]);
-
+  
+    
       console.log(response);
     });
 }

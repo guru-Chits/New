@@ -5,6 +5,8 @@ import { SubscriberDetails } from '../shared/interface/chit';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 import { PaymentService } from '../../payments/shared/service/payment.service';
+import { ITableColumn } from '../../shared/interface/list-table';
+import { CellClickedEvent } from 'ag-grid-community';
 
 @Component({
   selector: 'app-purchase',
@@ -23,10 +25,15 @@ export class PurchaseComponent implements OnInit {
  year:number
  ticketId:string
  receipt:any
+ purchaseData:any
+ chitDetail:any
+ isChitShow:boolean= false;
+ recDate:any
+ recTime:any
  @Output() ticketIdChange = new EventEmitter<string>();
 constructor(private paymentService:PaymentService, private fb: FormBuilder,private service: ChitService,
 ){}
- subscriber:any
+ subscriber:number=0
 @Input() chitData:any
 
  ngOnInit(): void {
@@ -77,7 +84,13 @@ constructor(private paymentService:PaymentService, private fb: FormBuilder,priva
       })
     }); 
   })
+  this.getTicketIdData()
 
+  this.purchaseForm.patchValue({
+    walletBalance:this.subscriber,
+    groupId: this.groupId,
+    foremanCommision: this.chitData?.foremanCommission,
+  })
   // this.incrementAuctionCycle()
 
   this.purchaseForm.get('ticketId')?.valueChanges.subscribe(() => {
@@ -149,6 +162,48 @@ this.purchaseForm.get('winningBid')?.valueChanges.subscribe(()=>{
     
  }
 
+ async getTicketIdData() {
+  const res = await this.service.getTicketId(this.chitData?.chitGroupId).toPromise();
+  this.purchaseData = res.purchaseData.map(item => ({
+    ticketId: item.purchaseChitData?.ticketId,
+    subscriberName: item.purchaseChitData?.subscriberName,
+    winningBid: item.purchaseChitData?.winningBid,
+    prizedAmount: item.purchaseChitData?.prizedAmount,
+    viewDetails:"View Details",
+    id:item._id
+    // Add any other fields you want to display
+  }));  
+
+  // Now you can use the data outside the async block
+}
+showModal(): void {
+  setTimeout(() => {
+    const modal = document.getElementById('purchaseDetailModel');
+    if (modal) {
+      modal.style.display = 'block';
+    }
+  }, 0);
+}
+
+getDataById(id:any){
+  console.log(id)
+  this.service.getAuctionById(id).subscribe(
+    data => {
+      this.chitDetail = data.data;
+      this.isChitShow=true
+      this.showModal()
+    const createdAtDate = new Date(this.chitDetail.updatedAt);
+
+    this.recDate =createdAtDate.toISOString().split('T')[0]; // Formats the date
+    this.recTime = createdAtDate.toLocaleTimeString();  // Formats the time
+      console.log(this.chitDetail)
+    },
+    error => {
+      console.error('Error fetching subscriber', error);
+    }
+  );
+
+}
  amountLessThanOrEqualChitAmount(ticketIdControl: string) {
   return (formGroup: AbstractControl): ValidationErrors | null => {
     const ticketId = formGroup.get(ticketIdControl)?.value;
@@ -237,6 +292,9 @@ this.purchaseForm.get('winningBid')?.valueChanges.subscribe(()=>{
     });
 
  }
+ close(){
+  this.isChitShow=false
+}
 
  downloadAsPDF() {
   const element = document.getElementById('print-section');
@@ -287,7 +345,26 @@ print() {
   document.body.innerHTML = originalContent;
   window.location.reload(); // Reload to restore state
 }
+redeemedColumn: ITableColumn[] = [
+  {
+    label: 'Ticket Id',
+    field: 'ticketId',
+    filter: false,
 
+  },
+  { label: 'Name', field: 'subscriberName' },
+  { label: 'Winning Bid', field: 'winningBid' },
+  { label: 'Prized Amount', field: 'prizedAmount' },
+  // { label: 'Balance', field: 'balance' },
+  { label: ' ', field: 'viewDetails',
+    cellStyle: function (params: any) {
+      return { color: '#50A1A5' ,cursor:'pointer'};
+    },
+    onCellClicked: (event: CellClickedEvent) =>
+    
+      this.getDataById(event.data.id)
+  },
+];
 }
 
 

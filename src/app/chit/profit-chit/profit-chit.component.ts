@@ -24,6 +24,8 @@ export class ProfitChitComponent implements OnInit {
   month:string
   year:Number
   purchase:boolean=false
+  auctionStart:boolean=false
+
   constructor(private formBuiler:FormBuilder,private paymentService:PaymentService 
 ,private service: ChitService, ){}
 ngOnInit(): void {
@@ -45,10 +47,13 @@ ngOnInit(): void {
   if (auctionStart) {
     this.profitForm.enable();
     this.profitForm.get('auctionStart')?.enable();
+    this.auctionStart=false
 
   } else {
     this.profitForm.disable();
     this.profitForm.get('auctionStart')?.enable();
+    this.auctionStart=true
+
   }
   const groupId=this.chitData?.chitGroupId
   this.groupId=groupId
@@ -119,22 +124,23 @@ ngOnInit(): void {
       }
       })
 })
-    this.profitForm.get('winningBid')?.valueChanges.subscribe(()=>{
-      const winningBid=this.profitForm.get('winningBid').value
-      const prizedAmount=this.chitData?.chitAmount-winningBid
-      const finalprizedAmount = this.profitForm.get('prizedAmount').value;
-    const walletBalance = this.chitSubscriberTotal
-    const sumOfTwo =prizedAmount+this.chitData.foremanCommission
-    console.log('sum of Two', sumOfTwo)
-    const finalWallet = this.chitSubscriberTotal - sumOfTwo
-    console.log('final value', finalWallet)
 
-    this.profitForm.patchValue({
-        prizedAmount:prizedAmount,
-        walletBalance: finalWallet
-      });
-    }) 
 
+}
+winningBidChange(){
+    const winningBid=this.profitForm.get('winningBid').value
+    const prizedAmount=this.chitData?.chitAmount-winningBid
+    const finalprizedAmount = this.profitForm.get('prizedAmount').value;
+  const walletBalance = this.chitSubscriberTotal
+  const sumOfTwo =prizedAmount+this.chitData.foremanCommission
+  console.log('sum of Two', sumOfTwo)
+  const finalWallet = this.chitSubscriberTotal - sumOfTwo
+  console.log('final value', finalWallet)
+
+  this.profitForm.patchValue({
+      prizedAmount:prizedAmount,
+      walletBalance: finalWallet
+    });
 }
 amountLessThanOrEqualChitAmount(ticketIdControl: string) {
   return (formGroup: AbstractControl): ValidationErrors | null => {
@@ -174,9 +180,13 @@ toggleFormControls(){
   const auctionStart = this.profitForm.get('auctionStart')?.value;
   if (auctionStart) {
     this.profitForm.enable();
+    this.auctionStart=false
+
   } else {
-    this.profitForm.disable();
+    // this.profitForm.disable();
     this.profitForm.get('auctionStart')?.enable();
+    this.auctionStart=true
+
   }
 
 }
@@ -230,6 +240,9 @@ onSubmit(){
             winningBid: '',
             prizedAmount: ''
           });
+          this.profitForm.disable();
+          this.profitForm.get('auctionStart')?.enable();
+
         }
       )
       this.receipt={

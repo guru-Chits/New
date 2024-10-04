@@ -39,7 +39,7 @@
                   <div class="col-lg-4">
                     <div class="form-group">
                       <label for="firstName" class="form-control-label">First Name<span class="required" *ngIf="subscriberForm.get('firstName').hasError('required')">*</span></label>
-                      <input type="text" placeholder="First Name" class="form-control form-control-sm" formControlName="firstName" />
+                      <input type="text" placeholder="First Name" class="form-control form-control-sm" formControlName="firstName" (keypress)="onFirstNameKeyPress($event)"   maxlength="25" minlength="2" />
                       <div class="invalid-feedback" *ngIf="subscriberForm.get('firstName').invalid && (subscriberForm.get('firstName').dirty || subscriberForm.get('firstName').touched)">
                         <div *ngIf="subscriberForm.get('firstName').errors.required">First Name is required.</div>
                         <div *ngIf="subscriberForm.get('firstName').errors.pattern">First Name should only contain alphabetic characters and start with a capital letter.</div>
@@ -51,7 +51,7 @@
                   <div class="col-lg-4">
                     <div class="form-group">
                       <label for="lastName" class="form-control-label">Last Name<span class="required" *ngIf="subscriberForm.get('lastName').hasError('required')">*</span></label>
-                      <input type="text" placeholder="Last Name" class="form-control form-control-sm" formControlName="lastName" />
+                      <input type="text" placeholder="Last Name" class="form-control form-control-sm" formControlName="lastName"  (keypress)="onFirstNameKeyPress($event)" maxlength="25" minlength="2"   />
                       <div class="invalid-feedback" *ngIf="subscriberForm.get('lastName').invalid && (subscriberForm.get('lastName').dirty || subscriberForm.get('lastName').touched)">
                         <div *ngIf="subscriberForm.get('lastName').errors.required">Last Name is required.</div>
                         <div *ngIf="subscriberForm.get('lastName').errors.pattern">Last Name should only contain alphabetic characters and start with a capital letter.</div>
@@ -64,7 +64,7 @@
                   <div class="col-lg-4">
                     <div class="form-group">
                       <label for="aliasName" class="form-control-label">Alias Name <span class="required" *ngIf="subscriberForm.get('aliasName').hasError('required')">*</span></label>
-                      <input type="text" placeholder="Alias Name" class="form-control form-control-sm" formControlName="aliasName" />
+                      <input type="text" placeholder="Alias Name" class="form-control form-control-sm" formControlName="aliasName"   (keypress)="onFirstNameKeyPress($event)" maxlength="25" minlength="2"  />
                       <div class="invalid-feedback" *ngIf="subscriberForm.get('aliasName').invalid && (subscriberForm.get('aliasName').dirty || subscriberForm.get('aliasName').touched)">
                         <div *ngIf="subscriberForm.get('aliasName').errors.pattern">Alias Name should only contain alphabetic characters, "/", "-", "(", ")" and spaces, and start with a capital letter.</div>
                       </div>
@@ -74,7 +74,10 @@
                   <div class="col-lg-4">
                     <div class="form-group">
                       <label for="contact" class="form-control-label">Contact Number<span class="required" *ngIf="subscriberForm.get('contact').hasError('required')">*</span></label>
-                      <input type="tel" placeholder="Contact Number" class="form-control form-control-sm" formControlName="contact" />
+                      <input type="tel" placeholder="Contact Number" class="form-control form-control-sm" formControlName="contact" [value]="subscriberForm.get('contact').value" 
+                      (input)="onContactChange($event)"
+                      maxlength="14"  
+                      (keydown)="blockPrefix($event)" />
                       <div class="invalid-feedback" *ngIf="subscriberForm.get('contact').invalid && (subscriberForm.get('contact').dirty || subscriberForm.get('contact').touched)">
                         <div *ngIf="subscriberForm.get('contact').errors.required">Contact Number is required.</div>
                         <div *ngIf="subscriberForm.get('contact').errors.pattern">Contact Number should be exactly 10 digits.</div>
@@ -85,7 +88,7 @@
                   <div class="col-lg-4">
                     <div class="form-group">
                       <label for="place" class="form-control-label">Place/Address<span class="required" *ngIf="subscriberForm.get('place').hasError('required')">*</span></label>
-                      <input type="text" placeholder="Place/Address" class="form-control form-control-sm" formControlName="place" />
+                      <input type="text" placeholder="Place/Address" class="form-control form-control-sm" formControlName="place" maxlength="50" minlength="10" />
                       <div class="invalid-feedback" *ngIf="subscriberForm.get('place').invalid && (subscriberForm.get('place').dirty || subscriberForm.get('place').touched)">
                         <div *ngIf="subscriberForm.get('place').errors.required">Address is required.</div>
                         <!-- <div *ngIf="subscriberForm.get('place').errors.minlength">Address must be at least 10 characters long.</div>
@@ -115,7 +118,7 @@
                   <div class="col-lg-4">
                     <div class="form-group">
                       <label for="dob" class="form-control-label">Date of Birth<span class="required" *ngIf="subscriberForm.get('dob').hasError('required')">*</span></label>
-                      <input type="date" class="form-control form-control-sm" formControlName="dob" />
+                      <input type="date"  placeholder="dd/mm/yyyy" class="form-control form-control-sm" formControlName="dob" (ngModelChange)="validateDate($event)" />
                       <div class="invalid-feedback" *ngIf="subscriberForm.get('dob').invalid && (subscriberForm.get('dob').dirty || subscriberForm.get('dob').touched)">
                         <div *ngIf="subscriberForm.get('dob').errors.required">Date of Birth is required.</div>
                         <div *ngIf="subscriberForm.get('dob').errors.invalidDate">Invalid Date of Birth.</div>
@@ -127,12 +130,12 @@
                   <div class="col-lg-4">
                     <div class="form-group">
                       <label for="occupation" class="form-control-label">Occupation <span class="required" *ngIf="subscriberForm.get('occupation').hasError('required')">*</span></label>
-                      <input type="text" placeholder="Occupation" class="form-control form-control-sm" formControlName="occupation" />
+                      <input type="text" placeholder="Occupation" class="form-control form-control-sm" formControlName="occupation" (keypress)="onFirstNameKeyPress($event)" maxlength="25" minlength="2" />
                       <div class="invalid-feedback" *ngIf="subscriberForm.get('occupation').invalid && (subscriberForm.get('occupation').dirty || subscriberForm.get('occupation').touched)">
-                        <div *ngIf="subscriberForm.get('occupation').errors.required">Occupation is required.</div>
+                        <!-- <div *ngIf="subscriberForm.get('occupation').errors.required">Occupation is required.</div>
                         <div *ngIf="subscriberForm.get('occupation').errors.minlength">Occupation must be at least 2 characters long.</div>
                         <div *ngIf="subscriberForm.get('occupation').errors.maxlength">Occupation cannot be more than 50 characters long.</div>
-                        <div *ngIf="subscriberForm.get('occupation').errors.pattern">Occupation contains invalid characters.</div>
+                        <div *ngIf="subscriberForm.get('occupation').errors.pattern">Occupation contains invalid characters.</div> -->
                       </div>
                     </div>
                   </div>
@@ -154,10 +157,10 @@
                   <div class="col-lg-4">
                     <div class="form-group">
                       <label for="accountNumber" class="form-control-label">Account Number<span class="required" *ngIf="subscriberForm.get('accountNumber').hasError('required')">*</span></label>
-                      <input type="text" placeholder="Account Number" class="form-control form-control-sm" formControlName="accountNumber" />
+                      <input type="text" placeholder="Account Number" class="form-control form-control-sm" formControlName="accountNumber"  (keypress)="onAccNoKeyPress($event)" maxlength="12" minlength="12"/>
                       <div class="invalid-feedback" *ngIf="subscriberForm.get('accountNumber').invalid && (subscriberForm.get('accountNumber').dirty || subscriberForm.get('accountNumber').touched)">
                         <div *ngIf="subscriberForm.get('accountNumber').errors.required">Account Number is required.</div>
-                        <div *ngIf="subscriberForm.get('accountNumber').errors.pattern">Account Number should be 8 to 12 digits long.</div>
+                        <!-- <div *ngIf="subscriberForm.get('accountNumber').errors.pattern">Account Number should be 8 to 12 digits long.</div> -->
                       </div>
                     </div>
                   </div>
@@ -165,7 +168,8 @@
                   <div class="col-lg-4">
                     <div class="form-group">
                       <label for="ifsc" class="form-control-label">IFSC Code<span class="required" *ngIf="subscriberForm.get('ifsc').hasError('required')">*</span></label>
-                      <input type="text" placeholder="IFSC Code" class="form-control form-control-sm" formControlName="ifsc" />
+                      <input type="text" placeholder="IFSC Code" class="form-control form-control-sm" formControlName="ifsc" (keypress)="onIfscKeyPress($event)"  maxlength="11" 
+                      (input)="onIFSCAutoUppercase($event)"  placeholder="IFSC Code (e.g., SBIN0001234)" />
                       <div class="invalid-feedback" *ngIf="subscriberForm.get('ifsc').invalid && (subscriberForm.get('ifsc').dirty || subscriberForm.get('ifsc').touched)">
                         <div *ngIf="subscriberForm.get('ifsc').errors.required">IFSC is required.</div>
                       </div>
@@ -177,7 +181,7 @@
                     <div class="col-lg-4">
                       <div class="form-group">
                         <label for="upi_id" class="form-control-label">UPI<span class="required" *ngIf="subscriberForm.get('upi_id').hasError('required')">*</span></label>
-                        <input type="text" placeholder="UPI" class="form-control form-control-sm" formControlName="upi_id" />
+                        <input type="text" placeholder="UPI" class="form-control form-control-sm" formControlName="upi_id" maxlength="20"/>
                       </div>
                     </div>
                 </div>
@@ -187,16 +191,15 @@
                   <div class="col-lg-4">
                     <div class="form-group">
                       <label for="panCardNumber" class="form-control-label">PAN Card Number<span class="required" *ngIf="subscriberForm.get('panCardNumber').hasError('required')">*</span></label>
-                      <input type="text" placeholder="PAN" class="form-control form-control-sm" formControlName="panCardNumber" />
+                      <input type="text" placeholder="PAN" class="form-control form-control-sm" formControlName="panCardNumber"  (keypress)="onPanCardKeyPress($event)"/>
                       <div class="invalid-feedback" *ngIf="subscriberForm.get('panCardNumber').invalid && (subscriberForm.get('panCardNumber').dirty || subscriberForm.get('panCardNumber').touched)">
-                        <div *ngIf="subscriberForm.get('panCardNumber').errors.pattern">PAN should be in the format: 5 letters followed by 4 digits and 1 letter.</div>
                       </div>
                     </div>
                   </div>
                   <div class="col-lg-4">
                     <div class="form-group">
                       <label for="panUrl" class="form-control-label">PAN Card<span class="required" *ngIf="subscriberForm.get('panUrl').hasError('required')">*</span></label>
-                      <input type="file" (change)="onFileChange($event, 'panUrl')" class="form-control form-control-sm" formControlName="panUrl" />
+                      <input type="file" (change)="onFileChange($event, 'panUrl')" class="form-control form-control-sm" formControlName="panUrl"  />
                     </div>
                   </div>
                     <div class="col-lg-4 mt-4">
@@ -208,10 +211,12 @@
                     <div class="col-lg-4">
                         <div class="form-group">
                           <label for="aadharNumber" class="form-control-label">Aadhaar Card Number<span class="required" *ngIf="subscriberForm.get('aadharNumber').hasError('required')">*</span></label>
-                          <input type="text" placeholder="Aadhaar" class="form-control form-control-sm" formControlName="aadharNumber" />
+                          <input type="text" placeholder="Aadhaar" class="form-control form-control-sm" formControlName="aadharNumber" (input)="formatAadharNumber()" 
+                          (keypress)="onlyAllowNumbers($event)" 
+                          maxlength="14"/>
                           <div class="invalid-feedback" *ngIf="subscriberForm.get('aadharNumber').invalid && (subscriberForm.get('aadharNumber').dirty || subscriberForm.get('aadharNumber').touched)">
                             <div *ngIf="subscriberForm.get('aadharNumber').errors.required">Aadhaar is required.</div>
-                            <div *ngIf="subscriberForm.get('aadharNumber').errors.pattern">Aadhaar should be in the format: 4 digits followed by a space, another 4 digits, another space, and another 4 digits.</div>
+                            <!-- <div *ngIf="subscriberForm.get('aadharNumber').errors.pattern">Aadhaar should be in the format: 4 digits followed by a space, another 4 digits, another space, and another 4 digits.</div> -->
                           </div>
                         </div>
                       </div>
@@ -235,7 +240,7 @@
                   <div class="col-lg-4">
                     <div class="form-group">
                       <label for="bankName" class="form-control-label">Bank Name <span class="required" *ngIf="subscriberForm.get('bankName').hasError('required')">*</span></label>
-                      <input type="text" placeholder="Bank Name" class="form-control form-control-sm" formControlName="bankName" />
+                      <input type="text" placeholder="Bank Name" class="form-control form-control-sm" formControlName="bankName" (keypress)="onFirstNameKeyPress($event)" maxlength="35" minlength="2"  />
                       <div class="invalid-feedback" *ngIf="subscriberForm.get('bankName').invalid && (subscriberForm.get('bankName').dirty || subscriberForm.get('bankName').touched)">
                         <div *ngIf="subscriberForm.get('bankName').errors.required">Bank Name is required.</div>
                         <div *ngIf="subscriberForm.get('bankName').errors.pattern">Bank Name should only contain alphabetic characters and spaces.</div>
@@ -274,7 +279,7 @@
                   <div class="col-lg-4">
                     <div class="form-group">
                       <label for="nomineeName" class="form-control-label">Nominee Name <span class="required" *ngIf="subscriberForm.get('nomineeName').hasError('required')">*</span></label>
-                      <input type="text" placeholder="Nominee Name" class="form-control form-control-sm" formControlName="nomineeName" />
+                      <input type="text" placeholder="Nominee Name" class="form-control form-control-sm" formControlName="nomineeName" (keypress)="onFirstNameKeyPress($event)" maxlength="25" minlength="2" />
                       <div class="invalid-feedback" *ngIf="subscriberForm.get('nomineeName').invalid && (subscriberForm.get('nomineeName').dirty || subscriberForm.get('nomineeName').touched)">
                         <div *ngIf="subscriberForm.get('nomineeName').errors.required">Nominee Name is required.</div>
                         <div *ngIf="subscriberForm.get('nomineeName').errors.pattern">Nominee Name should only contain alphabetic characters and start with a capital letter.</div>
@@ -300,7 +305,7 @@
                   <div class="col-lg-4">
                     <div class="form-group">
                       <label for="nomineeAddress" class="form-control-label">Nominee Address <span class="required" *ngIf="subscriberForm.get('nomineeAddress').hasError('required')">*</span></label>
-                      <input type="text" placeholder="Nominee Address" class="form-control form-control-sm" formControlName="nomineeAddress" />
+                      <input type="text" placeholder="Nominee Address" class="form-control form-control-sm" formControlName="nomineeAddress"  maxlength="50" minlength="10"  />
                       <div class="invalid-feedback" *ngIf="subscriberForm.get('nomineeAddress').invalid && (subscriberForm.get('nomineeAddress').dirty || subscriberForm.get('nomineeAddress').touched)">
                         <div *ngIf="subscriberForm.get('nomineeAddress').errors.required">Nominee Address is required.</div>
                         <div *ngIf="subscriberForm.get('nomineeAddress').errors.minlength">Nominee Address must be at least 10 characters long.</div>
@@ -316,7 +321,7 @@
                   <div class="col-lg-4">
                     <div class="form-group">
                       <label for="nomineeOccupation" class="form-control-label">Nominee Occupation <span class="required" *ngIf="subscriberForm.get('nomineeOccupation').hasError('required')">*</span></label>
-                      <input type="text" placeholder="Nominee Occupation" class="form-control form-control-sm" formControlName="nomineeOccupation" />
+                      <input type="text" placeholder="Nominee Occupation" class="form-control form-control-sm" formControlName="nomineeOccupation" (keypress)="onFirstNameKeyPress($event)" maxlength="25" minlength="2" />
                       <div class="invalid-feedback" *ngIf="subscriberForm.get('nomineeOccupation').invalid && (subscriberForm.get('nomineeOccupation').dirty || subscriberForm.get('nomineeOccupation').touched)">
                         <div *ngIf="subscriberForm.get('nomineeOccupation').errors.required">Nominee Occupation is required.</div>
                         <div *ngIf="subscriberForm.get('nomineeOccupation').errors.minlength">Nominee Occupation must be at least 2 characters long.</div>
@@ -343,7 +348,9 @@
                   <div class="col-lg-4">
                     <div class="form-group">
                       <label for="nomineeAadhar" class="form-control-label">Nominee Aadhaar <span class="required" *ngIf="subscriberForm.get('nomineeAadhar').hasError('required')">*</span></label>
-                      <input type="text" placeholder="Nominee Aadhaar" class="form-control form-control-sm" formControlName="nomineeAadhar" />
+                      <input type="text" placeholder="Nominee Aadhaar" class="form-control form-control-sm" formControlName="nomineeAadhar"  (input)="formatNoAadharNumber()" 
+                      (keypress)="onlyAllowNumbers($event)" 
+                      maxlength="14"/>
                       <div class="invalid-feedback" *ngIf="subscriberForm.get('nomineeAadhar').invalid && (subscriberForm.get('nomineeAadhar').dirty || subscriberForm.get('nomineeAadhar').touched)">
                         <div *ngIf="subscriberForm.get('nomineeAadhar').errors.required">Nominee Aadhar is required.</div>
                         <div *ngIf="subscriberForm.get('nomineeAadhar').errors.pattern">Nominee Aadhar should be in the format: 4 digits followed by a space, another 4 digits, another space, and another 4 digits.</div>

@@ -5,11 +5,12 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { AreaService } from '../../area/shared/service/area.service';
 import { NgSelectModule, NgLabelTemplateDirective, NgOptionTemplateDirective } from '@ng-select/ng-select';
 import { HttpClient } from '@angular/common/http';
-
+import { DatePipe } from '@angular/common';
 @Component({
   selector: 'app-staff-create',
   templateUrl: './staff-create.component.html',
   styleUrl: './staff-create.component.css',
+  providers: [DatePipe]
 })
 export class StaffCreateComponent implements OnInit{
   staffsForm: FormGroup;
@@ -26,7 +27,8 @@ export class StaffCreateComponent implements OnInit{
     private service: StaffService,
     private router:Router,
     private routeService:AreaService,
-    private HttpClient:HttpClient
+    private HttpClient:HttpClient,
+    private datePipe: DatePipe
   
   ) { }
 routeId:[]
@@ -53,7 +55,7 @@ staff:any=true
 private staffIdPrefix: string = 'KNG-';
  staffIdCounter: string='E00'
  displayedStaffs: any[];
-
+ workingStatus:boolean=false
  inputText = '';
  role:boolean=false
 ngOnInit(){
@@ -73,7 +75,7 @@ ngOnInit(){
     lastName: ["", [Validators.required,Validators.pattern(/^[A-Z][a-zA-Z]+$/),Validators.maxLength(25),Validators.minLength(2)]],
     gender: ["", [Validators.required]],
     role: ["", [Validators.required]],
-    contact: ["", [Validators.required, Validators.pattern(/^\+91\s?\d{10}$/)]],
+    contact: ["+91 ", [Validators.required, Validators.pattern(/^\+91\s?\d{10}$/)]],
     address: ["", [Validators.required, Validators.pattern(/^[a-zA-Z0-9\s,.'-]+$/)]],
     emailId:["", [Validators.required, Validators.email, Validators.minLength(10), Validators.maxLength(100)]],
     dob: ['', [Validators.required,
@@ -92,15 +94,15 @@ ngOnInit(){
       this.conditionalValidator(() => !!this.staffsForm?.get('panCardNumber')?.value, Validators.pattern(/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/))
     ]],
     panUrl: [""],
-    aadharNumber: [, [
+    aadharNumber: [, [Validators.required,
       this.conditionalValidator(() => !!this.staffsForm?.get('aadharNumber')?.value, Validators.pattern(/^\d{4}\s\d{4}\s\d{4}$/))
     ]],
-    aadharUrl: [""],
+    aadharUrl: ["",[Validators.required]],
     drivingLicenseUrl: [""],
     drivingLicenseNumber: ["", this.conditionalValidator(() => !!this.staffsForm?.get('drivingLicenseNumber')?.value, Validators.pattern(/^[A-Z]{2}[- ]?[A-Z0-9]{2}[ ]?[0-9]{4}[ ]?[0-9]{7}$/))],
     bankName: [""],
     passbookUrl: [""],
-    workingStatus: [false, [Validators.required]],
+    workingStatus: ["", [Validators.required]],
     bgVerification: ["UnVerified"],
     bgVerification_remark: [""],
     profileUrl:[""],
@@ -132,6 +134,12 @@ ngOnInit(){
 
         this.aadharUrl=this.staffData.Staff.aadharUrl
         this.staff=false
+        if (this.staffData.Staff.workingStatus) {
+          this.workingStatus=true
+          
+        } else {
+          this.workingStatus=false
+        }
 
         const utcDob = this.convertDateFormat(this.staffData.Staff.dob);
 
@@ -172,6 +180,200 @@ ngOnInit(){
         
        })
  
+  }
+  allowValidInput(event: any, pattern: RegExp): void {
+    const inputChar = String.fromCharCode(event.charCode);
+    if (!pattern.test(inputChar)) {
+      event.preventDefault();
+    }
+  }
+  
+  // Use this method on form inputs
+  onFirstNameKeyPress(event: KeyboardEvent): void {
+    this.allowValidInput(event, /^[A-Za-z]+$/); // Only letters allowed
+  }
+  onAccNoKeyPress(event: KeyboardEvent): void {
+    this.allowValidInput(event,/^[0-9]+$/); // Only letters allowed
+  }
+  
+  onIfscKeyPress(event: KeyboardEvent): void {
+    const inputElement = event.target as HTMLInputElement;
+    let input = inputElement.value;
+  
+    // Allow only letters (A-Z, a-z) for the first 4 characters
+    if (input.length < 4) {
+      if (!/[a-zA-Z]/.test(event.key)) {
+        event.preventDefault(); // Prevent invalid input for first 4 characters
+      } 
+    }
+  
+    // Allow only digits for characters from 5 to 11
+    if (input.length >= 4 && input.length < 11 && !/\d/.test(event.key)) {
+      event.preventDefault(); // Prevent invalid input for digits
+    }
+  
+    // Prevent input if length exceeds 11 characters
+    if (input.length >= 11) {
+      event.preventDefault();
+    }
+  }
+
+  onPanCardKeyPress(event: KeyboardEvent): void {
+    const inputElement = event.target as HTMLInputElement;
+    let input = inputElement.value;
+  
+    // Allow only letters (A-Z, a-z) for the first 5 characters
+    if (input.length < 5) {
+      if (!/[a-zA-Z]/.test(event.key)) {
+        event.preventDefault(); // Prevent invalid input for the first 5 characters
+      } 
+    }
+  
+    // Allow only digits for the 6th to 9th characters
+    if (input.length >= 5 && input.length < 9 && !/\d/.test(event.key)) {
+      event.preventDefault(); // Prevent invalid input for the digits part
+    }
+  
+    // Allow only a letter (A-Z) for the 10th character
+    if (input.length === 9) {
+      if (!/[a-zA-Z]/.test(event.key)) {
+        event.preventDefault(); // Prevent invalid input for the last letter
+      }
+    }
+  
+    // Prevent input if length exceeds 10 characters
+    if (input.length >= 10) {
+      event.preventDefault();
+    }
+  }
+  onDrivingLicenseKeyPress(event: KeyboardEvent): void {
+    const inputElement = event.target as HTMLInputElement;
+    const input = inputElement.value;
+  
+    // Define the allowed characters for different positions
+    if (input.length < 2) {
+      // Allow only letters for the first two characters
+      if (!/[A-Z]/.test(event.key)) {
+        event.preventDefault();
+      }
+    } else if (input.length === 2) {
+      // Allow a hyphen, space, or alphanumeric character after the first 2 letters
+      if (!/[- ]|[A-Z0-9]/.test(event.key)) {
+        event.preventDefault();
+      }
+    } else if (input.length > 2 && input.length <= 4) {
+      // Allow alphanumeric for the next 2 characters
+      if (!/[A-Z0-9]/.test(event.key)) {
+        event.preventDefault();
+      }
+    } else if (input.length === 5) {
+      // Allow space after the first 4 characters
+      if (!/[ ]/.test(event.key)) {
+        event.preventDefault();
+      }
+    } else if (input.length >= 6 && input.length <= 9) {
+      // Allow only digits for the next 4 characters
+      if (!/[0-9]/.test(event.key)) {
+        event.preventDefault();
+      }
+    } else if (input.length === 10) {
+      // Allow space after the 4 digits
+      if (!/[ ]/.test(event.key)) {
+        event.preventDefault();
+      }
+    } else if (input.length >= 11 && input.length < 18) {
+      // Allow only digits for the last 7 characters
+      if (!/[0-9]/.test(event.key)) {
+        event.preventDefault();
+      }
+    }
+  
+    // Prevent input if length exceeds 18 characters
+    if (input.length >= 18) {
+      event.preventDefault();
+    }
+  }
+  onDrivingLicenseInput(event: Event): void {
+    const inputElement = event.target as HTMLInputElement;
+    let input = inputElement.value;
+  
+    // Automatically convert lowercase to uppercase
+    inputElement.value = input.toUpperCase();
+  
+    // Manually handle spaces, dashes, and number/letter limitations
+    const regexPattern = /^[A-Z]{0,2}[- ]?[A-Z0-9]{0,2}[ ]?[0-9]{0,4}[ ]?[0-9]{0,7}$/;
+  
+    // Check if the current input matches the allowed format
+    if (!regexPattern.test(inputElement.value)) {
+      // Revert to the previous valid value if the input doesn't match the allowed format
+      inputElement.value = inputElement.value.slice(0, -1);
+    }
+  }
+  
+  onIFSCAutoUppercase(event: Event): void {
+    const inputElement = event.target as HTMLInputElement;
+    
+    // Convert all letters to uppercase
+    let currentValue = inputElement.value.toUpperCase();
+  
+    // Allow only 4 uppercase letters and 7 digits
+    currentValue = currentValue.replace(/[^A-Z\d]/g, ''); // Remove any invalid characters
+  
+    // Update the input value with the processed string
+    inputElement.value = currentValue;
+  
+    // Restrict the length to a maximum of 11 characters (4 letters + 7 digits)
+  
+  }
+  formatAadharNumber(): void {
+    let aadhar = this.staffsForm.get('aadharNumber')?.value.replace(/\D/g, ''); // Remove non-numeric characters
+    if (aadhar.length > 4) {
+      aadhar = aadhar.substring(0, 4) + ' ' + aadhar.substring(4);
+    }
+    if (aadhar.length > 9) {
+      aadhar = aadhar.substring(0, 9) + ' ' + aadhar.substring(9);
+    }
+    this.staffsForm.patchValue({
+      aadharNumber: aadhar
+    }, { emitEvent: false });
+  }
+  
+  onlyAllowNumbers(event: KeyboardEvent): void {
+    const charCode = event.which ? event.which : event.keyCode;
+    // Prevent non-numeric characters
+    if (charCode < 48 || charCode > 57) {
+      event.preventDefault();
+    }
+  }
+  
+  onContactChange(event: any) {
+    let inputValue = event.target.value;
+
+    // Remove all non-numeric characters except the prefix
+    let numbersOnly = inputValue.replace(/[^\d]/g, '');
+
+    // Ensure the value starts with +91 and limit the length to 10 digits after the prefix
+    if (numbersOnly.startsWith('91')) {
+      numbersOnly = '+91 ' + numbersOnly.substring(2, 12); // Take only 10 digits after +91
+    } else {
+      numbersOnly = '+91 ';
+    }
+
+    // Patch the value back to the form control
+    this.staffsForm.patchValue({
+      contact: numbersOnly
+    });
+  }
+  blockPrefix(event: any) {
+    const inputValue = this.staffsForm.get('contact')?.value;
+
+    // Prevent deletion or modification of the '+91 ' prefix
+    if (event.target.selectionStart < 4 && event.key !== 'Tab') {
+      event.preventDefault();
+    }
+  }
+  working(event:any){
+   this.workingStatus= this.staffsForm.get('workingStatus')?.value;
   }
 
   onInputChange(event: any,placeholder:string) {
@@ -258,6 +460,11 @@ ngOnInit(){
     const formattedDate = `${year}-${month}-${day}`;
   
     return formattedDate;
+  }
+  onDateChange(event: any) {
+    // Manually parsing the date and formatting it to dd-MM-yyyy
+    const formattedDate = this.datePipe.transform(event, 'dd-MM-yyyy');
+    this.staffsForm.get('dob').setValue(formattedDate, { emitEvent: false });
   }
   
  conditionalValidator(condition: () => boolean, validator: ValidatorFn): ValidatorFn {

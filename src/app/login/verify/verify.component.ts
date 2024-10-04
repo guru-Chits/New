@@ -17,16 +17,17 @@ verifyForm:FormGroup<IForgotPassword>
 verifyPattern:RegExp=/^[0-9]$/;
 constructor(private fb:FormBuilder,private router :Router,private httpClient:HttpClient,private  service:LoginService){}
 get verifyCodeControl() { return this.verifyForm.get('verifyCode'); };
-@Input() mobileNumber:number
+@Input() mobileNumber:any
 @Input() reset:boolean
 @Input() employeeId:string
 resetPage:boolean=false
-
+mob:any
 
 ngOnInit(): void {
   this.verifyForm=this.fb.group({
     verifyCode:['',[Validators.required]]
   })
+  this.mob=this.mobileNumber.slice(-3);
 }
 
 onSubmit(){
@@ -69,6 +70,19 @@ onSubmit(){
     }
   );
   
+}
+resetOtp(){
+  const otpUrl = `https://2factor.in/API/V1/b1037ef1-2ed8-11ef-8b60-0200cd936042/SMS/${this.mobileNumber}/AUTOGEN/OTPTemplate`;
+  
+  this.httpClient.get(otpUrl).subscribe(
+    (otpResponse: any) => {
+      console.log('OTP sent successfully:', otpResponse);
+     },
+    (error) => {
+      console.error('Error sending OTP:', error);
+    }
+  );
+
 }
 }
 

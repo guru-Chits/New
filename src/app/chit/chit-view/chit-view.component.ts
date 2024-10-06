@@ -244,23 +244,43 @@ export class ChitViewComponent implements OnInit{
     this.showTicket = false;
   }
 
+  // showSubscriberList(type: 'chit' | 'additional'): void {
+  //   debugger
+  //   this.currentListType = type;
+  //   this.isSubscriberListVisible = true;
+  //   this.subservice.getsubscriberAll().subscribe((data)=>{
+  //     this.subscriberData=data;
+  //     console.log("subscriber data",this.subscriberData);
+     
+  //     this.data=this.subscriberData.AllSubscriber.map((subscriberDetails,index)=>({
+  //       id:subscriberDetails?._id,
+  //       subscriberId: subscriberDetails?.subscriberId,
+  //       subscriberName: `${subscriberDetails?.firstName} ${subscriberDetails?.lastName}`,
+  //       subscriberProfile:subscriberDetails?.profileImageUrl
+  //     }))
+  //     this.displayedSubscribers = this.data;
+  //   })
+  // }
   showSubscriberList(type: 'chit' | 'additional'): void {
   
     this.currentListType = type;
     this.isSubscriberListVisible = true;
-    this.subservice.getsubscriberAll().subscribe((data)=>{
-      this.subscriberData=data;
-      console.log("subscriber data",this.subscriberData);
-     
-      this.data=this.subscriberData.AllSubscriber.map((subscriberDetails,index)=>({
-        id:subscriberDetails?._id,
+    this.subservice.getsubscriberAll().subscribe((data) => {
+      this.subscriberData = data;
+      console.log("subscriber data", this.subscriberData);
+  
+      this.data = this.subscriberData.AllSubscriber.map((subscriberDetails) => ({
+        id: subscriberDetails?._id,
         subscriberId: subscriberDetails?.subscriberId,
         subscriberName: `${subscriberDetails?.firstName} ${subscriberDetails?.lastName}`,
-        subscriberProfile:subscriberDetails?.profileImageUrl
-      }))
-      this.displayedSubscribers = this.data;
-    })
+        subscriberProfile: subscriberDetails?.profileImageUrl
+      }));
+  
+      this.displayedSubscribers = []; // Initially empty until a search is performed
+    });
   }
+  
+  
 
   onButtonClick(id: string): void {
     this.getSubscribersById(id);
@@ -287,18 +307,33 @@ export class ChitViewComponent implements OnInit{
     );
   }
 
+  // applyFilter(filterValue: string) {
+  //   if (!filterValue || !this.data) {
+  //     this.displayedSubscribers = this.data; // Show all if there's no filter or data is not defined
+  //     return;
+  //   }
+  
+  //   this.displayedSubscribers = this.data.filter(subscriber => {
+  //     const subscriberId = subscriber.subscriberId ? subscriber.subscriberId.toString().toLowerCase() : '';
+  //     const subscriberName = subscriber.subscriberName ? subscriber.subscriberName.toLowerCase() : '';
+  //     return subscriberId.includes(filterValue.toLowerCase()) || subscriberName.includes(filterValue.toLowerCase());
+  //   });
+  // } 
   applyFilter(filterValue: string) {
     if (!filterValue || !this.data) {
-      this.displayedSubscribers = this.data; // Show all if there's no filter or data is not defined
+      this.displayedSubscribers = []; // Hide all if there's no filter value or data is not defined
       return;
     }
   
+    // Filter the subscribers based on the input
     this.displayedSubscribers = this.data.filter(subscriber => {
       const subscriberId = subscriber.subscriberId ? subscriber.subscriberId.toString().toLowerCase() : '';
       const subscriberName = subscriber.subscriberName ? subscriber.subscriberName.toLowerCase() : '';
       return subscriberId.includes(filterValue.toLowerCase()) || subscriberName.includes(filterValue.toLowerCase());
     });
-  } 
+  }
+  
+  
 
   applyFilterchit(filterValue: string) {
     this.displayedChit= this.totalChitData;

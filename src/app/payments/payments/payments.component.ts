@@ -35,7 +35,8 @@ export class PaymentsComponent implements OnInit {
   totalPayment:any
   month:string
   year:number
- 
+  today: string = '';
+
   accessPrivData: any;
   subscriberDetail:any
   serialNumberCounter:number;
@@ -81,7 +82,8 @@ export class PaymentsComponent implements OnInit {
     );
 
     
-
+    const today = new Date();
+    this.today = today.toISOString().split('T')[0];
       this.paymentForm.get('cancelled')?.setValue(false) 
       this.paymentForm.get('verified')?.setValue(false)
 

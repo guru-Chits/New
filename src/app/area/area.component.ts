@@ -122,6 +122,10 @@ column: ITableColumn[] = [
   
 ];
 
+edit(id: any){
+  console.log(id);
+  this.router.navigate([`area/routeedit/${id}`]);
+  }
 
 //   columns: ColDef[] = [
 //     { field: 'sno', headerName: 'S No.', sortable: true },

@@ -106,7 +106,9 @@ export class AreaCreateComponent implements OnInit{
     // get regionID list
     this.service.getregionAll().subscribe((data:any) => {
       console.log(data);
-      this.regionIdList = data.AllRegion;
+      // this.regionIdList = data.AllRegion;
+      this.regionIdList = data.AllRegion.filter((region: any) => region.status === true);
+
       console.log("regionlist",this.regionIdList)
     })
     
@@ -160,7 +162,8 @@ export class AreaCreateComponent implements OnInit{
       routeId: routeDetails?.routeId,
       routeName:routeDetails?.routeName,
       routeNo: index + 1,
-      action: "view Details"
+      action: "view Details",
+      status: routeDetails.status ? 'Active' : 'InActive'
     
       }))
       this.displayedRoute = this.data;
@@ -259,6 +262,9 @@ export class AreaCreateComponent implements OnInit{
         onCellClicked: (event: CellClickedEvent) =>
           this.getrouteById(event.data.id)
           },
+      { label: 'Status', field: 'status', sortable: true , filterList:true,
+      },
+
       
     ];
   

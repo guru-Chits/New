@@ -21,7 +21,7 @@
                                        
                     <div class="col-lg-4">
                         <div class="form-group">
-                            <label for="chitAmount" class="form-control-label">Chit Amount</label>
+                            <label for="chitAmount" class="form-control-label">Chit Value</label>
                             <input class="form-control p-2 form-control-sm mt-2" id="chitAmount" formControlName="chitAmount" placeholder="Chit Amount" (change)="getformanVal()"   (keypress)="preventNonNumeric($event)"
                             (input)="filterNonNumericInput()"/>
                             <div *ngIf="chitGroupForm.get('chitAmount').invalid && chitGroupForm.get('chitAmount').touched">

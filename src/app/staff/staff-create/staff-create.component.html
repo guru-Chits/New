@@ -22,13 +22,13 @@
                 <div class="row justify-content-around">
                     <div class="col-lg-4">
                         <div class="form-group">
-                            <label for="employeeId" class="form-control-label">Employee Id  <span class="required" *ngIf="staffsForm.get('employeeId').hasError('required')">*</span></label>
+                            <label for="employeeId" class="form-control-label">Employee Id  <span class="required">*</span></label>
                             <input type="text" placeholder="Employee Id" class="form-control form-control-sm" formControlName="employeeId" readonly/>
                         </div>
                     </div>
                     <div class="col-lg-4">
                         <div class="form-group">
-                            <label for="firstName" class="form-control-label">First Name <span class="required" *ngIf="staffsForm.get('firstName').hasError('required')">*</span></label>
+                            <label for="firstName" class="form-control-label">First Name <span class="required">*</span></label>
                             <input type="text" placeholder="First Name" class="form-control form-control-sm" formControlName="firstName" (keypress)="onFirstNameKeyPress($event)"   maxlength="25" minlength="2"/>
                             <div class="invalid-feedback" *ngIf="staffsForm.get('firstName').invalid && (staffsForm.get('firstName').dirty || staffsForm.get('firstName').touched)">
                               <div *ngIf="staffsForm.get('firstName').errors.required">First Name is required.</div>
@@ -38,7 +38,7 @@
                     </div>
                     <div class="col-lg-4">
                         <div class="form-group">
-                            <label for="lastName" class="form-control-label">Last Name<span class="required" *ngIf="staffsForm.get('lastName').hasError('required')">*</span></label>
+                            <label for="lastName" class="form-control-label">Last Name<span class="required">*</span></label>
                             <input type="text" placeholder="Last Name" class="form-control form-control-sm" formControlName="lastName" (keypress)="onFirstNameKeyPress($event)"   maxlength="25" minlength="2"/>
                             <div class="invalid-feedback" *ngIf="staffsForm.get('lastName').invalid && (staffsForm.get('lastName').dirty || staffsForm.get('lastName').touched)">
                               <div *ngIf="staffsForm.get('lastName').errors.required">Last Name is required.</div>
@@ -51,7 +51,7 @@
                 <div class="row justify-content-around">
                     <div class="col-lg-4">
                         <div class="form-group">
-                            <label for="gender" class="form-control-label">Gender <span class="required" *ngIf="staffsForm.get('gender').hasError('required')">*</span></label>
+                            <label for="gender" class="form-control-label">Gender <span class="required">*</span></label>
                             <select type="text" placeholder="Gender" class="form-control form-control-sm form-select" formControlName="gender">
                               <option value="">Select Gender</option>
                               <option value="Male">Male</option>
@@ -64,7 +64,7 @@
                     </div>
                     <div class="col-lg-4">
                         <div class="form-group">
-                            <label for="role" class="form-control-label">Role <span class="required" *ngIf="staffsForm.get('role').hasError('required')">*</span></label>
+                            <label for="role" class="form-control-label">Role <span class="required">*</span></label>
                             <select type="text" class="form-control form-control-sm form-select" formControlName="role">
                               <option value="">Role</option>
                               <option *ngIf="role" value="Admin">Admin</option>
@@ -76,7 +76,7 @@
                     
                     <div class="col-lg-4">
                         <div class="form-group">
-                            <label for="contact" class="form-control-label">Contact Number <span class="required" *ngIf="staffsForm.get('contact').hasError('required')">*</span></label>
+                            <label for="contact" class="form-control-label">Contact Number <span class="required">*</span></label>
                             <input type="tel" placeholder="Contact Number" class="form-control form-control-sm" formControlName="contact"  [value]="staffsForm.get('contact').value" 
                             (input)="onContactChange($event)"
                             maxlength="14"  
@@ -92,7 +92,7 @@
                 <div class="row justify-content-around">
                     <div class="col-lg-4">
                         <div class="form-group">
-                            <label for="address" class="form-control-label">Place/Address<span class="required" *ngIf="staffsForm.get('address').hasError('required')">*</span> </label>
+                            <label for="address" class="form-control-label">Place/Address<span class="required">*</span> </label>
                             <input type="text" placeholder="Place/Address" class="form-control form-control-sm" formControlName="address" maxlength="100" minlength="10"/>
                             <div class="invalid-feedback" *ngIf="staffsForm.get('address').invalid && (staffsForm.get('address').dirty || staffsForm.get('address').touched) "  >
                               <div *ngIf="staffsForm.get('address').errors.required">Address is required.</div>
@@ -101,13 +101,13 @@
                     </div>
                     <div class="col-lg-4">
                         <div class="form-group">
-                            <label for="emailId" class="form-control-label">Email Id <span class="required" *ngIf="staffsForm.get('emailId').hasError('required')">*</span></label>
+                            <label for="emailId" class="form-control-label">Email Id <span class="required">*</span></label>
                             <input type="text" placeholder="mail" class="form-control form-control-sm" formControlName="emailId"  maxlength="40" minlength="10"/>
                         </div>
                     </div>
                     <div class="col-lg-4">
                         <div class="form-group">
-                            <label for="dob" class="form-control-label">DOB <span class="required" *ngIf="staffsForm.get('dob').hasError('required')">*</span></label>
+                            <label for="dob" class="form-control-label">DOB <span class="required">*</span></label>
                             <input type="date" class="form-control form-control-sm" formControlName="dob"
                             />
                             <div class="invalid-feedback" *ngIf="staffsForm.get('dob').invalid && (staffsForm.get('dob').dirty || staffsForm.get('dob').touched)">
@@ -123,7 +123,7 @@
                   <div class="col-lg-4">
                     <div class="form-group">
                         <label for="region" class="form-control-label">Route Id 
-                            <span class="required" *ngIf="staffsForm.get('routeId').hasError('required')">*</span>
+                            <span class="required">*</span>
                         </label>
                          <ng-select
                             [items]="routes"
@@ -139,7 +139,7 @@
                 
                     <div class="col-lg-4">
                         <div class="form-group">
-                            <label for="accountNumber" class="form-control-label">Account Number</label>
+                            <label for="accountNumber" class="form-control-label">Account Number <span class="required">*</span></label>
                             <input type="text" placeholder="Account Number" class="form-control form-control-sm" formControlName="accountNumber" (keypress)="onAccNoKeyPress($event)" maxlength="12" minlength="12"/>
                             <div class="invalid-feedback" *ngIf="staffsForm.get('accountNumber').invalid && (staffsForm.get('accountNumber').dirty || staffsForm.get('accountNumber').touched)">
                               <div *ngIf="staffsForm.get('accountNumber').errors.required">Account Number is required.</div>
@@ -150,7 +150,7 @@
                     </div>
                     <div class="col-lg-4">
                         <div class="form-group">
-                            <label for="ifscCode" class="form-control-label">IFSC Code <span class="required" *ngIf="staffsForm.get('ifscCode').hasError('required')">*</span></label>
+                            <label for="ifscCode" class="form-control-label">IFSC Code <span class="required">*</span></label>
                             <input type="text" class="form-control form-control-sm"  (input)="onInputChange($event,'AAAA0000000')" formControlName="ifscCode"(keypress)="onIfscKeyPress($event)"  maxlength="11" 
                             (input)="onIFSCAutoUppercase($event)"  placeholder="IFSC Code (e.g., SBIN0001234)"/>
                             <div class="invalid-feedback" *ngIf="staffsForm.get('ifscCode').invalid && (staffsForm.get('ifscCode').dirty || staffsForm.get('ifscCode').touched)">
@@ -161,7 +161,7 @@
                     </div>
                     <div class="col-lg-4">
                         <div class="form-group">
-                            <label for="upiIdOrNumber" class="form-control-label">UPI ID/Number <span class="required" *ngIf="staffsForm.get('upiIdOrNumber').hasError('required')">*</span></label>
+                            <label for="upiIdOrNumber" class="form-control-label">UPI ID/Number <span class="required">*</span></label>
                             <input type="text" placeholder="UPI ID/Number" class="form-control form-control-sm" formControlName="upiIdOrNumber" maxlength="35" minlength="6"/>
                         </div>
                     </div>
@@ -216,7 +216,7 @@
                   <div class="row justify-content-center">
                     <div class="col-lg-4">
                       <div class="form-group">
-                        <label for="bankName" class="form-control-label">Bank Name <span class="required" *ngIf="staffsForm.get('bankName').hasError('required')">*</span></label>
+                        <label for="bankName" class="form-control-label">Bank Name <span class="required">*</span></label>
                         <input type="text" placeholder="Bank Name" class="form-control form-control-sm" formControlName="bankName"  (keypress)="onFirstNameKeyPress($event)" maxlength="25" minlength="2"  />
                       </div>
                     </div>
@@ -276,7 +276,7 @@
                     <div class="col-lg-4">
                         <div class="form-check form-switch">
                             <input class="form-check-input" type="checkbox" formControlName="workingStatus" role="switch" id="flexSwitchCheckChecked" checked (change)="working($event)">
-                            <label class="form-check-label" for="flexSwitchCheckChecked">Working Status <span class="required" *ngIf="staffsForm.get('workingStatus').hasError('required')">*</span></label>
+                            <label class="form-check-label" for="flexSwitchCheckChecked">Employee Status <span class="required" *ngIf="staffsForm.get('workingStatus').hasError('required')">*</span></label>
                           </div>
                     </div>
                 </div>

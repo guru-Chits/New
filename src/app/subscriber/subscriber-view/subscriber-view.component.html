@@ -167,8 +167,12 @@
                       <h6><strong>Enrollments</strong></h6>
                       <div class="payments" *ngFor="let group of chitGroup; let i = index">
                         <!-- Display the chit group name -->
-                        <h6 class="text-center group-name"> {{ group?.chitGroupId }}</h6>
-                        
+                         <div class="text-center group-name">
+                          <h6>{{ group?.chitGroupId}}</h6>
+                          <h6>{{group?.passbookNo}}</h6>
+                         </div>
+                        <!-- <h6 class="text-right group-name">{{group?.passbookNo}}</h6> -->
+
                         <!-- Check if the group has auction data and display it -->
                         <div class="row justify-content-center" *ngIf="group?.chitAuc">
                           <!-- Prized Amount -->

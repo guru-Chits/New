@@ -26,6 +26,7 @@ export class CreatePaymentComponent{
   paymentDetail:any
   accessPrivData: any;
   subscriberDetail:any
+  filter:boolean=true
   searchImg:string='assets/table/black search.svg'
   filterImg:string='assets/table/black filter.svg'
   search:boolean=true
@@ -103,9 +104,9 @@ export class CreatePaymentComponent{
             this.cancelled.push({
               ...formattedPayment,
               sno: cancelledSno++,
-              deleteReason: paymentDetail?.deleteReason,
+              // deleteReason: paymentDetail?.deleteReason,
             });
-          } else {
+          } else if(!paymentDetail?.cancelled) {
             this.data.push({
               ...formattedPayment,
               sno: availableSno++,

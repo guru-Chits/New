@@ -69,7 +69,7 @@
         <button class="btn" [disabled]="!routeForm.valid"(click)="onSubmit()">{{buttonTxt}}</button>
       </div>
       <div *ngIf="!id" class="mt-5 mb-4">
-      <app-ag-grid [columns]="column" [rowData]="data" width="100%" height="250px" [search]="search" [searchImg]="searchImg" [filterImg]="filterImg"></app-ag-grid> 
+      <app-ag-grid [columns]="column" [rowData]="data" width="100%" height="250px" [search]="search" [searchImg]="searchImg" [filterImg]="filterImg" [filter]="filter"></app-ag-grid> 
       </div>
     </div>
      

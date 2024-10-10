@@ -82,13 +82,13 @@ ngOnInit(){
       this.conditionalValidator(() => !!this.staffsForm?.get('dob')?.value, this.ageValidator(18)),
     ]],
     routeId: [[], [Validators.required]],
-    accountNumber: ["", [
+    accountNumber: ["", [Validators.required,
       this.conditionalValidator(() => !!this.staffsForm?.get('accountNumber')?.value, Validators.pattern(/^\d{8,12}$/))
     ]],
-    ifscCode: ['', [
+    ifscCode: ['', [Validators.required,
       this.conditionalValidator(() => !!this.staffsForm?.get('ifscCode')?.value, Validators.pattern(/^[A-Za-z]{4}\d{7}$/))
     ]],
-    upiIdOrNumber: ["",[this.conditionalValidator(() => !!this.staffsForm?.get('upiIdOrNumber')?.value, Validators.pattern(/^[\w.-]+@[\w.-]+$/))
+    upiIdOrNumber: ["",[Validators.required,this.conditionalValidator(() => !!this.staffsForm?.get('upiIdOrNumber')?.value, Validators.pattern(/^[\w.-]+@[\w.-]+$/))
     ]],
     panCardNumber: ['', [
       this.conditionalValidator(() => !!this.staffsForm?.get('panCardNumber')?.value, Validators.pattern(/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/))
@@ -100,7 +100,7 @@ ngOnInit(){
     aadharUrl: ["",[Validators.required]],
     drivingLicenseUrl: [""],
     drivingLicenseNumber: ["", this.conditionalValidator(() => !!this.staffsForm?.get('drivingLicenseNumber')?.value, Validators.pattern(/^[A-Z]{2}[- ]?[A-Z0-9]{2}[ ]?[0-9]{4}[ ]?[0-9]{7}$/))],
-    bankName: [""],
+    bankName: ["",[Validators.required]],
     passbookUrl: [""],
     workingStatus: ["", [Validators.required]],
     bgVerification: ["UnVerified"],
@@ -152,7 +152,7 @@ ngOnInit(){
     this.service.getstaffAll().subscribe((data)=>{
       this.staffData=data;
       if(!this.staffId){
-        this.staffIdCounter+=this.staffData.AllStaff.length;
+        this.staffIdCounter+=this.staffData.AllStaff.length+1;
         this.setStaffId(this.staffIdCounter);
       }
       
@@ -571,28 +571,28 @@ onSubmit(): void {
 
 
   this.service.savestaffDetails(formData, this.staffId).subscribe((data) => {
-    if(!this.staffId){
-      const mobile=this.staffsForm.get('contact')?.value
-      const password = this.staffsForm.get('password')?.value;
-      const loginLink = 'http://13.127.210.25/login';
-      const empId=this.staffsForm.get('employeeId')?.value;
-    
+    if (!this.staffId) {  
+      const mobile = this.staffsForm.get('contact')?.value;
+      const password = (this.staffsForm.get('password')?.value); // URL encode
+      const loginLink = ('http://13.127.210.25/login'); // URL encode
+      const empId = (this.staffsForm.get('employeeId')?.value); // URL encode
+      
       const otpUrl = `https://2factor.in/API/R1/?module=TRANS_SMS&apikey=b1037ef1-2ed8-11ef-8b60-0200cd936042&to=${mobile}&from=KNGCPL&templatename=Onboarding&var1=${loginLink}&var2=${empId}&var3=${password}`;
+  
       // Send OTP
-      https://2factor.in/API/R1/?module=TRANS_SMS&apikey=b1037ef1-2ed8-11ef-8b60-0200cd936042&to=+91%206385578470&from=KNGCPL&templatename=Onboarding&var1=login/fb&var2=KNG-E009&var3=zvMc.6%20
       this.HttpClient.get(otpUrl).subscribe(
         (otpResponse: any) => {
           console.log('OTP sent successfully:', otpResponse);
-         },
+        },
         (error) => {
           console.error('Error sending OTP:', error);
         }
       );
-    
     }
-    this.router.navigate(["/staff"]);
-
-  })
+  
+    this.router.navigate(['/staff']);
+  });
+  
 
 }
 

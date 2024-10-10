@@ -86,21 +86,21 @@ ngOnInit(): void {
       Validators.maxLength(50)
     ]],
     routeId: ['', Validators.required],
-    accountNumber: ['', [
+    accountNumber: ['', [Validators.required,
       this.conditionalValidator(() => !!this.subscriberForm?.get('accountNumber')?.value, Validators.pattern(/^\d{8,12}$/))
     ]],
-    ifsc: ['', [
+    ifsc: ['', [Validators.required,
       this.conditionalValidator(() => !!this.subscriberForm?.get('ifsc')?.value, Validators.pattern(/^[A-Za-z]{4}\d{7}$/))
     ]],
-    upi_id: ['',[ this.conditionalValidator(() => !!this.subscriberForm?.get('upi_id')?.value, Validators.pattern(/^[a-zA-Z0-9.\-_]{2,}@[a-zA-Z]{3,}$/))
+    upi_id: ['',[ Validators.required,this.conditionalValidator(() => !!this.subscriberForm?.get('upi_id')?.value, Validators.pattern(/^[a-zA-Z0-9.\-_]{2,}@[a-zA-Z]{3,}$/))
     ]],
     panCardNumber: ['', [
       this.conditionalValidator(() => !!this.subscriberForm?.get('panCardNumber')?.value, Validators.pattern(/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/))
     ]],
-    aadharNumber: ['', [
+    aadharNumber: ['', [Validators.required,
       this.conditionalValidator(() => !!this.subscriberForm?.get('aadharNumber')?.value, Validators.pattern(/^\d{4}\s\d{4}\s\d{4}$/))
     ]],
-    bankName: ['', [
+    bankName: ['', [Validators.required,
       this.conditionalValidator(() => !!this.subscriberForm?.get('bankName')?.value, Validators.pattern(/^[a-zA-Z\s]+$/))
     ]],
     referralClient: [''],

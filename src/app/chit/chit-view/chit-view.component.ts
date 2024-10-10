@@ -149,7 +149,7 @@ export class ChitViewComponent implements OnInit{
           },
           
           {
-            key: `Chit Group Details ${this.chitData.chitGroupId}`,
+            key: `${this.chitData.chitGroupId}`,
             routerLink: `chit/view/${paramData.id}`,
           },
         ];

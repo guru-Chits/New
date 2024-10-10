@@ -25,7 +25,7 @@
                 <div class="row justify-content-around">
                   <div class="col-lg-4">
                     <div class="form-group">
-                      <label for="subscriberId" class="form-control-label">Subscriber ID<span class="required" *ngIf="subscriberForm.get('subscriberId').hasError('required')">*</span></label>
+                      <label for="subscriberId" class="form-control-label">Subscriber ID<span class="required">*</span></label>
                       <input type="text" placeholder="Subscriber Id" class="form-control form-control-sm" formControlName="subscriberId" readonly/>
                       <!-- <div  class="invalid-feedback" *ngIf="subscriberForm.get('subscriberId').invalid && (subscriberForm.get('subscriberId').dirty || subscriberForm.get('subscriberId').touched)">
                         <div *ngIf="subscriberForm.get('subscriberId').errors.required">Subscriber Id is required.</div>
@@ -38,11 +38,10 @@
                   <!-- First Name -->
                   <div class="col-lg-4">
                     <div class="form-group">
-                      <label for="firstName" class="form-control-label">First Name<span class="required" *ngIf="subscriberForm.get('firstName').hasError('required')">*</span></label>
+                      <label for="firstName" class="form-control-label">First Name<span class="required">*</span></label>
                       <input type="text" placeholder="First Name" class="form-control form-control-sm" formControlName="firstName" (keypress)="onFirstNameKeyPress($event)"   maxlength="25" minlength="2" />
                       <div class="invalid-feedback" *ngIf="subscriberForm.get('firstName').invalid && (subscriberForm.get('firstName').dirty || subscriberForm.get('firstName').touched)">
                         <div *ngIf="subscriberForm.get('firstName').errors.required">First Name is required.</div>
-                        <div *ngIf="subscriberForm.get('firstName').errors.pattern">First Name should only contain alphabetic characters and start with a capital letter.</div>
 
                       </div>
                     </div>
@@ -50,11 +49,10 @@
                   <!-- Last Name -->
                   <div class="col-lg-4">
                     <div class="form-group">
-                      <label for="lastName" class="form-control-label">Last Name<span class="required" *ngIf="subscriberForm.get('lastName').hasError('required')">*</span></label>
+                      <label for="lastName" class="form-control-label">Last Name<span class="required">*</span></label>
                       <input type="text" placeholder="Last Name" class="form-control form-control-sm" formControlName="lastName"  (keypress)="onFirstNameKeyPress($event)" maxlength="25" minlength="2"   />
                       <div class="invalid-feedback" *ngIf="subscriberForm.get('lastName').invalid && (subscriberForm.get('lastName').dirty || subscriberForm.get('lastName').touched)">
                         <div *ngIf="subscriberForm.get('lastName').errors.required">Last Name is required.</div>
-                        <div *ngIf="subscriberForm.get('lastName').errors.pattern">Last Name should only contain alphabetic characters and start with a capital letter.</div>
                       </div>
                     </div>
                   </div>
@@ -63,17 +61,16 @@
                 <div class="row justify-content-around">
                   <div class="col-lg-4">
                     <div class="form-group">
-                      <label for="aliasName" class="form-control-label">Alias Name <span class="required" *ngIf="subscriberForm.get('aliasName').hasError('required')">*</span></label>
+                      <label for="aliasName" class="form-control-label">Alias Name</label>
                       <input type="text" placeholder="Alias Name" class="form-control form-control-sm" formControlName="aliasName"   (keypress)="onFirstNameKeyPress($event)" maxlength="25" minlength="2"  />
                       <div class="invalid-feedback" *ngIf="subscriberForm.get('aliasName').invalid && (subscriberForm.get('aliasName').dirty || subscriberForm.get('aliasName').touched)">
-                        <div *ngIf="subscriberForm.get('aliasName').errors.pattern">Alias Name should only contain alphabetic characters, "/", "-", "(", ")" and spaces, and start with a capital letter.</div>
                       </div>
                     </div>
                   </div>
                   <!-- Contact Number -->
                   <div class="col-lg-4">
                     <div class="form-group">
-                      <label for="contact" class="form-control-label">Contact Number<span class="required" *ngIf="subscriberForm.get('contact').hasError('required')">*</span></label>
+                      <label for="contact" class="form-control-label">Contact Number<span class="required">*</span></label>
                       <input type="tel" placeholder="Contact Number" class="form-control form-control-sm" formControlName="contact" [value]="subscriberForm.get('contact').value" 
                       (input)="onContactChange($event)"
                       maxlength="14"  
@@ -87,7 +84,7 @@
                   <!-- Address -->
                   <div class="col-lg-4">
                     <div class="form-group">
-                      <label for="place" class="form-control-label">Place/Address<span class="required" *ngIf="subscriberForm.get('place').hasError('required')">*</span></label>
+                      <label for="place" class="form-control-label">Place/Address<span class="required">*</span></label>
                       <input type="text" placeholder="Place/Address" class="form-control form-control-sm" formControlName="place" maxlength="50" minlength="10" />
                       <div class="invalid-feedback" *ngIf="subscriberForm.get('place').invalid && (subscriberForm.get('place').dirty || subscriberForm.get('place').touched)">
                         <div *ngIf="subscriberForm.get('place').errors.required">Address is required.</div>
@@ -103,7 +100,7 @@
                   <!-- Gender -->
                   <div class="col-lg-4">
                     <div class="form-group">
-                      <label for="gender" class="form-control-label">Gender</label>
+                      <label for="gender" class="form-control-label">Gender <span class="required">*</span></label>
                       <select class="form-control form-control-sm form-select" formControlName="gender">
                         <option value="">Select Gender</option>
                         <option value="Male">Male</option>
@@ -117,7 +114,7 @@
                   <!-- DOB -->
                   <div class="col-lg-4">
                     <div class="form-group">
-                      <label for="dob" class="form-control-label">Date of Birth<span class="required" *ngIf="subscriberForm.get('dob').hasError('required')">*</span></label>
+                      <label for="dob" class="form-control-label">Date of Birth<span class="required">*</span></label>
                       <input type="date"  placeholder="dd/mm/yyyy" class="form-control form-control-sm" formControlName="dob" (ngModelChange)="validateDate($event)" />
                       <div class="invalid-feedback" *ngIf="subscriberForm.get('dob').invalid && (subscriberForm.get('dob').dirty || subscriberForm.get('dob').touched)">
                         <div *ngIf="subscriberForm.get('dob').errors.required">Date of Birth is required.</div>
@@ -129,7 +126,7 @@
                   <!-- Occupation -->
                   <div class="col-lg-4">
                     <div class="form-group">
-                      <label for="occupation" class="form-control-label">Occupation <span class="required" *ngIf="subscriberForm.get('occupation').hasError('required')">*</span></label>
+                      <label for="occupation" class="form-control-label">Occupation <span class="required">*</span></label>
                       <input type="text" placeholder="Occupation" class="form-control form-control-sm" formControlName="occupation" (keypress)="onFirstNameKeyPress($event)" maxlength="25" minlength="2" />
                       <div class="invalid-feedback" *ngIf="subscriberForm.get('occupation').invalid && (subscriberForm.get('occupation').dirty || subscriberForm.get('occupation').touched)">
                         <!-- <div *ngIf="subscriberForm.get('occupation').errors.required">Occupation is required.</div>
@@ -145,7 +142,7 @@
                   <!-- Area ID -->
                   <div class="col-lg-4">
                     <div class="form-group">
-                      <label for="routeId" class="form-control-label">Route Id</label>
+                      <label for="routeId" class="form-control-label">Route Id</label><span class="required">*</span>
                       
                       <select class="form-control form-control-sm form-select" formControlName="routeId">
                         <option value="" disabled selected>RouteId</option>
@@ -156,7 +153,7 @@
                   <!-- Account Number -->
                   <div class="col-lg-4">
                     <div class="form-group">
-                      <label for="accountNumber" class="form-control-label">Account Number<span class="required" *ngIf="subscriberForm.get('accountNumber').hasError('required')">*</span></label>
+                      <label for="accountNumber" class="form-control-label">Account Number<span class="required">*</span></label>
                       <input type="text" placeholder="Account Number" class="form-control form-control-sm" formControlName="accountNumber"  (keypress)="onAccNoKeyPress($event)" maxlength="12" minlength="12"/>
                       <div class="invalid-feedback" *ngIf="subscriberForm.get('accountNumber').invalid && (subscriberForm.get('accountNumber').dirty || subscriberForm.get('accountNumber').touched)">
                         <div *ngIf="subscriberForm.get('accountNumber').errors.required">Account Number is required.</div>
@@ -167,7 +164,7 @@
                   <!-- IFSC -->
                   <div class="col-lg-4">
                     <div class="form-group">
-                      <label for="ifsc" class="form-control-label">IFSC Code<span class="required" *ngIf="subscriberForm.get('ifsc').hasError('required')">*</span></label>
+                      <label for="ifsc" class="form-control-label">IFSC Code<span class="required">*</span></label>
                       <input type="text" placeholder="IFSC Code" class="form-control form-control-sm" formControlName="ifsc" (keypress)="onIfscKeyPress($event)"  maxlength="11" 
                       (input)="onIFSCAutoUppercase($event)"  placeholder="IFSC Code (e.g., SBIN0001234)" />
                       <div class="invalid-feedback" *ngIf="subscriberForm.get('ifsc').invalid && (subscriberForm.get('ifsc').dirty || subscriberForm.get('ifsc').touched)">
@@ -180,7 +177,7 @@
                     <!-- UPI -->
                     <div class="col-lg-4">
                       <div class="form-group">
-                        <label for="upi_id" class="form-control-label">UPI<span class="required" *ngIf="subscriberForm.get('upi_id').hasError('required')">*</span></label>
+                        <label for="upi_id" class="form-control-label">UPI<span class="required">*</span></label>
                         <input type="text" placeholder="UPI" class="form-control form-control-sm" formControlName="upi_id" maxlength="20"/>
                       </div>
                     </div>
@@ -210,7 +207,7 @@
                 <div class="row justify-content-around">
                     <div class="col-lg-4">
                         <div class="form-group">
-                          <label for="aadharNumber" class="form-control-label">Aadhaar Card Number<span class="required" *ngIf="subscriberForm.get('aadharNumber').hasError('required')">*</span></label>
+                          <label for="aadharNumber" class="form-control-label">Aadhaar Card Number<span class="required">*</span></label>
                           <input type="text" placeholder="Aadhaar" class="form-control form-control-sm" formControlName="aadharNumber" (input)="formatAadharNumber()" 
                           (keypress)="onlyAllowNumbers($event)" 
                           maxlength="14"/>
@@ -239,7 +236,7 @@
                   <!-- Bank Name -->
                   <div class="col-lg-4">
                     <div class="form-group">
-                      <label for="bankName" class="form-control-label">Bank Name <span class="required" *ngIf="subscriberForm.get('bankName').hasError('required')">*</span></label>
+                      <label for="bankName" class="form-control-label">Bank Name <span class="required">*</span></label>
                       <input type="text" placeholder="Bank Name" class="form-control form-control-sm" formControlName="bankName" (keypress)="onFirstNameKeyPress($event)" maxlength="35" minlength="2"  />
                       <div class="invalid-feedback" *ngIf="subscriberForm.get('bankName').invalid && (subscriberForm.get('bankName').dirty || subscriberForm.get('bankName').touched)">
                         <div *ngIf="subscriberForm.get('bankName').errors.required">Bank Name is required.</div>

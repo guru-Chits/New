@@ -38,6 +38,7 @@ export class TransactionsComponent implements OnInit{
   totalAmount: number = 0;
   totalRecords: number = 0;
   transactionForm:FormGroup
+  filter:boolean=true
   collectionTypes:any
   private readonly EXCEL_TYPE = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
   constructor(private router: Router,
@@ -54,10 +55,10 @@ ngOnInit(): void {
   this.transactionForm=this.formBuilder.group({
     fromDate:['', [Validators.required,this.validatePastOrTodayDate]],
     toDate:['', [Validators.required,this.validatePastOrTodayDate]],
-    routeId:['', [Validators.required]],
-    collectionType:['', [Validators.required]],
-    collectionTypeCount:['', [Validators.required]],
-    collectionTypeAmount:['', [Validators.required]],
+    routeId:['',],
+    collectionType:['',],
+    collectionTypeCount:['',],
+    collectionTypeAmount:['',],
     totalSerialNumberCount:['', [Validators.required]],
     grandTotalAmount:['', [Validators.required]],
   })

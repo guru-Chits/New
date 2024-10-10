@@ -76,14 +76,14 @@
     <div class="row">
         <div class="col-lg-12 d-flex justify-content-end py-3">
             <button class="btn clear-btn px-4 py-3 me-4" (click)="clear()">Clear Filter</button>
-            <button class="btn next-btn px-4 py-3 fw-bold" (click)="exportToExcel()">Download Summary</button>
+            <button class="btn next-btn px-4 py-3 fw-bold" (click)="exportToExcel()" [disabled]="!transactionForm.valid">Download Summary</button>
         </div>
     </div>
 </form>
 <div id="print-section">
     <app-ag-grid  [columns]="column" [rowData]="data" 
     class="px-3 mb-3" [searchImg]="searchImg" [filterImg]="filterImg" width="100%" height="340px" 
-    [pageSize]="7" [search]="search">
+    [pageSize]="7" [search]="search" [filter]="filter">
     </app-ag-grid>
     
 </div>

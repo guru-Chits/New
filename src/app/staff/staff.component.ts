@@ -24,6 +24,7 @@ export class StaffComponent implements OnInit{
   canEdit: boolean = false;
   canDelete: boolean = false;
   canView:boolean=false
+  filter:boolean=true
   breadcrumsData: any = [
     {
       key: 'Staffs',

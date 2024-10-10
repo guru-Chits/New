@@ -4,13 +4,13 @@
     </div>
     <div class="nav py-3" role="tablist">
         <div class="nav-item">
-          <a class="nav-link active" data-bs-toggle="pill" href="#home" (click)="changeTab('home')">Payment</a>
+          <a class="nav-link active" data-bs-toggle="pill" href="#home" (click)="changeTab('home')">Payments</a>
         </div>
         <div class="nav-item">
-          <a class="nav-link " data-bs-toggle="pill" href="#menu1" *ngIf="canEdit" (click)="changeTab('collection')">Collection</a>
+          <a class="nav-link " data-bs-toggle="pill" href="#menu1" *ngIf="canEdit" (click)="changeTab('collection')">Collections</a>
         </div>
         <div class="nav-item">
-          <a class="nav-link" data-bs-toggle="pill" href="#menu2" *ngIf="canEdit" (click)="changeTab('transaction')">Transaction</a>
+          <a class="nav-link" data-bs-toggle="pill" href="#menu2" *ngIf="canEdit" (click)="changeTab('transaction')">Transactions</a>
         </div>
     </div>
     <div class="container-fluid d-flex flex-column mb-3">
@@ -50,12 +50,12 @@
                         <div *ngIf="activeTab == 'home'">
                         <app-ag-grid *ngIf="!showCancelledPayments" [columns]="column" [rowData]="data" 
                             class="px-3 mb-3" [searchImg]="searchImg" [filterImg]="filterImg" width="100%" height="340px" 
-                            [pageSize]="7" [search]="search">
+                            [pageSize]="7" [search]="search" [filter]="filter">
                         </app-ag-grid>
                         
                         <app-ag-grid *ngIf="showCancelledPayments" [columns]="columnCancelled" [rowData]="cancelled"
                             class="px-3 mb-3" [searchImg]="searchImg" [filterImg]="filterImg" width="100%" height="340px"
-                            [pageSize]="7" [search]="search">
+                            [pageSize]="7" [search]="search" [filter]="filter">
                         </app-ag-grid>
                         </div>
                     </div>
@@ -99,7 +99,7 @@
                                 <table class="table p-5">
                                     <tbody >
                                         <tr>
-                                            <td ><b>Time/Timestamp</b></td>
+                                            <td ><b>Date</b></td>
                                             <td>{{paymentDetail.payment.date}}</td>
                                         </tr>
                                         <tr>

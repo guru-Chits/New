@@ -23,6 +23,7 @@ export class AreaCreateComponent implements OnInit{
   displayedRoute:any
   buttonTxt:string="Submit"
   selectedRegionId: String =''
+  filter:boolean=true
   selectedRouteName: String =''
   selectedRegionName: String=''
   generatedRouteID: String=''

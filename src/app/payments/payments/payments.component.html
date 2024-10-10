@@ -3,7 +3,7 @@
         <div class="col-lg-4">
             <div class="form-group">
                 <label for="date" class="form-control-label">Date <span class="required" *ngIf="paymentForm.get('date').hasError('required')">*</span></label>
-                <input type="date" class="form-control p-2 form-control-sm man" id="date" formControlName="date" placeholder="Date"  [min]="today" 
+                <input type="date" class="form-control p-2 form-control-sm man" id="date" formControlName="date" placeholder="Date"  [min]="today"  [(ngModel)]="today"
                 [max]="today" />
                 <div *ngIf="paymentForm.get('date')?.hasError('invalidDate') && paymentForm.get('date')?.touched">
                     <small class="text-danger">Please select today's date.</small>
@@ -189,7 +189,7 @@
                         </div>
                         <div class="col-6 d-flex justify-content-around">
                             <div class="col-5 fw-bold">Amount Paid</div>
-                            <div class="col-5">{{receiptData.amount}}</div>
+                            <div class="col-5">{{installAmount}}</div>
                         </div>
                     </div>
                     <div class="row pb-3">
@@ -205,7 +205,7 @@
                     <div class="row pb-3">
                         <div class="col-6 d-flex justify-content-around">
                             <div class="col-5 fw-bold">Installment Month</div>
-                            <div class="col-5">{{receiptData.installmentMonth}}</div>
+                            <div class="col-5">{{installMonth}}</div>
                         </div>
                         <div class="col-6 d-flex justify-content-around">
                             <div class="col-5 fw-bold">Date of Payment</div>

@@ -32,6 +32,7 @@ export class CollectionsComponent implements OnInit {
   avlData: any[] = [];
   canData: any[] = [];
   paymentDetail:any
+  filter:boolean=true
   canDelete:any
   searchImg:string='assets/table/black search.svg'
   filterImg:string='assets/table/black filter.svg'
@@ -351,28 +352,28 @@ export class CollectionsComponent implements OnInit {
  
      this.service.savePaymentDetails(this.paymentBody, payment.id).subscribe(
        (response) => {
-        this.chitService.getByPassbooNo(response.updateDetails.passbooknumber).subscribe((passbookData: any) => {
-          if (passbookData.source === 'chitSubscribers') {
-            // Sum up payments for chitSubscribers (convert amount to number explicitly)
-            this.subscriberTotal=response.updateDetails.amount
-            this.service.saveTransactionDetails(response.updateDetails.groupId, this.subscriberTotal).subscribe(
-              (response)=>{
-                console.log(response);
-              }
-            )
-          } else if (passbookData.source === 'addChitSubscribers') {
-            this.addSubscriberTotal=response.updateDetails.amount
-            this.service.addWallet(response.updateDetails.groupId, this.addSubscriberTotal).subscribe(
-              (response)=>{
-                console.log(response);
-                this.collectionForm.reset()
-              }
-            )
-            // Sum up payments for addChitSubscribers (convert amount to number explicitly)
-            // this.addSubscriberTotal = this.paymentBody.amount;
-          }
+        // this.chitService.getByPassbooNo(response.updateDetails.passbooknumber).subscribe((passbookData: any) => {
+        //   if (passbookData.source === 'chitSubscribers') {
+        //     // Sum up payments for chitSubscribers (convert amount to number explicitly)
+        //     this.subscriberTotal=response.updateDetails.amount
+        //     this.service.saveTransactionDetails(response.updateDetails.groupId, this.subscriberTotal).subscribe(
+        //       (response)=>{
+        //         console.log(response);
+        //       }
+        //     )
+        //   } else if (passbookData.source === 'addChitSubscribers') {
+        //     this.addSubscriberTotal=response.updateDetails.amount
+        //     this.service.addWallet(response.updateDetails.groupId, this.addSubscriberTotal).subscribe(
+        //       (response)=>{
+        //         console.log(response);
+        //         this.collectionForm.reset()
+        //       }
+        //     )
+        //     // Sum up payments for addChitSubscribers (convert amount to number explicitly)
+        //     // this.addSubscriberTotal = this.paymentBody.amount;
+        //   }
     
-         });
+        //  });
          console.log(`Payment with ID: ${payment.id} saved successfully.`, response);
        },
        (error) => {

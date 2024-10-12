@@ -1,396 +1,445 @@
 <div class="container">
-    <div class="row pt-3">
-      <app-breadcrumb [data]="breadcrumsData"></app-breadcrumb>
+  <div class="row pt-3">
+    <app-breadcrumb [data]="breadcrumsData"></app-breadcrumb>
 
-    <div  [ngClass]="{'col-md-9 col-lg-9': isSubscriberListVisible, 'col-md-12 col-lg-12': !isSubscriberListVisible}">
+    <div [ngClass]="{'col-md-9 col-lg-9': isSubscriberListVisible, 'col-md-12 col-lg-12': !isSubscriberListVisible}">
 
-        <div class="card-wrapper">
-            <div class="card mb-5 form-card">
-              <div class="profile-picture-container">
-                <div class="profile-picture">
-                  <form [formGroup]="subscriberForm">
-                    <img [src]="profileImageUrl || defaultImageUrl" alt="Profile Picture" class="profile-img">
-                    <div class="form-group">
-                      <input type="file" (change)="onFileChange($event,'profileImageUrl')" class="form-control" hidden #profileFileInput formControlName="profileImageUrl">
-                    </div>
-                  </form>
-                  <button class="upload-button" (click)="profileFileInput.click()">
-                    <img src="assets/subscriber/Profile edit.svg" alt="Upload Icon">
-                  </button>
+      <div class="card-wrapper">
+        <div class="card mb-5 form-card">
+          <div class="profile-picture-container">
+            <div class="profile-picture">
+              <form [formGroup]="subscriberForm">
+                <img [src]="profileImageUrl || defaultImageUrl" alt="Profile Picture" class="profile-img">
+                <div class="form-group">
+                  <input type="file" (change)="onFileChange($event,'profileImageUrl')" class="form-control" hidden
+                    #profileFileInput formControlName="profileImageUrl">
                 </div>
-              </div>
-              <h5 class="text-center pb-3 mb-3">{{heading}}</h5>
-              <form class="ps-5 pe-5" [formGroup]="subscriberForm">
-                <!-- Subscriber ID -->
-                <div class="row justify-content-around">
-                  <div class="col-lg-4">
-                    <div class="form-group">
-                      <label for="subscriberId" class="form-control-label">Subscriber ID<span class="required">*</span></label>
-                      <input type="text" placeholder="Subscriber Id" class="form-control form-control-sm" formControlName="subscriberId" readonly/>
-                      <!-- <div  class="invalid-feedback" *ngIf="subscriberForm.get('subscriberId').invalid && (subscriberForm.get('subscriberId').dirty || subscriberForm.get('subscriberId').touched)">
-                        <div *ngIf="subscriberForm.get('subscriberId').errors.required">Subscriber Id is required.</div>
-                        <div *ngIf="subscriberForm.get('subscriberId').errors.minlength">Subscriber Id must be at least 2 characters long.</div>
-                        <div *ngIf="subscriberForm.get('subscriberId').errors.maxlength">Subscriber Id cannot be more than 25 characters long.</div>
-                        <div *ngIf="subscriberForm.get('subscriberId').errors.pattern"> Subscriber ID must be in the format KNG-CXXXXX.</div>
-                      </div> -->
-                    </div>
-                  </div>
-                  <!-- First Name -->
-                  <div class="col-lg-4">
-                    <div class="form-group">
-                      <label for="firstName" class="form-control-label">First Name<span class="required">*</span></label>
-                      <input type="text" placeholder="First Name" class="form-control form-control-sm" formControlName="firstName" (keypress)="onFirstNameKeyPress($event)"   maxlength="25" minlength="2" />
-                      <div class="invalid-feedback" *ngIf="subscriberForm.get('firstName').invalid && (subscriberForm.get('firstName').dirty || subscriberForm.get('firstName').touched)">
-                        <div *ngIf="subscriberForm.get('firstName').errors.required">First Name is required.</div>
-
-                      </div>
-                    </div>
-                  </div>
-                  <!-- Last Name -->
-                  <div class="col-lg-4">
-                    <div class="form-group">
-                      <label for="lastName" class="form-control-label">Last Name<span class="required">*</span></label>
-                      <input type="text" placeholder="Last Name" class="form-control form-control-sm" formControlName="lastName"  (keypress)="onFirstNameKeyPress($event)" maxlength="25" minlength="2"   />
-                      <div class="invalid-feedback" *ngIf="subscriberForm.get('lastName').invalid && (subscriberForm.get('lastName').dirty || subscriberForm.get('lastName').touched)">
-                        <div *ngIf="subscriberForm.get('lastName').errors.required">Last Name is required.</div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <!-- Alias Name -->
-                <div class="row justify-content-around">
-                  <div class="col-lg-4">
-                    <div class="form-group">
-                      <label for="aliasName" class="form-control-label">Alias Name</label>
-                      <input type="text" placeholder="Alias Name" class="form-control form-control-sm" formControlName="aliasName"   (keypress)="onFirstNameKeyPress($event)" maxlength="25" minlength="2"  />
-                      <div class="invalid-feedback" *ngIf="subscriberForm.get('aliasName').invalid && (subscriberForm.get('aliasName').dirty || subscriberForm.get('aliasName').touched)">
-                      </div>
-                    </div>
-                  </div>
-                  <!-- Contact Number -->
-                  <div class="col-lg-4">
-                    <div class="form-group">
-                      <label for="contact" class="form-control-label">Contact Number<span class="required">*</span></label>
-                      <input type="tel" placeholder="Contact Number" class="form-control form-control-sm" formControlName="contact" [value]="subscriberForm.get('contact').value" 
-                      (input)="onContactChange($event)"
-                      maxlength="14"  
-                      (keydown)="blockPrefix($event)" />
-                      <div class="invalid-feedback" *ngIf="subscriberForm.get('contact').invalid && (subscriberForm.get('contact').dirty || subscriberForm.get('contact').touched)">
-                        <div *ngIf="subscriberForm.get('contact').errors.required">Contact Number is required.</div>
-                        <div *ngIf="subscriberForm.get('contact').errors.pattern">Contact Number should be exactly 10 digits.</div>
-                      </div>
-                    </div>
-                  </div>
-                  <!-- Address -->
-                  <div class="col-lg-4">
-                    <div class="form-group">
-                      <label for="place" class="form-control-label">Place/Address<span class="required">*</span></label>
-                      <input type="text" placeholder="Place/Address" class="form-control form-control-sm" formControlName="place" maxlength="50" minlength="10" />
-                      <div class="invalid-feedback" *ngIf="subscriberForm.get('place').invalid && (subscriberForm.get('place').dirty || subscriberForm.get('place').touched)">
-                        <div *ngIf="subscriberForm.get('place').errors.required">Address is required.</div>
-                        <!-- <div *ngIf="subscriberForm.get('place').errors.minlength">Address must be at least 10 characters long.</div>
-                        <div *ngIf="subscriberForm.get('place').errors.maxlength">Address cannot be more than 100 characters long.</div>
-                        <div *ngIf="subscriberForm.get('place').errors.pattern">Address contains invalid characters.</div> -->
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <!-- Gender, DOB, Occupation -->
-                <div class="row justify-content-around">
-                  <!-- Gender -->
-                  <div class="col-lg-4">
-                    <div class="form-group">
-                      <label for="gender" class="form-control-label">Gender <span class="required">*</span></label>
-                      <select class="form-control form-control-sm form-select" formControlName="gender">
-                        <option value="">Select Gender</option>
-                        <option value="Male">Male</option>
-                        <option value="Female">Female</option>
-                      </select>
-                      <div class="invalid-feedback" *ngIf="subscriberForm.get('gender').invalid && (subscriberForm.get('gender').dirty || subscriberForm.get('gender').touched)">
-                        <div *ngIf="subscriberForm.get('gender').errors.required">Gender is required.</div>
-                      </div>
-                    </div>
-                  </div>
-                  <!-- DOB -->
-                  <div class="col-lg-4">
-                    <div class="form-group">
-                      <label for="dob" class="form-control-label">Date of Birth<span class="required">*</span></label>
-                      <input type="date"  placeholder="dd/mm/yyyy" class="form-control form-control-sm" formControlName="dob" (ngModelChange)="validateDate($event)" />
-                      <div class="invalid-feedback" *ngIf="subscriberForm.get('dob').invalid && (subscriberForm.get('dob').dirty || subscriberForm.get('dob').touched)">
-                        <div *ngIf="subscriberForm.get('dob').errors.required">Date of Birth is required.</div>
-                        <div *ngIf="subscriberForm.get('dob').errors.invalidDate">Invalid Date of Birth.</div>
-                        <div *ngIf="subscriberForm.get('dob').errors.ageBelowMinimum">You must be at least 18 years old.</div>
-                      </div>
-                    </div>
-                  </div>
-                  <!-- Occupation -->
-                  <div class="col-lg-4">
-                    <div class="form-group">
-                      <label for="occupation" class="form-control-label">Occupation <span class="required">*</span></label>
-                      <input type="text" placeholder="Occupation" class="form-control form-control-sm" formControlName="occupation" (keypress)="onFirstNameKeyPress($event)" maxlength="25" minlength="2" />
-                      <div class="invalid-feedback" *ngIf="subscriberForm.get('occupation').invalid && (subscriberForm.get('occupation').dirty || subscriberForm.get('occupation').touched)">
-                        <!-- <div *ngIf="subscriberForm.get('occupation').errors.required">Occupation is required.</div>
-                        <div *ngIf="subscriberForm.get('occupation').errors.minlength">Occupation must be at least 2 characters long.</div>
-                        <div *ngIf="subscriberForm.get('occupation').errors.maxlength">Occupation cannot be more than 50 characters long.</div>
-                        <div *ngIf="subscriberForm.get('occupation').errors.pattern">Occupation contains invalid characters.</div> -->
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <!-- Area ID, Account Number, IFSC -->
-                <div class="row justify-content-around">
-                  <!-- Area ID -->
-                  <div class="col-lg-4">
-                    <div class="form-group">
-                      <label for="routeId" class="form-control-label">Route Id</label><span class="required">*</span>
-                      
-                      <select class="form-control form-control-sm form-select" formControlName="routeId">
-                        <option value="" disabled selected>RouteId</option>
-                        <option *ngFor="let route of routes" [value]="route.routeId">{{route.routeId}}</option>
-                        </select>
-                      </div>
-                  </div>
-                  <!-- Account Number -->
-                  <div class="col-lg-4">
-                    <div class="form-group">
-                      <label for="accountNumber" class="form-control-label">Account Number<span class="required">*</span></label>
-                      <input type="text" placeholder="Account Number" class="form-control form-control-sm" formControlName="accountNumber"  (keypress)="onAccNoKeyPress($event)" maxlength="12" minlength="12"/>
-                      <div class="invalid-feedback" *ngIf="subscriberForm.get('accountNumber').invalid && (subscriberForm.get('accountNumber').dirty || subscriberForm.get('accountNumber').touched)">
-                        <div *ngIf="subscriberForm.get('accountNumber').errors.required">Account Number is required.</div>
-                        <!-- <div *ngIf="subscriberForm.get('accountNumber').errors.pattern">Account Number should be 8 to 12 digits long.</div> -->
-                      </div>
-                    </div>
-                  </div>
-                  <!-- IFSC -->
-                  <div class="col-lg-4">
-                    <div class="form-group">
-                      <label for="ifsc" class="form-control-label">IFSC Code<span class="required">*</span></label>
-                      <input type="text" placeholder="IFSC Code" class="form-control form-control-sm" formControlName="ifsc" (keypress)="onIfscKeyPress($event)"  maxlength="11" 
-                      (input)="onIFSCAutoUppercase($event)"  placeholder="IFSC Code (e.g., SBIN0001234)" />
-                      <div class="invalid-feedback" *ngIf="subscriberForm.get('ifsc').invalid && (subscriberForm.get('ifsc').dirty || subscriberForm.get('ifsc').touched)">
-                        <div *ngIf="subscriberForm.get('ifsc').errors.required">IFSC is required.</div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="row">
-                    <!-- UPI -->
-                    <div class="col-lg-4">
-                      <div class="form-group">
-                        <label for="upi_id" class="form-control-label">UPI<span class="required">*</span></label>
-                        <input type="text" placeholder="UPI" class="form-control form-control-sm" formControlName="upi_id" maxlength="20"/>
-                      </div>
-                    </div>
-                </div>
-                <!-- UPI, PAN, Aadhar -->
-                <div class="row justify-content-around">
-  
-                  <div class="col-lg-4">
-                    <div class="form-group">
-                      <label for="panCardNumber" class="form-control-label">PAN Card Number<span class="required" *ngIf="subscriberForm.get('panCardNumber').hasError('required')">*</span></label>
-                      <input type="text" placeholder="PAN" class="form-control form-control-sm" formControlName="panCardNumber"  (keypress)="onPanCardKeyPress($event)"/>
-                      <div class="invalid-feedback" *ngIf="subscriberForm.get('panCardNumber').invalid && (subscriberForm.get('panCardNumber').dirty || subscriberForm.get('panCardNumber').touched)">
-                      </div>
-                    </div>
-                  </div>
-                  <div class="col-lg-4">
-                    <div class="form-group">
-                      <label for="panUrl" class="form-control-label">PAN Card<span class="required" *ngIf="subscriberForm.get('panUrl').hasError('required')">*</span></label>
-                      <input type="file" (change)="onFileChange($event, 'panUrl')" class="form-control form-control-sm" formControlName="panUrl"  />
-                    </div>
-                  </div>
-                    <div class="col-lg-4 mt-4">
-                        <button class="viewBtn" (click)="viewFile('panUrl')">View File</button>
-                        <button class="removeBtn" (click)="removeFile('panUrl')">Remove File</button>
-                      </div>
-                </div>
-                <div class="row justify-content-around">
-                    <div class="col-lg-4">
-                        <div class="form-group">
-                          <label for="aadharNumber" class="form-control-label">Aadhaar Card Number<span class="required">*</span></label>
-                          <input type="text" placeholder="Aadhaar" class="form-control form-control-sm" formControlName="aadharNumber" (input)="formatAadharNumber()" 
-                          (keypress)="onlyAllowNumbers($event)" 
-                          maxlength="14"/>
-                          <div class="invalid-feedback" *ngIf="subscriberForm.get('aadharNumber').invalid && (subscriberForm.get('aadharNumber').dirty || subscriberForm.get('aadharNumber').touched)">
-                            <div *ngIf="subscriberForm.get('aadharNumber').errors.required">Aadhaar is required.</div>
-                            <!-- <div *ngIf="subscriberForm.get('aadharNumber').errors.pattern">Aadhaar should be in the format: 4 digits followed by a space, another 4 digits, another space, and another 4 digits.</div> -->
-                          </div>
-                        </div>
-                      </div>
-                     <div class="col-lg-4">
-                      <div class="form-group">
-                        <label for="aadharUrl" class="form-control-label">Aadhaar Card <span class="required" *ngIf="subscriberForm.get('aadharUrl').hasError('required')">*</span></label>
-                        <input type="file" (change)="onFileChange($event, 'aadharUrl')" class="form-control form-control-sm" formControlName="aadharUrl" />
-                      </div>
-                    </div>
-                    <div class="col-lg-4 mt-4">
-                        <button class="viewBtn" (click)="viewFile('aadharUrl')">View File</button>
-                        <button class="removeBtn" (click)="removeFile('aadharUrl')">Remove File</button>
-                      </div>
-               </div>
-                  <!-- Aadhar -->
-                 
-            
-                <!-- Bank Name, Referral Client -->
-                <div class="row justify-content-around">
-                  <!-- Bank Name -->
-                  <div class="col-lg-4">
-                    <div class="form-group">
-                      <label for="bankName" class="form-control-label">Bank Name <span class="required">*</span></label>
-                      <input type="text" placeholder="Bank Name" class="form-control form-control-sm" formControlName="bankName" (keypress)="onFirstNameKeyPress($event)" maxlength="35" minlength="2"  />
-                      <div class="invalid-feedback" *ngIf="subscriberForm.get('bankName').invalid && (subscriberForm.get('bankName').dirty || subscriberForm.get('bankName').touched)">
-                        <div *ngIf="subscriberForm.get('bankName').errors.required">Bank Name is required.</div>
-                        <div *ngIf="subscriberForm.get('bankName').errors.pattern">Bank Name should only contain alphabetic characters and spaces.</div>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="col-lg-4">
-                    <div class="form-group">
-                      <label for="passbookUrl" class="form-control-label">Passbook <span class="required" *ngIf="subscriberForm.get('passbookUrl').hasError('required')">*</span></label>
-                      <input type="file" (change)="onFileChange($event, 'passbookUrl')" class="form-control form-control-sm" formControlName="passbookUrl" />
-                    </div>  
-                </div>
-                <div class="col-lg-4 mt-4">
-                    <button class="viewBtn" (click)="viewFile('passbookUrl')">View File</button>
-                    <button class="removeBtn" (click)="removeFile('passbookUrl')">Remove File</button>
-                  </div>
+              </form>
+              <button class="upload-button" (click)="profileFileInput.click()">
+                <img src="assets/subscriber/Profile edit.svg" alt="Upload Icon">
+              </button>
             </div>
-              <div class="row">
-                <div class="col-lg-4">
-                    <div class="form-group">
-                      <label for="referralClient" class="form-control-label">Referral Client <span class="required" *ngIf="subscriberForm.get('referralClient').hasError('required')">*</span></label>
-                      <div class="input-group">
-                        <input type="text" [value]="referralClient" readonly placeholder="Referral Client" class="form-control form-control-sm" formControlName="referralClient" />
-                        <div class="input-group-append">
-                          <button class="addBtn px-2 py-1" (click)="showSubscriberList()">Add</button>  
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
+          </div>
+          <h5 class="text-center pb-3 mb-3">{{heading}}</h5>
+          <form class="ps-5 pe-5" [formGroup]="subscriberForm">
+            <div class="row justify-content-around">
+              <div class="col-lg-4">
+                <div class="form-group">
+                  <label for="subscriberId" class="form-control-label">Subscriber ID<span
+                      class="required">*</span></label>
+                  <input type="text" placeholder="Subscriber Id" class="form-control form-control-sm"
+                    formControlName="subscriberId" readonly />
+                </div>
               </div>
-            
-                <h6 class="text-center">Nominee Details</h6>
-                <div class="row justify-content-around">
-                  <!-- Nominee Name -->
-                  <div class="col-lg-4">
-                    <div class="form-group">
-                      <label for="nomineeName" class="form-control-label">Nominee Name <span class="required" *ngIf="subscriberForm.get('nomineeName').hasError('required')">*</span></label>
-                      <input type="text" placeholder="Nominee Name" class="form-control form-control-sm" formControlName="nomineeName" (keypress)="onFirstNameKeyPress($event)" maxlength="25" minlength="2" />
-                      <div class="invalid-feedback" *ngIf="subscriberForm.get('nomineeName').invalid && (subscriberForm.get('nomineeName').dirty || subscriberForm.get('nomineeName').touched)">
-                        <div *ngIf="subscriberForm.get('nomineeName').errors.required">Nominee Name is required.</div>
-                        <div *ngIf="subscriberForm.get('nomineeName').errors.pattern">Nominee Name should only contain alphabetic characters and start with a capital letter.</div>
-                      </div>
-                    </div>
+              <div class="col-lg-4">
+                <div class="form-group">
+                  <label for="firstName" class="form-control-label">First Name<span class="required">*</span></label>
+                  <input type="text" placeholder="First Name" class="form-control form-control-sm"
+                    formControlName="firstName" (keypress)="onFirstNameKeyPress($event)" maxlength="25" minlength="2" />
+                  <div class="invalid-feedback"
+                    *ngIf="subscriberForm.get('firstName').invalid && (subscriberForm.get('firstName').dirty || subscriberForm.get('firstName').touched)">
+                    <div *ngIf="subscriberForm.get('firstName').errors.required">First Name is required.</div>
                   </div>
-                  <!-- Nominee Relation -->
-                  <div class="col-lg-4">
-                    <div class="form-group">
-                      <label for="nomineeRelation" class="form-control-label">Nominee Relation</label>
-                      <select class="form-control form-control-sm form-select" formControlName="nomineeRelation">
-                        <option value="">Select Relation</option>
-                        <option value="Father">Father</option>
-                        <option value="Mother">Mother </option>
-                        <option value="Brother">Brother </option>
-                        <option value="Sister">Sister </option>
-                        <option value="Female">Spouse</option>
-                        <option value="Other">Other</option>
-                      </select>
-                    </div>
+                </div>
+              </div>
+              <div class="col-lg-4">
+                <div class="form-group">
+                  <label for="lastName" class="form-control-label">Last Name<span class="required">*</span></label>
+                  <input type="text" placeholder="Last Name" class="form-control form-control-sm"
+                    formControlName="lastName" (keypress)="onFirstNameKeyPress($event)" maxlength="25" minlength="2" />
+                  <div class="invalid-feedback"
+                    *ngIf="subscriberForm.get('lastName').invalid && (subscriberForm.get('lastName').dirty || subscriberForm.get('lastName').touched)">
+                    <div *ngIf="subscriberForm.get('lastName').errors.required">Last Name is required.</div>
                   </div>
-                  <!-- Nominee Address -->
-                  <div class="col-lg-4">
-                    <div class="form-group">
-                      <label for="nomineeAddress" class="form-control-label">Nominee Address <span class="required" *ngIf="subscriberForm.get('nomineeAddress').hasError('required')">*</span></label>
-                      <input type="text" placeholder="Nominee Address" class="form-control form-control-sm" formControlName="nomineeAddress"  maxlength="50" minlength="10"  />
-                      <div class="invalid-feedback" *ngIf="subscriberForm.get('nomineeAddress').invalid && (subscriberForm.get('nomineeAddress').dirty || subscriberForm.get('nomineeAddress').touched)">
-                        <div *ngIf="subscriberForm.get('nomineeAddress').errors.required">Nominee Address is required.</div>
-                        <div *ngIf="subscriberForm.get('nomineeAddress').errors.minlength">Nominee Address must be at least 10 characters long.</div>
-                        <div *ngIf="subscriberForm.get('nomineeAddress').errors.maxlength">Nominee Address cannot be more than 100 characters long.</div>
-                        <div *ngIf="subscriberForm.get('nomineeAddress').errors.pattern">Nominee Address contains invalid characters.</div>
-                      </div>
+                </div>
+              </div>
+            </div>
+            <!-- Alias Name -->
+            <div class="row justify-content-around">
+              <div class="col-lg-4">
+                <div class="form-group">
+                  <label for="aliasName" class="form-control-label">Alias Name</label>
+                  <input type="text" placeholder="Alias Name" class="form-control form-control-sm"
+                    formControlName="aliasName" (keypress)="onFirstNameKeyPress($event)" maxlength="25" minlength="2" />
+                  <div class="invalid-feedback"
+                    *ngIf="subscriberForm.get('aliasName').invalid && (subscriberForm.get('aliasName').dirty || subscriberForm.get('aliasName').touched)">
+                  </div>
+                </div>
+              </div>
+              <!-- Contact Number -->
+              <div class="col-lg-4">
+                <div class="form-group">
+                  <label for="contact" class="form-control-label">Contact Number<span class="required">*</span></label>
+                  <input type="tel" placeholder="Contact Number" class="form-control form-control-sm"
+                    formControlName="contact" [value]="subscriberForm.get('contact').value"
+                    (input)="onContactChange($event)" maxlength="14" (keydown)="blockPrefix($event)" />
+                  <div class="invalid-feedback"
+                    *ngIf="subscriberForm.get('contact').invalid && (subscriberForm.get('contact').dirty || subscriberForm.get('contact').touched)">
+                    <div *ngIf="subscriberForm.get('contact').errors.required">Contact Number is required.</div>
+                    <div *ngIf="subscriberForm.get('contact').errors.pattern">Contact Number should be exactly 10
+                      digits.</div>
+                  </div>
+                </div>
+              </div>
+              <!-- Address -->
+              <div class="col-lg-4">
+                <div class="form-group">
+                  <label for="place" class="form-control-label">Place/Address<span class="required">*</span></label>
+                  <input type="text" placeholder="Place/Address" class="form-control form-control-sm"
+                    formControlName="place" maxlength="50" minlength="10" />
+                  <div class="invalid-feedback"
+                    *ngIf="subscriberForm.get('place').invalid && (subscriberForm.get('place').dirty || subscriberForm.get('place').touched)">
+                    <div *ngIf="subscriberForm.get('place').errors.required">Address is required.</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- Gender, DOB, Occupation -->
+            <div class="row justify-content-around">
+              <!-- Gender -->
+              <div class="col-lg-4">
+                <div class="form-group">
+                  <label for="gender" class="form-control-label">Gender <span class="required">*</span></label>
+                  <select class="form-control form-control-sm form-select" formControlName="gender">
+                    <option value="">Select Gender</option>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                  </select>
+                  <div class="invalid-feedback"
+                    *ngIf="subscriberForm.get('gender').invalid && (subscriberForm.get('gender').dirty || subscriberForm.get('gender').touched)">
+                    <div *ngIf="subscriberForm.get('gender').errors.required">Gender is required.</div>
+                  </div>
+                </div>
+              </div>
+              <!-- DOB -->
+              <div class="col-lg-4">
+                <div class="form-group">
+                  <label for="dob" class="form-control-label">Date of Birth<span class="required">*</span></label>
+                  <input type="date" placeholder="dd/mm/yyyy" class="form-control form-control-sm" formControlName="dob"
+                    (ngModelChange)="validateDate($event)" />
+                  <div class="invalid-feedback"
+                    *ngIf="subscriberForm.get('dob').invalid && (subscriberForm.get('dob').dirty || subscriberForm.get('dob').touched)">
+                    <div *ngIf="subscriberForm.get('dob').errors.required">Date of Birth is required.</div>
+                    <div *ngIf="subscriberForm.get('dob').errors.invalidDate">Invalid Date of Birth.</div>
+                    <div *ngIf="subscriberForm.get('dob').errors.ageBelowMinimum">You must be at least 18 years old.
                     </div>
                   </div>
                 </div>
-                <!-- Nominee Occupation, Gender, Aadhar -->
-                <div class="row justify-content-around">
-                  <!-- Nominee Occupation -->
-                  <div class="col-lg-4">
-                    <div class="form-group">
-                      <label for="nomineeOccupation" class="form-control-label">Nominee Occupation <span class="required" *ngIf="subscriberForm.get('nomineeOccupation').hasError('required')">*</span></label>
-                      <input type="text" placeholder="Nominee Occupation" class="form-control form-control-sm" formControlName="nomineeOccupation" (keypress)="onFirstNameKeyPress($event)" maxlength="25" minlength="2" />
-                      <div class="invalid-feedback" *ngIf="subscriberForm.get('nomineeOccupation').invalid && (subscriberForm.get('nomineeOccupation').dirty || subscriberForm.get('nomineeOccupation').touched)">
-                        <div *ngIf="subscriberForm.get('nomineeOccupation').errors.required">Nominee Occupation is required.</div>
-                        <div *ngIf="subscriberForm.get('nomineeOccupation').errors.minlength">Nominee Occupation must be at least 2 characters long.</div>
-                        <div *ngIf="subscriberForm.get('nomineeOccupation').errors.maxlength">Nominee Occupation cannot be more than 50 characters long.</div>
-                        <div *ngIf="subscriberForm.get('nomineeOccupation').errors.pattern">Nominee Occupation contains invalid characters.</div>
-                      </div>
-                    </div>
-                  </div>
-                  <!-- Nominee Gender -->
-                  <div class="col-lg-4">
-                    <div class="form-group">
-                      <label for="nomineeGender" class="form-control-label">Nominee Gender</label>
-                      <select class="form-control form-control-sm form-select" formControlName="nomineeGender">
-                        <option value="">Select Gender</option>
-                        <option value="Male">Male</option>
-                        <option value="Female">Female</option>
-                      </select>
-                      <div class="invalid-feedback" *ngIf="subscriberForm.get('nomineeGender').invalid && (subscriberForm.get('nomineeGender').dirty || subscriberForm.get('nomineeGender').touched)">
-                        <div *ngIf="subscriberForm.get('nomineeGender').errors.required">Nominee Gender is required.</div>
-                      </div>
-                    </div>
-                  </div>
-                  <!-- Nominee Aadhar -->
-                  <div class="col-lg-4">
-                    <div class="form-group">
-                      <label for="nomineeAadhar" class="form-control-label">Nominee Aadhaar <span class="required" *ngIf="subscriberForm.get('nomineeAadhar').hasError('required')">*</span></label>
-                      <input type="text" placeholder="Nominee Aadhaar" class="form-control form-control-sm" formControlName="nomineeAadhar"  (input)="formatNoAadharNumber()" 
-                      (keypress)="onlyAllowNumbers($event)" 
-                      maxlength="14"/>
-                      <div class="invalid-feedback" *ngIf="subscriberForm.get('nomineeAadhar').invalid && (subscriberForm.get('nomineeAadhar').dirty || subscriberForm.get('nomineeAadhar').touched)">
-                        <div *ngIf="subscriberForm.get('nomineeAadhar').errors.required">Nominee Aadhar is required.</div>
-                        <div *ngIf="subscriberForm.get('nomineeAadhar').errors.pattern">Nominee Aadhar should be in the format: 4 digits followed by a space, another 4 digits, another space, and another 4 digits.</div>
-                      </div>
-                    </div>
+              </div>
+              <!-- Occupation -->
+              <div class="col-lg-4">
+                <div class="form-group">
+                  <label for="occupation" class="form-control-label">Occupation <span class="required">*</span></label>
+                  <input type="text" placeholder="Occupation" class="form-control form-control-sm"
+                    formControlName="occupation" (keypress)="onFirstNameKeyPress($event)" maxlength="25"
+                    minlength="2" />
+                  <div class="invalid-feedback"
+                    *ngIf="subscriberForm.get('occupation').invalid && (subscriberForm.get('occupation').dirty || subscriberForm.get('occupation').touched)">
                   </div>
                 </div>
-                <!-- Nominee DOB -->
-                <div class="row">
-                  <div class="col-lg-4">
-                    <div class="form-group">
-                      <label for="nomineeDOB" class="form-control-label">Nominee Date of Birth <span class="required" *ngIf="subscriberForm.get('nomineeDOB').hasError('required')">*</span></label>
-                      <input type="date" class="form-control form-control-sm" formControlName="nomineeDOB" />
-                      <div class="invalid-feedback" *ngIf="subscriberForm.get('nomineeDOB').invalid && (subscriberForm.get('nomineeDOB').dirty || subscriberForm.get('nomineeDOB').touched)">
-                        <div *ngIf="subscriberForm.get('nomineeDOB').errors.required">Nominee Date of Birth is required.</div>
-                        <div *ngIf="subscriberForm.get('nomineeDOB').errors.invalidDate">Invalid Date of Birth.</div>
-                        <div *ngIf="subscriberForm.get('nomineeDOB').errors.ageBelowMinimum">Nominee must be at least 18 years old.</div>
-                      </div>
-                    </div>
+              </div>
+            </div>
+            <!-- Area ID, Account Number, IFSC -->
+            <div class="row justify-content-around">
+              <!-- Area ID -->
+              <div class="col-lg-4">
+                <div class="form-group">
+                  <label for="routeId" class="form-control-label">Route Id</label><span class="required">*</span>
+                  <select class="form-control form-control-sm form-select" formControlName="routeId">
+                    <option value="" disabled selected>RouteId</option>
+                    <option *ngFor="let route of routes" [value]="route.routeId">{{route.routeId}}</option>
+                  </select>
+                </div>
+              </div>
+              <!-- Account Number -->
+              <div class="col-lg-4">
+                <div class="form-group">
+                  <label for="accountNumber" class="form-control-label">Account Number<span
+                      class="required">*</span></label>
+                  <input type="text" placeholder="Account Number" class="form-control form-control-sm"
+                    formControlName="accountNumber" (keypress)="onAccNoKeyPress($event)" maxlength="12"
+                    minlength="12" />
+                  <div class="invalid-feedback"
+                    *ngIf="subscriberForm.get('accountNumber').invalid && (subscriberForm.get('accountNumber').dirty || subscriberForm.get('accountNumber').touched)">
+                    <div *ngIf="subscriberForm.get('accountNumber').errors.required">Account Number is required.</div>
                   </div>
                 </div>
-                <!-- Profile, PAN Card, Passbook Upload -->
+              </div>
+              <!-- IFSC -->
+              <div class="col-lg-4">
+                <div class="form-group">
+                  <label for="ifsc" class="form-control-label">IFSC Code<span class="required">*</span></label>
+                  <input type="text" placeholder="IFSC Code" class="form-control form-control-sm" formControlName="ifsc"
+                    (keypress)="onIfscKeyPress($event)" maxlength="11" (input)="onIFSCAutoUppercase($event)"
+                    placeholder="IFSC Code (e.g., SBIN0001234)" />
+                  <div class="invalid-feedback"
+                    *ngIf="subscriberForm.get('ifsc').invalid && (subscriberForm.get('ifsc').dirty || subscriberForm.get('ifsc').touched)">
+                    <div *ngIf="subscriberForm.get('ifsc').errors.required">IFSC is required.</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <!-- UPI -->
+              <div class="col-lg-4">
+                <div class="form-group">
+                  <label for="upi_id" class="form-control-label">UPI<span class="required">*</span></label>
+                  <input type="text" placeholder="UPI" class="form-control form-control-sm" formControlName="upi_id"
+                    maxlength="20" />
+                </div>
+              </div>
+            </div>
+            <!-- UPI, PAN, Aadhar -->
+            <div class="row justify-content-around">
 
-                <div class="row justify-content-center">
-                    <div class="col-lg-12 d-flex justify-content-end mb-2">
-                        <button class="btn nxt-btn btn-outline-secondary" routerLink="/subscriber">Cancel</button>
-                        <button class="btn save-btn"  type="submit" [disabled]="!subscriberForm.valid" (click)="onSubmit()">{{submit}}</button>
-                    </div>
+              <div class="col-lg-4">
+                <div class="form-group">
+                  <label for="panCardNumber" class="form-control-label">PAN Card Number<span class="required"
+                      *ngIf="subscriberForm.get('panCardNumber').hasError('required')">*</span></label>
+                  <input type="text" placeholder="PAN" class="form-control form-control-sm"
+                    formControlName="panCardNumber" (keypress)="onPanCardKeyPress($event)" />
+                  <div class="invalid-feedback"
+                    *ngIf="subscriberForm.get('panCardNumber').invalid && (subscriberForm.get('panCardNumber').dirty || subscriberForm.get('panCardNumber').touched)">
+                  </div>
                 </div>
+              </div>
+              <div class="col-lg-4">
+                <div class="form-group">
+                  <label for="panUrl" class="form-control-label">PAN Card<span class="required"
+                      *ngIf="subscriberForm.get('panUrl').hasError('required')">*</span></label>
+                  <input type="file" (change)="onFileChange($event, 'panUrl')" class="form-control form-control-sm"
+                    formControlName="panUrl" />
+                </div>
+              </div>
+              <div class="col-lg-4 mt-4">
+                <button class="viewBtn" (click)="viewFile('panUrl')">View File</button>
+                <button class="removeBtn" (click)="removeFile('panUrl')">Remove File</button>
+              </div>
+            </div>
+            <div class="row justify-content-around">
+              <div class="col-lg-4">
+                <div class="form-group">
+                  <label for="aadharNumber" class="form-control-label">Aadhaar Card Number<span
+                      class="required">*</span></label>
+                  <input type="text" placeholder="Aadhaar" class="form-control form-control-sm"
+                    formControlName="aadharNumber" (input)="formatAadharNumber()" (keypress)="onlyAllowNumbers($event)"
+                    maxlength="14" />
+                  <div class="invalid-feedback"
+                    *ngIf="subscriberForm.get('aadharNumber').invalid && (subscriberForm.get('aadharNumber').dirty || subscriberForm.get('aadharNumber').touched)">
+                    <div *ngIf="subscriberForm.get('aadharNumber').errors.required">Aadhaar is required.</div>
+                    <!-- <div *ngIf="subscriberForm.get('aadharNumber').errors.pattern">Aadhaar should be in the format: 4 digits followed by a space, another 4 digits, another space, and another 4 digits.</div> -->
+                  </div>
+                </div>
+              </div>
+              <div class="col-lg-4">
+                <div class="form-group">
+                  <label for="aadharUrl" class="form-control-label">Aadhaar Card <span class="required"
+                      *ngIf="subscriberForm.get('aadharUrl').hasError('required')">*</span></label>
+                  <input type="file" (change)="onFileChange($event, 'aadharUrl')" class="form-control form-control-sm"
+                    formControlName="aadharUrl" />
+                </div>
+              </div>
+              <div class="col-lg-4 mt-4">
+                <button class="viewBtn" (click)="viewFile('aadharUrl')">View File</button>
+                <button class="removeBtn" (click)="removeFile('aadharUrl')">Remove File</button>
+              </div>
+            </div>
+            <!-- Bank Name, Referral Client -->
+            <div class="row justify-content-around">
+              <!-- Bank Name -->
+              <div class="col-lg-4">
+                <div class="form-group">
+                  <label for="bankName" class="form-control-label">Bank Name <span class="required">*</span></label>
+                  <input type="text" placeholder="Bank Name" class="form-control form-control-sm"
+                    formControlName="bankName" (keypress)="onFirstNameKeyPress($event)" maxlength="35" minlength="2" />
+                  <div class="invalid-feedback"
+                    *ngIf="subscriberForm.get('bankName').invalid && (subscriberForm.get('bankName').dirty || subscriberForm.get('bankName').touched)">
+                    <div *ngIf="subscriberForm.get('bankName').errors.required">Bank Name is required.</div>
+                    <div *ngIf="subscriberForm.get('bankName').errors.pattern">Bank Name should only contain alphabetic
+                      characters and spaces.</div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-lg-4">
+                <div class="form-group">
+                  <label for="passbookUrl" class="form-control-label">Passbook <span class="required"
+                      *ngIf="subscriberForm.get('passbookUrl').hasError('required')">*</span></label>
+                  <input type="file" (change)="onFileChange($event, 'passbookUrl')" class="form-control form-control-sm"
+                    formControlName="passbookUrl" />
+                </div>
+              </div>
+              <div class="col-lg-4 mt-4">
+                <button class="viewBtn" (click)="viewFile('passbookUrl')">View File</button>
+                <button class="removeBtn" (click)="removeFile('passbookUrl')">Remove File</button>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-lg-4">
+                <div class="form-group">
+                  <label for="referralClient" class="form-control-label">Referral Client <span class="required"
+                      *ngIf="subscriberForm.get('referralClient').hasError('required')">*</span></label>
+                  <div class="input-group">
+                    <input type="text" [value]="referralClient" readonly placeholder="Referral Client"
+                      class="form-control form-control-sm" formControlName="referralClient" />
+                    <div class="input-group-append">
+                      <button class="addBtn px-2 py-1" (click)="showSubscriberList()">Add</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
 
-                
-            </form>
+            </div>
+
+            <h6 class="text-center">Nominee Details</h6>
+            <div class="row justify-content-around">
+              <!-- Nominee Name -->
+              <div class="col-lg-4">
+                <div class="form-group">
+                  <label for="nomineeName" class="form-control-label">Nominee Name <span class="required"
+                      *ngIf="subscriberForm.get('nomineeName').hasError('required')">*</span></label>
+                  <input type="text" placeholder="Nominee Name" class="form-control form-control-sm"
+                    formControlName="nomineeName" (keypress)="onFirstNameKeyPress($event)" maxlength="25"
+                    minlength="2" />
+                  <div class="invalid-feedback"
+                    *ngIf="subscriberForm.get('nomineeName').invalid && (subscriberForm.get('nomineeName').dirty || subscriberForm.get('nomineeName').touched)">
+                    <div *ngIf="subscriberForm.get('nomineeName').errors.required">Nominee Name is required.</div>
+                    <div *ngIf="subscriberForm.get('nomineeName').errors.pattern">Nominee Name should only contain
+                      alphabetic characters and start with a capital letter.</div>
+                  </div>
+                </div>
+              </div>
+              <!-- Nominee Relation -->
+              <div class="col-lg-4">
+                <div class="form-group">
+                  <label for="nomineeRelation" class="form-control-label">Nominee Relation</label>
+                  <select class="form-control form-control-sm form-select" formControlName="nomineeRelation">
+                    <option value="">Select Relation</option>
+                    <option value="Father">Father</option>
+                    <option value="Mother">Mother </option>
+                    <option value="Brother">Brother </option>
+                    <option value="Sister">Sister </option>
+                    <option value="Female">Spouse</option>
+                    <option value="Other">Other</option>
+                  </select>
+                </div>
+              </div>
+              <!-- Nominee Address -->
+              <div class="col-lg-4">
+                <div class="form-group">
+                  <label for="nomineeAddress" class="form-control-label">Nominee Address <span class="required"
+                      *ngIf="subscriberForm.get('nomineeAddress').hasError('required')">*</span></label>
+                  <input type="text" placeholder="Nominee Address" class="form-control form-control-sm"
+                    formControlName="nomineeAddress" maxlength="50" minlength="10" />
+                  <div class="invalid-feedback"
+                    *ngIf="subscriberForm.get('nomineeAddress').invalid && (subscriberForm.get('nomineeAddress').dirty || subscriberForm.get('nomineeAddress').touched)">
+                    <div *ngIf="subscriberForm.get('nomineeAddress').errors.required">Nominee Address is required.</div>
+                    <div *ngIf="subscriberForm.get('nomineeAddress').errors.minlength">Nominee Address must be at least
+                      10 characters long.</div>
+                    <div *ngIf="subscriberForm.get('nomineeAddress').errors.maxlength">Nominee Address cannot be more
+                      than 100 characters long.</div>
+                    <div *ngIf="subscriberForm.get('nomineeAddress').errors.pattern">Nominee Address contains invalid
+                      characters.</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- Nominee Occupation, Gender, Aadhar -->
+            <div class="row justify-content-around">
+              <!-- Nominee Occupation -->
+              <div class="col-lg-4">
+                <div class="form-group">
+                  <label for="nomineeOccupation" class="form-control-label">Nominee Occupation <span class="required"
+                      *ngIf="subscriberForm.get('nomineeOccupation').hasError('required')">*</span></label>
+                  <input type="text" placeholder="Nominee Occupation" class="form-control form-control-sm"
+                    formControlName="nomineeOccupation" (keypress)="onFirstNameKeyPress($event)" maxlength="25"
+                    minlength="2" />
+                  <div class="invalid-feedback"
+                    *ngIf="subscriberForm.get('nomineeOccupation').invalid && (subscriberForm.get('nomineeOccupation').dirty || subscriberForm.get('nomineeOccupation').touched)">
+                    <div *ngIf="subscriberForm.get('nomineeOccupation').errors.required">Nominee Occupation is required.
+                    </div>
+                    <div *ngIf="subscriberForm.get('nomineeOccupation').errors.minlength">Nominee Occupation must be at
+                      least 2 characters long.</div>
+                    <div *ngIf="subscriberForm.get('nomineeOccupation').errors.maxlength">Nominee Occupation cannot be
+                      more than 50 characters long.</div>
+                    <div *ngIf="subscriberForm.get('nomineeOccupation').errors.pattern">Nominee Occupation contains
+                      invalid characters.</div>
+                  </div>
+                </div>
+              </div>
+              <!-- Nominee Gender -->
+              <div class="col-lg-4">
+                <div class="form-group">
+                  <label for="nomineeGender" class="form-control-label">Nominee Gender</label>
+                  <select class="form-control form-control-sm form-select" formControlName="nomineeGender">
+                    <option value="">Select Gender</option>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                  </select>
+                  <div class="invalid-feedback"
+                    *ngIf="subscriberForm.get('nomineeGender').invalid && (subscriberForm.get('nomineeGender').dirty || subscriberForm.get('nomineeGender').touched)">
+                    <div *ngIf="subscriberForm.get('nomineeGender').errors.required">Nominee Gender is required.</div>
+                  </div>
+                </div>
+              </div>
+              <!-- Nominee Aadhar -->
+              <div class="col-lg-4">
+                <div class="form-group">
+                  <label for="nomineeAadhar" class="form-control-label">Nominee Aadhaar <span class="required"
+                      *ngIf="subscriberForm.get('nomineeAadhar').hasError('required')">*</span></label>
+                  <input type="text" placeholder="Nominee Aadhaar" class="form-control form-control-sm"
+                    formControlName="nomineeAadhar" (input)="formatNoAadharNumber()"
+                    (keypress)="onlyAllowNumbers($event)" maxlength="14" />
+                  <div class="invalid-feedback"
+                    *ngIf="subscriberForm.get('nomineeAadhar').invalid && (subscriberForm.get('nomineeAadhar').dirty || subscriberForm.get('nomineeAadhar').touched)">
+                    <div *ngIf="subscriberForm.get('nomineeAadhar').errors.required">Nominee Aadhar is required.</div>
+                    <div *ngIf="subscriberForm.get('nomineeAadhar').errors.pattern">Nominee Aadhar should be in the
+                      format: 4 digits followed by a space, another 4 digits, another space, and another 4 digits.</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- Nominee DOB -->
+            <div class="row">
+              <div class="col-lg-4">
+                <div class="form-group">
+                  <label for="nomineeDOB" class="form-control-label">Nominee Date of Birth <span class="required"
+                      *ngIf="subscriberForm.get('nomineeDOB').hasError('required')">*</span></label>
+                  <input type="date" class="form-control form-control-sm" formControlName="nomineeDOB" />
+                  <div class="invalid-feedback"
+                    *ngIf="subscriberForm.get('nomineeDOB').invalid && (subscriberForm.get('nomineeDOB').dirty || subscriberForm.get('nomineeDOB').touched)">
+                    <div *ngIf="subscriberForm.get('nomineeDOB').errors.required">Nominee Date of Birth is required.
+                    </div>
+                    <div *ngIf="subscriberForm.get('nomineeDOB').errors.invalidDate">Invalid Date of Birth.</div>
+                    <div *ngIf="subscriberForm.get('nomineeDOB').errors.ageBelowMinimum">Nominee must be at least 18
+                      years old.</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- Profile, PAN Card, Passbook Upload -->
+
+            <div class="row justify-content-center">
+              <div class="col-lg-12 d-flex justify-content-end mb-2">
+                <button class="btn nxt-btn btn-outline-secondary" routerLink="/subscriber">Cancel</button>
+                <button class="btn save-btn" type="submit" [disabled]="!subscriberForm.valid"
+                  (click)="onSubmit()">{{submit}}</button>
+              </div>
+            </div>
+
+
+          </form>
         </div>
-    </div>
+      </div>
     </div>
     <div class="col-lg-3" *ngIf="isSubscriberListVisible">
       <div class="card details  mb-3">
         <h5 class="text-center my-2">Referral</h5>
         <div class="search-bar align-self-center">
           <span class="search-icon"><img src="assets/subscriber/search-icon.svg"></span>
-          <input width="20" height="20" type="text" placeholder="Search Subscriber ID, Name, Email" (input)="applyFilter($event.target.value)">
+          <input width="20" height="20" type="text" placeholder="Search Subscriber ID, Name, Email"
+            (input)="applyFilter($event.target.value)">
         </div>
-    
+
         <table class="subscriber-table my-3">
           <tbody>
             <tr *ngFor="let subscriber of displayedSubscribers">
@@ -408,13 +457,15 @@
                       <button class="viewbtn" (click)="onButtonClick(subscriber.id)">View Details</button>
                     </div>
                   </div>
-    
+
                   <!-- Subscriber details section -->
-                  <div *ngIf="selectedSubscriberId === subscriber.subscriberId && subscriberDetail.Subscriber.subscriberId">
+                  <div
+                    *ngIf="selectedSubscriberId === subscriber.subscriberId && subscriberDetail.Subscriber.subscriberId">
                     <div class="subscriber-details my-5 py-5">
                       <h5 class="title text-center">Subscriber Details</h5>
                       <div class="text-center">
-                        <img [src]="subscriberDetail.Subscriber.profileImageUrl" class="rounded-circle  align-self-center mb-2" width="75" height="75" alt="Subscriber Image">
+                        <img [src]="subscriberDetail.Subscriber.profileImageUrl"
+                          class="rounded-circle  align-self-center mb-2" width="75" height="75" alt="Subscriber Image">
                       </div>
                       <table class="table flex-column">
                         <tbody>
@@ -466,16 +517,11 @@
             </tr>
           </tbody>
         </table>
-    
+
         <div *ngIf="showall === false" class="text-center my-3">
           <button class="btn view" (click)="viewMore()">View More</button>
         </div>
       </div>
     </div>
-    
-    
-    
-                                            
-            </div>
-        </div>
-    
+  </div>
+</div>

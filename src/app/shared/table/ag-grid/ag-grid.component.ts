@@ -8,24 +8,22 @@ import { ITableColumn } from '../../interface/list-table';
   styleUrls: ['./ag-grid.component.css']
 })
 export class AgGridComponent implements OnChanges, OnInit {
-
   @Input() width: string;
   @Input() height: string;
   @Input() columns: ITableColumn[] = [];
   @Input() rowData: any[] = [];
-  @Input() searchImg:string
-  @Input() filterImg:string
-  @Input() search:boolean;
-  @Input() filter:boolean;
-
+  @Input() searchImg: string
+  @Input() filterImg: string
+  @Input() search: boolean;
+  @Input() filter: boolean;
   @Input() pageSize: number; // Input for dynamic page size
   @Input() gridOption: any;
-    defaultPageSize: number = 5; // Default page size
+  defaultPageSize: number = 5; // Default page size
   isActiveFilter: boolean = true;
 
   private gridApi!: GridApi;
   private gridColumnApi: any;
-  
+
   columnSearchText: string = '';
   showFilterPopup: boolean = false;
   filterOptions: { [key: string]: any[] } = {};
@@ -44,11 +42,11 @@ export class AgGridComponent implements OnChanges, OnInit {
   popupLeft: number = 0;
   data: any[] = [];
   isLoading: boolean = true;  // Loading state
-  bg:any
+  bg: any
   gridOptions: any;
 
   ngOnInit(): void {
-    this.getFilteredFields();    
+    this.getFilteredFields();
     this.initializeGridOptions();
     this.bg = this.searchImg === 'assets/table/black search.svg' ? '#ECEBF5' : '#ffffff';
   }
@@ -64,7 +62,6 @@ export class AgGridComponent implements OnChanges, OnInit {
       this.gridOptions.paginationPageSize = this.pageSize || this.defaultPageSize;
       this.gridOptions.api.onPaginationChanged();
     }
-    
   }
 
   initializeGridOptions() {
@@ -73,13 +70,9 @@ export class AgGridComponent implements OnChanges, OnInit {
       paginationPageSize: this.pageSize || this.defaultPageSize,
       columnDefs: this.columns,
       rowData: this.rowData,
-      domLayout: 'normal', // Allows for scrolling if content exceeds height
+      domLayout: 'normal',
     };
-
   }
-
-
-
   onGridReady(params: any) {
     this.gridApi = params.api;
     this.gridColumnApi = params.columnApi;
@@ -89,7 +82,7 @@ export class AgGridComponent implements OnChanges, OnInit {
     this.filterList = {};
     columns.forEach(col => {
       if (col.filterList) {
-        const field = col.field;        
+        const field = col.field;
         const uniqueValues = Array.from(new Set(rowData.map(row => row[field])));
         this.filterList[field] = { values: uniqueValues, selectedValues: [], showOptions: false };
       }
@@ -100,8 +93,6 @@ export class AgGridComponent implements OnChanges, OnInit {
   filterTableData(event: MouseEvent): void {
     this.showFilter = !this.showFilter;
   }
-
-
   toggleFilter(field: string) {
     this.filterList[field].showOptions = !this.filterList[field].showOptions;
   }
@@ -115,42 +106,31 @@ export class AgGridComponent implements OnChanges, OnInit {
       (document.getElementById("filter-text-box") as HTMLInputElement).value,
     );
   }
-
-  
   handleCheckboxChange(field: string, value: any, event: any): void {
-    console.log(event.target.checked);
-    
-      this.isActiveFilter = event.target.checked;
-      // this.applyFilterActive();
-
+    this.isActiveFilter = event.target.checked;
     const selectedValues = this.filterList[field].selectedValues || [];
     if (event.target.checked) {
       selectedValues.push(value);
-
     } else {
       const index = selectedValues.indexOf(value);
       if (index > -1) {
         selectedValues.splice(index, 1);
       }
     }
-
-
   }
-
   applyFilters() {
     let filteredData = [...this.data];
     for (let key in this.filterList) {
       const selectedValues = this.filterList[key].selectedValues;
 
       if (selectedValues.length) {
-        filteredData = filteredData.filter(item => 
+        filteredData = filteredData.filter(item =>
           this.filterList[key].selectedValues.includes(item[key])
         );
       }
     }
     this.rowData = filteredData;
     this.showFilter = !this.showFilter;
-
   }
 
   clearFilters(): void {
@@ -163,14 +143,11 @@ export class AgGridComponent implements OnChanges, OnInit {
         this.filterList[field].selectedValues = []; // Clear the selected values
       }
     }
-
     this.rowData = filteredData;
-    console.log("table data", this.rowData);
     this.showFilter = !this.showFilter;
-
   }
   getFilteredFields(): void {
-    this.displayedFields = Object.keys(this.filterList);    
+    this.displayedFields = Object.keys(this.filterList);
   }
   closePopup() {
     this.showFilter = !this.showFilter;

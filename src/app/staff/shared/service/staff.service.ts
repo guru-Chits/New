@@ -7,27 +7,27 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class StaffService {
-  delete:string=environment.staffServiceUrl+'/staff/deleteStaff/666fe548e419feb9c05e422d'
-  staffUrl:string=environment.staffServiceUrl+"/staff/getStaffDetails"
+  delete: string = environment.staffServiceUrl + '/staff/deleteStaff/666fe548e419feb9c05e422d'
+  staffUrl: string = environment.staffServiceUrl + "/staff/getStaffDetails"
   private apiUrl = 'https://2factor.in/API/R1/';
   private apiKey = 'b1037ef1-2ed8-11ef-8b60-0200cd936042'; // Your API key
   private senderId = 'KNGCPL'; // Sender ID
   private templateName = 'Onboarding'; // Template name
 
-  constructor(private http:HttpClient) { }
+  constructor(private http: HttpClient) { }
 
-  getstaffAll(){
+  getstaffAll() {
     return this.http.get(this.staffUrl)
   }
 
-  getstaffById(id: string){
+  getstaffById(id: string) {
     let url = `${environment.staffServiceUrl}/staff/getStaffById/${id}`;
     return this.http.get(url)
   }
 
-  savestaffDetails(body: any, id?: string): Observable<any>{
+  savestaffDetails(body: any, id?: string): Observable<any> {
     let savesubscribeUrl: string = `${environment.staffServiceUrl}/staff/addStaff`
-    if(id){
+    if (id) {
       savesubscribeUrl = `${savesubscribeUrl}/${id}`;
     }
     return this.http.post(savesubscribeUrl, body)

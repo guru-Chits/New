@@ -4,125 +4,123 @@
     </div>
     <div class="nav py-3" role="tablist">
         <div class="nav-item">
-          <a class="nav-link active" data-bs-toggle="pill" href="#home" (click)="changeTab('home')">Payments</a>
+            <a class="nav-link active" data-bs-toggle="pill" href="#home" (click)="changeTab('home')">Payments</a>
         </div>
         <div class="nav-item">
-          <a class="nav-link " data-bs-toggle="pill" href="#menu1" *ngIf="canEdit" (click)="changeTab('collection')">Collections</a>
+            <a class="nav-link " data-bs-toggle="pill" href="#menu1" *ngIf="canEdit"
+                (click)="changeTab('collection')">Collections</a>
         </div>
         <div class="nav-item">
-          <a class="nav-link" data-bs-toggle="pill" href="#menu2" *ngIf="canEdit" (click)="changeTab('transaction')">Transactions</a>
+            <a class="nav-link" data-bs-toggle="pill" href="#menu2" *ngIf="canEdit"
+                (click)="changeTab('transaction')">Transactions</a>
         </div>
     </div>
     <div class="container-fluid d-flex flex-column mb-3">
         <div class="row">
-            <div [ngClass]="{'col-md-8 col-lg-8': paymentDetail&&activeTab == 'home', 'col-md-12 col-lg-12': !paymentDetail}">     
+            <div
+                [ngClass]="{'col-md-8 col-lg-8': paymentDetail&&activeTab == 'home', 'col-md-12 col-lg-12': !paymentDetail}">
                 <div class="card-wrapper">
                     <div class="card">
                         <div class="card-body">
                             <div class="tab-content">
                                 <div id="home" class="container tab-pane active"><br>
-                                  <app-payments></app-payments>
+                                    <app-payments></app-payments>
                                 </div>
                                 <div id="menu1" class="container tab-pane fade"><br>
-                                  <app-collections></app-collections>
+                                    <app-collections></app-collections>
                                 </div>
                                 <div id="menu2" class="container tab-pane fade"><br>
-                                  <app-transactions></app-transactions>
+                                    <app-transactions></app-transactions>
                                 </div>
                             </div>
                             <div class="row" *ngIf="activeTab == 'home'">
                                 <div class="col-lg-5 ms-6">
-                                  <div class="form-check form-switch">
-                                    <!-- Switch Checkbox -->
-                                    <input type="checkbox" class="form-check-input" id="paymentSwitch"  (change)="togglePayments()">
-                                    
-                                    <!-- Label to Display Based on the Toggle State -->
-                                    <label class="form-check-label" for="paymentSwitch">
-                                      {{ showCancelledPayments ? 'Cancelled Payments' : 'Available Payments' }}
-                                    </label>
-                                  </div>
+                                    <div class="form-check form-switch">
+                                        <input type="checkbox" class="form-check-input" id="paymentSwitch"
+                                            (change)="togglePayments()">
+                                        <label class="form-check-label" for="paymentSwitch">
+                                            {{ showCancelledPayments ? 'Cancelled Payments' : 'Available Payments' }}
+                                        </label>
+                                    </div>
                                 </div>
-                              </div>
                             </div>
-                        <!-- Toggle Button -->
-
-                        <!-- Main Table or Cancelled Payments Table -->
+                        </div>
                         <div *ngIf="activeTab == 'home'">
-                        <app-ag-grid *ngIf="!showCancelledPayments" [columns]="column" [rowData]="data" 
-                            class="px-3 mb-3" [searchImg]="searchImg" [filterImg]="filterImg" width="100%" height="340px" 
-                            [pageSize]="7" [search]="search" [filter]="filter">
-                        </app-ag-grid>
-                        
-                        <app-ag-grid *ngIf="showCancelledPayments" [columns]="columnCancelled" [rowData]="cancelled"
-                            class="px-3 mb-3" [searchImg]="searchImg" [filterImg]="filterImg" width="100%" height="340px"
-                            [pageSize]="7" [search]="search" [filter]="filter">
-                        </app-ag-grid>
+                            <app-ag-grid *ngIf="!showCancelledPayments" [columns]="column" [rowData]="data"
+                                class="px-3 mb-3" [searchImg]="searchImg" [filterImg]="filterImg" width="100%"
+                                height="340px" [pageSize]="7" [search]="search" [filter]="filter">
+                            </app-ag-grid>
+
+                            <app-ag-grid *ngIf="showCancelledPayments" [columns]="columnCancelled" [rowData]="cancelled"
+                                class="px-3 mb-3" [searchImg]="searchImg" [filterImg]="filterImg" width="100%"
+                                height="340px" [pageSize]="7" [search]="search" [filter]="filter">
+                            </app-ag-grid>
                         </div>
                     </div>
                 </div>
             </div>
             <div *ngIf="popup">
-                <div id="deleteTypeModal" class="modal" tabindex="-1" role="dialog" >
+                <div id="deleteTypeModal" class="modal" tabindex="-1" role="dialog">
                     <div class="modal-dialog" role="document">
                         <div class="modal-content">
-                        <div class="modal-header  d-flex justify-content-center">
-                        <h5 class="modal-title"> Cancel Receipt</h5>
-                      </div>
-                      <div class="card-body mt-2">
-                        <form [formGroup] = "reasonCancelForm">
-    
-                            <div class="form-group ms-3 me-3 mb-3">
-                                <label >
-                                    Reason for Cancellation
-                                </label>
-                                <select class="form-control form-control-sm form-select" formControlName="deleteReason"  placeholder = "select reason"> 
-                                    <option value="">Select reason</option>
-                                    <option *ngFor="let reason of reasonData" [value]="reason.deleteType">{{ reason.deleteType }}</option>        
-                                </select>
-                                <button class="btn2 px-3 py-1 mt-2" (click)="deleteConfirm(paymentDetail.payment._id)" *ngIf="canDelete" >Cancel Bill</button>
-            
+                            <div class="modal-header  d-flex justify-content-center">
+                                <h5 class="modal-title"> Cancel Receipt</h5>
                             </div>
-                        </form>
+                            <div class="card-body mt-2">
+                                <form [formGroup]="reasonCancelForm">
+
+                                    <div class="form-group ms-3 me-3 mb-3">
+                                        <label>
+                                            Reason for Cancellation
+                                        </label>
+                                        <select class="form-control form-control-sm form-select"
+                                            formControlName="deleteReason" placeholder="select reason">
+                                            <option value="">Select reason</option>
+                                            <option *ngFor="let reason of reasonData" [value]="reason.deleteType">{{
+                                                reason.deleteType }}</option>
+                                        </select>
+                                        <button class="btn2 px-3 py-1 mt-2"
+                                            (click)="deleteConfirm(paymentDetail.payment._id)" *ngIf="canDelete">Cancel
+                                            Bill</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
                     </div>
-                    </div>
-    
-                    </div>
-                    </div>
-    
+                </div>
             </div>
             <div class="col-lg-4">
                 <div *ngIf="paymentDetail&& activeTab == 'home'">
                     <div class="card">
-            
                         <div class="card-body">
-                                <h4 class="text-center my-4"><strong>Payments Details</strong></h4>
-                                <table class="table p-5">
-                                    <tbody >
-                                        <tr>
-                                            <td ><b>Date</b></td>
-                                            <td>{{paymentDetail.payment.date}}</td>
-                                        </tr>
-                                        <tr>
-                                            <td><b>Serial Number</b></td>
-                                            <td>{{paymentDetail.payment.serialNumber}}</td>
-                                        </tr>
-                                        <tr>
-                                            <td><b>Receipt Number</b></td>
-                                            <td>{{paymentDetail.payment.receiptNumber}}</td>
-                                        </tr>
-                                        <tr>
-                                            <td><b>Passbook Number</b></td>
-                                            <td>{{paymentDetail.payment.passbooknumber}}</td>
-                                        </tr>
-                                        <tr>
-                                          <td><b>Group Id</b></td>
-                                          <td>{{paymentDetail.payment.groupId}}</td>
-                                        </tr>
-                                      <tr>
-                                          <td><b>Installment Month</b></td>
-                                          <td>{{paymentDetail.payment.installmentMonth}}</td>
-                                        </tr>
-                                      <tr>
+                            <h4 class="text-center my-4"><strong>Payments Details</strong></h4>
+                            <table class="table p-5">
+                                <tbody>
+                                    <tr>
+                                        <td><b>Date</b></td>
+                                        <td>{{paymentDetail.payment.date}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td><b>Serial Number</b></td>
+                                        <td>{{paymentDetail.payment.serialNumber}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td><b>Receipt Number</b></td>
+                                        <td>{{paymentDetail.payment.receiptNumber}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td><b>Passbook Number</b></td>
+                                        <td>{{paymentDetail.payment.passbooknumber}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td><b>Group Id</b></td>
+                                        <td>{{paymentDetail.payment.groupId}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td><b>Installment Month</b></td>
+                                        <td>{{paymentDetail.payment.installmentMonth}}</td>
+                                    </tr>
+                                    <tr>
                                         <td><b>Amount Paid</b></td>
                                         <td style="color: #12B76A;">{{paymentDetail.payment.amount}}</td>
                                     </tr>
@@ -150,19 +148,17 @@
                                         <td><b>Route Id</b></td>
                                         <td>{{paymentDetail.payment.region}}</td>
                                     </tr>
-                                    </tbody>
-                                    
-                                </table>
+                                </tbody>
+                            </table>
                             <div class="botton-div d-flex justify-content-center">
-                                <button type="button" class="btn1 px-3 py-1" (click)="cancel()" >Cancel</button>
+                                <button type="button" class="btn1 px-3 py-1" (click)="cancel()">Cancel</button>
 
-                                <button class="btn2 px-3 py-1" (click)="delete(paymentDetail.payment._id)" *ngIf="canDelete">Cancel Bill</button>
-
+                                <button class="btn2 px-3 py-1" (click)="delete(paymentDetail.payment._id)"
+                                    *ngIf="canDelete">Cancel Bill</button>
                             </div>
-                         
                         </div>
-                       </div>
                     </div>
+                </div>
             </div>
         </div>
 

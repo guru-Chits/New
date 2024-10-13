@@ -75,16 +75,10 @@ export class ChitCreateComponent {
       addChitSubscribers: new FormControl([])
     });
     this.collectionTypeForm = new FormGroup({
-      collectionType: new FormControl(''),
+      collectionType: new FormControl('',[Validators.required]),
     });
 
-    this.settings.getAllCollection().subscribe(
-      (data)=>{
-        this.collectionTypes=data
-        this.collectionTypes=this.collectionTypes.res
-        console.log(this.collectionTypes,"Collection Type");
-      }
-    )
+
     const today = new Date().toISOString().split('T')[0];
     this.currentDate = today;
     const FirstChitDate = new Date()
@@ -224,8 +218,15 @@ export class ChitCreateComponent {
   
   onButtonClick(id: string): void {
     this.getSubscribersById(id);
+    this.collectionTypeForm.reset()
     this.listId=id
-
+    this.settings.getAllCollection().subscribe(
+      (data)=>{
+        this.collectionTypes=data
+        this.collectionTypes=this.collectionTypes.res
+        console.log(this.collectionTypes,"Collection Type");
+      }
+    )
     if (this.subscriberDetail && this.subscriberDetail.id === id) {
       // If the same subscriber is clicked, toggle off the details
       this.subscriberDetail = null;
@@ -253,7 +254,7 @@ export class ChitCreateComponent {
   }
   
   addSelectedSubscriber(subscriber: any): void {
-    debugger
+    
     if(this.listId==subscriber)
     {
       if (this.currentListType === 'chit') {
@@ -266,7 +267,7 @@ export class ChitCreateComponent {
     }
     // this.closeSubscriberList();
     this.subscriberDetail=null
-
+   
   }
   viewMore() {
     if (!this.showall) {

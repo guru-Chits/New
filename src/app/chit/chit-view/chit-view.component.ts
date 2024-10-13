@@ -7,6 +7,8 @@ import { AuthService } from '../../shared/service/auth.service';
 import { SubscriberService } from '../../subscriber/shared/service/subscriber.service';
 import { CellClickedEvent, ColDef } from 'ag-grid-community';
 import { Subscriber } from 'rxjs';
+import { ServiceService } from '../../settings/shared/service.service';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 @Component({
   selector: 'app-chit-view',
   templateUrl: './chit-view.component.html',
@@ -56,7 +58,10 @@ export class ChitViewComponent implements OnInit{
   showAdditionalGrid: boolean;
   showAddSubButton: boolean;
   addPayment:any
-  constructor(private activatedRoute:ActivatedRoute,private router:Router, private service: ChitService,private paymentService:PaymentService,private authService:AuthService, private subservice:SubscriberService){}
+  collectionTypeForm: FormGroup
+  collectionTypes: any;
+
+  constructor(private activatedRoute:ActivatedRoute,private router:Router, private service: ChitService,private paymentService:PaymentService,private authService:AuthService, private subservice:SubscriberService, private settings: ServiceService){}
 
   getAllChit(){
     this.service.getAllChit().subscribe((data)=>{
@@ -83,6 +88,10 @@ export class ChitViewComponent implements OnInit{
         this.canCreate=true
       }
     })
+    this.collectionTypeForm = new FormGroup({
+      collectionType: new FormControl('',[Validators.required]),
+    });
+
     this.activatedRoute?.params.subscribe(paramData => {
       if (Object.keys(paramData).length) {
       this.service.getChitById(paramData.id).subscribe((data) => {
@@ -285,7 +294,14 @@ export class ChitViewComponent implements OnInit{
   onButtonClick(id: string): void {
     this.getSubscribersById(id);
     this.listId=id
-
+    this.collectionTypeForm.reset()
+    this.settings.getAllCollection().subscribe(
+      (data)=>{
+        this.collectionTypes=data
+        this.collectionTypes=this.collectionTypes.res
+        console.log(this.collectionTypes,"Collection Type");
+      }
+    )
     if (this.subscriberDetail && this.subscriberDetail.id === id) {
       // If the same subscriber is clicked, toggle off the details
       this.subscriberDetail = null;

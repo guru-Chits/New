@@ -307,9 +307,12 @@
                                     <form [formGroup] = "collectionTypeForm">
                                       <div class="form-group">
                                         <select class="form-control form-control-sm form-select" formControlName="collectionType"  placeholder = "select type"> 
-                                            <option value="">Select Type</option> 
+                                         
                                           <option *ngFor="let type of collectionTypes" [value]="type.collectionType">{{ type.collectionType }}</option>        
                                       </select>
+                                      <div *ngIf="collectionTypeForm.get('collectionType').invalid && collectionTypeForm.get('collectionType').touched">
+                                        <small class="text-danger">collectionType is required</small>
+                                      </div>
                                     </div>
                                   </form>
         
@@ -318,7 +321,7 @@
                               </tbody>
                             </table>
                             <div class="text-center mb-2">
-                              <button class="btn clear-btn" (click)="addSelectedSubscriber(subscriberDetail.Subscriber._id)">Add to Group</button>
+                              <button class="btn clear-btn" (click)="addSelectedSubscriber(subscriberDetail.Subscriber._id)"[disabled]="!collectionTypeForm.valid" >Add to Group</button>
                             </div>
                           </div>
                         </div>

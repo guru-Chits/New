@@ -140,16 +140,17 @@
     <div class="col-lg-4">
       <app-auction-sidebar [dataFromParent]="showChitDetails" (dataToParent)="recieveChildBoolean($event)"></app-auction-sidebar>
       <div class="chit-details" *ngIf="showChitDetails">
-        <div class="card d-flex py-4 mt-2">
+        <!-- <div class="card d-flex py-4 mt-2">
+
             <h5 class="title text-center fw-bold fs-4 m-0">Chit Group {{selectedChit}}</h5>
-            <table class="table mt-2 d-flex">
+            <table class="table mt-2">
                 <tbody>
                   <tr>
                     <td class="py-3"><strong>Group ID </strong></td>
                     <td><a href="">{{specificChitData?.chitGroupId}}</a></td>
                   </tr>
                   <tr>
-                    <td class="py-3"><strong>Auction Completion Count </strong></td>
+                    <td class="py-3"><strong>Auction Completion Count</strong></td>
                     <td>{{bidHistory.length}}</td>
                   </tr>
                   <tr>
@@ -161,11 +162,15 @@
                     <td>{{chitSubscriberTotal}}</td>
                   </tr>
                   <tr>
-                    <td class="py-3"><strong>Additional Wallet Balance</strong></td>
+                    <td><strong>Additional Wallet Balance</strong></td>
                     <td>{{addSubscriberTotal}}</td>
                   </tr>
                   <tr>
-                    <td class="py-3"><strong>Redeemabale Balance</strong></td>
+                    <td class="py-3"><strong>Latest Winning Bid</strong></td>
+                    <td>{{addSubscriberTotal}}</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Redeemabale Balance</strong></td>
                     <td>56000</td>
                   </tr>
                   <tr>
@@ -175,7 +180,6 @@
                 </tbody>
               </table>
               <div class="mb-2">
-                <!-- <button class="btn clear-btn"  (click)="addToGroup(subscriberDetail.Subscriber._id)">Add to Group</button> <td>{{subscriberDetail.Subscriber.aliasName}} </td> -->
                  <div class=" d-flex justify-content-center">
                   <div class="me-1">
                     <button class="btn view-btn" (click)="navigate(specificChitData?._id)">View More Details</button>
@@ -187,7 +191,66 @@
               
                 </div>                
             </div>   
-        </div>
+        </div> -->
+        <div class="card d-flex py-4 mt-2">
+          <h5 class="title text-center fw-bold fs-4 m-0">Chit Group {{selectedChit}}</h5>
+          
+          <!-- Table with equal width columns -->
+          <div class="table-responsive">
+              <table class="table mt-2 w-100">
+                  <tbody>
+                      <tr>
+                          <td class="py-3" style="width: 50%;"><strong>Group ID</strong></td>
+                          <td style="width: 50%;"><a href="">{{specificChitData?.chitGroupId}}</a></td>
+                      </tr>
+                      <tr>
+                          <!-- <td class="py-3" style="width: 50%;"><strong>Auction Completion Count</strong></td> -->
+                          <td class="py-3" style="width: 50%;"><strong>Auction Completion</strong> <br><strong>Count</strong></td>  
+                          <td class="text-center" style="width: 50%;">{{bidHistory.length}}</td>
+                      </tr>
+                      <tr>
+                          <!-- <td class="py-3" style="width: 50%;"><strong>Prized Subscriber Count</strong></td> -->
+                          <td class="py-3" style="width: 50%;"><strong>Prized Subscriber</strong> <br><strong>Count</strong></td>                        
+                          <td class="text-center" style="width: 50%;" >{{prizedSubsCount}}</td>
+                      </tr>
+                      <tr>
+                          <td class="py-3" style="width: 50%;"><strong>Wallet Balance</strong></td>
+                          <td class="text-center" style="width: 50%;">{{chitSubscriberTotal}}</td>
+                      </tr>
+                      <tr>
+                        <td class="py-3" style="width: 50%;"><strong>Additional Wallet</strong> <br><strong>Balance</strong></td>  
+                          <!-- <td class="py-3" style="width: 50%;"><strong>Additional Wallet Balance</strong></td> -->
+                          <td class="text-center" style="width: 50%;">{{addSubscriberTotal}}</td>
+                      </tr>
+                      <tr>
+                          <td class="py-3" style="width: 50%;"><strong>Latest Winning Bid</strong></td>
+                          <td class="text-center" style="width: 50%;">{{latestWinningBid}}</td>
+                      </tr>
+                      <tr>
+                          <td class="py-3" style="width: 50%;"><strong>Redeemable Balance</strong></td>
+                          <td class="text-center" style="width: 50%;">56000</td>
+                      </tr>
+                      <tr>
+                        <td class="py-3" style="width: 50%;"><strong>Phantom Entry</strong> <br><strong>Amount</strong></td>  
+                          <!-- <td class="py-3" style="width: 50%;"><strong>Phantom Entry Amount</strong></td> -->
+                          <td class="text-center" style="width: 50%;">45000</td>
+                      </tr>
+                  </tbody>
+              </table>
+          </div>
+      
+          <div class="mb-2">
+              <div class="d-flex justify-content-center">
+                  <div class="me-1">
+                      <button class="btn view-btn" (click)="navigate(specificChitData?._id)">View More Details</button>
+                  </div>
+                  <div class="ms-1">
+                      <button type="button" class="btn auc-btn fw-bold" (click)="auctionEntry(specificChitData?._id)">Auction Entry</button>
+                  </div>
+              </div>                
+          </div>   
+      </div>
+      
       </div>
     </div>  
   </div> 

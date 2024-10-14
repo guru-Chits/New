@@ -6,3 +6,22 @@ margin-top: 20px;
 margin-bottom: 20px;
 background-color: #ECEBF5; 
 }
+
+/* Styling for the sidebar toggle button */
+.menu-btn {
+    cursor: pointer;
+    position: absolute;
+    top: 60px;
+    left: 10px;
+    z-index: 1000;
+    border: none;
+  }
+  
+  /* Responsive design tweaks */
+  @media (max-width: 768px) {
+    .menu-btn {
+      top: 10px;
+      left: 10px;
+    }
+  }
+  

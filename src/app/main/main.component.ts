@@ -6,9 +6,10 @@ import { Component } from '@angular/core';
   styleUrl: './main.component.css'
 })
 export class MainComponent {
-  sidebarCollapsed = false;
+  isSidebarVisible: boolean = true;
 
+  // Toggle method to show or hide sidebar
   toggleSidebar() {
-    this.sidebarCollapsed = !this.sidebarCollapsed;
+    this.isSidebarVisible = !this.isSidebarVisible;
   }
 }

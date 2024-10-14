@@ -58,8 +58,12 @@ onSubmit(){
         }
 
         else if (role === "Collection Staff") {
+          this.resetPage=false
+
           this.router.navigate(['/payment']);
         } else {
+          this.resetPage=false
+
           this.router.navigate(['/subscriber']);  // Navigate after OTP success
         }
       }
@@ -83,6 +87,9 @@ resetOtp(){
     }
   );
 
+}
+login(){
+  window.location.reload();
 }
 }
 

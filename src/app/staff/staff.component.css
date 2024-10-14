@@ -5,21 +5,22 @@
 .card {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
-.header{
- font-size: 20px;
- font-weight: 700; 
+
+.header {
+  font-size: 20px;
+  font-weight: 700;
 }
-.line{
+
+.line {
   border-left: 4px solid #3E3A97;
-  /* width:200px; */
-  /* padding: 10px; */
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   background-color: white;
   border-radius: 6px;
-  width:90%;
-  height:90%;
+  width: 90%;
+  height: 90%;
 }
-.title{
+
+.title {
   font-size: 18px;
   font-weight: 800;
 }
@@ -32,22 +33,8 @@
 }
 
 .card-text {
-  font-size:22px;
+  font-size: 22px;
   font-weight: 600;
-}
-
-
-
-.table thead th {
-  border-bottom: 2px solid #dee2e6;
-}
-
-.table tbody tr td {
-  vertical-align: middle;
-}
-
-.table tbody tr td a {
-  color: #007bff;
 }
 
 .rounded-circle {
@@ -55,30 +42,32 @@
 }
 
 
-.create{
-background-color: #3E3A97;
-border: none;
-float:right;
+.create {
+  background-color: #3E3A97;
+  border: none;
+  float: right;
 }
 
-.details{
-  
-  td{
+.details {
+
+  td {
     font-size: 15px;
   }
-   a{
+
+  a {
     text-decoration: none;
-   }
-  tr{
-  height: 15px;
   }
-padding-left: 3px;
-/* margin-bottom: 10px; */
+
+  tr {
+    height: 15px;
+  }
+
+  padding-left: 3px;
 }
 
-.view{
+.view {
   border-color: #3E3A97;
-  color:#3E3A97;
+  color: #3E3A97;
   border-radius: 5px;
   font-size: 13px;
 }

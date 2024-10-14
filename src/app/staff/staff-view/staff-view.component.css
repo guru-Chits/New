@@ -1,8 +1,8 @@
-.details-card{
-    border-top: 100px solid #3E3A97;
- }
- .profile-picture-container {
-  /* border-radius: 50%; */
+.details-card {
+  border-top: 100px solid #3E3A97;
+}
+
+.profile-picture-container {
   align-items: left;
   margin-left: 20px;
   margin-top: 2px;
@@ -28,7 +28,7 @@
   border-radius: 50%;
 }
 
-.profile-list-img{
+.profile-list-img {
   width: 30px;
   height: 30px;
   background: transparent;
@@ -49,43 +49,51 @@
   width: 24px;
   height: 24px;
 }
-  .viewBtn{
-    height: 25px;
-    width:90px;
-    font-size: 12px;
-    border: 2px solid #B8B8B8; 
-    text-align: center; 
-    margin-top:4px;
-    background-color: #E8E8E8;
-    border-radius: 5px;
-  }
-  .edit-btn{
-    background-color: #3E3A97;
-    color:white;
-    border: none;
-    border-radius: 3px;
-  }
-.enroll-card{
+
+.viewBtn {
+  height: 25px;
+  width: 90px;
+  font-size: 12px;
+  border: 2px solid #B8B8B8;
+  text-align: center;
+  margin-top: 4px;
+  background-color: #E8E8E8;
+  border-radius: 5px;
+}
+
+.edit-btn {
+  background-color: #3E3A97;
+  color: white;
+  border: none;
+  border-radius: 3px;
+}
+
+.enroll-card {
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-   width:25%;
+  width: 25%;
 }
-.full-card{
+
+.full-card {
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
 }
-.group-name{
-  background-color:  #EEF6F6;
-  padding:12px
+
+.group-name {
+  background-color: #EEF6F6;
+  padding: 12px
 }
-.chit-name{
-  background-color:  #ECEBF5;
-  padding:10px;
+
+.chit-name {
+  background-color: #ECEBF5;
+  padding: 10px;
 }
-.row{
-  p{
-    font-size:13px;
+
+.row {
+  p {
+    font-size: 13px;
   }
-  h6{
-    font-size:14px
+
+  h6 {
+    font-size: 14px
   }
 }
 
@@ -96,7 +104,7 @@
   border: none;
   padding: 5px;
   border-radius: 6px;
-  width:250px;
+  width: 250px;
 }
 
 .search-bar input {
@@ -106,19 +114,20 @@
   padding: 5px;
   flex-grow: 1;
   height: 20px;
-} 
+}
 
-.view-all{
+.view-all {
   border-bottom: 1px solid #B8B8B8;
 }
 
-.view{
+.view {
   border-color: #3E3A97;
-  color:#3E3A97;
+  color: #3E3A97;
   border-radius: 5px;
   font-size: 13px;
   width: 100px;
 }
-.toggle{
-  width:25%;
+
+.toggle {
+  width: 25%;
 }

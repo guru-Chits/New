@@ -10,21 +10,13 @@ export class BreadcrumbComponent {
   @Input() data: any;
   @Output() clickEvent: EventEmitter<void> = new EventEmitter<void>();
   @Output() handleSameRoute: EventEmitter<void> = new EventEmitter<void>();
-  //@Input() set data(dt: any){this.da = dt}
-  constructor(private router: Router) {}
+  constructor(private router: Router) { }
   ngOnInit(): void {
-    console.log(this.data);
   }
 
   updateIfStepChanges(data: any) {
     this.handleSameRoute.emit(data);
-    console.log(data.routerLink);
-    console.log(data);
-    
     this.router.navigate([data.routerLink])
-  
-
-      
   }
 
   onClick(): void {

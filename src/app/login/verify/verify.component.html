@@ -37,7 +37,7 @@
               </div>
               <button type="submit" [disabled]="!verifyForm.valid" class="btn button col-lg-12 col-md-12 mb-3 mt-3" (click)="onSubmit()">Verify</button>
               <div class="mb-2 text-center back">
-                <div routerLink="/login">Back to Login</div>
+                <div (click)="login()">Back to Login</div>
               </div>
               <div class="mt-2 text-center">
                 <div class="otp-title">Didn’t receive any OTP?</div>
@@ -50,8 +50,8 @@
       </div>
     </div>
   </div>
-  <div *ngIf="reset">
-    <app-reset-password [mobileNumber]="mobileNumber" [employeeId]="employeeId" [reset]="resetPage"></app-reset-password>
+  <div *ngIf="resetPage">
+    <app-reset-password [mobileNumber]="mobileNumber" [employeeId]="employeeId"></app-reset-password>
   </div>
 
   

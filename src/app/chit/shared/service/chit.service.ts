@@ -69,7 +69,7 @@ export class ChitService {
     return this.http.get(url)
   }
   getAuctionById(id:any):Observable<any> {
-      let url:string= `${environment.auctionServiceUrl}/chit_management/getchit/${id}`
+      let url:string= `${environment.auctionServiceUrl}/chit_management/getChitbyId/${id}`
   
       return this.http.get(url);
     }

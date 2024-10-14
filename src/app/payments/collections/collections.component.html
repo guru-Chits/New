@@ -1,117 +1,134 @@
-<!-- <form [formGroup]="paymentForm" (ngSubmit)="onSubmit()"> -->
-    <div class="container-fluid d-flex flex-column mb-3">
-   <div class="row">
-   <div [ngClass]="{'col-md-8 col-lg-8': paymentDetail, 'col-md-12 col-lg-12': !paymentDetail}">     
-    <form [formGroup]="collectionForm">
-    <div class="row justify-content-around">
-        <div class="col-lg-4">
-            <div class="form-group">
-                <label for="datetime" class="form-control-label">Date <span class="required" *ngIf="collectionForm.get('date').hasError('required')">*</span></label>
-                <input type="date" class="form-control p-2 form-control-sm" id="datetime" formControlName="date"/>
-                <div *ngIf="collectionForm.get('date')?.hasError('invalidDate') && collectionForm.get('date')?.touched">
-                    <small class="text-danger">Please select valid date.</small>
-                  </div>
-
-            </div>
-        </div>
-        <div class="col-lg-4">
-            <div class="form-group">
-                <label class="form-control-label">Route ID <span class="required" *ngIf="collectionForm.get('routeId').hasError('required')">*</span></label>
-                <select class="form-control form-control-sm form-select" formControlName="routeId" placeholder="Route ID">
-                    <option value="" disabled selected>Route ID</option>
-                    <option *ngFor="let route of routes" [value]="route.routeId">{{route.routeId}}</option>
-                </select>
-            </div>
-        </div>
-        <div class="col-lg-4">
-            <div class="form-group">
-                <label class="form-control-label">Select Staff <span class="required" *ngIf="collectionForm.get('selectedStaff').hasError('required')">*</span></label>
-                <select class="form-control form-control-sm form-select" formControlName="selectedStaff">
-                    <option value="" disabled selected>Staff</option>
-                    <option *ngFor="let staff of selectedStaff" [value]="staff.selectStaff">{{staff.selectStaff}}</option>
-                    </select>
-            </div>
-        </div>
-    </div>
-    <div class="row justify-content-around">
-        <div class="col-lg-4">
-            <div class="form-group">
-                <label for="collectionAmount" class="form-control-label">Collection Amount <span class="required" *ngIf="collectionForm.get('collectionAmount').hasError('required')">*</span></label>
-                <input class="form-control p-2 form-control-sm" id="collectionAmount" formControlName="collectionAmount" placeholder="Collection Amount" readonly/>
-            </div>
-        </div>
-        <div class="col-lg-4">
-            <div class="form-group">
-                <label for="amountCollected" class="form-control-label">Amount Collected <span class="required" *ngIf="collectionForm.get('amountCollected').hasError('required')">*</span></label>
-                <input class="form-control p-2 form-control-sm" id="amountCollected" formControlName="amountCollected" placeholder="Amount Collected"/>
-            </div>
-        </div>
-        <div class="col-lg-4">
-            <div class="form-group">
-                <label for="balanace" class="form-control-label">Balance <span class="required" *ngIf="collectionForm.get('balance').hasError('required')">*</span></label>
-                <input class="form-control p-2 form-control-sm" id="balance" formControlName="balance" placeholder="Balance" readonly/>
-            </div>
-        </div>
-    </div>
+<div class="container-fluid d-flex flex-column mb-3">
     <div class="row">
-        <div class="col-lg-4">
-            <div class="form-group">
-                <label for="serialNumberCount" class="form-control-label">Serial Number Count <span class="required" *ngIf="collectionForm.get('serialNumberCount').hasError('required')">*</span></label>
-                <input class="form-control p-2 form-control-sm" id="serialNumberCount" formControlName="serialNumberCount" placeholder="Serial Number Count" readonly/>
-            </div>
-        </div>
-        <div class="col-lg-4">
-            <div class="form-group">
-                <label class="form-control-label">Verified By <span class="required" *ngIf="collectionForm.get('verifiedBy').hasError('required')">*</span></label>
-                <select class="form-control form-control-sm form-select" formControlName="verifiedBy">
-                    <option value="" disabled selected>Select Staff</option>
-                    <option [value]="staffs">{{staffs}}</option>
-                    </select>
-            </div>
-        </div>   
-    </div>
-    <div class="row">
-        <div class="col-lg-12 d-flex justify-content-end py-3">
-            <button class="btn next-btn px-4 py-3 fw-bold"  type="submit"   (click)="onSubmit()">Verify and Submit</button>
-        </div>
-    </div>
-</form>
-<div class="row">
-    <div class="col-lg-5 ms-6">
-      <div class="form-check form-switch">
-        <!-- Switch Checkbox -->
-        <input type="checkbox" class="form-check-input" id="paymentSwitch"  (change)="togglePayments()">
-        
-        <!-- Label to Display Based on the Toggle State -->
-        <label class="form-check-label" for="paymentSwitch">
-          {{ showCancelledPayments ? 'Cancelled Payments' : 'Available Payments' }}
-        </label>
-      </div>
-    </div>
-  </div>
-<div>
-    <app-ag-grid *ngIf="!showCancelledPayments" [columns]="column" [rowData]="avlData" 
-        class="px-3 mb-3" [searchImg]="searchImg" [filterImg]="filterImg" width="100%" height="340px" 
-        [pageSize]="7" [search]="search">
-    </app-ag-grid>
-    
-    <app-ag-grid *ngIf="showCancelledPayments" [columns]="columnCancelled" [rowData]="canData"
-        class="px-3 mb-3" [searchImg]="searchImg" [filterImg]="filterImg" width="100%" height="340px"
-        [pageSize]="7" [search]="search">
-    </app-ag-grid>
-    </div>
-</div>
+        <div [ngClass]="{'col-md-8 col-lg-8': paymentDetail, 'col-md-12 col-lg-12': !paymentDetail}">
+            <form [formGroup]="collectionForm">
+                <div class="row justify-content-around">
+                    <div class="col-lg-4">
+                        <div class="form-group">
+                            <label for="datetime" class="form-control-label">Date <span class="required"
+                                    *ngIf="collectionForm.get('date').hasError('required')">*</span></label>
+                            <input type="date" class="form-control p-2 form-control-sm" id="datetime"
+                                formControlName="date" />
+                            <div
+                                *ngIf="collectionForm.get('date')?.hasError('invalidDate') && collectionForm.get('date')?.touched">
+                                <small class="text-danger">Please select valid date.</small>
+                            </div>
 
-    <div class="col-lg-4">
-        <div *ngIf="paymentDetail">
-            <div class="card">
-    
-                <div class="card-body">
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="form-group">
+                            <label class="form-control-label">Route ID <span class="required"
+                                    *ngIf="collectionForm.get('routeId').hasError('required')">*</span></label>
+                            <select class="form-control form-control-sm form-select" formControlName="routeId"
+                                placeholder="Route ID">
+                                <option value="" disabled selected>Route ID</option>
+                                <option *ngFor="let route of routes" [value]="route.routeId">{{route.routeId}}</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="form-group">
+                            <label class="form-control-label">Select Staff <span class="required"
+                                    *ngIf="collectionForm.get('selectedStaff').hasError('required')">*</span></label>
+                            <select class="form-control form-control-sm form-select" formControlName="selectedStaff">
+                                <option value="" disabled selected>Staff</option>
+                                <option *ngFor="let staff of selectedStaff" [value]="staff.selectStaff">
+                                    {{staff.selectStaff}}</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="row justify-content-around">
+                    <div class="col-lg-4">
+                        <div class="form-group">
+                            <label for="collectionAmount" class="form-control-label">Collection Amount <span
+                                    class="required"
+                                    *ngIf="collectionForm.get('collectionAmount').hasError('required')">*</span></label>
+                            <input class="form-control p-2 form-control-sm" id="collectionAmount"
+                                formControlName="collectionAmount" placeholder="Collection Amount" readonly />
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="form-group">
+                            <label for="amountCollected" class="form-control-label">Amount Collected <span
+                                    class="required"
+                                    *ngIf="collectionForm.get('amountCollected').hasError('required')">*</span></label>
+                            <input class="form-control p-2 form-control-sm" id="amountCollected"
+                                formControlName="amountCollected" placeholder="Amount Collected" />
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="form-group">
+                            <label for="balanace" class="form-control-label">Balance <span class="required"
+                                    *ngIf="collectionForm.get('balance').hasError('required')">*</span></label>
+                            <input class="form-control p-2 form-control-sm" id="balance" formControlName="balance"
+                                placeholder="Balance" readonly />
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-4">
+                        <div class="form-group">
+                            <label for="serialNumberCount" class="form-control-label">Serial Number Count <span
+                                    class="required"
+                                    *ngIf="collectionForm.get('serialNumberCount').hasError('required')">*</span></label>
+                            <input class="form-control p-2 form-control-sm" id="serialNumberCount"
+                                formControlName="serialNumberCount" placeholder="Serial Number Count" readonly />
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="form-group">
+                            <label class="form-control-label">Verified By<span class="required"
+                                    *ngIf="collectionForm.get('verifiedBy').hasError('required')">*</span></label>
+                            <select class="form-control form-control-sm form-select" formControlName="verifiedBy">
+                                <option value="" disabled selected>Select Staff</option>
+                                <option [value]="staffs">{{staffs}}</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-12 d-flex justify-content-end py-3">
+                        <button class="btn next-btn px-4 py-3 fw-bold" type="submit" [disabled]="!collectionForm.valid"
+                            (click)="onSubmit()">Verify and Submit</button>
+                    </div>
+                </div>
+            </form>
+            <div class="row">
+                <div class="col-lg-5 ms-6">
+                    <div class="form-check form-switch">
+                        <!-- Switch Checkbox -->
+                        <input type="checkbox" class="form-check-input" id="paymentSwitch" (change)="togglePayments()">
+
+                        <!-- Label to Display Based on the Toggle State -->
+                        <label class="form-check-label" for="paymentSwitch">
+                            {{ showCancelledPayments ? 'Cancelled Payments' : 'Available Payments' }}
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div>
+                <app-ag-grid *ngIf="!showCancelledPayments" [columns]="column" [rowData]="avlData" class="px-3 mb-3"
+                    [searchImg]="searchImg" [filterImg]="filterImg" width="100%" height="340px" [pageSize]="7"
+                    [search]="search" [filter]="filter">
+                </app-ag-grid>
+
+                <app-ag-grid *ngIf="showCancelledPayments" [columns]="columnCancelled" [rowData]="canData"
+                    class="px-3 mb-3" [searchImg]="searchImg" [filterImg]="filterImg" width="100%" height="340px"
+                    [pageSize]="7" [search]="search" [filter]="filter">
+                </app-ag-grid>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div *ngIf="paymentDetail">
+                <div class="card">
+                    <div class="card-body">
                         <h4 class="text-center my-4"><strong>Payments Details</strong></h4>
                         <table class="table p-5">
-                            <tbody >
+                            <tbody>
                                 <tr>
-                                    <td ><b>Time/Timestamp</b></td>
+                                    <td><b>Date</b></td>
                                     <td>{{paymentDetail.payment.date}}</td>
                                 </tr>
                                 <tr>
@@ -127,54 +144,55 @@
                                     <td>{{paymentDetail.payment.passbooknumber}}</td>
                                 </tr>
                                 <tr>
-                                  <td><b>Group Id</b></td>
-                                  <td>{{paymentDetail.payment.groupId}}</td>
+                                    <td><b>Group Id</b></td>
+                                    <td>{{paymentDetail.payment.groupId}}</td>
                                 </tr>
-                              <tr>
-                                  <td><b>Installment Month</b></td>
-                                  <td>{{paymentDetail.payment.installmentMonth}}</td>
+                                <tr>
+                                    <td><b>Installment Month</b></td>
+                                    <td>{{paymentDetail.payment.installmentMonth}}</td>
                                 </tr>
-                              <tr>
-                                <td><b>Amount Paid</b></td>
-                                <td style="color: #12B76A;">{{paymentDetail.payment.amount}}</td>
-                            </tr>
-                            <tr>
-                                <td><b>Subscriber Id</b></td>
-                                <td style="color: #50A1A5">{{paymentDetail.payment.subscriberId}}</td>
-                            </tr>
-                            <tr>
-                                <td><b>Subscriber Name</b></td>
-                                <td>{{paymentDetail.payment.subscriberName}}</td>
-                            </tr>
-                            <tr>
-                                <td><b>Collection Type</b></td>
-                                <td>{{paymentDetail.payment.collectionType}}</td>
-                            </tr>
-                            <tr>
-                                <td><b>Staff Name</b></td>
-                                <td>{{paymentDetail.payment.selectStaff}}</td>
-                            </tr>
-                            <tr>
-                                <td><b>Chit Value</b></td>
-                                <td>{{paymentDetail.payment.chitAmount}}</td>
-                            </tr>
-                            <tr>
-                                <td><b>Route Id</b></td>
-                                <td>{{paymentDetail.payment.region}}</td>
-                            </tr>
+                                <tr>
+                                    <td><b>Amount Paid</b></td>
+                                    <td style="color: #12B76A;">{{paymentDetail.payment.amount}}</td>
+                                </tr>
+                                <tr>
+                                    <td><b>Subscriber Id</b></td>
+                                    <td style="color: #50A1A5">{{paymentDetail.payment.subscriberId}}</td>
+                                </tr>
+                                <tr>
+                                    <td><b>Subscriber Name</b></td>
+                                    <td>{{paymentDetail.payment.subscriberName}}</td>
+                                </tr>
+                                <tr>
+                                    <td><b>Collection Type</b></td>
+                                    <td>{{paymentDetail.payment.collectionType}}</td>
+                                </tr>
+                                <tr>
+                                    <td><b>Staff Name</b></td>
+                                    <td>{{paymentDetail.payment.selectStaff}}</td>
+                                </tr>
+                                <tr>
+                                    <td><b>Chit Value</b></td>
+                                    <td>{{paymentDetail.payment.chitAmount}}</td>
+                                </tr>
+                                <tr>
+                                    <td><b>Route Id</b></td>
+                                    <td>{{paymentDetail.payment.region}}</td>
+                                </tr>
                             </tbody>
-                            
-                        </table>
-                    <div class="botton-div d-flex justify-content-center">
-                        <button type="button" class="btn1 px-3 py-1" (click)="cancel()" >Cancel</button>
 
-                        <button class="btn2 px-3 py-1" (click)="delete(paymentDetail.payment._id)" *ngIf="canDelete">Cancel Bill</button>
+                        </table>
+                        <div class="botton-div d-flex justify-content-center">
+                            <button type="button" class="btn1 px-3 py-1" (click)="cancel()">Cancel</button>
+
+                            <button class="btn2 px-3 py-1" (click)="delete(paymentDetail.payment._id)"
+                                *ngIf="canDelete">Cancel Bill</button>
+
+                        </div>
 
                     </div>
-                 
                 </div>
-               </div>
             </div>
+        </div>
     </div>
 </div>
-    </div>

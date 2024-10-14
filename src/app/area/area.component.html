@@ -31,6 +31,7 @@
                 [searchImg]="searchImg"
                 [filterImg]="filterImg"
                 [search]="search"
+                [filter]="filter"
               ></app-ag-grid>
             </div>
           </div>
@@ -78,8 +79,8 @@
                           
                       </table>
                   <div class="botton-div d-flex justify-content-center">
-                      <button type="button" *ngIf="canEdit" class="btn1 px-3 py-1" (click)="edit(areaDetail.Route._id)">Edit</button>
-                      <button class="btn2 px-3 py-1" *ngIf="canDelete" (click)="delete(routeDetail.Route._id)">Delete</button>
+                      <button type="button" *ngIf="canEdit"  (click)="edit(areaDetail.Route._id)" class="btn1 px-3 py-1" >Edit</button>
+                      <!-- <button class="btn2 px-3 py-1" *ngIf="canDelete">Delete</button> -->
                   </div>
                
               </div>

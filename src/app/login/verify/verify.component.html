@@ -18,7 +18,7 @@
             <div class="card-body">
             <form [formGroup]="verifyForm" class="col-lg-12 col-md-12 d-flex flex-column px-4">
               <div class="mt-1 mb-3 pl-0 sign-in-label">Verify it's you?</div>
-              <div class="mt-1 mb-3 pl-0 sign-in-text">We,ve sent a 6-digit confirmation code to xxxxxxx989. Make sure you enter correct code.</div>
+              <div class="mt-1 mb-3 pl-0 sign-in-text">We,ve sent a 6-digit confirmation code to xxxxxxx {{mob}}. Make sure you enter correct code.</div>
 
               <div class="form-group mb-4 mt-2">
                 <!-- <label for="verifyCode" class="form-control-label">verifyCode</label> -->
@@ -37,11 +37,11 @@
               </div>
               <button type="submit" [disabled]="!verifyForm.valid" class="btn button col-lg-12 col-md-12 mb-3 mt-3" (click)="onSubmit()">Verify</button>
               <div class="mb-2 text-center back">
-                <div routerLink="/login">Back to Login</div>
+                <div (click)="login()">Back to Login</div>
               </div>
               <div class="mt-2 text-center">
                 <div class="otp-title">Didn’t receive any OTP?</div>
-                <div class="otp">Resend OTP</div>
+                <div class="otp" (click)="resetOtp()" style="cursor: pointer;">Resend OTP</div>
               </div>
             </form>
           </div>
@@ -50,8 +50,8 @@
       </div>
     </div>
   </div>
-  <div *ngIf="reset">
-    <app-reset-password [mobileNumber]="mobileNumber" [employeeId]="employeeId" [reset]="resetPage"></app-reset-password>
+  <div *ngIf="resetPage">
+    <app-reset-password [mobileNumber]="mobileNumber" [employeeId]="employeeId"></app-reset-password>
   </div>
 
   

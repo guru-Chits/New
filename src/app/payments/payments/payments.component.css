@@ -1,145 +1,113 @@
-/* @import 'src/global-styles.scss';
-@import 'src/assets/scss/styles.scss'; */
-
-.popup-btn{
+.popup-btn {
   background-color: #50a1a5;
   color: #FFFFFF;
   border: none;
 }
+
 .nav-item .nav-link.active {
   border-color: #3E3A97;
 }
-.next-btn{
-  background-color: #3E3A97;
-  color:#FFFFFF;
-  }
-  .form-group{
-      margin-bottom: 30px;
-  }
-  /* .container-fluid{
-      .card{
-        .card-body{
-          .row{
-            .form-group{
-              .btn-wrapper{
-                img{
-                  transition: transform 0.3s ease;
-                  &:hover{
-                    transform: scale(1.3);
-                  }
-                }
-              }
-              textarea{
-                resize: none;
-              }
-              .form-control-label{
-                img{
-                  transition: transform 0.3s ease;
-                  &:hover{
-                    transform: scale(1.3);
-                  }
-                }
-                color: black;
-              }
-              .form-control{
-                border-radius: 6px;
-                border: 1px solid #A0A0A0;
-                box-shadow: 1px 0px 1px 1px #f0f0f0;
-                background-color: #e8e8e8;
-                ::placeholder{
-                  color: #A0A0A0;
-                }  
 
-                    &.is-invalid {
-                      border-color:  #f5365c;
-                    }
-                    
+.next-btn {
+  background-color: #3E3A97;
+  color: #FFFFFF;
+}
+
+.form-group {
+  margin-bottom: 30px;
+}
+
+.form-control-label {
+  img {
+    transition: transform 0.3s ease;
+
+    &:hover {
+      transform: scale(1.3);
+    }
+  }
+
+  color: black;
+}
+
+.form-control {
+  border-radius: 6px;
+  border: 1px solid #A0A0A0;
+  box-shadow: 1px 0px 1px 1px #f0f0f0;
+  background-color: #e8e8e8;
+
+  ::placeholder {
+    color: #A0A0A0;
+  }
+
+  &.is-invalid {
+    border-color: #f5365c;
+  }
+
+}
+
+button {
+  color: #344054;
+}
+
+.next-btn {
+  background-color: #3E3A97;
+  color: #FFFFFF;
+}
+
+.form-group {
+  margin-bottom: 30px;
+}
+
+.container-fluid {
+  .card {
+    .card-body {
+      .row {
+        .form-group {
+          .btn-wrapper {
+            img {
+              transition: transform 0.3s ease;
+
+              &:hover {
+                transform: scale(1.3);
               }
             }
           }
-        }
-      }
-    
-    } */
-  
 
-.form-control-label{
-img{
-  transition: transform 0.3s ease;
-  &:hover{
-  transform: scale(1.3);
-  }
-}
-color: black;
-}
-.form-control{
-border-radius: 6px;
-border: 1px solid #A0A0A0;
-box-shadow: 1px 0px 1px 1px #f0f0f0;
-background-color: #e8e8e8;
-::placeholder{
-  color: #A0A0A0;
-}  
+          textarea {
+            resize: none;
+          }
 
-  &.is-invalid {
-      border-color:  #f5365c;
-  }
-  
-}
+          .form-control-label {
+            img {
+              transition: transform 0.3s ease;
 
-button{
-    color: #344054;
-}
-.next-btn{
-background-color: #3E3A97;
-color:#FFFFFF;
-}
-.form-group{
-    margin-bottom: 30px;
-}
-.container-fluid{
-    .card{
-      .card-body{
-        .row{
-          .form-group{
-            .btn-wrapper{
-              img{
-                transition: transform 0.3s ease;
-                &:hover{
-                  transform: scale(1.3);
-                }
+              &:hover {
+                transform: scale(1.3);
               }
             }
-            textarea{
-              resize: none;
-            }
-            .form-control-label{
-              img{
-                transition: transform 0.3s ease;
-                &:hover{
-                  transform: scale(1.3);
-                }
-              }
-              color: black;
-            }
-            .form-control{
-              border-radius: 2px;
-              border: 1px solid #A0A0A0;
-              box-shadow: 1px 0px 1px 1px #f0f0f0;
-              background-color: #e8e8e8;
-  
-                  &.is-invalid {
-                    border-color:  #f5365c;
-                  }
+
+            color: black;
+          }
+
+          .form-control {
+            border-radius: 2px;
+            border: 1px solid #A0A0A0;
+            box-shadow: 1px 0px 1px 1px #f0f0f0;
+            background-color: #e8e8e8;
+
+            &.is-invalid {
+              border-color: #f5365c;
             }
           }
         }
       }
     }
-  
   }
-  .required{
-    color:red;
-    font-size: 13px;
-
-  }
+}
+.required {
+  color: red;
+  font-size: 13px;
+}
+.man {
+  background-color: white;
+}

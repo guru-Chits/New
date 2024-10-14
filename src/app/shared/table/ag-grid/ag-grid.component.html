@@ -1,60 +1,49 @@
 <div class="container">
+  <div *ngIf="search" class="search-filter-container mb-3">
+    <div class="search-box" [ngStyle]="{'background-color': bg}">
+      <span class="search-icon"><img src="{{searchImg}}"></span>
+      <input width="20" height="20" type="text" id="filter-text-box" placeholder="Search"
+        (input)="onFilterTextBoxChanged()" [ngStyle]="{'background-color': bg}" />
+    </div>
+    <button class="filter-button" *ngIf="filter" [ngStyle]="{'background-color': bg}" (click)="filterTableData($event)">
+      <img src="{{filterImg}}">
+    </button>
+    <div class="popup model shadow-lg p-3 mb-5  mt-8 bg-white rounded" *ngIf="showFilter">
+      <div *ngIf="displayedFields.length > 0; else noData">
+        <div *ngFor="let field of displayedFields" class="popup-content">
+          <div class="toggle-container d-flex" (click)="toggleFilter(field)">
+            <span>
+              <h6>{{ field }}</h6>
+            </span>
+            <img src="assets/table/down-arrow.png" alt="toggle" class="toggle-btn mt-1 "
+              [class.rotated]="isFilterShown(field)">
 
- <div *ngIf="search" class="search-filter-container mb-3">
-      <div class="search-box"  [ngStyle]="{'background-color': bg}">
-        <span class="search-icon" ><img src="{{searchImg}}"></span>
-        <input  width="20" height="20"  type="text"   
-        id="filter-text-box"
-        placeholder="Search"
-        (input)="onFilterTextBoxChanged()"
-        [ngStyle]="{'background-color': bg}"
-        />
-      </div>
-        <button class="filter-button"  [ngStyle]="{'background-color': bg}"  (click)="filterTableData($event)" >
-        <img src="{{filterImg}}">
-       </button >
-       <div class="popup model shadow-lg p-3 mb-5  mt-8 bg-white rounded" *ngIf="showFilter">
-        <div *ngIf="displayedFields.length > 0; else noData">
-          <div *ngFor="let field of displayedFields" class="popup-content">
-            <div class="toggle-container d-flex" (click)="toggleFilter(field)">
-              <span><h6>{{ field }}</h6></span>
-              <img src="assets/table/down-arrow.png" alt="toggle" class="toggle-btn mt-1 " [class.rotated]="isFilterShown(field)">
-      
+          </div>
+          <div class="filter-options ml-5" *ngIf="isFilterShown(field)">
+            <div class="filter-item" *ngFor="let value of filterList[field]?.values">
+              <label>{{ value }}</label>
+              <input type="checkbox" id="check" [value]="value" class="mr-1"
+                (change)="handleCheckboxChange(field, value, $event)"
+                [checked]="filterList[field]?.selectedValues.includes(value)" />
             </div>
-            <div class="filter-options ml-5" *ngIf="isFilterShown(field)">
-              <div class="filter-item" *ngFor="let value of filterList[field]?.values">
-                <label>{{ value }}</label>
-                <input type="checkbox" id="check" [value]="value" class="mr-1" (change)="handleCheckboxChange(field, value, $event)" [checked]="filterList[field]?.selectedValues.includes(value)"/>
-              </div>
-            </div>
-            
           </div>
         </div>
-        
-        <ng-template #noData>
-          <div class="text-center mt-3">No Column found</div>
-        </ng-template>
-      
-        <div class="popup-actions mt-3">
-          <button class="apply-filters" (click)=" applyFilters()">Apply Filters</button>
-          <button class="clear-filters" (click)="clearFilters()">Clear Filters</button>
-        </div>
-      
-        <div [ngClass]="{'dull-background': showPopup}"></div>
       </div>
-    </div>  
+      <ng-template #noData>
+        <div class="text-center mt-3">No Column found</div>
+      </ng-template>
+      <div class="popup-actions mt-3">
+        <button class="apply-filters" (click)=" applyFilters()">Apply Filters</button>
+        <button class="clear-filters" (click)="clearFilters()">Clear Filters</button>
+      </div>
 
-  <ag-grid-angular 
-    [rowData]="rowData"
-    [columnDefs]="columns"
-    class="ag-theme-balham custom-grid"
-    [ngStyle]="{ 'width': width, 'height': height }"
-    [defaultColDef]="defaultColDef"
-    (gridReady)="onGridReady($event)"
-    [pagination]="true"
-    [gridOptions]="gridOptions"
-    [gridOptions]="gridOption"
-    >
+      <div [ngClass]="{'dull-background': showPopup}"></div>
+    </div>
+  </div>
+
+  <ag-grid-angular [rowData]="rowData" [columnDefs]="columns" class="ag-theme-balham custom-grid"
+    [ngStyle]="{ 'width': width, 'height': height }" [defaultColDef]="defaultColDef" (gridReady)="onGridReady($event)"
+    [pagination]="true" [gridOptions]="gridOptions" [gridOptions]="gridOption">
   </ag-grid-angular>
 
 

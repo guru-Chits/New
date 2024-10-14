@@ -1,4 +1,3 @@
-/* @import "~@ng-select/ng-select/themes/default.theme.css"; */
 .custom-country-code {
   background-color: white;
   border-right: 0;
@@ -6,112 +5,116 @@
 
 input[type="number"]::-webkit-outer-spin-button,
 input[type="number"]::-webkit-inner-spin-button {
-  -webkit-appearance: none; /* Disable number input spinner in Chrome */
+  -webkit-appearance: none;
   margin: 0;
 }
+
 .custom-country-code {
   background-color: white;
-  font-size: 0.9em;  /* Makes the text a bit smaller */
-  padding: 5px 10px; /* Adjusts padding for better sizing */
+  font-size: 0.9em;
+  padding: 5px 10px;
   border-right: 0;
-  border-radius: 0;   /* Removes any border-radius if input group has rounded corners */
-  line-height: 1.5;   /* Keeps the text vertically centered */
+  border-radius: 0;
+  line-height: 1.5;
 }
 
 .form-group {
-    .invalid-feedback {
-      color: red;
-      display: block;
-    }
-    .form-control-label {
-      color: black;
-      font-size: 13px;
-      font-weight: 500;
-      padding-bottom: 5px;
-    }
-    
-
-    .form-control {
-      color: black;
-      background-color: #FAFAFA;
-       /* width: 280px; */
-      height:30px; 
-      border:1px solid #B8B8B8;
-      margin-bottom: 8px;
-      /* text-align: center; */
-      gap: 0px;
-      border-radius: 5px;
-      opacity: 0px;
-        
-  .eyebtn-opacity{
-    pointer-events: none;
-    
+  .invalid-feedback {
+    color: red;
+    display: block;
   }
-      &.is-invalid {
+
+  .form-control-label {
+    color: black;
+    font-size: 13px;
+    font-weight: 500;
+    padding-bottom: 5px;
+  }
+
+
+  .form-control {
+    color: black;
+    background-color: #FAFAFA;
+    /* width: 280px; */
+    height: 30px;
+    border: 1px solid #B8B8B8;
+    margin-bottom: 8px;
+    /* text-align: center; */
+    gap: 0px;
+    border-radius: 5px;
+    opacity: 0px;
+
+    .eyebtn-opacity {
+      pointer-events: none;
+
+    }
+
+    &.is-invalid {
+      border-color: red;
+    }
+  }
+
+  .input-group {
+    border-radius: 0;
+
+    &.is-invalid {
+      .form-control {
         border-color: red;
       }
-    }
-  
-    .input-group {
-      border-radius: 0;
-      &.is-invalid {
-        .form-control {
-          border-color: red;
-        }
-  
-        .input-group-text {
-          border-color: red;
-          border-radius: 0;
-        }
-  
-        .invalid-feedback {
-          display: block;
-          text-align: left;
-        }
+
+      .input-group-text {
+        border-color: red;
+        border-radius: 0;
+      }
+
+      .invalid-feedback {
+        display: block;
+        text-align: left;
       }
     }
-  
-    .input-group-text {
-      background-color:black;
-      border-top-right-radius: 0.375rem !important;
-      border-bottom-right-radius: 0.375rem !important;
-    }
-  
-    .invalid-feedback {
-      color: red;
-    }
   }
 
-  .viewBtn{
-    height: 25px;
-    width:90px;
-    font-size: 12px;
-    border: 2px solid #B8B8B8; 
-    text-align: center; 
-    margin-top:4px;
-    background-color: #E8E8E8;
-    border-radius: 5px;
-  }
-  .removeBtn{
-    height: 25px;
-    width:90px;
-    border-radius: 5px;
-    font-size: 11px;
-    border: 2px solid red;
-    text-align: center; 
-    margin-left: 10px;
-    background-color: #FAC5C1;
-    margin-top:4px;
+  .input-group-text {
+    background-color: black;
+    border-top-right-radius: 0.375rem !important;
+    border-bottom-right-radius: 0.375rem !important;
   }
 
-
-
-
-  .form-card{
-border-top: 100px solid #3E3A97;
+  .invalid-feedback {
+    color: red;
   }
+}
 
-  /* profile-picture-upload.component.css */
+.viewBtn {
+  height: 25px;
+  width: 90px;
+  font-size: 12px;
+  border: 2px solid #B8B8B8;
+  text-align: center;
+  margin-top: 4px;
+  background-color: #E8E8E8;
+  border-radius: 5px;
+}
+
+.removeBtn {
+  height: 25px;
+  width: 90px;
+  border-radius: 5px;
+  font-size: 11px;
+  border: 2px solid red;
+  text-align: center;
+  margin-left: 10px;
+  background-color: #FAC5C1;
+  margin-top: 4px;
+}
+
+
+
+
+.form-card {
+  border-top: 100px solid #3E3A97;
+}
+
 .profile-picture-container {
   border-radius: 50%;
   align-items: left;
@@ -132,18 +135,17 @@ border-top: 100px solid #3E3A97;
   height: 100px;
   overflow: scroll;
   border-radius: 50%;
-
-  /* border: 2px solid #ccc; */
   background: transparent;
-  /* border-radius: 50%; */
 }
-.profile-list-img{
+
+.profile-list-img {
   width: 30px;
   height: 30px;
   background: transparent;
   border-radius: 50%;
 
 }
+
 .upload-button {
   position: absolute;
   bottom: 10px;
@@ -164,42 +166,42 @@ h2 {
 }
 
 
-.nxt-btn{
+.nxt-btn {
   border-color: #3E3A97;
-  color:#3E3A97;
+  color: #3E3A97;
 }
-.save-btn{
+
+.save-btn {
   background-color: #3E3A97;
-  color:white;
+  color: white;
   border: none;
   margin-left: 10px;
 }
-.details{
-    
-  td{
+
+.details {
+
+  td {
     font-size: 15px;
   }
-   a{
+
+  a {
     text-decoration: none;
-   }
-  tr{
-  height: 15px;
   }
-padding-left: 3px;
-/* margin-bottom: 10px; */
+
+  tr {
+    height: 15px;
+  }
+
+  padding-left: 3px;
+  /* margin-bottom: 10px; */
 }
 
-.view{
+.view {
   border-color: #3E3A97;
-  color:#3E3A97;
+  color: #3E3A97;
   border-radius: 5px;
   font-size: 13px;
 }
-
-/* Form styles can be added here */
-/* .container {
-  margin: 20px;
-} */
 
 .search-bar {
   margin-bottom: 20px;
@@ -207,10 +209,10 @@ padding-left: 3px;
 
 .subscriber-table {
   width: 100%;
-  /* border-collapse: collapse; */
 }
 
-.subscriber-table th, .subscriber-table td {
+.subscriber-table th,
+.subscriber-table td {
   border: 1px solid #ddd;
   padding: 8px;
 }
@@ -230,16 +232,19 @@ padding-left: 3px;
   border-radius: 50%;
   border: 2px solid #dee2e6;
 }
-.viewbtn{
-  border:none;
+
+.viewbtn {
+  border: none;
   font-size: 9px;
-  color:#50A1A5;
+  color: #50A1A5;
   background: transparent;
 }
-.text{
+
+.text {
   font-size: 10px;
 }
-.view-all{
+
+.view-all {
   background-color: #ECEBF5;
 }
 
@@ -250,7 +255,7 @@ padding-left: 3px;
   background-color: #ECEBF5;
   border: none;
   padding: 5px;
-  width:220px;
+  width: 220px;
 }
 
 .search-bar input {
@@ -260,7 +265,8 @@ padding-left: 3px;
   padding: 5px;
   flex-grow: 1;
   height: 20px;
-} 
+}
+
 .invalid-feedback {
   color: red;
   display: block;
@@ -269,9 +275,11 @@ padding-left: 3px;
 .form-control.ng-invalid.ng-touched {
   border-color: red;
 }
-.required{
-  color:red;
+
+.required {
+  color: red;
 }
+
 .form-group .form-control:focus {
   outline: none;
   box-shadow: none;

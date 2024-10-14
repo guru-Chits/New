@@ -45,7 +45,7 @@ export class ResetPasswordComponent implements OnInit {
    * Check if the password is reset
    */
   isPasswordReset: boolean = false;
-
+  login:boolean=false
 
   passwordPattern: RegExp = /^(?=.*[!@#$%^&*(),.?":{}|<>])(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$/;
 
@@ -124,7 +124,7 @@ onSubmit(){
   }
 }
 navigateToLoginPage(): void {
-  this.router.navigate(["/login"]);
+  window.location.reload();
 }
 
 }

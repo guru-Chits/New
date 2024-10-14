@@ -32,7 +32,7 @@ export class RegionCreateComponent implements OnInit{
   canCreate:boolean=false
   canDelete:boolean=false
   canEdit:boolean=false
-
+  filter:boolean=true
   breadcrumsData:any = [
     {
       key: 'Route Manager',
@@ -86,8 +86,8 @@ export class RegionCreateComponent implements OnInit{
       regionDesc: new FormControl(null, [
         Validators.required,
         Validators.minLength(10),
-        Validators.maxLength(100),
-        Validators.pattern('^[a-zA-Z0-9 ,.!?-]+$') // Valid characters including letters, numbers, and common punctuation
+        // Validators.maxLength(100),
+        // Validators.pattern('^[a-zA-Z0-9 ,.!?-]+$') // Valid characters including letters, numbers, and common punctuation
       ]),
       status: new FormControl(null) // Assuming you might add validation later or leave as is
     });

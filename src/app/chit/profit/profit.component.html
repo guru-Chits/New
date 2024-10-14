@@ -31,8 +31,8 @@
   <div class="row justify-content-around">
     <div class="col-lg-4">
       <div class="form-group">
-        <label for="winningBid" class="form-control-label">Winning Bid</label>
-        <input type="text" placeholder="Winning Bid" class="form-control form-control-sm" formControlName="winningBid" (change)="getRouteNameValue()"/>
+        <label for="winningBid" class="form-control-label">Winning Bid</label> 
+        <input type="text" placeholder="Winning Bid" class="form-control form-control-sm man" formControlName="winningBid" (change)="getRouteNameValue()"/>
       </div>
       </div>
 
@@ -47,7 +47,7 @@
     <div class="col-lg-4">
       <div class="form-group">
         <label for="ticketId" class="form-control-label">Ticket Id</label>
-        <input type="text" placeholder="Ticket Id" class="form-control form-control-sm" formControlName="ticketId"
+        <input type="text" placeholder="Ticket Id" class="form-control form-control-sm man" formControlName="ticketId"
         [ngClass]="{'is-invalid': profitForm.get('ticketId')?.invalid && profitForm.get('ticketId')?.touched}"
          />
          <div *ngIf="profitForm.get('ticketId')?.hasError('ticketExists')" class="invalid-feedback">
@@ -91,7 +91,8 @@
       <div class="form-check form-switch">
         <input class="form-check-input" type="checkbox" formControlName="auctionStart" role="switch" id="flexSwitchCheckChecked"  (change)="toggleFormControls()" >
         <label class="form-check-label" for="flexSwitchCheckChecked">Auction Status</label>
-      </div>                       
+      </div>   
+                       
     </div>
     <div class="col-lg-3">
       <button class="btn btn-primary px-2 py-2">Redeem TKN A/C</button>

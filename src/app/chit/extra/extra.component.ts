@@ -44,9 +44,11 @@ export class ExtraComponent implements OnInit {
     }
   );
   
+  
     console.log(this.chitData.chitSubscribers.length);
     
     const groupId=this.chitData?.chitGroupId
+
 
     this.paymentService.getAddWallet(groupId).subscribe((response)=>{
       this.addWalletBalance=response
@@ -196,6 +198,7 @@ amountLessThanOrEqualChitAmount(ticketIdControl: string) {
           winningBid: '',
           prizedAmount: ''
         });
+        
         });
   
   

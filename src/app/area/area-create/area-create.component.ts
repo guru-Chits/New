@@ -23,6 +23,7 @@ export class AreaCreateComponent implements OnInit{
   displayedRoute:any
   buttonTxt:string="Submit"
   selectedRegionId: String =''
+  filter:boolean=true
   selectedRouteName: String =''
   selectedRegionName: String=''
   generatedRouteID: String=''
@@ -86,10 +87,7 @@ export class AreaCreateComponent implements OnInit{
         Validators.required,
         Validators.pattern('^[A-Z][a-zA-Z]*$') // First letter capitalized, no spaces at beginning or end, only alphabetic characters
       ]),
-      regionName: new FormControl(null, [
-        Validators.required,
-        Validators.pattern('^[A-Z][a-zA-Z]*$') // First letter capital, rest alphabetic
-      ]),
+
       routeId: new FormControl(null, [
         Validators.required,
         // Validators.pattern('^[A-Z]{3} - [A-Z][a-zA-Z]*$') // "Region ID - Area Name" format
@@ -97,17 +95,21 @@ export class AreaCreateComponent implements OnInit{
       routeDesc: new FormControl(null, [
         Validators.required,
         Validators.minLength(10),
+        // Validators.maxLength(100),
+        // Validators.pattern('^[a-zA-Z0-9 ,.!?-]+$') // Valid characters including letters, numbers, and common punctuation
         Validators.maxLength(100),
-        Validators.pattern('^[a-zA-Z0-9 ,.!?-]+$') // Valid characters including letters, numbers, and common punctuation
+       // Valid characters including letters, numbers, and common punctuation
       ]),
-      status: new FormControl(null),
+      status: new FormControl(true),
     })
     this.getrouteAll()
  
     // get regionID list
     this.service.getregionAll().subscribe((data:any) => {
       console.log(data);
-      this.regionIdList = data.AllRegion;
+      // this.regionIdList = data.AllRegion;
+      this.regionIdList = data.AllRegion.filter((region: any) => region.status === true);
+
       console.log("regionlist",this.regionIdList)
     })
     
@@ -161,7 +163,8 @@ export class AreaCreateComponent implements OnInit{
       routeId: routeDetails?.routeId,
       routeName:routeDetails?.routeName,
       routeNo: index + 1,
-      action: "view Details"
+      action: "view Details",
+      status: routeDetails.status ? 'Active' : 'InActive'
     
       }))
       this.displayedRoute = this.data;
@@ -260,6 +263,9 @@ export class AreaCreateComponent implements OnInit{
         onCellClicked: (event: CellClickedEvent) =>
           this.getrouteById(event.data.id)
           },
+      { label: 'Status', field: 'status', sortable: true , filterList:true,
+      },
+
       
     ];
   

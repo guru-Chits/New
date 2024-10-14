@@ -1,153 +1,150 @@
 <div class="container">
-    <div class="row">
-      <div class="col-lg-9">
-        <app-breadcrumb [data]="breadcrumsData"></app-breadcrumb>
-        <div class="card-wrapper">
-            <div class="card ps-5 pe-5 mb-2 details-card">
-                <div class="profile-picture-container">
-                    <div class="profile-picture">
-                      <img [src]="staffDetail.Staff.profileUrl" alt="Profile Picture" class="profile-img">
-                      <input type="file" (change)="onFileSelected($event)" hidden #fileInput>
-                      <!-- <button class="upload-button" (click)="fileInput.click()">
-                        <img src="assets/subscriber/Profile edit.svg " alt="Upload Icon">
-                      </button> -->
-                    </div>
-                  </div>
-                    <h5 class="text-center">Staff Details</h5>
-                    <div class="row justify-content-around">
-                      <div class="col-lg-4">
-                        <h6>Employee ID</h6>
-                        <p style="color: #50A1A5;">{{staffDetail.Staff.employeeId}}</p>
-                      </div>
-                      <div class="col-lg-4">
-                        <h6>First Name</h6>
-                        <p>{{staffDetail.Staff.firstName}}</p>
-                      </div>
-                      <div class="col-lg-4">
-                        <h6>Last Name</h6>
-                        <p>{{staffDetail.Staff.lastName}}</p>
-                      </div>
-                      </div>
-                      <div class="row justify-content-around">
+  <div class="row">
+    <div class="col-lg-9">
+      <app-breadcrumb [data]="breadcrumsData"></app-breadcrumb>
+      <div class="card-wrapper">
+        <div class="card ps-5 pe-5 mb-2 details-card">
+          <div class="profile-picture-container">
+            <div class="profile-picture">
+              <img [src]="staffDetail.Staff.profileUrl" alt="Profile Picture" class="profile-img">
+              <input type="file" (change)="onFileSelected($event)" hidden #fileInput>
+            </div>
+          </div>
+          <h5 class="text-center">Staff Details</h5>
+          <div class="row justify-content-around">
+            <div class="col-lg-4">
+              <h6>Employee ID</h6>
+              <p style="color: #50A1A5;">{{staffDetail.Staff.employeeId}}</p>
+            </div>
+            <div class="col-lg-4">
+              <h6>First Name</h6>
+              <p>{{staffDetail.Staff.firstName}}</p>
+            </div>
+            <div class="col-lg-4">
+              <h6>Last Name</h6>
+              <p>{{staffDetail.Staff.lastName}}</p>
+            </div>
+          </div>
+          <div class="row justify-content-around">
 
-                      <div class="col-lg-4">
-                        <h6>Role</h6>
-                        <p>{{staffDetail.Staff.role}}</p>
-                      </div>
-                      <div class="col-lg-4">
-                        <h6>Contact Number</h6>
-                        <p>{{staffDetail.Staff.contact}}</p>
-                      </div>
-                      <div class="col-lg-4">
-                        <h6>Place/Address</h6>
-                        <p>{{staffDetail.Staff.region}}</p>
-                      </div>
-                      </div>
-                      <div class="row justify-content-around">
-                        <div class="col-lg-4">
-                          <h6>Email ID</h6>
-                          <p>{{staffDetail.Staff.emailId}}</p>
-                        </div>
-                      <div class="col-lg-4">
-                        <h6>Gender</h6>
-                        <p>{{staffDetail.Staff.gender}}</p>
-                      </div>
-                      <div class="col-lg-4">
-                        <h6>DOB</h6>
-                        <p>{{staffDetail.Staff.gender}}</p>
-                      </div>
-         
-                      </div>
-                      <div class="row justify-content-around">
-                      <div class="col-lg-4">
-                        <h6>Route ID</h6>
-                        <p style="color: #50A1A5;">{{staffDetail.Staff.routeId}}</p>
-                      </div>
-                      <div class="col-lg-4">
-                        <h6>Account Number</h6>
-                        <p>{{staffDetail.Staff.accountNumber}}</p>
-                      </div>
-                      <div class="col-lg-4">
-                        <h6>IFSC Code</h6>
-                        <p>{{staffDetail.Staff.ifscCode}}</p>
-                      </div>
-                      </div>
-                      <div class="row justify-content-around">
-                      <div class="col-lg-4">
-                        <h6>Bank Name</h6>
-                        <p>{{staffDetail.Staff.bankName}}</p>
-                      </div>
-                      <div class="col-lg-4">
-                        <h6>UPI ID/Number</h6>
-                        <p>{{staffDetail.Staff.upiIdOrNumber}}</p>
-                      </div>
-                      <div class="col-lg-4">
-                        <h6>PAN Card Number</h6>
-                        <p>{{staffDetail.Staff.panCardNumber}}</p>
-                      </div>
-                      </div>
-                      <div class="row">
-                      <div class="col-lg-4">
-                        <h6>Aadhaar Card Number</h6>
-                        <p>{{staffDetail.Staff.aadharNumber}}</p>
-                      </div>
-                      <div class="col-lg-4">
-                        <h6>Driving License Number</h6>
-                        <p>{{staffDetail.Staff.drivingLicenseNumber}}</p>
-                      </div>
-                      </div>
-                      <div class="row justify-content-around">
-                        <div class="col-lg-4">
-                          <h6>PAN Card</h6>
-                          <button class="viewBtn" (click)="viewFile(staffDetail.Staff.panUrl)">View File</button>
-                        </div>
-                        <div class="col-lg-4">
-                          <h6>Aadhaar Card</h6>
-                          <button class="viewBtn" (click)="viewFile(staffDetail.Staff.aadharUrl)">View File</button>
-                        </div>
-                        <div class="col-lg-4">
-                            <h6>Driving Lincense</h6>
-                            <button class="viewBtn" (click)="viewFile(staffDetail.Staff.drivingLicenseUrl)">View File</button>
-                          </div>
-  
-                      </div>
-                   <div class="row justify-content-around mt-4">
-                    <div class="col-lg-4">
-                      <h6>Passbook</h6>
-                      <button class="viewBtn" (click)="viewFile(staffDetail.Staff.passbookUrl)">View File</button>
-                    </div>
+            <div class="col-lg-4">
+              <h6>Role</h6>
+              <p>{{staffDetail.Staff.role}}</p>
+            </div>
+            <div class="col-lg-4">
+              <h6>Contact Number</h6>
+              <p>{{staffDetail.Staff.contact}}</p>
+            </div>
+            <div class="col-lg-4">
+              <h6>Place/Address</h6>
+              <p>{{staffDetail.Staff.region}}</p>
+            </div>
+          </div>
+          <div class="row justify-content-around">
+            <div class="col-lg-4">
+              <h6>Email ID</h6>
+              <p>{{staffDetail.Staff.emailId}}</p>
+            </div>
+            <div class="col-lg-4">
+              <h6>Gender</h6>
+              <p>{{staffDetail.Staff.gender}}</p>
+            </div>
+            <div class="col-lg-4">
+              <h6>DOB</h6>
+              <p>{{staffDetail.Staff.gender}}</p>
+            </div>
 
-                    <div class="col-lg-4">
-                        <h6>BGV Status</h6>
-                        <p *ngIf="bgV" style="color:#12B76A">Verified</p>
-                        <p *ngIf="!bgV" style="color:#F04438">UnVerified</p>
+          </div>
+          <div class="row justify-content-around">
+            <div class="col-lg-4">
+              <h6>Route ID</h6>
+              <p style="color: #50A1A5;">{{staffDetail.Staff.routeId}}</p>
+            </div>
+            <div class="col-lg-4">
+              <h6>Account Number</h6>
+              <p>{{staffDetail.Staff.accountNumber}}</p>
+            </div>
+            <div class="col-lg-4">
+              <h6>IFSC Code</h6>
+              <p>{{staffDetail.Staff.ifscCode}}</p>
+            </div>
+          </div>
+          <div class="row justify-content-around">
+            <div class="col-lg-4">
+              <h6>Bank Name</h6>
+              <p>{{staffDetail.Staff.bankName}}</p>
+            </div>
+            <div class="col-lg-4">
+              <h6>UPI ID/Number</h6>
+              <p>{{staffDetail.Staff.upiIdOrNumber}}</p>
+            </div>
+            <div class="col-lg-4">
+              <h6>PAN Card Number</h6>
+              <p>{{staffDetail.Staff.panCardNumber}}</p>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-lg-4">
+              <h6>Aadhaar Card Number</h6>
+              <p>{{staffDetail.Staff.aadharNumber}}</p>
+            </div>
+            <div class="col-lg-4">
+              <h6>Driving License Number</h6>
+              <p>{{staffDetail.Staff.drivingLicenseNumber}}</p>
+            </div>
+          </div>
+          <div class="row justify-content-around">
+            <div class="col-lg-4">
+              <h6>PAN Card</h6>
+              <button class="viewBtn" (click)="viewFile(staffDetail.Staff.panUrl)">View File</button>
+            </div>
+            <div class="col-lg-4">
+              <h6>Aadhaar Card</h6>
+              <button class="viewBtn" (click)="viewFile(staffDetail.Staff.aadharUrl)">View File</button>
+            </div>
+            <div class="col-lg-4">
+              <h6>Driving Lincense</h6>
+              <button class="viewBtn" (click)="viewFile(staffDetail.Staff.drivingLicenseUrl)">View File</button>
+            </div>
 
-                      </div>
-                    <div class="col-lg-4">
-                        <h6>BGV Remarks</h6>
-                        <p>{{staffDetail.Staff.bgVerification_remark}}</p>
-                    </div>
-                    </div>
-                    <div class="row  mt-4">
-                      <div class="col-lg-4">
-                        <h6>Working Status</h6>
-                        <p *ngIf="staffDetail.Staff.workingStatus" style="color:#12B76A">Active</p>
-                        <p *ngIf="!staffDetail.Staff.workingStatus" style="color:#F04438">InActive</p>
+          </div>
+          <div class="row justify-content-around mt-4">
+            <div class="col-lg-4">
+              <h6>Passbook</h6>
+              <button class="viewBtn" (click)="viewFile(staffDetail.Staff.passbookUrl)">View File</button>
+            </div>
 
-                      </div>
-  
-                    </div>
-                    
-                        <div class="row justify-content-center">
+            <div class="col-lg-4">
+              <h6>BGV Status</h6>
+              <p *ngIf="bgV" style="color:#12B76A">Verified</p>
+              <p *ngIf="!bgV" style="color:#F04438">UnVerified</p>
 
-                          <div class="col-lg-10 d-flex justify-content-end mb-4">
-                              <button class="btn edit-btn" *ngIf="canEdit" (click)="edit(staffDetail.Staff._id)">Edit</button>
-                          </div>
-                      </div> 
-                      </div>
-                    </div>
-</div>
-<div class="col-lg-3">  
-    <app-viewall></app-viewall>
-</div>
-</div>
+            </div>
+            <div class="col-lg-4">
+              <h6>BGV Remarks</h6>
+              <p>{{staffDetail.Staff.bgVerification_remark}}</p>
+            </div>
+          </div>
+          <div class="row  mt-4">
+            <div class="col-lg-4">
+              <h6>Working Status</h6>
+              <p *ngIf="staffDetail.Staff.workingStatus" style="color:#12B76A">Active</p>
+              <p *ngIf="!staffDetail.Staff.workingStatus" style="color:#F04438">InActive</p>
+
+            </div>
+
+          </div>
+
+          <div class="row justify-content-center">
+
+            <div class="col-lg-10 d-flex justify-content-end mb-4">
+              <button class="btn edit-btn" *ngIf="canEdit" (click)="edit(staffDetail.Staff._id)">Edit</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-3">
+      <app-viewall></app-viewall>
+    </div>
+  </div>

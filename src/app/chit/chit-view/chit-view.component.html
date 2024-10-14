@@ -23,7 +23,7 @@
                     <div class="col-4 ">
                         <div class="d-flex flex-column ">
                             <h6><strong>Chit Amount</strong></h6>
-                            <p class="">{{chitData?.chitAmount}}</p>
+                            <p class="">{{formatToIndianCurrency(chitData?.chitAmount)}}</p>
                         </div>
                     </div>
                     <div class="col-4 ">
@@ -43,13 +43,13 @@
                     <div class="col-4 ">
                         <div class=" d-flex flex-column ">
                             <h6><strong>Wallet Balance</strong></h6>
-                            <p class="">{{chitSubscriberTotal}}</p>
+                            <p class="">{{formatToIndianCurrency(chitSubscriberTotal)}}</p>
                         </div>
                     </div>
                     <div class="col-4 ">
                         <div class="d-flex flex-column ">
                             <h6><strong>Additional Wallet Balance</strong></h6>
-                            <p class="">{{addSubscriberTotal}}</p>
+                            <p class="">{{formatToIndianCurrency(addSubscriberTotal)}}</p>
                         </div>
                     </div>
                 </div>
@@ -73,17 +73,17 @@
                         </div>
                     </div>
                 </div>
-                <div class="row py-3">
+                <div class="row py-3" aria-disabled="true" style="pointer-events: none; opacity: 0.5;">
                     <div class="col-4 ">
                         <div class=" d-flex flex-column ">
                             <h6><strong>Chit Commencement</strong></h6>
                             <p class="">30</p>
                         </div>
                     </div>
-                    <div class="col-4 ">
+                    <div class="col-4">
                         <div class=" d-flex flex-column red">
                             <h6><strong>Amount Outstanding</strong></h6>
-                            <p>7500</p>
+                            <p>{{formatToIndianCurrency(7500)}}</p>
                         </div>
                     </div>
                     <div class="col-4 ">
@@ -300,6 +300,23 @@
                             <td><strong>Contact No</strong></td>
                             <td>{{subscriberDetail.Subscriber.contact}}</td>
                         </tr>
+                        <tr>
+                            <td><strong>Collection Type</strong></td>
+                            <td>
+                             <form [formGroup] = "collectionTypeForm">
+                               <div class="form-group">
+                                 <select class="form-control form-control-sm form-select" formControlName="collectionType"  placeholder = "select type"> 
+                                  
+                                   <option *ngFor="let type of collectionTypes" [value]="type.collectionType">{{ type.collectionType }}</option>        
+                               </select>
+                               <div *ngIf="collectionTypeForm.get('collectionType').invalid && collectionTypeForm.get('collectionType').touched">
+                                 <small class="text-danger">collectionType is required</small>
+                               </div>
+                             </div>
+                           </form>
+ 
+                             </td>
+                         </tr>
                         </tbody>
                     </table>
                     <div class="text-center mb-2">

@@ -9,7 +9,7 @@
         <div class=" input-fields  d-flex align-items-center"
       [ngClass]="{'is-invalid': newPasswordControl.touched && newPasswordControl.hasError('required') || !passwordsMatch||newPasswordControl.hasError('pattern')||newPasswordControl.hasError('maxlength')||newPasswordControl.hasError('minlength')}">
           <input [type]=" isPasswordVisible ? 'text': 'password'" class="form-control" id="password"
-          placeholder="Enter Cuttent password"
+          placeholder="Enter Current password"
            required
            formControlName="newPassword">
           <img src="\assets\login\Eye.svg" class="img-fluid mx-1"

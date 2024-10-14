@@ -29,6 +29,7 @@ export class ChitComponent implements OnInit{
   payment:any;
   chitSubscriberTotal = 0;
   bidHistory:any;
+  latestWinningBid: number = 0;
   prizedSubsCount: number = 0;
   auctionDates: (string)[] = [];
   upcomingDates: (string | null)[] = [];
@@ -194,6 +195,18 @@ export class ChitComponent implements OnInit{
         if(this.specificChitData){
           this.groupId = this.specificChitData.chitGroupId
           console.log("_______^^_______",this.groupId)
+          this.service.getChitAuctionById(this.groupId).subscribe((res) => {
+            this.bidHistory = res.data;
+            // Accessing the last element
+            const lastItem = this.bidHistory[this.bidHistory.length - 1];
+
+            // Getting the winningBid from the last element
+            this.latestWinningBid  = lastItem.winningBid;
+
+            // Output the result
+            console.log("Latest Winning Bid",this.latestWinningBid); // 10000
+            console.log("____________BID__________HISTORY_____________", this.bidHistory)
+          })
           this.paymentService.getTransactionById(this.groupId).subscribe((response)=>{
             console.log("PAYMENT",response);
             this.payment=response

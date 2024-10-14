@@ -75,7 +75,7 @@ export class ChitCreateComponent {
       addChitSubscribers: new FormControl([])
     });
     this.collectionTypeForm = new FormGroup({
-      collectionType: new FormControl(''),
+      collectionType: new FormControl('',[Validators.required]),
     });
 
     this.settings.getAllCollection().subscribe(

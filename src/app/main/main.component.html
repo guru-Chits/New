@@ -1,14 +1,23 @@
 <div class="container-fluid">
   <app-navbar></app-navbar>
 
+  <!-- Sidebar toggle button -->
+  <button (click)="toggleSidebar()" class="menu-btn">
+   <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-list" viewBox="0 0 16 16">
+      <path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5"/>
+    </svg> 
+  </button>
+
   <div class="row mt-5" style="display: flex;">
     <!-- Sidebar -->
-    <div class="col-lg-2 col-md-3 col-sm-12" style="flex-shrink: 0;">
-      <app-sidebar></app-sidebar>
+    <div *ngIf="isSidebarVisible" class="col-lg-2 col-md-3 col-sm-12" style="flex-shrink: 0;">
+      <app-sidebar></app-sidebar> 
     </div>
 
-    <!-- Main content -->
-    <div class="col-lg-10 col-md-9 col-sm-12" style="flex-grow: 1;">
+    <!-- Main content area expands if sidebar is hidden -->
+    <div [ngClass]="isSidebarVisible ? 'col-lg-10 col-md-9' : 'col-lg-12 col-md-12'" 
+         class="col-sm-12" 
+         style="flex-grow: 1;">
       <div class="row">
         <!-- Breadcrumb navigation -->
         <div class="col-lg-12 col-sm-12">

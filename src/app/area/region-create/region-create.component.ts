@@ -112,16 +112,17 @@ export class RegionCreateComponent implements OnInit{
           },
         ];
         this.buttonTxt="Save Changes"
-      }
-      this.service.getregionById(paramData.id).subscribe((data) => {
-        this.editData = data;
-        this.id=this.editData.Region._id
-        console.log(this.id);
-        
-         const updatedRegion = { ...this.editData.Region};
-          this.regionForm.patchValue(updatedRegion);
-  
-        })
+      
+        this.service.getregionById(paramData.id).subscribe((data) => {
+          this.editData = data;
+          this.id=this.editData.Region._id
+          console.log(this.id);
+          
+          const updatedRegion = { ...this.editData.Region};
+            this.regionForm.patchValue(updatedRegion);
+    
+          })
+        }
     this.getAllRegion()    
   })
   }

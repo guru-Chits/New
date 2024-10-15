@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { LoginService } from '../../login/shared/serive/login.service';
 
 interface IResetPassword {
   newPassword:FormControl<string | null>
@@ -15,7 +16,7 @@ interface IResetPassword {
 export class PrivacyComponent implements OnInit {
 
   isPasswordVisible: boolean = false;
-
+  isCurPasswordVisible: boolean = false;
   /**
    * Check if the confirm password is visible
    */
@@ -30,12 +31,14 @@ export class PrivacyComponent implements OnInit {
    * Check if the confirm password is empty
    */
   isConfirmPwdEmpty: boolean = true;
-
+  isCurrentwdEmpty: boolean = true;
   /**
    * Confirm password
    */
-  confirmPassword: string; // variable for get  the userinput of Conform password
+  isPasswordMismatch: boolean = false;
 
+  confirmPassword: string; // variable for get  the userinput of Conform password
+  userDetail:any
   /**
    * Check if the password is matched
    */
@@ -46,18 +49,22 @@ export class PrivacyComponent implements OnInit {
    * Check if the password is reset
    */
   isPasswordReset: boolean = false;
-
+ password:any
+ employeeId:any
 
   passwordPattern: RegExp = /^(?=.*[!@#$%^&*(),.?":{}|<>])(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$/;
-
-    get newPasswordControl() { return this.resetForm.get('newPassword'); };
+  get currentPasswordControl() { return this.resetForm.get('currentPassword'); };
+  get newPasswordControl() { return this.resetForm.get('newPassword'); };
   get confirmPasswordControl() { return this.resetForm.get('confirmPassword'); };
-
-  resetForm: FormGroup<IResetPassword>
- constructor(private fb:FormBuilder,private router: Router, ){}
+  
+  resetForm: FormGroup
+ constructor(private fb:FormBuilder,private router: Router,private service:LoginService ){}
 
 ngOnInit(): void {
   this.resetForm=this.fb.group({
+    currentPassword: [
+      "",[Validators.required,Validators.maxLength(12),Validators.minLength(8),Validators.pattern(this.passwordPattern)]
+    ],
     newPassword: [
       "",
       [Validators.required,Validators.pattern(this.passwordPattern),Validators.maxLength(12),Validators.minLength(8)],
@@ -66,8 +73,9 @@ ngOnInit(): void {
       "",
       [Validators.required],
     ],
-  });
 
+    
+  });
   this.resetForm.get("newPassword").valueChanges.subscribe(() => {
     const newPasswordControl = this.resetForm.get("newPassword");
 
@@ -87,10 +95,36 @@ ngOnInit(): void {
     }
   });
 
+  this.resetForm.get("currentPassword").valueChanges.subscribe(() => {
+    const currentPasswordControl =
+      this.resetForm.get("currentPassword");
+
+    if (currentPasswordControl) {
+      const isCurrentwdEmpty = currentPasswordControl.value.trim() === "";
+      this.isCurrentwdEmpty = isCurrentwdEmpty;
+    }
+  });
+
+  this.employeeId=sessionStorage.getItem('employeeId')
+  this.employeeId=this.employeeId.replace(/"/g, '')
+
+  console.log(this.employeeId);
+
+  this.service.getLoginDetail(this.employeeId).subscribe(response => {
+    this.userDetail = response;
+    
+    // Listen for changes on the currentPassword control
+    this.resetForm.get("currentPassword").valueChanges.subscribe(currentPassword => {
+      this.password = this.userDetail.password;
+      
+      // Check if passwords match
+      this.isPasswordMismatch = currentPassword !== this.password;
+    });
+  });
 }
 
 togglePasswordVisibility(): void {
-  this.isPasswordVisible = !this.isPasswordVisible;
+  this.isCurPasswordVisible = !this.isCurPasswordVisible;
 }
 
 toggleRePasswordVisibility(): void {
@@ -108,16 +142,48 @@ toggleconfirmPasswordVisibility(): void {
 
 
 onSubmit(){
+  let employeeId=sessionStorage.getItem('employeeId')
+  employeeId=employeeId.replace(/"/g, '')
+
+  console.log(employeeId);
+
+  this.service.getLoginDetail(employeeId).subscribe(response => {
+ 
+  this.userDetail=response
+    const currentPassword = this.resetForm.get("currentPassword").value;
+    const password=this.userDetail.password
+    console.log(currentPassword, password);
+    
+    if(currentPassword===password){
+      console.log("user verified");
+      this.isPasswordMismatch = false;  
+    }else{
+      this.isPasswordMismatch = true; 
+      // alert("not correct")
+    }
+    
+  }) 
   this.passwordsMatch =
   this.resetForm.get("newPassword").value ===
   this.resetForm.get("confirmPassword").value;
  
+
   if (this.passwordsMatch) {
 
-  this.isPasswordReset = true;
+    if (this.resetForm.valid) {
+      const password  = this.resetForm.get("confirmPassword").value
+      this.service.passwordReset(employeeId, password).subscribe(
+        response => {
+          console.log('Password reset successful', response);
+          this.isPasswordReset = true;
+  
+        },
+        error => {
+          console.error('Error resetting password', error);
+        }
+      );
+    }
   }
 }
-navigateToLoginPage(): void {
-  this.router.navigate(["/login"]);
-}
+
 }

@@ -33,6 +33,11 @@ export class RegionCreateComponent implements OnInit{
   canDelete:boolean=false
   canEdit:boolean=false
   filter:boolean=true
+  itemsToShow: number = 10
+       // Total count of regions
+  // Number of items to display initially and after each load
+
+
   breadcrumsData:any = [
     {
       key: 'Route Manager',
@@ -107,44 +112,79 @@ export class RegionCreateComponent implements OnInit{
           },
         ];
         this.buttonTxt="Save Changes"
-      }
-      this.service.getregionById(paramData.id).subscribe((data) => {
-        this.editData = data;
-        this.id=this.editData.Region._id
-        console.log(this.id);
-        
-         const updatedRegion = { ...this.editData.Region};
-          this.regionForm.patchValue(updatedRegion);
-  
-        })
+      
+        this.service.getregionById(paramData.id).subscribe((data) => {
+          this.editData = data;
+          this.id=this.editData.Region._id
+          console.log(this.id);
+          
+          const updatedRegion = { ...this.editData.Region};
+            this.regionForm.patchValue(updatedRegion);
+    
+          })
+        }
     this.getAllRegion()    
   })
   }
-  
-  
-  getAllRegion(): void{
+  getAllRegion(): void {
     console.log("region data");
-    
-  this.service.getregionAll().subscribe((data)=>{
-  this.regionData=data;
-  console.log("kk",this.regionData)
 
+    this.service.getregionAll().subscribe((data) => {
+      this.regionData = data;
+      console.log("Full region data", this.regionData);
+      
+      this.totalCount = this.regionData.AllRegion.length;
+      
+      // Map the data into the desired structure
+      this.data = this.regionData.AllRegion.map((regionDetails, index) => ({
+        id: regionDetails?._id,
+        regionId: regionDetails?.regionId,
+        regionName: regionDetails?.regionName,
+        routeNo: index + 1,
+        action: "View Details"
+      }));
 
-this.totalCount=this.regionData.AllRegion.length
-this.data=this.regionData.AllRegion.map((regionDetails,index)=>({
-  id:regionDetails?._id,
-  regionId: regionDetails?.regionId,
-  regionName: regionDetails?.regionName,
-  routeNo: index + 1,
-  action: "view Details"
-  
-}))
-this.displayedRegion = this.data;
-console.log(this.regionData.id);
-
-
-})
+      // Initially display only the first 'itemsToShow' records
+      this.displayedRegion = this.data.slice(0, this.itemsToShow);
+      console.log("Initial displayed data", this.displayedRegion);
+    });
   }
+
+  // Function to load more data
+  loadMore(): void {
+    // Increase the number of items to display by 10
+    this.itemsToShow += 10;
+
+    // Update the displayedRegion with the newly added data
+    this.displayedRegion = this.data.slice(0, this.itemsToShow);
+    console.log("Loaded more data", this.displayedRegion);
+  }
+
+  
+  
+//   getAllRegion(): void{
+//     console.log("region data");
+    
+//   this.service.getregionAll().subscribe((data)=>{
+//   this.regionData=data;
+//   console.log("kk",this.regionData)
+
+
+// this.totalCount=this.regionData.AllRegion.length
+// this.data=this.regionData.AllRegion.map((regionDetails,index)=>({
+//   id:regionDetails?._id,
+//   regionId: regionDetails?.regionId,
+//   regionName: regionDetails?.regionName,
+//   routeNo: index + 1,
+//   action: "view Details"
+  
+// }))
+// this.displayedRegion = this.data;
+// console.log(this.regionData.id);
+
+
+// })
+//   }
 
   onSubmit(): void {
     const payload = this.regionForm.value

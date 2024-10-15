@@ -103,6 +103,7 @@
               <span class="search-icon"><img src="assets/subscriber/search-icon.svg"></span>
               <input width="20" height="20" type="text" placeholder="Search" (input)="applyFilter($event.target.value)">
             </div>
+          <div class="scroll-container">
           <table class="table-card mx-3">
             <tbody>
               <tr *ngFor="let region of displayedRegion">
@@ -123,7 +124,8 @@
               </tr>
             </tbody>
           </table>
-          <button class="btn1 align-self-center view-btn mt-3 px-5" routerLink="area">View More</button>
+          </div>
+          <button  *ngIf="itemsToShow < totalCount" class="btn1 align-self-center view-btn mt-3 px-5" (click)="loadMore()">View More</button>
         </div>
    </div>  
      </div>

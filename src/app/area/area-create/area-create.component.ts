@@ -30,6 +30,8 @@ export class AreaCreateComponent implements OnInit{
  search:boolean=true
  searchImg:string='assets/table/search.svg'
  filterImg:string='assets/table/filter.svg'
+ itemsToShow: number = 10;     // Number of items to display initially and after each load
+
 
   breadcrumsData:any = [
     {
@@ -166,14 +168,26 @@ export class AreaCreateComponent implements OnInit{
       action: "view Details",
       status: routeDetails.status ? 'Active' : 'InActive'
     
-      }))
-      this.displayedRoute = this.data;
-      console.log(this.displayedRoute);
+      }));
+       // Initially display only the first 'itemsToShow' records
+       this.displayedRoute = this.data.slice(0, this.itemsToShow);
+       console.log("Initial displayed data", this.displayedRoute);
+      // this.displayedRoute = this.data;
+      // console.log(this.displayedRoute);
       
 
-      })
+      });
+    }
+    loadMore(): void {
+        // Increase the number of items to display by 10
+        this.itemsToShow += 10;
     
-  }
+        // Update the displayedRegion with the newly added data
+        this.displayedRoute = this.data.slice(0, this.itemsToShow);
+        console.log("Loaded more data", this.displayedRoute);
+    }
+    
+  
   edit(id: any){
     console.log(id);
     this.router.navigate([`area/routeedit/${id}`]);
@@ -186,6 +200,8 @@ export class AreaCreateComponent implements OnInit{
       const region = this.regionIdList.find((module) => module._id === this.selectedRegionId);
       if(region){
         this.selectedRegionName = region.regionName
+        this.routeForm.get('routeName').patchValue("");
+        this.routeForm.get('routeId').patchValue("");
       }
       console.log("route form", this.routeForm);
       
@@ -195,7 +211,7 @@ export class AreaCreateComponent implements OnInit{
       
       console.log('Route Name:', routeNameValue);
       this.selectedRouteName = routeNameValue
-      this.generatedRouteID= `${this.selectedRegionName}_${this.selectedRouteName}`;
+      this.generatedRouteID= `${this.selectedRegionName}-${this.selectedRouteName}`;
       console.log("generatedID",this.generatedRouteID)
 
       this.routeForm.get('routeId').patchValue(this.generatedRouteID);

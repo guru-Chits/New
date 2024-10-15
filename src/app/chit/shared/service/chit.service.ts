@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { environment } from '../../../../environments/environment';
 import { Observable } from 'rxjs';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root'
@@ -93,4 +93,12 @@ export class ChitService {
     let url:string = `${environment.chitServiceUrl}/chit_management/getchit/${groupId}`
     return this.http.get(url)
   }
+
+  updateSubscriber(chitGroupId: string, passbookNo: string, updatedData: any): Observable<any> {
+    const url = `http://localhost:8000/api/chitgroup/updateSubscriber/${chitGroupId}/${passbookNo}`;
+
+    // Perform the HTTP PUT request
+    return this.http.put(url, updatedData);
+  }
 }
+

@@ -92,6 +92,13 @@ export class ChitViewComponent implements OnInit{
       collectionType: new FormControl('',[Validators.required]),
     });
 
+    this.settings.getAllCollection().subscribe(
+      (data)=>{
+        this.collectionTypes=data
+        this.collectionTypes=this.collectionTypes.res
+        console.log(this.collectionTypes,"Collection Type");
+      }
+    )
     this.activatedRoute?.params.subscribe(paramData => {
       if (Object.keys(paramData).length) {
       this.service.getChitById(paramData.id).subscribe((data) => {
@@ -294,14 +301,7 @@ export class ChitViewComponent implements OnInit{
   onButtonClick(id: string): void {
     this.getSubscribersById(id);
     this.listId=id
-    this.collectionTypeForm.reset()
-    this.settings.getAllCollection().subscribe(
-      (data)=>{
-        this.collectionTypes=data
-        this.collectionTypes=this.collectionTypes.res
-        console.log(this.collectionTypes,"Collection Type");
-      }
-    )
+
     if (this.subscriberDetail && this.subscriberDetail.id === id) {
       // If the same subscriber is clicked, toggle off the details
       this.subscriberDetail = null;
@@ -619,13 +619,28 @@ export class ChitViewComponent implements OnInit{
 
   getChitById(id: string){
     console.log("DATA", id);
+    // this.collectionTypeForm.reset()
+
+    // this.settings.getAllCollection().subscribe(
+    //   (data)=>{
+    //     this.collectionTypes=data
+    //     this.collectionTypes=this.collectionTypes.res
+    //     console.log(this.collectionTypes,"Collection Type");
+    //   }
+    // )
     this.showTicket = true;
     // Filter the subscriberDetails by matching id
      this.filteredSubscribers = this.subscribers.filter(subscriber => subscriber._id === id);
     this.filteredAdditionalSubs = this.addSubscribers.filter(subscriber => subscriber._id === id);
     // Log or return the filtered result
+    const subscriber = this.filteredSubscribers[0];
+    this.collectionTypeForm.patchValue({
+      collectionType: subscriber.collectionType  // Patch the collectionType value from the filtered subscriber
+    });
     console.log("Filtered Subscribers", this.filteredSubscribers);
+
     return this.filteredSubscribers;
+    
   }  
 
 
@@ -681,5 +696,32 @@ export class ChitViewComponent implements OnInit{
       label: 'Prized Amount ', field: 'prizedAmount'
     }
   ]
+edit(passbookNo){
+  console.log(passbookNo);
+ this.service.getByPassbooNo(passbookNo).subscribe((data: any) => {
+    console.log(data);
 
+    // Assuming data has a structure that includes subscriberDetails
+    const editSubscriber = data;
+
+    // Update the collectionType value from the form into the subscriberDetails
+    editSubscriber.subscriberDetails.collectionType = this.collectionTypeForm.get('collectionType').value;
+    editSubscriber.subscriberDetails.ticketId = editSubscriber.subscriberDetails.ticketId ;
+    console.log(editSubscriber.subscriberDetails.ticketId);
+    
+    // Call the update service to save the changes back to the server
+    this.service.updateSubscriber(editSubscriber.chitGroupId, passbookNo, editSubscriber.subscriberDetails).subscribe(
+      (response: any) => {
+        console.log('Subscriber updated successfully', response);
+        this.showTicket = false;
+
+        // You can add code here to handle success, like showing a success message or updating the UI
+      },
+      (error: any) => {
+        console.error('Error updating subscriber', error);
+        // Handle the error appropriately, like showing an error message
+      }
+    );
+  });
+}
 }

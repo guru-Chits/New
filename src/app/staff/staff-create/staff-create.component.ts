@@ -484,9 +484,9 @@ export class StaffCreateComponent implements OnInit {
     this.service.savestaffDetails(formData, this.staffId).subscribe((data) => {
       if (!this.staffId) {
         const mobile = this.staffsForm.get('contact')?.value;
-        const password = (this.staffsForm.get('password')?.value);
-        const loginLink = ('www.guruchits.com/login');
-        const empId = (this.staffsForm.get('employeeId')?.value);
+        const password = this.staffsForm.get('password')?.value
+        const loginLink = 'www.guruchits.com/login';
+        const empId = this.staffsForm.get('employeeId')?.value
 
         const otpUrl = `https://2factor.in/API/R1/?module=TRANS_SMS&apikey=b1037ef1-2ed8-11ef-8b60-0200cd936042&to=${mobile}&from=KNGCPL&templatename=Onboarding&var1=${loginLink}&var2=${empId}&var3=${password}`;
 

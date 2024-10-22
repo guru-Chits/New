@@ -16,7 +16,7 @@ export class ChitService {
   }
 
   saveChitDetails(chitDetails: any,id?: string): Observable<any> {
-    let url = `${environment.subscriberServiceUrl}/chitgroup/addchitGroup`;
+    let url = `${environment.chitServiceUrl}/chitgroup/addchitGroup`;
     if(id){
       url = `${url}/${id}`;
     }
@@ -95,10 +95,17 @@ export class ChitService {
   }
 
   updateSubscriber(chitGroupId: string, passbookNo: string, updatedData: any): Observable<any> {
-    const url = `http://localhost:8000/api/chitgroup/updateSubscriber/${chitGroupId}/${passbookNo}`;
+    const url = `${environment.chitServiceUrl}/chitgroup/updateSubscriber/${chitGroupId}/${passbookNo}`;
 
     // Perform the HTTP PUT request
     return this.http.put(url, updatedData);
+  }
+
+  addSubscriber(chitGroupId: string, updatedData: any): Observable<any> {
+    const url = `${environment.chitServiceUrl}/chitgroup/addSubscriber/${chitGroupId}`;
+
+    // Perform the HTTP PUT request
+    return this.http.post(url, updatedData);
   }
 }
 

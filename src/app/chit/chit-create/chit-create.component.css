@@ -1,122 +1,122 @@
-.next-btn{
+.next-btn {
     background-color: #3E3A97;
-    color:#FFFFFF;
-    }
-    .form-group{
-        margin-bottom: 30px;
-    }
+    color: #FFFFFF;
+}
 
-.btn-upload{
+.form-group {
+    margin-bottom: 30px;
+}
+
+.btn-upload {
     background-color: #e8e8e8;
     font-size: smaller;
 }
 
-.clear-btn{
+.clear-btn {
     color: #3E3A97;
     background-color: #FFFFFF;
     border-color: #3E3A97;
 }
-.profile-list-img{
+
+.profile-list-img {
     width: 30px;
     height: 30px;
     background: transparent;
     border-radius: 50%;
     overflow: hidden;
-  
-  }
+}
 
-  .search-bar {
+.search-bar {
     display: flex;
     align-items: center;
     background-color: #ECEBF5;
     border: none;
     padding: 5px;
- 
-  }
 
-  
-  .search-bar input {
+}
+
+
+.search-bar input {
     /* border: none;*/
-    outline: none; 
+    outline: none;
     background-color: #ECEBF5;
     padding: 3px;
     flex-grow: 1;
     height: 20px;
-    width:80%;
-  } 
+    width: 80%;
+}
 
-  .highlight{
-    color:#50A1A5;
-  }
-span{
+.highlight {
+    color: #50A1A5;
+}
+
+span {
     color: #f5365c;
 }
-.form-control-label{
-    img{
+
+.form-control-label {
+    img {
         transition: transform 0.3s ease;
-        &:hover{
-        transform: scale(1.3);
+
+        &:hover {
+            transform: scale(1.3);
         }
     }
+
     color: black;
-    }
-    .form-control{
+}
+
+.form-control {
     border-radius: 6px;
     border: 1px solid #A0A0A0;
     box-shadow: 1px 0px 1px 1px #f0f0f0;
     background-color: #FFFFFF;
-    ::placeholder{
+
+    ::placeholder {
         color: #A0A0A0;
-    }  
-    
-        &.is-invalid {
-            border-color:  #f5365c;
-        }
-        
     }
-    
-    
-.viewbtn{
-    border:none;
+
+    &.is-invalid {
+        border-color: #f5365c;
+    }
+}
+
+.viewbtn {
+    border: none;
     font-size: 12px;
-    color:#50A1A5;
+    color: #50A1A5;
     background: transparent;
-    }       
+}
 
-    .view-all{
-        background-color: #ECEBF5;
-        font-size: 12px;
-      }
-.id{
+.view-all {
+    background-color: #ECEBF5;
     font-size: 12px;
 }
-/* Center the modal vertically and horizontally */
 
-
-/* Modal background and content styling */
-.modal-content {
-    width: 250px; /* Adjust the width as needed */
-    height: auto; /* Adjust the height as needed */
-    background-color: #fff;
-    border: none; /* Remove the border */
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); /* Add a box shadow */
-    border-radius: 8px; /* Optional: Add rounded corners */
+.id {
+    font-size: 12px;
 }
 
-/* Remove border lines from header, body, and footer */
+.modal-content {
+    width: 250px;
+    height: auto;
+    background-color: #fff;
+    border: none;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+}
+
 .modal-header,
 .modal-footer {
     border: none;
-    background-color: transparent; /* Ensure no background lines */
+    background-color: transparent;
 }
 
-/* Title styling */
 .modal-title {
     font-size: 18px;
     font-weight: 600;
 }
 
-/* Close button styling */
 .close {
     font-size: 1.5rem;
     text-align: right;
@@ -127,18 +127,14 @@ span{
     background-color: transparent;
 }
 
-/* Body styling */
 .modal-body {
     padding: 15px;
 }
 
-/* Footer styling */
 .modal-footer {
     padding: 10px;
 }
 
-
-/* Modal fade-in effect */
 .modal.fade .modal-dialog {
     transform: translate(0, -25%);
     transition: transform 0.3s ease-out;
@@ -148,9 +144,12 @@ span{
     transform: translate(0, 0);
 }
 
-/* Modal backdrop */
 .modal-backdrop {
-    background-color: rgba(0, 0, 0, 0.7); 
-    }
+    background-color: rgba(0, 0, 0, 0.7);
+}
 
 
+.shaded-out {
+    background-color: rgba(0, 0, 0, 0.1);
+    opacity: 0.6;
+}

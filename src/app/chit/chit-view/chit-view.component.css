@@ -83,3 +83,7 @@
 .toggle{
     width: 25%;
 }
+.shaded-out {
+  background-color: rgba(0, 0, 0, 0.1);
+  opacity: 0.6;
+}

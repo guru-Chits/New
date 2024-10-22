@@ -338,8 +338,8 @@ export class PaymentsComponent implements OnInit {
 
     // Create a new Date object and increment the month
     let nextMonthIndex = (monthIndex + 1) % 12; // Increment month, wrap to 0 after December
-    let year = new Date().getFullYear(); // Use the current year
 
+    let year = parseInt(dateParts[2]); 
     if (monthIndex === 11) {
       // If it's December, move to January and increment the year
       year += 1;

@@ -31,6 +31,7 @@ export class ChitViewComponent implements OnInit{
   canCreate: boolean = false;
   showChitDetails: any;
   chitDetail: any;
+  itemsPerPage = 10; // Subscribers per page
   specificChitData: any;
   showTicket: boolean = false;
   ticketDetail: any;
@@ -39,13 +40,13 @@ export class ChitViewComponent implements OnInit{
   isSubscriberListVisible: boolean = false;
   displayedSubscribers: any[];
   subscriberData:any={}
+  selectedSubscriberId:string
   listId:any
   subscriberDetail: any;
   currentListType: 'chit' | 'additional' = 'chit';
   modalErrorMessage: string = '';
-  addSubData:any={}
+  addSubData:any={} 
   subData:any={}
-  ticketId: number= 1;
   viewSubscriber : any;
   bidHistory: any[] = [];
   filteredHistory: any;
@@ -60,7 +61,8 @@ export class ChitViewComponent implements OnInit{
   addPayment:any
   collectionTypeForm: FormGroup
   collectionTypes: any;
-
+  showall = false; // To toggle "View More"
+  showGroups=false
   constructor(private activatedRoute:ActivatedRoute,private router:Router, private service: ChitService,private paymentService:PaymentService,private authService:AuthService, private subservice:SubscriberService, private settings: ServiceService){}
 
   getAllChit(){
@@ -72,6 +74,7 @@ export class ChitViewComponent implements OnInit{
       console.log("TOTAL CHIT DATA", this.totalChitData)
       this.displayedChit = this.totalChitData
       console.log("DISPLAYED CHIT", this.displayedChit)
+      this.displayedChit=this.totalChitData.slice(0, 5);
     //   this.data=this.chitdata.AllChitGroups.map((chitDetails,index)=>({
     //     id:chitDetails._id,
        
@@ -92,13 +95,7 @@ export class ChitViewComponent implements OnInit{
       collectionType: new FormControl('',[Validators.required]),
     });
 
-    this.settings.getAllCollection().subscribe(
-      (data)=>{
-        this.collectionTypes=data
-        this.collectionTypes=this.collectionTypes.res
-        console.log(this.collectionTypes,"Collection Type");
-      }
-    )
+
     this.activatedRoute?.params.subscribe(paramData => {
       if (Object.keys(paramData).length) {
       this.service.getChitById(paramData.id).subscribe((data) => {
@@ -128,13 +125,7 @@ export class ChitViewComponent implements OnInit{
           // Get the last object in the array
           const lastSubscriber = this.chitData.addChitSubscribers[this.chitData.addChitSubscribers.length - 1];
           
-          // Extract the ticketId from the last object
-          const lastTicketId = lastSubscriber.ticketId;
-      
-          // Set the ticketId to a variable (or use it as needed)
-          console.log("Last Ticket ID:", lastTicketId);
-          this.ticketId = lastTicketId;  // Assign it to a variable for further use
-        } else {
+            } else {
           console.log("No subscribers found in addChitSubscribers");
         }
         this.paymentService.getTransactionById(this.groupId).subscribe((response)=>{
@@ -183,7 +174,6 @@ export class ChitViewComponent implements OnInit{
           place: subscriber.place,
           occupation: subscriber.occupation,
           subscriberId:subscriber.subscriberId,
-          ticketId:subscriber.ticketId,
           profileImageUrl:subscriber.profileImageUrl,
           collectionType:subscriber.collectionType,
           id: subscriber._id
@@ -197,7 +187,6 @@ export class ChitViewComponent implements OnInit{
           place: subscriber.place,
           occupation: subscriber.occupation,
           subscriberId:subscriber.subscriberId,
-          ticketId:subscriber.ticketId,
           collectionType:subscriber.collectionType,
           profileImageUrl:subscriber.profileImageUrl
 
@@ -220,6 +209,26 @@ export class ChitViewComponent implements OnInit{
 });
 
   }
+  viewMore(): void {
+    if (!this.showall) {
+      this.displayedSubscribers = this.data; // Show all subscribers
+      this.showall = true;
+    } 
+   }
+
+   viewMore1(): void {
+    if (!this.showGroups) {
+      this.displayedChit = this.totalChitData; // Show all subscribers
+      this.showGroups = true;
+    } 
+   }
+
+   viewless1(): void {
+    if (this.showGroups) {
+      this.displayedChit=this.totalChitData.slice(0, 5);
+      this.showGroups = false;
+    } 
+   }
   formatToIndianCurrency(amount: number | string): string {
     if (!amount) return '';
 
@@ -244,64 +253,58 @@ export class ChitViewComponent implements OnInit{
     return isNegative ? `-${formattedAmount}` : formattedAmount;
   }
 
-  getTickedByID(id: string, gropid: string): void{
-    this.service.getSubscriberByTicketId(gropid,id).subscribe(
-     data =>{
-      this.viewSubscriber = data
-     },
-     error => {
-      console.error("Error occured",error);
-     } 
-     
-    );
-
-  }
   closeTicket(type: 'close'){
     this.showTicket = false;
   }
 
-  // showSubscriberList(type: 'chit' | 'additional'): void {
-  //   debugger
-  //   this.currentListType = type;
-  //   this.isSubscriberListVisible = true;
-  //   this.subservice.getsubscriberAll().subscribe((data)=>{
-  //     this.subscriberData=data;
-  //     console.log("subscriber data",this.subscriberData);
-     
-  //     this.data=this.subscriberData.AllSubscriber.map((subscriberDetails,index)=>({
-  //       id:subscriberDetails?._id,
-  //       subscriberId: subscriberDetails?.subscriberId,
-  //       subscriberName: `${subscriberDetails?.firstName} ${subscriberDetails?.lastName}`,
-  //       subscriberProfile:subscriberDetails?.profileImageUrl
-  //     }))
-  //     this.displayedSubscribers = this.data;
-  //   })
-  // }
-  showSubscriberList(type: 'chit' | 'additional'): void {
-  
-    this.currentListType = type;
+  showSubscriberList(): void {
+    
     this.isSubscriberListVisible = true;
-    this.subservice.getsubscriberAll().subscribe((data) => {
-      this.subscriberData = data;
-      console.log("subscriber data", this.subscriberData);
-  
-      this.data = this.subscriberData.AllSubscriber.map((subscriberDetails) => ({
-        id: subscriberDetails?._id,
+    this.subservice.getsubscriberAll().subscribe((data)=>{
+      this.subscriberData=data;
+      console.log("subscriber data",this.subscriberData);
+     
+      this.data=this.subscriberData.AllSubscriber.map((subscriberDetails,index)=>({
+        id:subscriberDetails?._id,
         subscriberId: subscriberDetails?.subscriberId,
         subscriberName: `${subscriberDetails?.firstName} ${subscriberDetails?.lastName}`,
-        subscriberProfile: subscriberDetails?.profileImageUrl
-      }));
-  
-      this.displayedSubscribers = []; // Initially empty until a search is performed
-    });
+        subscriberProfile:subscriberDetails?.profileImageUrl
+      }))
+      this.displayedSubscribers = this.data.slice(0, this.itemsPerPage);
+    })
   }
+  // showSubscriberList(type: 'chit' | 'additional'): void {
+  
+  //   this.currentListType = type;
+  //   this.isSubscriberListVisible = true;
+  //   this.subservice.getsubscriberAll().subscribe((data) => {
+  //     this.subscriberData = data;
+  //     console.log("subscriber data", this.subscriberData);
+  
+  //     this.data = this.subscriberData.AllSubscriber.map((subscriberDetails) => ({
+  //       id: subscriberDetails?._id,
+  //       subscriberId: subscriberDetails?.subscriberId,
+  //       subscriberName: `${subscriberDetails?.firstName} ${subscriberDetails?.lastName}`,
+  //       subscriberProfile: subscriberDetails?.profileImageUrl
+  //     }));
+  
+  //     this.displayedSubscribers = []; // Initially empty until a search is performed
+  //   });
+  // }
   
   
 
   onButtonClick(id: string): void {
     this.getSubscribersById(id);
     this.listId=id
-
+    this.collectionTypeForm.reset()
+    this.settings.getAllCollection().subscribe(
+      (data)=>{
+        this.collectionTypes=data
+        this.collectionTypes=this.collectionTypes.res
+        console.log(this.collectionTypes,"Collection Type");
+      }
+    )
     if (this.subscriberDetail && this.subscriberDetail.id === id) {
       // If the same subscriber is clicked, toggle off the details
       this.subscriberDetail = null;
@@ -314,7 +317,8 @@ export class ChitViewComponent implements OnInit{
     this.subservice.getsubscriberById(id).subscribe(
       data => {
         this.subscriberDetail = data;
-  
+        this.selectedSubscriberId = this.subscriberDetail.Subscriber.subscriberId;
+
         console.log(this.subscriberDetail)
       },
       error => {
@@ -336,24 +340,24 @@ export class ChitViewComponent implements OnInit{
   //   });
   // } 
   applyFilter(filterValue: string) {
-    if (!filterValue || !this.data) {
-      this.displayedSubscribers = []; // Hide all if there's no filter value or data is not defined
-      return;
-    }
-  
-    // Filter the subscribers based on the input
-    this.displayedSubscribers = this.data.filter(subscriber => {
-      const subscriberId = subscriber.subscriberId ? subscriber.subscriberId.toString().toLowerCase() : '';
-      const subscriberName = subscriber.subscriberName ? subscriber.subscriberName.toLowerCase() : '';
-      return subscriberId.includes(filterValue.toLowerCase()) || subscriberName.includes(filterValue.toLowerCase());
+    const filteredSubscribers = this.data.filter(subscriber => {
+      const subscriberId = subscriber.subscriberId?.toString().toLowerCase() || '';
+      const subscriberName = subscriber.subscriberName?.toLowerCase() || '';
+      const email = subscriber.email?.toLowerCase() || '';
+      return subscriberId.includes(filterValue.toLowerCase()) ||
+        subscriberName.includes(filterValue.toLowerCase()) ||
+        email.includes(filterValue.toLowerCase());
     });
+
+
+    this.displayedSubscribers = filteredSubscribers.slice(0, this.itemsPerPage);
+
   }
   
   
 
   applyFilterchit(filterValue: string) {
     this.displayedChit= this.totalChitData;
-    console.log("displaying chit ===", this.displayedChit)
     if (!filterValue || !this.data) {
       console.log(this.displayedChit);
       
@@ -369,7 +373,7 @@ export class ChitViewComponent implements OnInit{
   }
 
   addSelectedSubscriber(subscriber: any): void {
-    debugger
+
     if (this.listId == subscriber) {
       if (this.currentListType === 'chit') {
         this.addSubscriberById(subscriber);
@@ -382,14 +386,10 @@ export class ChitViewComponent implements OnInit{
   }
 
   addSubscriberById(id: string): void {
-    if(this.ticketId <= 20)
-    {
-      const addChitSubscribers = this.chitData.addChitSubscribers || [];
       const chitSubscribers = this.chitData.chitSubscribers || [];
       console.log("CHIT SUBSCRIBER ADDED ",chitSubscribers)
-      this.ticketId=chitSubscribers.length+1
-      if (chitSubscribers.length >= 20) {
-        this.showModal('Cannot add more than 20 subscribers.');
+      if (chitSubscribers.length >= 25) {
+        this.showModal('Cannot add more than 25 subscribers.');
         return;
       }
   
@@ -398,13 +398,13 @@ export class ChitViewComponent implements OnInit{
           this.subData = res;
   
           const newSubscriber = {
-            ticketId: this.ticketId,
             subscriberId: this.subData.Subscriber.subscriberId,
             profileImageUrl: this.subData.Subscriber.profileImageUrl,
             aliasName: this.subData.Subscriber.lastName,
             firstName: this.subData.Subscriber.firstName,
             place: this.subData.Subscriber.routeId,
             occupation: this.subData.Subscriber.occupation,
+            collectionType: this.collectionTypeForm.get('collectionType')?.value
           };
   
           if (chitSubscribers.some(sub => sub.subscriberId === newSubscriber.subscriberId)) {
@@ -413,13 +413,29 @@ export class ChitViewComponent implements OnInit{
           }
   
           chitSubscribers.push(newSubscriber);
+          this.subscribers = [...chitSubscribers];
+          console.log(newSubscriber);
           
+          this.service.addSubscriber(this.groupId,newSubscriber).subscribe(data=>{
+            console.log(data,"saed");
+            this.activatedRoute?.params.subscribe(paramData => {
+              if (Object.keys(paramData).length) {
+              this.service.getChitById(paramData.id).subscribe((data) => {
+                this.chitData = data;
+                this.chitData=this.chitData.ChitsGroup;
+                this.subscribers = this.chitData.chitSubscribers;
+
+               })
+              }
+               
+            })
+          })
           // Update the table data
           // addChitSubscribers.push(newSubscriber);
   
           // Update the table data for additional subscribers
           this.subscribers = [...chitSubscribers];
-          if(this.subscribers.length >= 20){
+          if(this.subscribers.length >= 25){
             this.isSubscriberListVisible = false;
           }
         },
@@ -431,11 +447,11 @@ export class ChitViewComponent implements OnInit{
           }
         }
       );
-     }
+     
   }
 
   addAdditionalSubscriberById(id: string): void {
-    debugger
+    
     const addChitSubscribers = this.chitData.addChitSubscribers || [];
     const chitSubscribers = this.chitData.chitSubscribers || [];
     
@@ -447,10 +463,7 @@ export class ChitViewComponent implements OnInit{
     this.subservice.getsubscriberById(id).subscribe(
       res => {
         this.addSubData = res;
-        this.ticketId = Number(this.ticketId) || 0; 
-        this.ticketId += 1
         const newSubscriber = {
-          ticketId: this.ticketId,
           subscriberId: this.addSubData.Subscriber.subscriberId,
           profileImageUrl: this.addSubData.Subscriber.profileImageUrl,
           aliasName: this.addSubData.Subscriber.lastName,
@@ -467,10 +480,7 @@ export class ChitViewComponent implements OnInit{
           this.showModal('Duplicate subscriber ID detected. This subscriber cannot be added.');
           return;
         }
-  
-        // this.ticketId = this.ticketId + 1;
-        console.log('ticket ID', this.ticketId)
-        addChitSubscribers.push(newSubscriber);
+          addChitSubscribers.push(newSubscriber);
   
         // Update the table data for additional subscribers
         this.addSubscribers = [...addChitSubscribers];
@@ -494,35 +504,24 @@ export class ChitViewComponent implements OnInit{
     modal.style.display = 'none';
   }
 
-  removeSubscriber(){
-    debugger
-    let subscriberId = this.filteredSubscribers[0]?.subscriberId || this.filteredAdditionalSubs[0]?.subscriberId
-
+  removeSubscriber(subId:string){
     let chitgroupId = this.chitData.chitGroupId
-    let remainingSub = this.subscribers.filter(subscriber => subscriber.subscriberId !== this.filteredSubscribers[0]?.subscriberId);
-    let remainingAddSub = this.addSubscribers.filter(subscriber => subscriber.subscriberId !== this.filteredAdditionalSubs[0]?.subscriberId);
-    // console.log("remaining sub",remainingSub)
-    // console.log("remaining Add sub", remainingAddSub)
-    console.log(subscriberId, chitgroupId)
-    this.service.deleteSubscriber(chitgroupId, subscriberId).subscribe((res) => {
-      console.log(res)
+
+    this.service.deleteSubscriber(chitgroupId, subId).subscribe((res) => {
+
     })
 
-    // if (remainingSub.length < 20 && remainingAddSub.length > 0) {
-    //   // Move the first additional subscriber to the subscribers list
-    //   const firstAdditionalSubscriber = remainingAddSub.shift();
+    this.activatedRoute?.params.subscribe(paramData => {
+      if (Object.keys(paramData).length) {
+      this.service.getChitById(paramData.id).subscribe((data) => {
+        this.chitData = data;
+        this.chitData=this.chitData.ChitsGroup;
+        this.subscribers = this.chitData.chitSubscribers;
 
-    //   // Optionally modify any attributes like ticketId (as per your logic)
-    //   firstAdditionalSubscriber.ticketId = firstAdditionalSubscriber.ticketId - 1//'T' + Math.floor(Math.random() * 1000); // Example of updating ticket ID
-
-    //   // Add this additional subscriber to the main subscriber list
-    //   this.subscribers.push(firstAdditionalSubscriber);
-    //   this.subscribers = [...this.subscribers];
-    //   this.addSubscribers.shift()
-    //   this.addSubscribers = [...this.addSubscribers]
-    //   console.log("Add Subscribers", this.addSubscribers)
-    //   console.log("SUBSCRIBERS", this.subscribers)
-    // }
+       })
+      }
+       
+    })
   }
 
   getAllAuction(){
@@ -543,7 +542,6 @@ export class ChitViewComponent implements OnInit{
         // Initialize base fields from top level
         const result = {
           auctionCycle: data.auctionCycle || data.TKNData?.auctionCycle || 'N/A',
-          ticketId: data.ticketId || data.extraPaymentData?.ticketId || data.TKNData?.ticketId || data.profitChitData?.ticketId || data.purchaseChitData?.ticketId || 'N/A',
           subscriberName: data.subscriberName || data.extraPaymentData?.subscriberName || data.TKNData?.subscriberName || data.profitChitData?.subscriberName || data.purchaseChitData?.subscriberName  || 'N/A',
           winningBid: data.winningBid || data.extraPaymentData?.winningBid || data.TKNData?.winningBid || data.profitChitData?.winningBid || data.purchaseChitData?.winningBid || 'N/A',
           prizedAmount: data.prizedAmount || data.extraPaymentData?.prizedAmount || data.TKNData?.prizedAmount || data.profitChitData?.prizedAmount || data.purchaseChitData?.prizedAmount || 'N/A',
@@ -566,11 +564,11 @@ export class ChitViewComponent implements OnInit{
 
   profileImageWithIdRenderer(params: any): string {
     const imageUrl = params.data.profileImageUrl;
-    const ticketId = params.data.ticketId;
+    // const ticketId = params.data.ticketId;
     return `
       <div style="display: flex; align-items: center;">
         <img src="${imageUrl}" alt="Profile Image" width="35" height="35" style="border-radius: 50%; margin-right: 10px;">
-        <span style="color: #50A1A5;">${ticketId}</span>
+        <span style="color: #50A1A5;"></span>
       </div>
     `;
   }
@@ -633,10 +631,18 @@ export class ChitViewComponent implements OnInit{
      this.filteredSubscribers = this.subscribers.filter(subscriber => subscriber._id === id);
     this.filteredAdditionalSubs = this.addSubscribers.filter(subscriber => subscriber._id === id);
     // Log or return the filtered result
+
     const subscriber = this.filteredSubscribers[0];
     this.collectionTypeForm.patchValue({
       collectionType: subscriber.collectionType  // Patch the collectionType value from the filtered subscriber
     });
+    this.settings.getAllCollection().subscribe(
+      (data)=>{
+        this.collectionTypes=data
+        this.collectionTypes=this.collectionTypes.res
+        console.log(this.collectionTypes,"Collection Type");
+      }
+    )
     console.log("Filtered Subscribers", this.filteredSubscribers);
 
     return this.filteredSubscribers;
@@ -648,7 +654,7 @@ export class ChitViewComponent implements OnInit{
   subscriberColumn : ITableColumn[]= [
     {
       label: 'profileImageUrl',
-      field: 'Ticket ID',
+      field: ' ',
       filter:false,
       cellRenderer: this.profileImageWithIdRenderer,
       onCellClicked: (event: CellClickedEvent) => this.getChitById(event.data._id)
@@ -661,30 +667,10 @@ export class ChitViewComponent implements OnInit{
 
 ];
 
-// Column definitions for addChitSubscribers
-  addSubscriberColumn = [
-    {
-      label: 'profileImageUrl',
-      field: 'Ticket ID',
-      filter:false,
-      cellRenderer: this.profileImageWithIdRenderer,
-      onCellClicked: (event: CellClickedEvent) => this.getChitById(event.data._id)
-    },  { label: 'Name', field: 'firstName', onCellClicked: (event: CellClickedEvent) => this.getChitById(event.data._id)},
-  { label: 'Alias Name', field: 'aliasName', onCellClicked: (event: CellClickedEvent) => this.getChitById(event.data._id) },
-  { label: 'Passbook Number', field: 'passbookNo', onCellClicked: (event: CellClickedEvent) => this.getChitById(event.data._id) },
-  { label: 'Place', field: 'place', onCellClicked: (event: CellClickedEvent) => this.getChitById(event.data._id) },
-  { label: 'Occupation', field: 'occupation', onCellClicked: (event: CellClickedEvent) => this.getChitById(event.data._id) },
-  { label: 'Collection Type', field: 'collectionType', onCellClicked: (event: CellClickedEvent) => this.getChitById(event.data._id) },
-
-
-  ]
 
   DummyData = [
     {
       label: 'Auction No', field: 'auctionCycle'
-    },
-    {
-      label: 'Ticket ID', field: 'ticketId'
     },
     {
       label: 'Prized Subscriber', field: 'subscriberName'
@@ -696,7 +682,7 @@ export class ChitViewComponent implements OnInit{
       label: 'Prized Amount ', field: 'prizedAmount'
     }
   ]
-edit(passbookNo){
+edit(passbookNo:string){
   console.log(passbookNo);
  this.service.getByPassbooNo(passbookNo).subscribe((data: any) => {
     console.log(data);
@@ -706,15 +692,23 @@ edit(passbookNo){
 
     // Update the collectionType value from the form into the subscriberDetails
     editSubscriber.subscriberDetails.collectionType = this.collectionTypeForm.get('collectionType').value;
-    editSubscriber.subscriberDetails.ticketId = editSubscriber.subscriberDetails.ticketId ;
-    console.log(editSubscriber.subscriberDetails.ticketId);
     
     // Call the update service to save the changes back to the server
     this.service.updateSubscriber(editSubscriber.chitGroupId, passbookNo, editSubscriber.subscriberDetails).subscribe(
       (response: any) => {
         console.log('Subscriber updated successfully', response);
         this.showTicket = false;
-
+        this.activatedRoute?.params.subscribe(paramData => {
+          if (Object.keys(paramData).length) {
+          this.service.getChitById(paramData.id).subscribe((data) => {
+            this.chitData = data;
+            this.chitData=this.chitData.ChitsGroup;
+            this.subscribers = this.chitData.chitSubscribers;
+    
+           })
+          }
+           
+        })
         // You can add code here to handle success, like showing a success message or updating the UI
       },
       (error: any) => {
@@ -723,5 +717,8 @@ edit(passbookNo){
       }
     );
   });
+}
+isSubscriberInChit(subscriberId: string): boolean {
+  return this.subscribers.some(chitSubscriber => chitSubscriber.subscriberId === subscriberId);
 }
 }

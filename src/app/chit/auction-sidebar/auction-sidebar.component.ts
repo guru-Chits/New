@@ -16,7 +16,6 @@ export class AuctionSidebarComponent {
   
   ngOnChanges(changes: SimpleChanges) {
     if (changes['dataFromParent']) {
-      console.log('Boolean value changed:', this.dataFromParent);
       if(this.dataFromParent === true){
         this.finalArray=[]
         for(let i=0;i<this.finalArray.length;i++){
@@ -75,9 +74,7 @@ export class AuctionSidebarComponent {
     this.service.getAllChit().subscribe((data) => {
       this.chitdata = data;
       this.chitdata = this.chitdata?.AllChitGroups || []; // Ensure chitdata is an array
-  
-      console.log("AUCTION SIDEBAR Before Update:", this.chitdata);
-  
+    
       // Update auction dates to next month
       this.chitdata.forEach((item: any) => {
         if (item.auctionDate) {
@@ -95,11 +92,8 @@ export class AuctionSidebarComponent {
   
           // Update the item's auctionDate
           item.auctionDate = `${updatedDay}-${updatedMonth}-${updatedYear}`;
-          console.log("AUCTION DATE", item.auctionDate)
         }
       });
-  
-      console.log("AUCTION SIDEBAR After Update:", this.chitdata);
   
       // Get today's date in the required format (DD-MM-YYYY)
       const today = new Date();
@@ -114,7 +108,6 @@ export class AuctionSidebarComponent {
         }));
   
       // Optional: Log the final array to see today's auctions
-      console.log("Today's Auctions ->", this.finalArray);
     });
   }
   
@@ -131,8 +124,6 @@ export class AuctionSidebarComponent {
         groupId: item.chitGroupId,
         createdAt: item.createdAt,
       }));
-
-    console.log('Filtered Final Array ->', this.finalArray);
   }
 
   fullAuction(){

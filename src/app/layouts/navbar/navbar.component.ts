@@ -20,8 +20,8 @@ export class NavbarComponent implements OnInit {
    * List titles
    */
   public listTitles: any[];
- profile:any
- role:string
+  profile: any
+  role: string
   /**
    * Location
    */
@@ -30,13 +30,13 @@ export class NavbarComponent implements OnInit {
   /**
    * User
    */
-  user: { firstName: string, lastName: string, role: string};
-users:any
+  user: { firstName: string, lastName: string, role: string };
+  users: any
   /**
    * Constructor
    * @param location - Location
    */
-  constructor(location: Location,private router :Router) {
+  constructor(location: Location, private router: Router) {
     this.location = location;
   }
 
@@ -52,22 +52,16 @@ users:any
     this.sidebarToggle.emit();
   }
   getUserInfo() {
-    this.profile= sessionStorage.getItem('profile');
-    console.log(this.profile);
-    this.profile=this.profile.replace(/"/g, '')
-  
-    this.users=sessionStorage.getItem('name')
-    this.users=this.users.replace(/"/g, ''); 
-    this.role=sessionStorage.getItem('userRole')
-    this.role=this.role.replace(/"/g, '')
-    console.log(this.users);
-
+    this.profile = sessionStorage.getItem('profile');
+    this.profile = this.profile.replace(/"/g, '')
+    this.users = sessionStorage.getItem('name')
+    this.users = this.users.replace(/"/g, '');
+    this.role = sessionStorage.getItem('userRole')
+    this.role = this.role.replace(/"/g, '')
     return this.users;
   }
-logout(){
-  sessionStorage.clear();
-  this.router.navigate(['/login']);
-
-}
-
+  logout() {
+    sessionStorage.clear();
+    this.router.navigate(['/login']);
+  }
 }

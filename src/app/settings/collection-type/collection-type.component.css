@@ -1,26 +1,28 @@
-.head-text{
+.head-text {
     font-size: 20px;
     font-weight: 700;
 }
 
-.normalText{
+.normalText {
     font-size: 16px;
 }
-::placeholder{
-    font-size: 14px; 
+
+::placeholder {
+    font-size: 14px;
     color: #B8B8B8;
 }
 
-.buttoncreate{
-    background-color:#3E3A97;
-    color:white;
+.buttoncreate {
+    background-color: #3E3A97;
+    color: white;
     border-radius: 5px;
 }
-.container{
-    border: 2px solid #B8B8B8; 
-    border-radius: 5px; 
+
+.container {
+    border: 2px solid #B8B8B8;
+    border-radius: 5px;
     padding-bottom: 20px;
-    background-color: #f8f9fa; 
+    background-color: #f8f9fa;
     margin: 10px;
     margin-top: 20px;
-  }
+}

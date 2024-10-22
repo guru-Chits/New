@@ -14,9 +14,8 @@ import { ServiceService } from '../../settings/shared/service.service';
   styleUrl: './chit-create.component.css'
 })
 export class ChitCreateComponent {
-  addTicketId:any=1
+
   errorMessage: string = '';
-  ticketId:any=1
   breadcrumsData: any = [
     {
       key: 'Chit Management',
@@ -28,56 +27,52 @@ export class ChitCreateComponent {
     },
   ];
   showList = false;
-  listId:any
+  listId: any
   showall = false; // To toggle "View More"
 
   modalErrorMessage: string = '';
   currentListType: 'chit' | 'additional' = 'chit';
   gridApi: any;
-  data : any[] = [];
-  chitdata :any;
+  data: any[] = [];
+  chitdata: any;
   subscriberDetail: any;
-  subscriberData:any={}
-  subData:any={}
-  addSubData:any={}
+  subscriberData: any = {}
+  subData: any = {}
+  addSubData: any = {}
   chitSubscribersData = [];
-  addChitSubscribersData = [];
   displayedSubscribers: any[];
-  selectedSubscriberId:string
+  selectedSubscriberId: string
   itemsPerPage = 10; // Subscribers per page
-
-  isSubscriberListVisible:boolean = false;
-  searchInput:string=""
-  chitGroupForm:FormGroup
+  isSubscriberListVisible: boolean = false;
+  searchInput: string = ""
+  chitGroupForm: FormGroup
   displayedChits: any[];
   currentDate: any;
   selectedFileName: string = '';
   chitSubLength: any;
-  showAnother: any;
   collectionTypes: any;
   collectionTypeForm: FormGroup
   minDate: string;
   maxDate: string;
   minDay = 1;
   maxDay = 10;
-  constructor( private subService:SubscriberService, private chitService:ChitService, private router:Router, private settings: ServiceService) {
+  constructor(private subService: SubscriberService, private chitService: ChitService, private router: Router, private settings: ServiceService) {
 
   }
 
-  ngOnInit(): void{
+  ngOnInit(): void {
     this.chitGroupForm = new FormGroup({
-      auctionDate: new FormControl('',[Validators.required]),
-      chitAmount: new FormControl('',[Validators.required, Validators.pattern('^[0-9]*$')]),
-      foremanCommission: new FormControl('',[Validators.required]),
-      monthlyInstall: new FormControl('',[Validators.required]),
+      auctionDate: new FormControl('', [Validators.required]),
+      chitAmount: new FormControl('', [Validators.required, Validators.pattern('^[0-9]*$')]),
+      foremanCommission: new FormControl('', [Validators.required]),
+      monthlyInstall: new FormControl('', [Validators.required]),
       document: new FormControl(''),
       chitSubscribers: new FormControl([]),
       addChitSubscribers: new FormControl([])
     });
     this.collectionTypeForm = new FormGroup({
-      collectionType: new FormControl('',[Validators.required]),
+      collectionType: new FormControl('', [Validators.required]),
     });
-
 
     const today = new Date().toISOString().split('T')[0];
     this.currentDate = today;
@@ -90,34 +85,16 @@ export class ChitCreateComponent {
     // Set maximum date to the end of the year
     this.maxDate = `${year}-12-31`;
 
-
-    console.log("Min Date:", this.minDate);
-    console.log("Max Date:", this.maxDate);
-
-    this.subService.getsubscriberAll().subscribe((data)=>{
-      this.subscriberData=data;
-      console.log("subscriber data",this.subscriberData);
-     
-      this.data=this.subscriberData.AllSubscriber.map((subscriberDetails,index)=>({
-        id:subscriberDetails?._id,
+    this.subService.getsubscriberAll().subscribe((data) => {
+      this.subscriberData = data;
+      this.data = this.subscriberData.AllSubscriber.map((subscriberDetails, index) => ({
+        id: subscriberDetails?._id,
         subscriberId: subscriberDetails?.subscriberId,
         subscriberName: `${subscriberDetails?.firstName} ${subscriberDetails?.lastName}`,
-        subscriberProfile:subscriberDetails?.profileImageUrl
+        subscriberProfile: subscriberDetails?.profileImageUrl
       }))
       this.displayedSubscribers = this.data.slice(0, this.itemsPerPage);
-      console.log(this.displayedSubscribers);
-      
     });
-
-    // this.chitGroupForm.get('chitAmount').valueChanges.subscribe(value => {
-    //   if (value && !isNaN(value)) {
-    //     const commission = value * 0.05;  // 5% of chit amount
-    //     this.chitGroupForm.patchValue({
-    //       foremanCommission: commission,  // Round to 2 decimal places
-    //       monthlyInstall: commission  // Assume a 12-month installment plan
-    //     });
-    //   }
-    // });
   }
   // Method to trigger the hidden file input
   triggerFileInput(): void {
@@ -126,15 +103,22 @@ export class ChitCreateComponent {
       fileInput.click();
     }
   }
+  addSelectedSubscriber(subscriber: any): void {
+    if (this.listId == subscriber) {
+      if (this.currentListType === 'chit') {
+        this.addSubscriberById(subscriber);
+      }
+    }
+    // this.closeSubscriberList();
+    this.subscriberDetail = null
 
+  }
   // Method to handle the file selection and display the file name
   onFileSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files.length > 0) {
       const file: File = input.files[0]; // Get the selected file
       this.selectedFileName = file.name; // Set the file name
-      console.log('Selected file:', this.selectedFileName);
-
       // Optionally, patch the file to the reactive form control (if needed)
       this.chitGroupForm.patchValue({ document: file });
     }
@@ -162,9 +146,7 @@ export class ChitCreateComponent {
   }
   profileImageWithIdRenderer(params: any): string {
     const imageUrl = params.data.profileImageUrl;
-    const ticketId = params.data.ticketId; // Incrementing the ticket ID starting from 1
-    console.log(ticketId,"tickid");
-  
+
     return `
       <div style="display: flex; align-items: center;">
         <img src="${imageUrl}" alt="Profile Image" width="35" height="35" style="border-radius: 50%; margin-right: 10px;">
@@ -173,8 +155,8 @@ export class ChitCreateComponent {
     `;
   }
 
-  getformanVal(){
-    const chitAmount  = this.chitGroupForm.get("chitAmount").value;
+  getformanVal() {
+    const chitAmount = this.chitGroupForm.get("chitAmount").value;
     const forman = chitAmount * 0.05;
     this.chitGroupForm.get('foremanCommission').patchValue(forman)
     this.chitGroupForm.get('monthlyInstall').patchValue(forman)
@@ -187,18 +169,17 @@ export class ChitCreateComponent {
     }
   }
   applyFilter(filterValue: string) {
-  const filteredSubscribers = this.data.filter(subscriber => {
-    const subscriberId = subscriber.subscriberId?.toString().toLowerCase() || '';
-    const subscriberName = subscriber.subscriberName?.toLowerCase() || '';
-    const email = subscriber.email?.toLowerCase() || '';
-    return subscriberId.includes(filterValue.toLowerCase()) ||
-           subscriberName.includes(filterValue.toLowerCase()) ||
-           email.includes(filterValue.toLowerCase());
-  });
+    const filteredSubscribers = this.data.filter(subscriber => {
+      const subscriberId = subscriber.subscriberId?.toString().toLowerCase() || '';
+      const subscriberName = subscriber.subscriberName?.toLowerCase() || '';
+      const email = subscriber.email?.toLowerCase() || '';
+      return subscriberId.includes(filterValue.toLowerCase()) ||
+        subscriberName.includes(filterValue.toLowerCase()) ||
+        email.includes(filterValue.toLowerCase());
+    });
 
-  this.displayedSubscribers = filteredSubscribers.slice(0, this.itemsPerPage);
-
-  } 
+    this.displayedSubscribers = filteredSubscribers.slice(0, this.itemsPerPage);
+  }
 
   getSubscribersById(id: string): void {
     this.subService.getsubscriberById(id).subscribe(
@@ -206,7 +187,6 @@ export class ChitCreateComponent {
         this.subscriberDetail = data;
         this.selectedSubscriberId = this.subscriberDetail.Subscriber.subscriberId;
 
-        console.log(this.subscriberDetail)
       },
       error => {
         console.error('Error fetching subscriber', error);
@@ -214,17 +194,14 @@ export class ChitCreateComponent {
     );
   }
 
-
-  
   onButtonClick(id: string): void {
     this.getSubscribersById(id);
     this.collectionTypeForm.reset()
-    this.listId=id
+    this.listId = id
     this.settings.getAllCollection().subscribe(
-      (data)=>{
-        this.collectionTypes=data
-        this.collectionTypes=this.collectionTypes.res
-        console.log(this.collectionTypes,"Collection Type");
+      (data) => {
+        this.collectionTypes = data
+        this.collectionTypes = this.collectionTypes.res
       }
     )
     if (this.subscriberDetail && this.subscriberDetail.id === id) {
@@ -235,120 +212,70 @@ export class ChitCreateComponent {
     }
   }
 
-
   showSubscriberList(type: 'chit' | 'additional'): void {
     this.currentListType = type;
     this.isSubscriberListVisible = true;
-    this.subService.getsubscriberAll().subscribe((data)=>{
-      this.subscriberData=data;
-      console.log("subscriber data",this.subscriberData);
-     
-      this.data=this.subscriberData.AllSubscriber.map((subscriberDetails,index)=>({
-        id:subscriberDetails?._id,
+    this.subService.getsubscriberAll().subscribe((data) => {
+      this.subscriberData = data;
+      this.data = this.subscriberData.AllSubscriber.map((subscriberDetails, index) => ({
+        id: subscriberDetails?._id,
         subscriberId: subscriberDetails?.subscriberId,
         subscriberName: `${subscriberDetails?.firstName} ${subscriberDetails?.lastName}`,
-        subscriberProfile:subscriberDetails?.profileImageUrl
+        subscriberProfile: subscriberDetails?.profileImageUrl
       }))
       this.displayedSubscribers = this.data;
     })
   }
-  
-  addSelectedSubscriber(subscriber: any): void {
-    
-    if(this.listId==subscriber)
-    {
-      if (this.currentListType === 'chit') {
-        this.addSubscriberById(subscriber);
-      } else {
-        this.addAdditionalSubscriberById(subscriber);
 
-      }
-  
-    }
-    // this.closeSubscriberList();
-    this.subscriberDetail=null
-   
-  }
   viewMore() {
     if (!this.showall) {
       this.displayedSubscribers = this.data; // Show all subscribers
       this.showall = true;
     }
   }
-  
-
   addSubscriberById(id: string): void {
-    if(this.ticketId <= 20)
-    {
-      const chitSubscribers = this.chitGroupForm.get('chitSubscribers').value || [];
-      console.log("CHIT SUBSCRIBER ADDED ",chitSubscribers)
-      this.ticketId=chitSubscribers.length+1
-      if (chitSubscribers.length >= 20) {
-        this.showModal('Cannot add more than 20 subscribers.');
-        return;
-      }
-  
-      this.subService.getsubscriberById(id).subscribe(
-        res => {
-          this.subData = res;
-  
-          const newSubscriber = {
-            ticketId: this.ticketId,
-            subscriberId: this.subData.Subscriber.subscriberId,
-            profileImageUrl: this.subData.Subscriber.profileImageUrl,
-            aliasName: this.subData.Subscriber.lastName,
-            firstName: this.subData.Subscriber.firstName,
-            place: this.subData.Subscriber.routeId,
-            occupation: this.subData.Subscriber.occupation,
-            collectionType:this.collectionTypeForm.get('collectionType')?.value
-          };
-  
-          if (chitSubscribers.some(sub => sub.subscriberId === newSubscriber.subscriberId)) {
-            this.showModal('Duplicate subscriber ID detected. This subscriber cannot be added.');
-            return;
-          }
-  
-          chitSubscribers.push(newSubscriber);
-          this.chitGroupForm.patchValue({ chitSubscribers });
-  
-          // Update the table data
-          this.chitSubscribersData = [...chitSubscribers];
-          this.chitSubLength = this.chitSubscribersData.length;
-          console.log("Length value", this.chitSubLength)
-          if(this.chitSubLength >= 20){
-            this.isSubscriberListVisible = false;
-            this.showAnother = true
-          }
-        },
-        error => {
-          if (error.status === 400 && error.error.message.includes('Duplicate subscriberId')) {
-            this.showModal('Duplicate subscriber ID detected. This subscriber cannot be added.');
-          } else {
-            console.error('Error fetching subscriber:', error);
-          }
+
+    const chitSubscribers = this.chitGroupForm.get('chitSubscribers').value || [];
+    if (chitSubscribers.length >= 25) {
+      this.showModal('Cannot add more than 25 subscribers.');
+      return;
+    }
+
+    this.subService.getsubscriberById(id).subscribe(
+      res => {
+        this.subData = res;
+        const newSubscriber = {
+          subscriberId: this.subData.Subscriber.subscriberId,
+          profileImageUrl: this.subData.Subscriber.profileImageUrl,
+          aliasName: this.subData.Subscriber.lastName,
+          firstName: this.subData.Subscriber.firstName,
+          place: this.subData.Subscriber.routeId,
+          occupation: this.subData.Subscriber.occupation,
+          collectionType: this.collectionTypeForm.get('collectionType')?.value
+        };
+        if (chitSubscribers.some(sub => sub.subscriberId === newSubscriber.subscriberId)) {
+          this.showModal('Duplicate subscriber ID detected. This subscriber cannot be added.');
+          return;
         }
-      );
-     }
+        chitSubscribers.push(newSubscriber);
+        this.chitGroupForm.patchValue({ chitSubscribers });
+        this.chitSubscribersData = [...chitSubscribers];
+        this.chitSubLength = this.chitSubscribersData.length;
+      },
+      error => {
+        if (error.status === 400 && error.error.message.includes('Duplicate subscriberId')) {
+          this.showModal('Duplicate subscriber ID detected. This subscriber cannot be added.');
+        } else {
+          console.error('Error fetching subscriber:', error);
+        }
+      }
+    );
   }
-
   column: ITableColumn[] = [
-    { label: 'profileImageUrl', field: '', sortable: false ,
+    {
+      label: 'profileImageUrl', field: '', sortable: false,
       cellRenderer: this.profileImageWithIdRenderer,
     },
-    { label: 'TicketId', field: 'ticketId', sortable: true },
-
-    { label: 'Alias Name', field: 'aliasName', sortable: true },
-    { label: 'First Name', field: 'firstName', sortable: true },
-    { label: 'Place', field: 'place', sortable: true },
-    { label: 'Occupation', field: 'occupation', sortable: true },
-    { label: 'Collection Type', field: 'collectionType', sortable: true },
-  ];  
-
-  addSubcolumn: ITableColumn[] = [
-    { label: 'Ticket Id', field: '', sortable: false ,
-      cellRenderer: this.profileImageWithIdRenderer,
-    },
-    { label: 'TicketId', field: 'ticketId', sortable: true },
     { label: 'Alias Name', field: 'aliasName', sortable: true },
     { label: 'First Name', field: 'firstName', sortable: true },
     { label: 'Place', field: 'place', sortable: true },
@@ -356,94 +283,30 @@ export class ChitCreateComponent {
     { label: 'Collection Type', field: 'collectionType', sortable: true },
   ];
 
- 
-
-  addAdditionalSubscriberById(id: string): void {
-    if (this.ticketId >= 20) {
-      debugger
-      const addChitSubscribers = this.chitGroupForm.get('addChitSubscribers').value || [];
-      const chitSubscribers = this.chitGroupForm.get('chitSubscribers').value || [];
-  
-      if (addChitSubscribers.length >= 5) {
-        this.showModal('Cannot add more than 5 additional subscribers.');
-        return;
-      }
-  
-      this.subService.getsubscriberById(id).subscribe(
-        res => {
-          this.addSubData = res;
-          this.ticketId += 1;
-          const newSubscriber = {
-            ticketId: this.ticketId,
-            subscriberId: this.addSubData.Subscriber.subscriberId,
-            profileImageUrl: this.addSubData.Subscriber.profileImageUrl,
-            aliasName: this.addSubData.Subscriber.lastName,
-            firstName: this.addSubData.Subscriber.firstName,
-            place: this.addSubData.Subscriber.routeId,
-            occupation: this.addSubData.Subscriber.occupation,
-            collectionType:this.collectionTypeForm.get('collectionType')?.value
-          };
-  
-          // Check for duplicate subscriber ID in both addChitSubscribers and chitSubscribers
-          if (addChitSubscribers.some(sub => sub.subscriberId === newSubscriber.subscriberId) ||
-              chitSubscribers.some(sub => sub.subscriberId === newSubscriber.subscriberId)) {
-            this.showModal('Duplicate subscriber ID detected. This subscriber cannot be added.');
-            return;
-          }
-          // this.ticketId += 1;
-
-          addChitSubscribers.push(newSubscriber);
-          this.chitGroupForm.patchValue({ addChitSubscribers });
-  
-          // Update the table data
-          this.addChitSubscribersData = [...addChitSubscribers];
-        },
-        error => {
-          console.error('Error fetching subscriber:', error);
-        }
-      );
-    }
-    else {
-      console.log("EXIT __________")
-     }
-  }
-  
-  // Method to show modal (assuming you have a modal implementation)
   showModal(message: string): void {
     this.modalErrorMessage = message;
     const modal = document.getElementById('duplicateModal');
     modal.style.display = 'block';
   }
-  
-  // Method to close modal
+
   closeModal(): void {
     const modal = document.getElementById('duplicateModal');
     modal.style.display = 'none';
   }
-  
-  
-  
+
   onGridReady(params: any) {
     this.gridApi = params.api;
   }
 
   addToGroup(id: any): void {
-    
     this.addSubscriberById(id);
-    // this.service.getsubscriberAll().subscribe((data)=>{
-    //   this.subscriberData=data;
-    // })
   }
   onSubmit(): void {
     const payload = this.chitGroupForm.value
-    
-    this.chitService.saveChitDetails(payload).subscribe((data) => {
-      console.log(data);
-    });
 
+    this.chitService.saveChitDetails(payload).subscribe((data) => {
+    });
     if (this.chitGroupForm.valid) {
-      console.log('Form submitted:', this.chitGroupForm.value);
-      // Submit the form data to your backend or process it as needed
     } else {
       console.warn('Form is invalid.');
     }
@@ -471,5 +334,9 @@ export class ChitCreateComponent {
     const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Ensure two digits for the month
     const day = date.getDate().toString().padStart(2, '0'); // Ensure two digits for the day
     return `${year}-${month}-${day}`;
+  }
+
+  isSubscriberInChit(subscriberId: string): boolean {
+    return this.chitSubscribersData.some(chitSubscriber => chitSubscriber.subscriberId === subscriberId);
   }
 }

@@ -30,7 +30,7 @@
                     <div class="col-4 ">
                         <div class="d-flex flex-column ">
                             <h6><strong>Auctions Completed</strong></h6>
-                            <p class="">{{bidHistory.length}}</p>
+                            <p class="">{{bidHistory?.length}}</p>
                         </div>
                     </div>
                 </div>
@@ -128,17 +128,17 @@
                         [pageSize]="20"></app-ag-grid>
 
                     <div class="col-lg-12 d-flex justify-content-end py-3 px-4">
-                        <button type="button" class="btn next-btn px-4 py-3 fw-bold"
-                            (click)="showSubscriberList('chit')">Add Subscribers</button>
+                        <button type="button" class="btn next-btn px-4 py-3 fw-bold" (click)="showSubscriberList()">Add
+                            Subscribers</button>
                     </div>
                     <div><!-- *ngIf="showAdditionalGrid"-->
-                        <p class="fw-bold fs-4 mt-4">Additional Subscribers</p>
+                        <!-- <p class="fw-bold fs-4 mt-4">Additional Subscribers</p>
                         <app-ag-grid [columns]="addSubscriberColumn" [rowData]="addSubscribers" class="p-0" width="100%"
                             height="300px" [pageSize]="5"></app-ag-grid>
                         <div class="col-lg-12 d-flex justify-content-end py-3">
                             <button class="btn next-btn px-4 py-3 fw-bold"
                                 (click)="showSubscriberList('additional')">Add Additional Subscribers</button>
-                        </div>
+                        </div> -->
                     </div>
                 </div>
             </div>
@@ -157,7 +157,6 @@
                     <span class="search-icon"><img src="assets/subscriber/search-icon.svg"></span>
                     <input width="100%" height="20" type="text" class="border-0" placeholder="Search"
                         (input)="applyFilterchit($event.target.value)">
-                    <!-- (input)="applyFilter($event.target.value)" -->
                 </div>
                 <table class="subscriber-table ">
                     <tbody>
@@ -166,26 +165,20 @@
                                 (click)="navigate(subscriber._id)">
                                 <div class="card-body align-self-center">
                                     <div class="row">
-                                        <!-- <div class="col-lg-2 col-md-2">
-                                <img class="profile-list-img" src="subscriber.subscriberProfile"> 
-                            </div> -->
                                         <div class="col-lg-6 col-md-6 chitHeader">
-                                            <!-- <p class="fs-6 fw-bold m-0">{{ subscriber.subscriberId }}</p> -->
-                                            <!-- {{ subscriber.subscriberName }} -->
-                                            <!-- <p class="fs-6 fw-bold m-0">Chit Group {{i+1}}</p> -->
                                             <p class="fs-6 fw-bold m-0">{{subscriber.chitGroupId}}</p>
                                         </div>
-                                        <!-- <div class="col-lg-4 col-md-4">
-                                <button  class="viewbtn align-left" (click)="onButtonClick(subscriber.id)">View Details</button>
-                            </div> -->
                                     </div>
                                 </div>
                             </div>
                         </tr>
                     </tbody>
                 </table>
-                <div class="d-flex justify-content-center align-items-center pt-3">
-                    <button type="button" class="btn view-btn px-4">View More</button>
+                <div class="d-flex justify-content-center align-items-center pt-3 "  *ngIf="!showGroups">
+                    <button type="button" class="btn view-btn px-4"   (click)="viewMore1()">View More</button>
+                </div>
+                <div class="d-flex justify-content-center align-items-center pt-3 "  *ngIf="showGroups">
+                    <button type="button" class="btn view-btn px-4"   (click)="viewless1()">Viewless</button>
                 </div>
             </div>
             <div class="chit-details" *ngIf="showTicket">
@@ -231,24 +224,25 @@
                             </tr>
                             <tr>
                                 <td class="py-3"><strong>Collection Type</strong></td>
-                               <td> <form [formGroup]="collectionTypeForm">
-                                <div class="form-group">
-                                    <select class="form-control form-control-sm form-select"
-                                        formControlName="collectionType" placeholder="select type">
+                                <td>
+                                    <form [formGroup]="collectionTypeForm">
+                                        <div class="form-group">
+                                            <select class="form-control form-control-sm form-select"
+                                                formControlName="collectionType" placeholder="select type">
 
-                                        <option *ngFor="let type of collectionTypes"
-                                            [value]="type.collectionType">{{ type.collectionType }}
-                                        </option>
-                                    </select>
-                                    <div
-                                        *ngIf="collectionTypeForm.get('collectionType').invalid && collectionTypeForm.get('collectionType').touched">
-                                        <small class="text-danger">collectionType is required</small>
-                                    </div>
-                                </div>
-                            </form>
-                            <button type="button" class="btn view-btn px-4 my-3"
-                            (click)="edit(filteredSubscribers[0]?.passbookNo)">Edit</button>
-                            </td>
+                                                <option *ngFor="let type of collectionTypes"
+                                                    [value]="type.collectionType">{{ type.collectionType }}
+                                                </option>
+                                            </select>
+                                            <div
+                                                *ngIf="collectionTypeForm.get('collectionType').invalid && collectionTypeForm.get('collectionType').touched">
+                                                <small class="text-danger">collectionType is required</small>
+                                            </div>
+                                        </div>
+                                    </form>
+                                    <button type="button" class="btn view-btn px-4 my-3"
+                                        (click)="edit(filteredSubscribers[0]?.passbookNo)">Edit</button>
+                                </td>
                             </tr>
                         </tbody>
                     </table>
@@ -256,7 +250,7 @@
                         <!-- <button class="btn clear-btn"  (click)="addToGroup(subscriberDetail.Subscriber._id)">Add to Group</button> <td>{{subscriberDetail.Subscriber.aliasName}} </td> -->
                         <div class=" d-flex justify-content-center">
                             <div class="me-1">
-                                <button type="button" class="btn view-btn-red" (click)="removeSubscriber()">Remove from
+                                <button type="button" class="btn view-btn-red" (click)="removeSubscriber(filteredSubscribers[0]?.subscriberId)">Remove from
                                     Group</button><!--(click)="navigate(specificChitData?._id)"-->
                             </div>
                             <div class="ms-1">
@@ -264,107 +258,114 @@
                                     (click)="closeTicket('close')">Cancel</button>
                                 <!--(click)="auctionEntry(specificChitData?._id)"-->
                             </div>
-                          
+
                         </div>
                     </div>
                 </div>
             </div>
+                    <div class="card details p-3 mt-4" *ngIf="isSubscriberListVisible">
 
-            <div class="card details p-3 mt-4" *ngIf="isSubscriberListVisible">
-                <h5 class="text-center fw-bold my-2">Add Additional Subscribers</h5>
-                <div class="search-bar align-self-center mb-3">
+                  <h5 class="text-center my-2">Add Subscribers</h5>
+                  <!-- Search Bar -->
+                  <div class="search-bar align-self-center mb-3">
                     <span class="search-icon"><img src="assets/subscriber/search-icon.svg"></span>
-                    <input width="20" height="20" type="text" class="border-0" placeholder="Search"
-                        (input)="applyFilter($event.target.value)">
-                </div>
-                <table class="subscriber-table">
+                    <input type="text" class="border-0" placeholder="Search" (input)="applyFilter($event.target.value)">
+                  </div>
+              
+                  <!-- Subscriber Table -->
+                  <table class="subscriber-table">
                     <tbody>
-                        <tr *ngFor="let subscriber of displayedSubscribers">
-                            <td>
-                                <div class="card view-all mb-2">
-                                    <div class="card-body p-3">
-                                        <div class="row">
-                                            <div class="col-lg-3 col-md-3 pe-0">
-                                                <img class="profile-list-img" src="{{subscriber.subscriberProfile}}">
-                                            </div>
-                                            <div class="col-lg-5 col-md-5 p-0">
-                                                <p class="id fw-bold mb-1">{{ subscriber.subscriberName }}</p>
-
-                                                {{ subscriber.subscriberId }}
-
-                                            </div>
-                                            <div class="col-lg-4 col-md-3 p-0">
-                                                <button class="viewbtn p-0" (click)="onButtonClick(subscriber.id)">View
-                                                    Details</button>
-                                            </div>
-                                        </div>
-                                    </div>
+                      <tr *ngFor="let subscriber of displayedSubscribers">
+                        <td>
+                          <!-- Subscriber Card with Shading Logic -->
+                          <div class="card view-all mb-2" [ngClass]="{ 'shaded-out': isSubscriberInChit(subscriber.subscriberId) }">
+                            <div class="card-body p-3">
+                              <div class="row">
+                                <!-- Profile Image -->
+                                <div class="col-lg-3 col-md-3 pe-0">
+                                  <img class="profile-list-img" [src]="subscriber.subscriberProfile" alt="Subscriber Profile">
                                 </div>
-
-                                <!-- Show details only for the selected subscriber -->
-
-                            </td>
-                        </tr>
-                        <div *ngIf="subscriberDetail" class="subscriber-details">
-                            <h5 class="title text-center fw-bold fs-4 my-4">Subscriber Details</h5>
-                            <div class="text-center">
-                                <img src="{{subscriberDetail.Subscriber.profileImageUrl}}"
-                                    class="img-fluid rounded-circle pb-4" alt="Subscriber Image">
+                                <!-- Subscriber Details -->
+                                <div class="col-lg-5 col-md-5 p-0">
+                                  <p class="id fw-bold mb-1">{{ subscriber.subscriberName }}</p>
+                                  <p>{{ subscriber.subscriberId }}</p>
+                                </div>
+                                <!-- View Details Button -->
+                                <div class="col-lg-4 col-md-3 p-0">
+                                  <button class="viewbtn p-0" (click)="onButtonClick(subscriber.id)" 
+                                          [disabled]="isSubscriberInChit(subscriber.subscriberId)">
+                                    View Details
+                                  </button>
+                                </div>
+                              </div>
+              
+                              <!-- Subscriber Detail Section (Visible when selected) -->
+                              <div *ngIf="selectedSubscriberId === subscriber?.subscriberId && subscriberDetail?.Subscriber?.subscriberId" 
+                                   class="subscriber-details">
+                                <h5 class="title text-center fw-bold fs-4 my-4">Subscriber Details</h5>
+                                <div class="text-center">
+                                  <img [src]="subscriberDetail.Subscriber.profileImageUrl" class="img-fluid rounded-circle pb-4"
+                                       alt="Subscriber Image">
+                                </div>
+                                <table class="table px-3">
+                                  <tbody>
+                                    <tr>
+                                      <td><strong>Subscriber ID</strong></td>
+                                      <td class="highlight">{{subscriberDetail.Subscriber.subscriberId}}</td>
+                                    </tr>
+                                    <tr>
+                                      <td><strong>Alias Name</strong></td>
+                                      <td>{{subscriberDetail.Subscriber.lastName}}</td>
+                                    </tr>
+                                    <tr>
+                                      <td><strong>First Name</strong></td>
+                                      <td>{{subscriberDetail.Subscriber.firstName}}</td>
+                                    </tr>
+                                    <tr>
+                                      <td><strong>Last Name</strong></td>
+                                      <td>{{subscriberDetail.Subscriber.lastName}}</td>
+                                    </tr>
+                                    <tr>
+                                      <td><strong>Contact No</strong></td>
+                                      <td>{{subscriberDetail.Subscriber.contact}}</td>
+                                    </tr>
+                                    <tr>
+                                      <td><strong>Collection Type</strong></td>
+                                      <td>
+                                        <form [formGroup]="collectionTypeForm">
+                                          <select class="form-control form-control-sm form-select" formControlName="collectionType">
+                                            <option *ngFor="let type of collectionTypes" [value]="type.collectionType">
+                                              {{ type.collectionType }}
+                                            </option>
+                                          </select>
+                                          <div *ngIf="collectionTypeForm.get('collectionType').invalid && collectionTypeForm.get('collectionType').touched">
+                                            <small class="text-danger">Collection Type is required</small>
+                                          </div>
+                                        </form>
+                                      </td>
+                                    </tr>
+                                  </tbody>
+                                </table>
+                                <div class="text-center mb-2">
+                                  <button class="btn clear-btn" (click)="addSelectedSubscriber(subscriberDetail.Subscriber._id)"
+                                          [disabled]="!collectionTypeForm.valid">Add to Group</button>
+                                </div>
+                              </div>
                             </div>
-                            <table class="table px-3">
-                                <tbody>
-                                    <tr>
-                                        <td><strong>Subscriber ID</strong></td>
-                                        <td class="highlight">{{subscriberDetail.Subscriber.subscriberId}}</td>
-                                    </tr>
-                                    <tr>
-                                        <td><strong>Alias Name</strong></td>
-                                        <td>{{subscriberDetail.Subscriber.aliasName}}</td>
-                                    </tr>
-                                    <tr>
-                                        <td><strong>First Name</strong></td>
-                                        <td>{{subscriberDetail.Subscriber.firstName}}</td>
-                                    </tr>
-                                    <tr>
-                                        <td><strong>Last Name</strong></td>
-                                        <td>{{subscriberDetail.Subscriber.lastName}}</td>
-                                    </tr>
-                                    <tr>
-                                        <td><strong>Contact No</strong></td>
-                                        <td>{{subscriberDetail.Subscriber.contact}}</td>
-                                    </tr>
-                                    <tr>
-                                        <td><strong>Collection Type</strong></td>
-                                        <td>
-                                            <form [formGroup]="collectionTypeForm">
-                                                <div class="form-group">
-                                                    <select class="form-control form-control-sm form-select"
-                                                        formControlName="collectionType" placeholder="select type">
-
-                                                        <option *ngFor="let type of collectionTypes"
-                                                            [value]="type.collectionType">{{ type.collectionType }}
-                                                        </option>
-                                                    </select>
-                                                    <div
-                                                        *ngIf="collectionTypeForm.get('collectionType').invalid && collectionTypeForm.get('collectionType').touched">
-                                                        <small class="text-danger">collectionType is required</small>
-                                                    </div>
-                                                </div>
-                                            </form>
-
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                            <div class="text-center mb-2">
-                                <button class="btn view-btn"
-                                    (click)="addSelectedSubscriber(subscriberDetail.Subscriber._id)">Add to
-                                    Group</button>
-                            </div>
-                        </div>
+                          </div>
+                        </td>
+                      </tr>
                     </tbody>
-                </table>
-            </div>
-        </div>
+                  </table>
+              
+                  <!-- View More Button (visible if not all are shown) -->
+                  <div *ngIf="!showall" class="text-center my-3">
+                    <button class="btn clear-btn" (click)="viewMore()">View More</button>
+                  </div>
+                </div>
+              </div>
+              
+
+        
     </div>
 </div>

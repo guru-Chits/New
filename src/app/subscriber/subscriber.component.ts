@@ -49,8 +49,6 @@ export class SubscriberComponent {
       }
     });
 
-
-
     this.authService.checkAccess('Subscriber Management', 'view').subscribe((hasAccess: boolean) => {
       if (hasAccess) {
         this.canView = true
@@ -62,7 +60,6 @@ export class SubscriberComponent {
         this.canDelete = true
       }
     });
-
 
     this.service.getsubscriberAll().subscribe((data) => {
       this.subscriberData = data;

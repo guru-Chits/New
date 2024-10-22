@@ -36,7 +36,6 @@ export class PaymentsComponent implements OnInit {
   month: string
   year: number
   today: string = '';
-
   accessPrivData: any;
   subscriberDetail: any
   serialNumberCounter: number;
@@ -55,9 +54,7 @@ export class PaymentsComponent implements OnInit {
     private datePipe: DatePipe,
     private routeService: AreaService) {
     const currentDate = new Date();
-
     this.today = currentDate.toISOString().split('T')[0];
-
   }
   installAmount: number
   installMonth: string
@@ -87,44 +84,31 @@ export class PaymentsComponent implements OnInit {
       }
     );
 
-
     const today = new Date();
     this.today = today.toISOString().split('T')[0];
     this.paymentForm.get('cancelled')?.setValue(false)
     this.paymentForm.get('verified')?.setValue(false)
 
     this.paymentForm.get('passbooknumber').valueChanges.subscribe(passbooknumber => {
-      console.log(passbooknumber);
-
       if (passbooknumber) {
         this.getSubByPassbookNo(passbooknumber);
       }
-
-
       this.paymentForm.get('amount')?.valueChanges.subscribe((amount) => {
         const chitAmount = this.paymentForm.get('chitAmount')?.value;
         if (chitAmount && amount > 0) {
           const expectedInstallmentAmount = chitAmount / 20;  // Monthly installment calculation
-
           this.handleAmountChange(amount, expectedInstallmentAmount, passbooknumber);
         }
       });
-
     });
     this.service.getTodayPayment().subscribe((data) => {
       this.totalPayment = data
       this.serialNumberCounter = this.totalPayment.AllPayment.length + 1
-      console.log(this.serialNumberCounter);
     })
-
     this.staffs = sessionStorage.getItem('name')
     this.staffs = this.staffs.replace(/"/g, '');
-    console.log(this.staffs);
-
     this.routeService.getrouteAll().subscribe((data) => {
       this.routeData = data;
-      console.log("kk", this.routeData)
-
       this.routes = this.routeData.AllRoute.map((routeDetails, index) => ({
         routeId: routeDetails?.routeId,
       }))
@@ -145,23 +129,15 @@ export class PaymentsComponent implements OnInit {
 
   onInputChange(event: any) {
     let inputValue = event.target.value;
-
-
-
-    // Ensure the value starts with PB- and limit the length to 8 digits after the prefix
     if (!inputValue.startsWith('PB-')) {
       this.paymentForm.patchValue({
         passbooknumber: 'PB-'
       });
     }
-
-    // Patch the value back to the form control
-
   }
 
   blockPrefix(event: any) {
     const inputValue = this.paymentForm.get('passbooknumber')?.value;
-
     if (event.target.selectionStart < 3 && event.key !== 'Tab') {
       event.preventDefault();
     }
@@ -187,8 +163,6 @@ export class PaymentsComponent implements OnInit {
           // Set receipt number and serial number
           this.receiptNo = paymentData // Increment receipt number
           this.receiptNo = this.receiptNo ? this.receiptNo.receiptNo + 1 : 1; // Increment receipt number
-          console.log(this.receiptNo);
-
           let serialNumber = this.formatSerialNumber(this.serialNumberCounter);
           let balanceAmount = 0;
           let nextInstallmentMonth = date;
@@ -221,8 +195,6 @@ export class PaymentsComponent implements OnInit {
               secondInstallmentMonth = this.incrementInstallmentMonth(nextInstallmentMonth);
               nextInstallmentMonth = `${nextInstallmentMonth}, ${secondInstallmentMonth}`;
             }
-
-            // Patch form with the updated installment month(s) and receipt number(s)
             this.paymentForm.patchValue({
               groupId: this.subDetail.chitGroupId,
               subscriberId: subscriberDetails.subscriberId,
@@ -254,8 +226,6 @@ export class PaymentsComponent implements OnInit {
     // Fetch the last payment or set default values if no previous payment exists
     const lastPayment = this.payments?.[this.payments.length - 1] || null;
     const previousAmountPaid = lastPayment ? lastPayment.amount || 0 : 0;
-    console.log(previousAmountPaid, "prev");
-
     const chitAmount = this.subDetail.chitAmount;
     const expectedAmountPerInstallment = chitAmount / 20; // Monthly installment calculation
 
@@ -287,48 +257,31 @@ export class PaymentsComponent implements OnInit {
       if (remainingAmount > balanceAmount) {
         appliedAmountForMonth = balanceAmount;
         remainingAmount -= balanceAmount;  // Subtract balance amount from the paid amount
-        console.log(`Amount applied for ${currentInstallmentMonth}: ${appliedAmountForMonth}`);
       } else {
         // If the remaining amount is less than or equal to the balance
         appliedAmountForMonth = remainingAmount;
         remainingAmount = 0;  // No amount left to apply to future months
-        console.log(`Amount applied for ${currentInstallmentMonth}: ${appliedAmountForMonth}`);
       }
 
       // Iterate and apply the remaining amount across multiple months
       while (remainingAmount > 0) {
         if (remainingAmount > expectedInstallmentAmount) {
-          // Full installment for the next month
           remainingAmount -= expectedInstallmentAmount;
           appliedAmountForMonth = expectedInstallmentAmount;
-
-          // Move to the next month
           nextInstallmentMonth = this.incrementInstallmentMonth(currentInstallmentMonth);
           installmentMonths += `, ${nextInstallmentMonth}`;
-          console.log(`Amount applied for ${nextInstallmentMonth}: ${appliedAmountForMonth}`);
 
           currentInstallmentMonth = nextInstallmentMonth;  // Update current month to next month
         } else {
-          // Apply partial amount to the next month if remainingAmount < expectedInstallmentAmount
           appliedAmountForMonth = remainingAmount;
-          console.log(`Partial amount applied for ${currentInstallmentMonth}: ${appliedAmountForMonth}`);
-
-          // Now the remaining amount is less than or equal to the expectedInstallmentAmount
           remainingAmount = 0;  // No amount left to apply
         }
       }
-
-      // Patch the form with the final installment months
       this.paymentForm.patchValue({
         installmentMonth: installmentMonths,  // Patch all the months in which payments were applied
       });
-
-      // Log for debugging
-      console.log(`Installment Month(s): ${installmentMonths}`);
     });
   }
-
-
 
   incrementInstallmentMonth(currentMonth: string): string {
     const dateParts = currentMonth.split('-');
@@ -339,7 +292,7 @@ export class PaymentsComponent implements OnInit {
     // Create a new Date object and increment the month
     let nextMonthIndex = (monthIndex + 1) % 12; // Increment month, wrap to 0 after December
 
-    let year = parseInt(dateParts[2]); 
+    let year = parseInt(dateParts[2]);
     if (monthIndex === 11) {
       // If it's December, move to January and increment the year
       year += 1;
@@ -392,9 +345,6 @@ export class PaymentsComponent implements OnInit {
         this.month = date.toLocaleString('default', { month: 'long' });
         this.year = date.getFullYear();
 
-        // Log the response for debugging
-
-        // Reset all fields except the 'date' field
         const currentDate = this.paymentForm.get('date')?.value;
         this.paymentForm.reset({
           date: currentDate  // Keep the 'date' field intact
@@ -402,11 +352,9 @@ export class PaymentsComponent implements OnInit {
         this.paymentForm.get('cancelled')?.setValue(false)
         this.paymentForm.get('verified')?.setValue(false)
 
-        // Patch the passbook number again if necessary
         this.paymentForm.patchValue({
           passbooknumber: 'PB-',
         });
-
       });
     });
   }
@@ -414,17 +362,13 @@ export class PaymentsComponent implements OnInit {
   validateCurrentDate(control: AbstractControl): { [key: string]: boolean } | null {
     const selectedDate = new Date(control.value).setHours(0, 0, 0, 0);
     const today = new Date().setHours(0, 0, 0, 0);
-
     return selectedDate === today ? null : { invalidDate: true };
   }
-
 
   getPaymentById(id: string) {
     this.service.getPaymentById(id).subscribe(
       data => {
         this.paymentDetail = data;
-
-        console.log(this.paymentDetail)
       },
       error => {
         console.error('Error fetching payment', error);
@@ -435,11 +379,8 @@ export class PaymentsComponent implements OnInit {
     return number.toString().padStart(3, '0');
   }
 
-
   downloadAsPDF() {
     const element = document.getElementById('print-section');
-
-    // Set the width to ensure correct layout
     element.style.width = '700px';  // Adjust according to your modal's size
 
     html2canvas(element, {
@@ -448,11 +389,7 @@ export class PaymentsComponent implements OnInit {
       allowTaint: true // Allow cross-origin images to be rendered into the canvas
     }).then((canvas) => {
       const imgData = canvas.toDataURL('image/png');
-
-      // Initialize jsPDF (Portrait orientation, Millimeters, A4 size)
       const pdf = new jsPDF('p', 'mm', 'a4');
-
-      // Calculate the width and height to fit the content on A4 page size
       const pageWidth = pdf.internal.pageSize.getWidth();
       const pageHeight = pdf.internal.pageSize.getHeight();
 
@@ -473,16 +410,9 @@ export class PaymentsComponent implements OnInit {
   print() {
     const printContent = document.getElementById('print-section').innerHTML;
     const originalContent = document.body.innerHTML;
-    console.log(originalContent);
-
-    // Replace body content with modal content
     document.body.innerHTML = printContent;
-
-    // Trigger print
     window.print();
-
-    // Revert body content
     document.body.innerHTML = originalContent;
-    window.location.reload(); // Reload to restore state
+    window.location.reload();
   }
 }

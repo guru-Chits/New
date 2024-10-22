@@ -1,19 +1,19 @@
-/* You can add global styles to this file, and also import other style files */
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap'); 
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap');
 
- *{
-        font-family: 'Outfit';
-        -ms-overflow-style: none; /* IE and Edge */
-         scrollbar-width: none; /* Firefox */
-    }
-
-
-.body .cta-filled{
+* {
+    font-family: 'Outfit';
+    -ms-overflow-style: none;
+    /* IE and Edge */
+    scrollbar-width: none;
+    /* Firefox */
+}
+.body .cta-filled {
     color: #3E3A97;
     background-color: #FFFFFF;
     border-color: #3E3A97;
 }
-.body .cta-unfilled{
+
+.body .cta-unfilled {
     background-color: #3E3A97;
-    color:#FFFFFF;
+    color: #FFFFFF;
 }

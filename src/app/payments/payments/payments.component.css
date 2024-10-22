@@ -104,10 +104,12 @@ button {
     }
   }
 }
+
 .required {
   color: red;
   font-size: 13px;
 }
+
 .man {
   background-color: white;
 }

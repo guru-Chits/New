@@ -1,43 +1,47 @@
-
-.line{
+.line {
   border-left: 4px solid #3E3A97;
-  padding:20px;
+  padding: 20px;
 
   flex: auto;
   /* width: 200px; */
   text-align: center;
-  height:120px;
+  height: 120px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   background-color: white;
 }
 
-.create{
+.create {
   background-color: #3E3A97;
   border: none;
-  }
-  .overlap-images div {
-    position: relative;
-    display: inline-block;
-    margin-left: -20px; /* Adjust this value for more or less overlap */
-  }
-  
-  .overlap-images img {
-    border: 2px solid #ffffff; /* Optional: Add a white border around images */
-    z-index: 1;
-    position: relative;
-  }
-  
-  .overlap-images div:first-child {
-    margin-left: 0; /* Ensure the first image is not moved */
-  }
-  
-.red-card{
-    border:1px solid #F04438;
-    background-color: #FEECEB;
-    color:#F04438;
-    flex: auto;
-    height:100px;
 }
+
+.overlap-images div {
+  position: relative;
+  display: inline-block;
+  margin-left: -20px;
+  /* Adjust this value for more or less overlap */
+}
+
+.overlap-images img {
+  border: 2px solid #ffffff;
+  /* Optional: Add a white border around images */
+  z-index: 1;
+  position: relative;
+}
+
+.overlap-images div:first-child {
+  margin-left: 0;
+  /* Ensure the first image is not moved */
+}
+
+.red-card {
+  border: 1px solid #F04438;
+  background-color: #FEECEB;
+  color: #F04438;
+  flex: auto;
+  height: 100px;
+}
+
 .search-bar {
   display: flex;
   align-items: center;
@@ -61,55 +65,61 @@
   color: #50A1A5;
 }
 
-strong{
+strong {
   padding-left: 20px;
 }
 
-a{
+a {
   text-decoration: none;
 }
+
 .search-bar input {
   /* border: none;*/
-  outline: none; 
+  outline: none;
   background-color: white;
   padding: 3px;
   flex-grow: 1;
   height: 20px;
   /* width:%; */
-} 
+}
 
-.table-group{
+.table-group {
   border-left: 4px solid #50a1a5;
   flex: auto;
-  height:70px;
+  height: 70px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   background-color: white;
 }
 
-.auc-btn{
+.auc-btn {
   background-color: #3E3A97;
-  color:#FFFFFF;
+  color: #FFFFFF;
   height: 40px;
-  }
-.view-btn{
+}
+
+.view-btn {
   color: #3E3A97;
   background-color: #FFFFFF;
   border-color: #3E3A97;
   height: 40px;
 }
-.next-btn{
+
+.next-btn {
   background-color: #3E3A97;
-  color:#FFFFFF;
-  }
+  color: #FFFFFF;
+}
 
 .profile-initial {
   display: inline-block;
-  width: 40px; /* Adjust size as needed */
+  width: 40px;
+  /* Adjust size as needed */
   height: 40px;
   line-height: 40px;
   text-align: center;
   border-radius: 50%;
-  background-color: #007bff; /* Background color for the circle */
-  color: white; /* Text color */
+  background-color: #007bff;
+  /* Background color for the circle */
+  color: white;
+  /* Text color */
   font-weight: bold;
 }

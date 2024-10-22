@@ -24,9 +24,7 @@ loginUrl:string=environment.loginServiceUrl+'/login/'
   }
 
   // Check if the user is verified
-  checkVerified(): boolean {
-    console.log(this.isVerified,"cer");
-    
+  checkVerified(): boolean {    
     return this.isVerified;
   }
   passwordReset(employeeId: string, password: string): Observable<any> {

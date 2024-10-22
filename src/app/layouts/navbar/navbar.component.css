@@ -1,8 +1,6 @@
-/* navbar.component.scss */
-
 .navbar {
-  height: 60px; /* Increased height */
-  width: 100% ; /* Adjust this based on sidebar width */
+  height: 60px;
+  width: 100%;
   background-color: #ffffff;
   display: flex;
   justify-content: space-between;
@@ -18,18 +16,22 @@
   display: flex;
   align-items: center;
 }
-.navbar-user{
+
+.navbar-user {
   margin-right: 30px;
 }
-.bell-image{
-  background-color:#ECEBF5;
+
+.bell-image {
+  background-color: #ECEBF5;
   padding: 4px;
   border-radius: 10px;
 }
-.notification-icon{
-  margin-right:30px;
+
+.notification-icon {
+  margin-right: 30px;
 
 }
+
 .navbar-logo {
   margin-right: 20px;
 }
@@ -60,10 +62,8 @@
   /* font-weight: 600; */
 }
 
-.navbar-role{
-font-size: 12px;
-font-weight: 300;
+.navbar-role {
+  font-size: 12px;
+  font-weight: 300;
 }
-/* Responsive styles */
-
 

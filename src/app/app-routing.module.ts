@@ -12,8 +12,6 @@ const loginRoutes: Routes = [
   {
     path: '',
     loadChildren: () => import('./main/main.module').then(m => m.MainModule),
-    // Ensure only authenticated users can access MainModule
-
   },
   {
     path: '**',  // Wildcard route for a 404 page, if needed

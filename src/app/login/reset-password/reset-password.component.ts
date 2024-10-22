@@ -112,7 +112,6 @@ onSubmit(){
     const password  = this.resetForm.get("confirmPassword").value
     this.service.passwordReset(this.employeeId, password).subscribe(
       response => {
-        console.log('Password reset successful', response);
         this.isPasswordReset = true;
 
       },

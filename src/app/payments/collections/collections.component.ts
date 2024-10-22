@@ -63,14 +63,6 @@ export class CollectionsComponent implements OnInit {
       verified: [false]
     });
 
-
-    // this.staffService.getstaffAll().subscribe((data)=>{
-    //   this.staffs=data  
-    //  this.data=this.staffs.AllStaff.map((staffDetails,index)=>({
-    //   staffName:staffDetails.firstName
-    //  }))
-    //  })
-
     this.authService.checkAccess('Payments', 'delete').subscribe((hasAccess: boolean) => {
       if (hasAccess) {
         this.canDelete = true

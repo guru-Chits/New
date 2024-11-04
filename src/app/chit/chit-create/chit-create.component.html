@@ -8,14 +8,15 @@
             <div class="form-group">
               <label for="auctionDate" class="form-control-label">First Auction Date</label>
               <input type="date" class="form-control p-2 form-control-sm mt-2" id="auctionDate"
-                formControlName="auctionDate" (change)="validateDate($event)" placeholder="auctionDate" />
+                formControlName="auctionDate" placeholder="auctionDate" (change)="validateDate($event)" />
+                 
             </div>
           </div>
           <div class="col-lg-4">
             <div class="form-group">
               <label for="chitAmount" class="form-control-label">Chit Value</label>
               <input class="form-control p-2 form-control-sm mt-2" id="chitAmount" formControlName="chitAmount"
-                placeholder="Chit Amount" (change)="getformanVal()" (keypress)="preventNonNumeric($event)"
+                placeholder="Chit Amount" (change)="getformanVal()" (keypreccdss)="preventNonNumeric($event)"
                 (input)="filterNonNumericInput()" />
               <div *ngIf="chitGroupForm.get('chitAmount').invalid && chitGroupForm.get('chitAmount').touched">
                 <small class="text-danger">Chit Amount must be a valid number.</small>

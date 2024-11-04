@@ -6,6 +6,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ChitService } from '../shared/service/chit.service';
 import { Router } from '@angular/router';
 import { ServiceService } from '../../settings/shared/service.service';
+import { PaymentService } from '../../payments/shared/service/payment.service';
 // import { SubscriberDetails } from '../shared/interface/chit';
 
 @Component({
@@ -55,8 +56,10 @@ export class ChitCreateComponent {
   minDate: string;
   maxDate: string;
   minDay = 1;
+  walletBalance:number
+  futureDate: Date  // Format: YYYY-MM-DDTHH:MM (ISO 8601)  groupId:string
   maxDay = 10;
-  constructor(private subService: SubscriberService, private chitService: ChitService, private router: Router, private settings: ServiceService) {
+  constructor(private subService: SubscriberService, private chitService: ChitService, private router: Router, private settings: ServiceService,private paymentService:PaymentService) {
 
   }
 
@@ -305,7 +308,32 @@ export class ChitCreateComponent {
     const payload = this.chitGroupForm.value
 
     this.chitService.saveChitDetails(payload).subscribe((data) => {
+       const groupId = data.newChitGroup.chitGroupId;
+      this.walletBalance = data.newChitGroup.chitAmount;
+      this.futureDate = data.newChitGroup.auctionDate
+    
+      // Debug logs
+      console.log('groupId:', groupId);
+      console.log('walletBalance:', this.walletBalance);
+      console.log('auctionDateString:', this.futureDate);
+    
+      if (this.walletBalance !== null) {
+        this.paymentService.saveTransactionDetails(groupId, this.walletBalance, this.futureDate)
+          .subscribe(
+            (response) => {
+              console.log('Transaction response:', response);
+              alert(response.message);
+            },
+            (error) => {
+              console.error('Error:', error);
+              // alert('Failed to schedule or process the transaction');
+            }
+          );
+      } else {
+        // alert('Please provide the necessary details.');
+      }
     });
+    
     if (this.chitGroupForm.valid) {
     } else {
       console.warn('Form is invalid.');

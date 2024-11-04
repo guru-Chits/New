@@ -82,3 +82,19 @@
     .man{
       background-color: white;
     }
+
+    .close{
+      border: none;
+      background-color: white;
+      float: right;
+    }
+    
+    /* extra.component.css */
+.modal {
+  background: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+}
+
+.modal-dialog {
+  margin: 5% auto;
+  /* max-width: 80%; */
+}

@@ -1,14 +1,19 @@
 <div class="card d-flex p-3">
   <h5 class="text-center my-2 fs-4 fw-bold my-4">Auction for Today</h5>
+  <div class="search-bar  mb-3">
+    <span class="search-icon"><img src="assets/table/black search.svg"></span>
+    <input width="20" height="20" type="text" class="border-0" placeholder="Search"
+      (input)="applyFilter($event.target.value)">
+  </div>
   <table class="table-card mx-3">
     <tbody>
-      <tr *ngFor="let auction of finalArray">
+      <tr *ngFor="let auction of displayedAuctions">
       <div class="view-all my-2">
         <div class="align-items-center">
-          <div class="row">
+          <div class="row" (click)="nav(auction._id)">
               <div class="col border d-flex flex-column justify-content-center align-items-center py-3 rounded-3 shadow-sm auction">
-                <h6><strong>{{ auction.groupId }}</strong></h6>
-                <p class="m-0">Time: {{ auction.auctionDate }}</p>
+                <h6><strong>{{ auction.chitGroupId }}</strong></h6>
+                <!-- <p class="m-0">Time: {{ auction.auctionDate }}</p> -->
               </div>
           </div>
         </div>
@@ -16,5 +21,7 @@
       </tr>
     </tbody>
   </table>
-  <button class="btn align-self-center view-btn mt-3" *ngIf="dataFromParent" (click)="fullAuction()">View More Chits</button>
+  <button class="btn align-self-center view-btn mt-3" *ngIf="!showGroups"  (click)="viewAll()">View More Chits</button>
+  <button class="btn align-self-center view-btn mt-3" *ngIf="showGroups"  (click)="viewLess()">View Less</button>
+
 </div>

@@ -4,6 +4,8 @@ import { ChitService } from '../shared/service/chit.service';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 import { PaymentService } from '../../payments/shared/service/payment.service';
+import { CellClickedEvent } from 'ag-grid-community';
+import { ITableColumn } from '../../shared/interface/list-table';
 
 @Component({
   selector: 'app-extra',
@@ -11,246 +13,151 @@ import { PaymentService } from '../../payments/shared/service/payment.service';
   styleUrl: './extra.component.css'
 })
 export class ExtraComponent implements OnInit {
-  extraForm : FormGroup;
-  groupId:string;
-  addWalletBalance:any
-  data:any
-  subDetails:any
-  date:any
-  time:any
-  receipt:any
-  addSubscriberTotal = 0;
-
- month:string
- year:Number
-  status:boolean=false
+  @Input() chitData:any
+  purchaseData:any
+  chitDetail:any
+  isChitShow:boolean= false;
+  recDate:any
+  extraData:any
+  recTime:any
+  datas:any
+  groupId:string
+  extraPayments:boolean=false
+  extraDatas:any
+  extraChitData:any
   constructor( private fb: FormBuilder,private paymentService:PaymentService,private service: ChitService,
   ){}
-  @Input() chitData:any
   
   ngOnInit(): void {
-    this.extraForm = this.fb.group({
-      groupId: ['',[Validators.required]],
-      walletBalance: ['',[Validators.required]],
-      foremanCommision: ['',[Validators.required]],
-      winningBid: ['',[Validators.required]],
-      prizedAmount: ['',[Validators.required]],
-      ticketId: ['',[Validators.required]],
-      subscriberName: ['',[Validators.required]],
-      passbookNumber: ['',[Validators.required]],
+    this.groupId=this.chitData?.chitGroupId
+
+    this.getTicketIdData()
+
+}
+
+async getTicketIdData() {
+  const res = await this.service.getTicketId(this.chitData?.chitGroupId).toPromise();
+  this.purchaseData = res.purchaseData.map(item => ({
+    passbookNumber: item.purchaseChitData?.passbookNumber,
+    subscriberName: item.purchaseChitData?.subscriberName,
+    winningBid: item.purchaseChitData?.winningBid,
+    prizedAmount: item.purchaseChitData?.prizedAmount,
+    viewDetails:"View Details",
+    id:item._id
+    // Add any other fields you want to display
+  }));  
+
+  this.extraData = res.extraData.map(item => ({
+    passbookNumber: item.extraPaymentData?.passbookNumber,
+    subscriberName: item.extraPaymentData?.subscriberName,
+    winningBid: item.extraPaymentData?.winningBid,
+    prizedAmount: item.extraPaymentData?.prizedAmount,
+    viewDetails:"View Details",
+    id:item._id
+    // Add any other fields you want to display
+  }));  
+
+  // Now you can use the data outside the async block
+}
+
+redeemedColumn: ITableColumn[] = [
+  {
+    label: 'Passbook Number',
+    field: 'passbookNumber',
+    filter: false,
+
+  },
+  { label: 'Name', field: 'subscriberName' },
+  { label: 'Winning Bid', field: 'winningBid' },
+  { label: 'Prized Amount', field: 'prizedAmount' },
+  // { label: 'Balance', field: 'balance' },
+  { label: ' ', field: 'viewDetails',
+    cellStyle: function (params: any) {
+      return { color: '#50A1A5' ,cursor:'pointer'};
     },
-    {
-      validator: this.amountLessThanOrEqualChitAmount('ticketId') // Add custom validator here
+    onCellClicked: (event: CellClickedEvent) =>
+    
+      this.getDataById(event.data.id)
+  },
+];
+
+
+column: ITableColumn[] = [
+  {
+    label: 'Passbook Number',
+    field: 'passbookNumber',
+    filter: false,
+
+  },
+  { label: 'Name', field: 'subscriberName' },
+  { label: 'Winning Bid', field: 'winningBid' },
+  { label: 'Prized Amount', field: 'prizedAmount' },
+  // { label: 'Balance', field: 'balance' },
+  { label: ' ', field: 'viewDetails',
+    cellStyle: function (params: any) {
+      return { color: '#50A1A5' ,cursor:'pointer'};
+    },
+    onCellClicked: (event: CellClickedEvent) =>
+    
+      this.getExtraDataById(event.data.id)
+  },
+];
+
+getDataById(id: any) {
+  this.service.getAuctionById(id).subscribe(
+    (data) => {
+      this.datas = data.data;
+      this.chitDetail = data.data.purchaseChitData;
+
+      // Show modal with the fetched data
+      this.isChitShow = true;
+      const createdAtDate = new Date(this.datas.updatedAt);
+      this.recDate = createdAtDate.toISOString().split('T')[0];
+      this.recTime = createdAtDate.toLocaleTimeString();
+    },
+    (error) => {
+      console.error('Error fetching subscriber', error);
     }
   );
-  
-  
-    console.log(this.chitData.chitSubscribers.length);
-    
-    const groupId=this.chitData?.chitGroupId
-
-
-    this.paymentService.getAddWallet(groupId).subscribe((response)=>{
-      this.addWalletBalance=response
-      this.addWalletBalance=this.addWalletBalance.payment
-      console.log(this.addWalletBalance,"addwall");
-      
-      this.addWalletBalance.forEach(amount => {
-        this.addSubscriberTotal=amount.addWalletBalance
-        console.log(this.addSubscriberTotal,"red");
-        this.extraForm.patchValue({
-          walletBalance:this.addSubscriberTotal
-        })  
-      }); 
-    })
-    
-    this.extraForm.patchValue({
-      walletBalance:this.addSubscriberTotal,
-      groupId: groupId,
-      foremanCommision: this.chitData?.foremanCommission,
-    })
-  
-    this.extraForm.get('ticketId')?.valueChanges.subscribe(() => {
-      const ticketId = this.extraForm.get('ticketId')?.value;
-      this.service.findTicketInGroup(groupId,ticketId).subscribe((res)=>{
-        console.log(res);
-        if (res.extra===true) {
-          // Set a validation error if the ticket already exists
-          console.log('error');
-          
-          this.extraForm.get('ticketId')?.setErrors({ ticketExists: true });
-        } else {
-          // Clear the validation error if the ticket does not exist
-          this.extraForm.get('ticketId')?.setErrors(null);
-        }
-      if (ticketId && groupId) {
-        this.service.getSubscriberByTicketId(ticketId, groupId).subscribe((details) => {
-          console.log(details);
-          this.subDetails=details
-          console.log(this.subDetails);
-          
-          this.extraForm.patchValue({
-            subscriberName: `${this.subDetails.chitDetails.firstName} ${this.subDetails.chitDetails.aliasName}`,
-            passbookNumber: this.subDetails.chitDetails.passbookNo,
-           
-          });
-        });
-      }
-    })
-  })
-
-  this.extraForm.get('winningBid')?.valueChanges.subscribe(()=>{
-    const winningBid=this.extraForm.get('winningBid').value
-    const prizedAmount=this.chitData?.chitAmount-winningBid
-    const finalprizedAmount = this.extraForm.get('prizedAmount').value;
-  const walletBalance = this.addSubscriberTotal
-  const sumOfTwo =prizedAmount+this.chitData.foremanCommission
-  console.log('sum of Two', sumOfTwo)
-  const finalWallet = this.addSubscriberTotal - sumOfTwo
-  console.log('final value', finalWallet)
-
-  this.extraForm.patchValue({
-      prizedAmount:prizedAmount,
-      walletBalance: finalWallet
-    });
-  }) 
-
 }
 
+getExtraDataById(id: any) {
+  this.service.getAuctionById(id).subscribe(
+    (data) => {
+      this.extraDatas = data.data;
+      this.extraChitData = data.data.extraPaymentData;
 
-amountLessThanOrEqualChitAmount(ticketIdControl: string) {
-  return (formGroup: AbstractControl): ValidationErrors | null => {
-    const ticketId = formGroup.get(ticketIdControl)?.value;
-
-    const maxLen = this.chitData.chitSubscribers.length + this.chitData.addChitSubscribers.length;
-    const minLen = this.chitData.chitSubscribers.length+1;
-
-    // Check if ticketId is a number and falls between minLen and maxLen
-    if (ticketId !== null && (ticketId < minLen || ticketId > maxLen)) {
-      // Return validation error if the ticketId is out of range
-      return { ticketIdOutOfRange: `Ticket ID must be between ${minLen} and ${maxLen}` };
+      // Show modal with the fetched data
+      this.extraPayments = true;
+      const createdAtDate = new Date(this.extraDatas.updatedAt);
+      this.recDate = createdAtDate.toISOString().split('T')[0];
+      this.recTime = createdAtDate.toLocaleTimeString();
+    },
+    (error) => {
+      console.error('Error fetching subscriber', error);
     }
-
-    // No error if validation passes
-    return null;
-  };
+  );
 }
 
-   getRouteNameValue(){
-    
-   }
+
+showModal(): void {
+  this.isChitShow=true
+  console.log("showwwwwww");
   
-   toggleFormControls(){
-  
-   }
-   onSubmit(){
-    const payload = {
-      groupId: this.extraForm.value.groupId,
-      walletBalance: this.extraForm.value.walletBalance,
-      extraPaymentData: {
-        foremanCommision:this.extraForm.value.foremanCommision,
-        winningBid:this.extraForm.value.winningBid,
-        prizedAmount:this.extraForm.value.prizedAmount,
-        ticketId:this.extraForm.value.ticketId,
-        subscriberName:this.extraForm.value.subscriberName,
-        passbookNumber:this.extraForm.value.passbookNumber,
-      },
-  }
-    this.service.saveAuctionDetails(payload).subscribe((response:any) => {
-      console.log(response);
-      this.data=response.data
-      
-        const createdAtDate = new Date(response.data.createdAt);
-        this.month = createdAtDate.toLocaleString('default', { month: 'long' });  // Full month name
-        this.year = createdAtDate.getFullYear();  // Year
-        this.date =createdAtDate.toISOString().split('T')[0]; // Formats the date
-        this.time = createdAtDate.toLocaleTimeString();  // Formats the time
-        const walletBalance=response.data.extraPaymentData.prizedAmount+response.data.extraPaymentData.foremanCommision
-        this.paymentService.addWallet(response.data.groupId,-walletBalance ).subscribe(
-          (response)=>{
-            console.log(response);
-          }
-        )
-        this.receipt={
-          time:this.time,
-          date:this.date,
-          prizedAmount:response.data.extraPaymentData.prizedAmount,
-          subscriberName:response.data.extraPaymentData.subscriberName,
-          groupId:response.data.groupId,
-          passbookNo:response.data.extraPaymentData.passbookNumber,
-          winningBid:response.data.extraPaymentData.winningBid
-        }
-        console.log(this.receipt,"receipt");
-        this.addWalletBalance.forEach(amount => {
-          this.addSubscriberTotal=amount.addWalletBalance
-          console.log(this.addSubscriberTotal,"red");
-          this.extraForm.patchValue({
-            walletBalance:this.addSubscriberTotal
-          })  
-        });
-  
-        this.extraForm.patchValue({
-          
-          ticketId: '',
-          subscriberName: '',
-          passbookNumber: '',
-          auctionStart: false,  // or whatever the default value is
-          winningBid: '',
-          prizedAmount: ''
-        });
-        
-        });
-  
-  
-   }
-  
- downloadAsPDF() {
-  const element = document.getElementById('print-section');
-
-  // Set the width to ensure correct layout
-  element.style.width = '700px';  // Adjust according to your modal's size
-
-  html2canvas(element, {
-    scale: 2, // Increase the scale to improve image quality
-    useCORS: true,  // Enable cross-origin resource sharing if images are hosted externally
-    allowTaint: true // Allow cross-origin images to be rendered into the canvas
-  }).then((canvas) => {
-    const imgData = canvas.toDataURL('image/png');
-
-    // Initialize jsPDF (Portrait orientation, Millimeters, A4 size)
-    const pdf = new jsPDF('p', 'mm', 'a4');
-
-    // Calculate the width and height to fit the content on A4 page size
-    const pageWidth = pdf.internal.pageSize.getWidth();
-    const pageHeight = pdf.internal.pageSize.getHeight();
-    
-    const canvasWidth = canvas.width;
-    const canvasHeight = canvas.height;
-
-    const ratio = Math.min(pageWidth / canvasWidth, pageHeight / canvasHeight);
-
-    const imgWidth = canvasWidth * ratio;
-    const imgHeight = canvasHeight * ratio;
-
-    pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
-
-    pdf.save(`${this.receipt.subscriberName}.pdf`);
-    element.style.width = '';
-  });
 }
-print() {
-  const printContent = document.getElementById('print-section').innerHTML;
-  const originalContent = document.body.innerHTML;
-  console.log(originalContent);
-  
-  // Replace body content with modal content
-  document.body.innerHTML = printContent;
 
-  // Trigger print
-  window.print();
 
-  // Revert body content
-  document.body.innerHTML = originalContent;
-  window.location.reload(); // Reload to restore state
+showExtra(): void {
+  this.extraPayments=true
 }
+
+
+close() {
+  this.isChitShow = false;
+}
+
+closeExtra() {
+  this.extraPayments = false;
+}
+
 }

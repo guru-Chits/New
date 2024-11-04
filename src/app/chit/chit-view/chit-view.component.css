@@ -15,14 +15,17 @@
   color: #3E3A97;
   background-color: #FFFFFF;
   border-color: #3E3A97;
-  height: 40px;
+  font-size: 12px;
+
+  /* height: 40px; */
 }
 
 .view-btn-red {
   color: #F04438;
   background-color: #FFFFFF;
   border-color: #F04438;
-  height: 40px;
+  font-size: 12px;
+  /* height: 40px; */
 }
 
 .next-btn {

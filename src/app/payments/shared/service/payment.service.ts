@@ -158,10 +158,10 @@ saveCollectionDetails(body: any, id?: string): Observable<any>{
 }
 
 saveTransactionDetails( groupId: string,
-  walletBalance: number,
+  walletBalance: number,futureDate?: Date
   ): Observable<any>{
 
-    const body: any = { groupId,walletBalance };
+    const body: any = { groupId,walletBalance ,futureDate};
 
     console.log(body);
     
@@ -189,7 +189,10 @@ deletePayment(id:string){
   return this.http.delete(url)
 }
 
-
+getAllTransaction(){
+  let url:string=`${this.paymentUrl}/getTransactionDetails`
+  return this.http.get(url)
+}
 
 }
 

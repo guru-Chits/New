@@ -81,6 +81,10 @@ border-radius: 3px;
 .green-background {
   background-color: green !important;
 }
+/* .pink-background{
+  background-color: pink !important;
+
+} */
 .is-invalid {
   border-color: #dc3545;
 }
@@ -90,4 +94,122 @@ border-radius: 3px;
 }
 .man{
   background-color: white;
+}
+.close{
+  border: none;
+  background-color: white;
+  float: right;
+}
+
+.row-green { background-color: green; }
+.row-orange { background-color: orange; }
+.row-red { background-color: red; }
+.row-yellow { background-color: yellow; }
+
+.auction{
+  background-color: #eef6f6;
+}
+.view-btn{
+  color: #3E3A97;
+  background-color: #FFFFFF;
+  border-color: #3E3A97;
+}
+
+.search-bar {
+  display: flex;
+  align-items: center;
+  background-color: #ECEBF5;
+  border: none;
+  padding: 5px;
+
+}
+
+
+.search-bar input {
+  /* border: none;*/
+  outline: none;
+  background-color: #ECEBF5;
+  padding: 3px;
+  flex-grow: 1;
+  height: 20px;
+  width: 80%;
+}
+
+.auction-details-container {
+  max-width: 350px;
+  margin: auto;
+  border: 1px solid #e0e0e0;
+  padding: 15px;
+  border-radius: 8px;
+  background-color: white;
+}
+
+.card {
+  /* border: none; */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-left: 4px solid #3E3A97;
+  font-size: 12px;
+  width: 110px;
+  height: 90px;
+
+}
+
+.card strong {
+  font-size: 1.2rem;
+  color: #333;
+}
+
+.modal-dialog {
+  margin: 5% auto;
+  /* max-width: 80%; */
+}
+
+/* CSS classes for row colors */
+.reg-id-row {
+  color: green; /* Green for regId */
+}
+
+.pur-id-row {
+color: red; /* Blue for purId */
+}
+.extra-id-row {
+  color: orange; /* Blue for purId */
+  }
+
+.profit-id-row{
+  color:rgb(214, 214, 77)
+}
+
+/* Table Styles */
+.subscriber-table {
+  width: 100%;
+  margin: 20px 0; /* Spacing around the table */
+  /* border: 1px; */
+  border: 1px solid #ddd;
+}
+
+/* Table Heading Styles */
+.subscriber-table th {
+  background-color: #EEF6F6; /* Green background for header */
+  color: black; /* White text color */
+  padding: 15px; /* Padding for cells */
+  font-size: 14px;
+  text-align: left; /* Left-align text */
+}
+
+/* Table Data Cell Styles */
+.subscriber-table td {
+  font-size: 15px;
+  border-bottom: 1px solid #e3e4e6;
+  padding-left:5px;
+  padding-top: 3px;
+  padding-bottom: 2px;
+}
+
+/* Profile Image Styles */
+.profile-image {
+  width: 30px; /* Fixed width */
+  height: 30px; /* Fixed height */
+  border-radius: 50%; /* Make it round */
+  object-fit: cover; /* Ensure image covers the area */
 }

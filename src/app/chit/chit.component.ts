@@ -18,15 +18,15 @@ export class ChitComponent implements OnInit {
       routerLink: 'chit',
     },
   ];
-  tknAmount:number
-  transactions:any
-  subCount:number
-  totalWalletBalance:number
-  auctionCycle:number
+  tknAmount: number
+  transactions: any
+  subCount: number
+  totalWalletBalance: number
+  auctionCycle: number
   isChitListVisible: boolean = false;
   showChitDetails: boolean = false;
   chitdata: any;
-  subscriberData:any
+  subscriberData: any
   data: any[] = [];
   displayedChit: any[] = []
   specificChitData: any = {}
@@ -46,16 +46,14 @@ export class ChitComponent implements OnInit {
   currentPage: number = 1;
   totalPages: number = 0;
   count: number = 0
-  auctions:any
-  
-  displayedAuctions:any
-  chitGroups:any
-  showGroups:boolean=false
-  constructor(private router: Router, private service: ChitService, private authService: AuthService,private subscriberService:SubscriberService, private paymentService: PaymentService) { }
+  auctions: any
+
+  displayedAuctions: any
+  chitGroups: any
+  showGroups: boolean = false
+  constructor(private router: Router, private service: ChitService, private authService: AuthService, private subscriberService: SubscriberService, private paymentService: PaymentService) { }
 
   ngOnInit(): void {
-    // this.incrementMonth();
-    // this.filterUpcomingDates();
     this.authService.checkAccess('Chit Management', 'create').subscribe((hasAccess: boolean) => {
       if (hasAccess) {
         this.canCreate = true
@@ -65,55 +63,17 @@ export class ChitComponent implements OnInit {
     this.service.getAllChit().subscribe((data) => {
       this.chitdata = data;
       this.chitdata = this.chitdata?.AllChitGroups
-      
+
       this.total = this.chitdata.length
       this.displayedChit = this.chitdata;
-    
+
       this.totalPages = Math.ceil(this.displayedChit.length / this.itemsPerPage);
-      // this.auctionDates = this.chitdata.map((chit: any) => chit.auctionDate);
-      // this.auctionDates = this.auctionDates.map(dateString => {
-      //   if (dateString) {
-      //     // Parse the date string
-      //     const [day, month, year] = dateString.split('-').map(Number);
-      //     const date = new Date(year, month - 1, day); // month is zero-based in Date object
-
-      //     // Increment the month by 1
-      //     date.setMonth(date.getMonth() + 1);
-
-      //     // Format back to 'DD-MM-YYYY'
-      //     const updatedDay = date.getDate().toString().padStart(2, '0');
-      //     const updatedMonth = (date.getMonth() + 1).toString().padStart(2, '0');
-      //     const updatedYear = date.getFullYear();
-
-      //     return `${updatedDay}-${updatedMonth}-${updatedYear}`;
-      //   }
-      //   return null;
-      // });
-      // console.log("Auction Dates ->", this.auctionDates);
-      // this.groupId=this.chitdata?.AllChitGroups;
-      // console.log("GROUP ID", this.groupId)
-      // const today = new Date();
-      // console.log("TODAY", today)
-      // this.upcomingDates = this.auctionDates.filter(dateString => {
-      //   if (dateString) {
-      //     // Split the date into day, month, and year
-      //     const [day, month, year] = dateString.split('-').map(Number);
-      //     const date = new Date(year, month - 1, day); // Month is zero-based
-
-      //     // Compare with today's date
-      //     return date > today;
-      //   }
-      //   return false;
-      // });
-
-      // console.log('Upcoming Dates ->', this.upcomingDates);
-
     })
 
-    this.service.getAuctionToday().subscribe((data=>{
-      this.auctions=data
-      this.auctions=this.auctions.todaysAuction
-      this.displayedAuctions=this.auctions.slice(0,5)
+    this.service.getAuctionToday().subscribe((data => {
+      this.auctions = data
+      this.auctions = this.auctions.todaysAuction
+      this.displayedAuctions = this.auctions.slice(0, 5)
       console.log(this.auctions);
 
     }))
@@ -124,27 +84,27 @@ export class ChitComponent implements OnInit {
         this.tknAmount = response.data.reduce((sum, item) => {
           return sum + (item.purchaseChitData?.prizedAmount || 0);
         }, 0);
-          }
+      }
     });
 
     this.paymentService.getAllTransaction().subscribe((response => {
       // Assuming response is the full response object
       this.transactions = response;
-      this.transactions=this.transactions.AllTransaction
+      this.transactions = this.transactions.AllTransaction
 
       // Sum all wallet balances
       this.totalWalletBalance = this.transactions.reduce((total, transaction) => {
         return total + (transaction.walletBalance || 0); // Add walletBalance or 0 if undefined
       }, 0);
-    
+
     }));
-    
+
     this.subscriberService.getsubscriberAll().subscribe((data) => {
       this.subscriberData = data;
-      console.log(this.subscriberData,"Deta");
-      
-      this.data = this.subscriberData.AllSubscriber.map((subscriberDetails, index) => ( {
-        
+      console.log(this.subscriberData, "Deta");
+
+      this.data = this.subscriberData.AllSubscriber.map((subscriberDetails, index) => ({
+
         enroll: this.subscriberService.getChitGroupById(subscriberDetails?.subscriberId).subscribe(
           response => {
             this.chitGroups = response;
@@ -202,30 +162,25 @@ export class ChitComponent implements OnInit {
         this.specificChitData = this.specificChitData.ChitsGroup
         if (this.specificChitData) {
           this.groupId = this.specificChitData.chitGroupId
-          this.service.getChitAuctionById(this.groupId).subscribe((res) => {
-            // this.bidHistory = res.data;
-
-            
-          })
 
           this.service.getTicketId(this.groupId).subscribe((res) => {
 
-            console.log(res);
-              this.subCount=res.allData.length
-              this.auctionCycle=res.auctionCycle-1
+            this.auctionCycle = res.auctionCycle - 1
             this.bidHistory = res.allData;
-            
-              const len=this.bidHistory?.length-1
-              if(len>0){
-                const lastItem = this.bidHistory[len];
-                this.latestWinningBid = lastItem?.winningBid;
-  
-              }else{
-                this.latestWinningBid = 0;
 
-              }
-  
-              console.log(this.latestWinningBid,"last");
+            const len = this.bidHistory?.length - 1
+            if (len > 0) {
+              this.subCount = res.allData.length 
+              const lastItem = this.bidHistory[len];
+              this.latestWinningBid = lastItem?.winningBid;
+
+            } else {
+              this.subCount=0
+              this.latestWinningBid = 0;
+
+            }
+
+            console.log(this.latestWinningBid, "last");
           })
 
           this.paymentService.getTransactionById(this.groupId).subscribe((response) => {
@@ -273,19 +228,19 @@ export class ChitComponent implements OnInit {
     this.router.navigate([`chit/auction/${id}`])
   }
 
-  nav(id:string){
-console.log(id);
-this.router.navigate([`chit/auction/${id}`])
+  nav(id: string) {
+    console.log(id);
+    this.router.navigate([`chit/auction/${id}`])
   }
 
-  viewAll(){
+  viewAll() {
     if (!this.showGroups) {
       this.displayedAuctions = this.auctions; // Show all subscribers
       this.showGroups = true;
     }
 
   }
-  viewLess(){
+  viewLess() {
     if (this.showGroups) {
       this.displayedAuctions = this.auctions.slice(0, 5);
       this.showGroups = false;

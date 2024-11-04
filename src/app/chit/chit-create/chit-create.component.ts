@@ -322,7 +322,7 @@ export class ChitCreateComponent {
           .subscribe(
             (response) => {
               console.log('Transaction response:', response);
-              alert(response.message);
+              // alert(response.message);
             },
             (error) => {
               console.error('Error:', error);

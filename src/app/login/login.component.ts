@@ -105,7 +105,7 @@ export class LoginComponent {
         let password = this.loginForm.get('password').value
         let empId = this.loginForm.get('employeeId').value
 
-        if (password === "Staff@578") {
+        if (password === "Staff@578" && this.response.user.password==="Staff@578") {
           this.userdata = response;
           this.mobileNumber = this.userdata.mobileNumber;
 

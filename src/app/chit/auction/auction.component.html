@@ -162,7 +162,7 @@
                         <button type="submit" class="btn px-4  py-2" data-bs-toggle="modal" data-bs-target="#auctionModal"  [disabled]="!auctionStart || purchase || !auctionForm.valid"   (click)="onSubmit()">Extra Payments Done</button>
                     </div>
                       <div class="col-lg-3"  *ngIf="tknCompany">
-                        <button type="submit" class="btn px-4  py-2" data-bs-toggle="modal" data-bs-target="#auctionModal"  [disabled]="!auctionStart || purchase || !auctionForm.valid"   (click)="onSubmit()">Create Invoice</button>
+                        <button type="submit" class="btn px-4  py-2" data-bs-toggle="modal" data-bs-target="#auctionModal"  [disabled]="!auctionStart || purchase"   (click)="onSubmit()">Create Invoice</button>
                     </div>
                     <div class="col-lg-3" *ngIf="regular||profitChit" >
                       <button type="submit" class="btn px-4  py-2" data-bs-toggle="modal" data-bs-target="#auctionModal"  [disabled]="!auctionStart || purchase || !auctionForm.valid"   (click)="onSubmit()">Submit</button>

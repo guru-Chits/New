@@ -165,13 +165,13 @@ export class ChitComponent implements OnInit {
 
           this.service.getTicketId(this.groupId).subscribe((res) => {
 
-            this.auctionCycle = res.auctionCycle - 1
+            this.auctionCycle = res.auctionCycle 
             this.bidHistory = res.allData;
 
-            const len = this.bidHistory?.length - 1
+            const len = this.bidHistory?.length 
             if (len > 0) {
-              this.subCount = res.allData.length 
-              const lastItem = this.bidHistory[len];
+              this.subCount = res.allData.length
+              const lastItem = this.bidHistory[len-1];
               this.latestWinningBid = lastItem?.winningBid;
 
             } else {

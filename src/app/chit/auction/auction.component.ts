@@ -144,6 +144,7 @@ export class AuctionComponent implements OnInit {
 
 
   ngOnInit(): void {
+
     this.auctionForm = this.fb.group({
       auctionType: ['', [Validators.required]],
       groupId: ['', [Validators.required]],
@@ -162,8 +163,12 @@ export class AuctionComponent implements OnInit {
       }
     );
 
+    this.updatedChanges()
+  }
 
 
+  updatedChanges(){
+  
     const auctionStart = this.auctionForm.get('auctionStart')?.value;
     if (auctionStart) {
       this.auctionForm.enable();
@@ -307,9 +312,7 @@ export class AuctionComponent implements OnInit {
         });
       }
     });
-
   }
-
   onInputChange(event: any) {
     let inputValue = event.target.value;
     if (!inputValue.startsWith('PB-')) {
@@ -428,7 +431,7 @@ export class AuctionComponent implements OnInit {
     if (this.regId.includes(passbookNumber)) {
       return 'reg-id-row';
     } else if (this.colorCode.tknTid.includes(passbookNumber)) {
-      return 'extra-id-row';
+      return 'tkn-id-row';
     } else if (this.colorCode.purId.includes(passbookNumber)) {
       return 'pur-id-row';
     }
@@ -865,6 +868,8 @@ export class AuctionComponent implements OnInit {
         prizedAmount: ''
 
       });
+      this.updatedChanges()
+
 
       this.openModal()
 

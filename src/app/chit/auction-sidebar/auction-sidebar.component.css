@@ -1,5 +1,6 @@
 .auction{
     background-color: #eef6f6;
+    cursor: pointer;
 }
 .view-btn{
     color: #3E3A97;

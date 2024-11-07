@@ -128,7 +128,7 @@ column: ITableColumn[] = [
             this.profitCount=res.profitCount
             this.tknAmount=res.totalTknCompany
             this.bidHistory=res.allData
-            this.auctionCycle=res.auctionCycle-1
+            this.auctionCycle=res.auctionCycle
             console.log(this.bidHistory?.length);
             this.prizedSub=this.bidHistory?.length
             this.bidHistory=  res.allData.map(history=>({
@@ -245,20 +245,12 @@ column: ITableColumn[] = [
       this.showGroups = false;
     }
   }
-  formatToIndianCurrency(amount: number | string): string {
-    if (!amount) return '';
-
-    let amountStr = amount.toString();
-    const isNegative = amountStr.startsWith('-');
-    if (isNegative) {
-      amountStr = amountStr.slice(1);
-    }
-
-    let [integer, decimal] = amountStr.split('.');
-
-    integer = integer.replace(/\B(?=(\d{3})+(?!\d))/g, ',').replace(/(\d+)(?=(\d{2})+(\d{3})(?!\d))/g, '$1,');
-    const formattedAmount = decimal ? `${integer}.${decimal}` : integer;
-    return isNegative ? `-${formattedAmount}` : formattedAmount;
+  formatToIndianCurrency(amount: number): string  {
+    return new Intl.NumberFormat('en-IN', {
+      style: 'currency',
+      currency: 'INR',
+      maximumFractionDigits: 2
+    }).format(amount);
   }
 
   closeTicket(type: 'close') {

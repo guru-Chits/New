@@ -98,7 +98,7 @@ export class ChitComponent implements OnInit {
       }, 0);
 
     }));
-
+    
     this.subscriberService.getsubscriberAll().subscribe((data) => {
       this.subscriberData = data;
       console.log(this.subscriberData, "Deta");
@@ -165,7 +165,6 @@ export class ChitComponent implements OnInit {
 
           this.service.getTicketId(this.groupId).subscribe((res) => {
 
-            this.auctionCycle = res.auctionCycle 
             this.bidHistory = res.allData;
 
             const len = this.bidHistory?.length 
@@ -173,10 +172,12 @@ export class ChitComponent implements OnInit {
               this.subCount = res.allData.length
               const lastItem = this.bidHistory[len-1];
               this.latestWinningBid = lastItem?.winningBid;
+              this.auctionCycle = res.auctionCycle
 
             } else {
               this.subCount=0
               this.latestWinningBid = 0;
+              this.auctionCycle=0
 
             }
 
@@ -246,6 +247,14 @@ export class ChitComponent implements OnInit {
       this.showGroups = false;
     }
 
+  }
+
+  formatToRupee(amount: number): string {
+    return new Intl.NumberFormat('en-IN', {
+      style: 'currency',
+      currency: 'INR',
+      maximumFractionDigits: 2
+    }).format(amount);
   }
 }
 

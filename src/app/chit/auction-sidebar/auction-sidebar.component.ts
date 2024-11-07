@@ -8,12 +8,12 @@ import { Route, Router } from '@angular/router';
   styleUrl: './auction-sidebar.component.css'
 })
 export class AuctionSidebarComponent {
-  auctions:any
-  chitdata:any;
-  displayedAuctions:any
-  showGroups:boolean=false
-  constructor(private service:ChitService,private router:Router){}
-  
+  auctions: any
+  chitdata: any;
+  displayedAuctions: any
+  showGroups: boolean = false
+  constructor(private service: ChitService, private router: Router) { }
+
   // ngOnChanges(changes: SimpleChanges) {
   //   if (changes['dataFromParent']) {
   //     if(this.dataFromParent === true){
@@ -30,7 +30,7 @@ export class AuctionSidebarComponent {
   // }
   // ngOnInit(){
   //   this.finalArray=this.auction
-    
+
   //   this.service.getAllChit().subscribe((data)=>{
   //     // this.chitdata=data;
   //     // this.chitdata=this.chitdata?.AllChitGroups
@@ -44,13 +44,13 @@ export class AuctionSidebarComponent {
   //     // });
   //     this.chitdata = data;
   //     this.chitdata = this.chitdata?.AllChitGroups || []; // Ensure chitdata is an array
-    
+
   //     console.log("AUCTION SIDEBAR", this.chitdata);
-    
+
   //     // Get today's date in the required format (DD-MM-YYYY)
   //     const today = new Date();
   //     const formattedToday = `${today.getDate().toString().padStart(2, '0')}-${(today.getMonth() + 1).toString().padStart(2, '0')}-${today.getFullYear()}`;
-    
+
   //     // Filter chitdata for today's auction dates
   //     this.finalArray = this.chitdata
   //       .filter(item => item.auctionDate === formattedToday) // Keep only today's auctions
@@ -58,7 +58,7 @@ export class AuctionSidebarComponent {
   //         groupId: item.chitGroupId,
   //         createdAt: item.createdAt,
   //       }));
-    
+
   //     // Optional: Log the final array to see today's auctions
   //     console.log("Today's Auctions ->", this.finalArray);
   //   })
@@ -74,31 +74,31 @@ export class AuctionSidebarComponent {
     // this.service.getAllChit().subscribe((data) => {
     //   this.chitdata = data;
     //   this.chitdata = this.chitdata?.AllChitGroups || []; // Ensure chitdata is an array
-    
+
     //   // Update auction dates to next month
     //   this.chitdata.forEach((item: any) => {
     //     if (item.auctionDate) {
     //       // Split auctionDate to get day, month, and year
     //       const [day, month, year] = item.auctionDate.split('-').map(Number);
-  
+
     //       // Create a Date object and increment the month
     //       const newDate = new Date(year, month, day);
     //       newDate.setMonth(newDate.getMonth()); // Increase month by 1 (month is zero-based)
-  
+
     //       // Format the updated date as DD-MM-YYYY
     //       const updatedDay = newDate.getDate().toString().padStart(2, '0');
     //       const updatedMonth = (newDate.getMonth() + 1).toString().padStart(2, '0');
     //       const updatedYear = newDate.getFullYear();
-  
+
     //       // Update the item's auctionDate
     //       item.auctionDate = `${updatedDay}-${updatedMonth}-${updatedYear}`;
     //     }
     //   });
-  
+
     //   // Get today's date in the required format (DD-MM-YYYY)
     //   const today = new Date();
     //   const formattedToday = `${today.getDate().toString().padStart(2, '0')}-${(today.getMonth() + 1).toString().padStart(2, '0')}-${today.getFullYear()}`;
-  
+
     //   // Filter chitdata for today's auction dates
     //   this.finalArray = this.chitdata
     //     .filter(item => item.auctionDate === formattedToday) // Keep only today's auctions
@@ -106,50 +106,49 @@ export class AuctionSidebarComponent {
     //       groupId: item.chitGroupId,
     //       createdAt: item.createdAt,
     //     }));
-  
+
     //   // Optional: Log the final array to see today's auctions
     // });
-    this.service.getAuctionToday().subscribe((data=>{
-      this.auctions=data
-      this.auctions=this.auctions.todaysAuction
-      this.displayedAuctions=this.auctions.slice(0,5)
+    this.service.getAuctionToday().subscribe((data => {
+      this.auctions = data
+      this.auctions = this.auctions.todaysAuction
+      this.displayedAuctions = this.auctions.slice(0, 5)
       console.log(this.auctions);
 
     }))
- 
+
   }
   applyFilter(filterValue: string) {
     this.displayedAuctions = this.auctions;
     if (!filterValue || !this.auctions) {
       return;
     }
-  
+
     this.displayedAuctions = this.auctions.filter(subscriber => {
       const chitGroupId = subscriber.chitGroupId ? subscriber.chitGroupId.toString().toLowerCase() : '';
       // const subscriberName = subscriber.subscriberName ? subscriber.subscriberName.toLowerCase() : '';
       return chitGroupId.includes(filterValue.toLowerCase());
     });
   }
-  nav(id:string){
-    console.log(id);
+  nav(id: string) {  
     this.router.navigate([`chit/auction/${id}`])
-      }
-    
-      viewAll(){
-        if (!this.showGroups) {
-          this.displayedAuctions = this.auctions; // Show all subscribers
-          this.showGroups = true;
-        }
-    
-      }
-      viewLess(){
-        if (this.showGroups) {
-          this.displayedAuctions = this.auctions.slice(0, 5);
-          this.showGroups = false;
-        }
-    
-      }
-  
+  }
+
+  viewAll() {
+    if (!this.showGroups) {
+      this.displayedAuctions = this.auctions; // Show all subscribers
+      this.showGroups = true;
+    }
+
+  }
+  viewLess() {
+    if (this.showGroups) {
+      this.displayedAuctions = this.auctions.slice(0, 5);
+      this.showGroups = false;
+    }
+
+  }
+
   // updateFinalArray() {
   //   // Format today's date to match 'DD-MM-YYYY'
   //   const today = new Date();

@@ -150,7 +150,7 @@
                        </div>
                        
                        <div class="col-lg-3"  >
-                        <button class="btn btn-primary px-2 py-2" [disabled]="!purchase||!auctionStart" *ngIf="regular||profitChit" (click)="onSubmit()" data-bs-toggle="modal" data-bs-target="#auctionModal">Redeem TKN A/C</button>
+                        <button class="btn btn-primary px-2 py-2" [disabled]="!purchase||!auctionStart||!auctionForm.valid" *ngIf="regular||profitChit" (click)="onSubmit()" data-bs-toggle="modal" data-bs-target="#auctionModal">Redeem TKN A/C</button>
                       </div>
                       <!-- <div class="col-lg-3">
                           <button class="btn px-2  py-2" >TKN Company</button>
@@ -379,7 +379,7 @@
 
   <div class="modal fade show" id="auctionModal"  tabindex="-1"  role="dialog"  [ngClass]="{'d-block': invoiceGen}">
       <div class="modal-dialog modal-lg modal-dialog-centered">
-          <div class="modal-content p-4">
+          <div class="modal-content p-2">
               <div class="popup-body">
                   <div class="text-center pb-2 fs-4 fw-bold">
                       Invoice Details
@@ -399,7 +399,7 @@
                           </div>
                       </div>
                       <hr class="border border-dark m-0" >
-                      <div class="row py-3">
+                      <div class="row py-2">
                         <div class="col-6 d-flex justify-content-around">
                             <div class="col-5 fw-bold">Group ID</div>
                             <div class="col-5">{{receipt?.groupId}}</div>
@@ -409,7 +409,7 @@
                             <div class="col-5">{{date}} - {{time}}</div>
                         </div>
                     </div>
-                    <div class="row pb-3">
+                    <div class="row pb-2">
                         <div class="col-6 d-flex justify-content-around">
                             <div class="col-5 fw-bold">Prized Amount</div>
                             <div class="col-5">{{receipt?.prizedAmount}}</div>
@@ -419,7 +419,7 @@
                           <div class="col-5">{{receipt?.subscriberName}}</div>
                         </div>
                     </div>
-                    <div class="row pb-3">
+                    <div class="row pb-2">
                         <div class="col-6 d-flex justify-content-around">
                             <div class="col-5 fw-bold">Passbook Number</div>
                             <div class="col-5">{{receipt?.passbookNo}}</div>
@@ -430,7 +430,7 @@
                       </div>
                     </div>
 
-                    <div class="row pb-3">
+                    <div class="row pb-2">
                       <div class="col-6 d-flex justify-content-around">
                           <div class="col-5 fw-bold">Auction Cycle</div>
                           <div class="col-5">{{receipt?.auctionCycle}}</div>
@@ -440,7 +440,7 @@
                         <div class="col-5">{{receipt?.winningBid}}</div>
                     </div>
                   </div>
-                  <div class="row pb-3">
+                  <div class="row pb-2">
                     <!-- <div class="col-6 d-flex justify-content-around">
                         <div class="col-5 fw-bold">Ticket Id</div>
                         <div class="col-5">{{ticketId}}</div>

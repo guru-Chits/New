@@ -69,54 +69,6 @@ export class AuctionComponent implements OnInit {
   purchaseId: string
   regularFirst: boolean = false
   colorCode: any
-  subscriberColumn: ITableColumn[] = [
-    {
-      label: 'profileImageUrl',
-      field: ' ',
-      cellRenderer: this.profileImageWithIdRenderer,
-      maxWidth: 80,
-    },
-    {
-      label: 'Passbook Number',
-      field: 'passbookNo',
-      filter: false,
-      cellRenderer: (params) => {
-        let ticketId = params.value;
-        this.service.getTicketId(this.groupId).subscribe((res) => {
-          this.regId = res.regId
-          this.extraId = res.extraId
-          this.purId = res.purId
-          console.log(res.regId, res);
-
-        })
-
-        // Determine the color based on ticketId using the stored data
-        const getColor = (ticketId: string) => {
-          switch (true) {
-            case this.regId.includes(ticketId):
-              return 'green'; // regId - green
-            case this.extraId.includes(ticketId):
-              return 'orange'; // extraId - orange
-            case this.purId.includes(ticketId):
-              return 'red'; // purId - red
-            case this.profitId.includes(ticketId):
-              return 'yellow'; // profitTid - yellow
-            default:
-              return 'pink'; // Default color
-          }
-        };
-
-        // Set the color and display the ticketId with background color
-        const color = getColor(ticketId);
-        return `<span style="background-color: ${color};">${ticketId}</span>`;
-      },
-    },
-    { label: 'Name', field: 'firstName', sortable: true },
-    { label: 'Alias Name', field: 'aliasName', sortable: true },
-    { label: 'Place', field: 'place', sortable: true, filterList: true },
-    { label: 'Occupation', field: 'occupation', sortable: true, filterList: true },
-  ];
-
   isConfirmationModalOpen: boolean = false;
   // chitType: string = 'Regular Chit'; 
 
@@ -126,25 +78,9 @@ export class AuctionComponent implements OnInit {
     private service: ChitService,
     private paymentService: PaymentService,
     private router: Router
-  ) {
-  }
-  // onTicketIdChange(ticketId: string) {
-  //   console.log("Ticket ID received from child:", ticketId);
-  //   // You can now use the ticketId as needed
-  //   this.selectedTicketId=ticketId
-  // }
-
-  gridOption: any = {
-    // columnDefs: this.subscriberColumn,
-    // rowData: this.subscribers,
-    // getRowStyle: (params) => this.applyRowStyle(params)
-  };
-
-  // Fetch the ticket IDs before initializing the grid
-
+  ) { }
 
   ngOnInit(): void {
-
     this.auctionForm = this.fb.group({
       auctionType: ['', [Validators.required]],
       groupId: ['', [Validators.required]],
@@ -157,18 +93,11 @@ export class AuctionComponent implements OnInit {
       auctionCycle: ['', [Validators.required]],
       auctionStart: [],
       amountOutstanding: ['']
-    },
-      {
-        // validator: this.amountLessThanOrEqualChitAmount('ticketId') // Add custom validator here
-      }
-    );
-
+    },);
+    
     this.updatedChanges()
   }
-
-
-  updatedChanges(){
-  
+  updatedChanges() {
     const auctionStart = this.auctionForm.get('auctionStart')?.value;
     if (auctionStart) {
       this.auctionForm.enable();
@@ -472,13 +401,13 @@ export class AuctionComponent implements OnInit {
 
     const finalprizedAmount = this.auctionForm.get('prizedAmount').value;
     const walletBalance = this.chitSubscriberTotal
-    if(this.regular||this.profitChit||this.tknCompany){
+    if (this.regular || this.profitChit || this.tknCompany) {
       const sumOfTwo = Number(finalprizedAmount) + Number(this.chitData.foremanCommission);
       console.log('sum of Two', sumOfTwo)
       const finalWallet = this.chitSubscriberTotal - sumOfTwo
       console.log('final value', finalWallet)
       this.auctionForm.get('walletBalance').patchValue(finalWallet)
-  
+
     }
   }
 
@@ -559,7 +488,7 @@ export class AuctionComponent implements OnInit {
       this.service.getByPassbooNo(passbookNumber).subscribe((details: SubscriberDetails) => {
         console.log(details);
         this.subDetails = details
- 
+
         this.auctionForm.patchValue({
           subscriberName: `${this.subDetails.subscriberDetails.firstName} ${this.subDetails.subscriberDetails.aliasName}`,
           // passbookNumber: this.subDetails.chitDetails.passbookNo,
@@ -578,7 +507,7 @@ export class AuctionComponent implements OnInit {
         this.auctionCycle = data.auctionCycle
         console.log('increased cycle', cycle)
         this.auctionForm.patchValue({
-          auctionCycle: `${cycle?.auctionCycle}`
+          auctionCycle: `${cycle?.auctionCycle + 1}`
         })
       })
     }
@@ -707,21 +636,21 @@ export class AuctionComponent implements OnInit {
 
         })
       }
-      var nextWallet=this.chitData.chitAmount
-      const nextMonth=this.getNextMonthSameDate(response.data.createdAt )
-      if(this.regular||this.tknCompany){
-        if (response.data.auctionCycle==19) {
-        nextWallet=this.chitData.chitAmount- response.data.walletBalance
-        }else if(response.data.auctionCycle>=20){
-          nextWallet=0
+      var nextWallet = this.chitData.chitAmount
+      const nextMonth = this.getNextMonthSameDate(response.data.createdAt)
+      if (this.regular || this.tknCompany) {
+        if (response.data.auctionCycle == 19) {
+          nextWallet = this.chitData.chitAmount - response.data.walletBalance
+        } else if (response.data.auctionCycle >= 20) {
+          nextWallet = 0
         }
-        else{
-          nextWallet=this.chitData.chitAmount
+        else {
+          nextWallet = this.chitData.chitAmount
         }
-        this.paymentService.saveTransactionDetails(response.data.groupId,nextWallet,nextMonth).subscribe(
-          (response)=>{
+        this.paymentService.saveTransactionDetails(response.data.groupId, nextWallet, nextMonth).subscribe(
+          (response) => {
             console.log(response);
-      })
+          })
       }
 
       console.log('auctionForm', this.auctionData)
@@ -731,9 +660,9 @@ export class AuctionComponent implements OnInit {
       this.time = createdAtDate.toLocaleTimeString();  // Formats the time
       this.month = createdAtDate.toLocaleString('default', { month: 'long' });  // Full month name
       this.year = createdAtDate.getFullYear();  // Year
-
+      var walletBalance = 0
       if (this.regular) {
-        var walletBalance = response.data.prizedAmount + response.data.foremanCommision
+         walletBalance = response.data.prizedAmount + response.data.foremanCommision
 
         this.receipt = {
           time: this.time,
@@ -751,7 +680,7 @@ export class AuctionComponent implements OnInit {
           winningBid: response.data.winningBid
         }
       } else if (this.profitChit) {
-        walletBalance = response.data.profitChitData.prizedAmount + response.data.foremanCommision
+        walletBalance = response.data.profitChitData.prizedAmount + response.data.profitChitData.foremanCommision
         this.receipt = {
           time: this.time,
           date: this.date,
@@ -784,7 +713,7 @@ export class AuctionComponent implements OnInit {
 
         }
       } else if (this.extraPayments) {
-        walletBalance =0
+        walletBalance = 0
         this.receipt = {
           time: this.time,
           date: this.date,
@@ -836,49 +765,49 @@ export class AuctionComponent implements OnInit {
       } else {
         this.receipt = ""
       }
-      
-      this.paymentService.saveTransactionDetails(response.data.groupId,-walletBalance ).subscribe(
-        (response)=>{
+
+      this.paymentService.saveTransactionDetails(response.data.groupId, -walletBalance).subscribe(
+        (response) => {
           console.log(response);
-      this.purchase = false
-      // this.auctionForm.reset()
-      this.incrementAuctionCycle()
+          this.purchase = false
+          // this.auctionForm.reset()
+          this.incrementAuctionCycle()
 
-      this.paymentService.getTransactionById(this.groupId).subscribe((response)=>{
-        console.log(response);
-        this.walletBalance=response
-        this.walletBalance=this.walletBalance.payment
-        this.walletBalance.forEach(amount => {
-          this.chitSubscriberTotal=amount.walletBalance
-          console.log(this.chitSubscriberTotal,"red");
+          this.paymentService.getTransactionById(this.groupId).subscribe((response) => {
+            console.log(response);
+            this.walletBalance = response
+            this.walletBalance = this.walletBalance.payment
+            this.walletBalance.forEach(amount => {
+              this.chitSubscriberTotal = amount.walletBalance
+              console.log(this.chitSubscriberTotal, "red");
+              this.auctionForm.patchValue({
+                walletBalance: this.chitSubscriberTotal
+              })
+            });
+          })
+          this.auctionStart = false
+          this.regularFirst = false
+ 
           this.auctionForm.patchValue({
-            walletBalance:this.chitSubscriberTotal
-          })  
-        }); 
-      })
-      this.auctionStart = false
-      this.regularFirst = false
+            auctionType: "",
+            subscriberName: '',
+            passbookNumber: 'PB-',
+            auctionStart: false,  // or whatever the default value is
+            winningBid: '',
+            prizedAmount: ''
 
-      this.auctionForm.patchValue({
-        auctionType: "",
-        subscriberName: '',
-        passbookNumber: 'PB-',
-        auctionStart: false,  // or whatever the default value is
-        winningBid: '',
-        prizedAmount: ''
-
-      });
-      this.updatedChanges()
+          });
+          this.updatedChanges()
 
 
-      this.openModal()
+          this.openModal()
 
 
-      this.auctionForm.disable();
-      this.auctionForm.get('auctionStart')?.enable();
+          this.auctionForm.disable();
+          this.auctionForm.get('auctionStart')?.enable();
 
-    }
-    )
+        }
+      )
     });
     // this.auctionForm.reset()
   }
@@ -886,33 +815,33 @@ export class AuctionComponent implements OnInit {
   getNextMonthSameDate(createdAt: Date): Date {
     // Parse the createdAt date
     const date = new Date(createdAt);
-    
+
     // Get current year and month
     const currentYear = date.getFullYear();
     const currentMonth = date.getMonth(); // 0-based (0 = January, 11 = December)
-    
+
     // Calculate the next month and year
     let nextMonth = currentMonth + 1; // Increment month
     let nextYear = currentYear;
-  
+
     if (nextMonth > 11) {
       // If the current month is December, wrap to January and increment the year
       nextMonth = 0;
       nextYear += 1;
     }
-  
+
     // Set the next month and handle date overflow (e.g., 31st in a month that doesn't have 31 days)
     const nextMonthDate = new Date(nextYear, nextMonth, date.getDate());
-  
+
     // If the next month doesn't have the same date (e.g., February 30th), adjust to the last valid date
     if (nextMonthDate.getMonth() !== nextMonth) {
       nextMonthDate.setDate(0); // Set to the last day of the previous month
     }
-  
+
     // Return the date as an ISO string or any desired format
     return nextMonthDate
   }
-  
+
   profileImageWithIdRenderer(params: any): string {
     const imageUrl = params.data.profileImageUrl;
     // const ticketId = params.data.ticketId;
@@ -999,7 +928,6 @@ export class AuctionComponent implements OnInit {
 
   openConfirmationModal() {
     this.closeModal();  // Close the modal after creating the invoice
-
     this.isConfirmationModalOpen = true;
   }
 
@@ -1015,11 +943,14 @@ export class AuctionComponent implements OnInit {
   }
   close() {
     this.invoiceGen = false
+    window.location.reload();
+
   }
 
   confirm() {
     this.isConfirmationModalOpen = false;
     this.invoiceGen = false
+    window.location.reload();
 
   }
 

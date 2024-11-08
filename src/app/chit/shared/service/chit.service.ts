@@ -15,6 +15,7 @@ export class ChitService {
     return this.http.get(this.chitUrl)
   }
 
+  
   saveChitDetails(chitDetails: any,id?: string): Observable<any> {
     let url = `${environment.chitServiceUrl}/chitgroup/addchitGroup`;
     if(id){
@@ -29,13 +30,18 @@ export class ChitService {
     return this.http.get(url)
   }
 
+  getAuctionToday(){
+    let url = `${environment.chitServiceUrl}/chitgroup/getByAucDate`;
+    return this.http.get(url)
+  }
+  
   getByPassbooNo(passbooknumber:string){
     let url:string= `${environment.chitServiceUrl}/chitgroup/getByPassbookNo/${passbooknumber}`
     return this.http.get(url)
   }
 
-  getSubscriberByTicketId(ticketId: string, groupId: string): Observable<any> {
-    let url:string = `${environment.chitServiceUrl}/chitgroup/getByTicketId/${groupId}/${ticketId}`
+  getSubscriberByTicketId(passbookNumber: string, groupId: string): Observable<any> {
+    let url:string = `${environment.chitServiceUrl}/chitgroup/getByTicketId/${groupId}/${passbookNumber}`
     return this.http.get(url)
   }
 
@@ -51,14 +57,19 @@ export class ChitService {
     let url:string = `${environment.auctionServiceUrl}/chit_management/getAuction/${groupId}`
     return this.http.get(url)
   }
+
+  getLastCreatedAuction(groupId: string): Observable<any>{
+    let url:string = `${environment.auctionServiceUrl}/chit_management/getLastCreatedAuction/${groupId}`
+    return this.http.get(url)
+  }
+  
   getTicketById(id:string,groupId:string){
     let url: string = `${environment.chitServiceUrl}/getByTicketId/${groupId}/${id}`
     return this.http.get(url)
-    console.log(url);
   }
 
-  findTicketInGroup(groupId:string,ticketId:number):Observable<any>{
-    let url:string = `${environment.auctionServiceUrl}/chit_management/findTicketInGroup/${groupId}/${ticketId}`
+  findTicketInGroup(groupId:string,passbookNumber:number):Observable<any>{
+    let url:string = `${environment.auctionServiceUrl}/chit_management/findTicketInGroup/${groupId}/${passbookNumber}`
     return this.http.get(url)
   } 
 
@@ -73,7 +84,7 @@ export class ChitService {
   
       return this.http.get(url);
     }
-  
+
     getSubAuction(passbooknumber:any):Observable<any> {
       let url:string= `${environment.auctionServiceUrl}/chit_management/getSubAuction/${passbooknumber}`
   
@@ -107,5 +118,19 @@ export class ChitService {
     // Perform the HTTP PUT request
     return this.http.post(url, updatedData);
   }
+
+  deleteAuction(id:any): Observable<any> {
+    const url = `${environment.chitServiceUrl}/chit_management/deleteAuction/${id}`;
+
+    // Perform the HTTP PUT request
+    return this.http.delete(url);
+  }
+
+  getAllAuction(){
+
+    let url=`${this.auctionUrl}/chit_management/get_all_chit`
+    return this.http.get(url)
+  }
+
 }
 

@@ -11,49 +11,50 @@
         <div class="col-4 ">
           <div class="line d-flex flex-column justify-content-center align-items-center rounded-end">
             <h6>Total Chit Count</h6>
-            <p class="m-0 fw-bold fs-4">{{total}}</p>
+            <p class="m-0 fw-bold fs-4">{{formatToRupee(total)}}</p>
           </div>
         </div>
-        <div class="col-4">
+        <div class="col-4 ">
+          <div class="line d-flex flex-column justify-content-center align-items-center rounded-end">
+            <h6>Aggregate Wallet Balance</h6>
+            <p class="m-0 fw-bold fs-4">{{formatToRupee(totalWalletBalance)}}</p>
+          </div>
+        </div>
+        <!-- <div class="col-4">
           <div class="line d-flex flex-column justify-content-center align-items-center rounded-end">
             <h6>Total Redeemable Amount</h6>
             <p class="m-0 fw-bold fs-4">700000</p>
           </div>
-        </div>
+        </div> -->
         <div class="col-3 ">
           <div class="red-card d-flex flex-column justify-content-center align-items-center rounded">
             <h6>Total TKN A/C</h6>
-            <p class="m-0 fw-bold fs-4">250000</p>
+            <p class="m-0 fw-bold fs-4">{{formatToRupee(tknAmount)}}</p>
           </div>
         </div>
       </div>
       <div class="row my-3">
-        <div class="col-4 ">
-          <div class="line d-flex flex-column justify-content-center align-items-center rounded-end">
-            <h6>Aggregate Wallet Balance</h6>
-            <p class="m-0 fw-bold fs-4">250000</p>
-          </div>
-        </div>
-        <div class="col-4 ">
+
+        <!-- <div class="col-4 ">
           <div class="line d-flex flex-column justify-content-center align-items-center rounded-end">
             <h6>Extra Payouts</h6>
             <p class="m-0 fw-bold fs-4">7500</p>
           </div>
-        </div>
+        </div> -->
       </div>
       <div class="row my-3">
         <div class="col-4 ">
           <div class="line d-flex flex-column justify-content-center align-items-center rounded-end">
             <h6>No.of Subscribers in more than 1 group</h6>
-            <p class="m-0 fw-bold fs-4">30</p>
+            <p class="m-0 fw-bold fs-4">{{count}}</p>
           </div>
         </div>
-        <div class="col-4 ">
+        <!-- <div class="col-4 ">
           <div class="line d-flex flex-column justify-content-center align-items-center rounded-end">
             <h6>Phantom Payouts</h6>
             <p class="m-0 fw-bold fs-4">7500</p>
           </div>
-        </div>
+        </div> -->
       </div>
       <!-- <button class="btn next-btn px-4 py-3 fw-bold" routerLink="view">Chit View Page</button> -->
       <!-- <div *ngFor="let group of groups" class="card mb-3">
@@ -145,8 +146,9 @@
 
     </div>
     <div class="col-lg-4">
-      <app-auction-sidebar [dataFromParent]="showChitDetails"
-        (dataToParent)="recieveChildBoolean($event)"></app-auction-sidebar>
+      <app-auction-sidebar></app-auction-sidebar>
+
+
       <div class="chit-details" *ngIf="showChitDetails">
         <!-- <div class="card d-flex py-4 mt-2">
 
@@ -215,37 +217,27 @@
                   <!-- <td class="py-3" style="width: 50%;"><strong>Auction Completion Count</strong></td> -->
                   <td class="py-3" style="width: 50%;"><strong>Auction Completion</strong> <br><strong>Count</strong>
                   </td>
-                  <td class="text-center" style="width: 50%;">{{bidHistory.length}}</td>
+                  <td class="text-center" style="width: 50%;">{{auctionCycle}}</td>
                 </tr>
                 <tr>
                   <!-- <td class="py-3" style="width: 50%;"><strong>Prized Subscriber Count</strong></td> -->
                   <td class="py-3" style="width: 50%;"><strong>Prized Subscriber</strong> <br><strong>Count</strong>
                   </td>
-                  <td class="text-center" style="width: 50%;">{{prizedSubsCount}}</td>
+                  <td class="text-center" style="width: 50%;">{{subCount}}</td>
                 </tr>
                 <tr>
                   <td class="py-3" style="width: 50%;"><strong>Wallet Balance</strong></td>
-                  <td class="text-center" style="width: 50%;">{{chitSubscriberTotal}}</td>
-                </tr>
-                <tr>
-                  <td class="py-3" style="width: 50%;"><strong>Additional Wallet</strong> <br><strong>Balance</strong>
-                  </td>
-                  <!-- <td class="py-3" style="width: 50%;"><strong>Additional Wallet Balance</strong></td> -->
-                  <td class="text-center" style="width: 50%;">{{addSubscriberTotal}}</td>
+                  <td class="text-center" style="width: 50%;">{{formatToRupee(chitSubscriberTotal)}}</td>
                 </tr>
                 <tr>
                   <td class="py-3" style="width: 50%;"><strong>Latest Winning Bid</strong></td>
-                  <td class="text-center" style="width: 50%;">{{latestWinningBid}}</td>
+                  <td class="text-center" style="width: 50%;">{{formatToRupee(latestWinningBid)}}</td>
                 </tr>
-                <tr>
+                <!-- <tr>
                   <td class="py-3" style="width: 50%;"><strong>Redeemable Balance</strong></td>
                   <td class="text-center" style="width: 50%;">56000</td>
-                </tr>
-                <tr>
-                  <td class="py-3" style="width: 50%;"><strong>Phantom Entry</strong> <br><strong>Amount</strong></td>
-                  <!-- <td class="py-3" style="width: 50%;"><strong>Phantom Entry Amount</strong></td> -->
-                  <td class="text-center" style="width: 50%;">45000</td>
-                </tr>
+                </tr> -->
+
               </tbody>
             </table>
           </div>
@@ -256,8 +248,11 @@
                 <button class="btn view-btn" (click)="navigate(specificChitData?._id)">View More Details</button>
               </div>
               <div class="ms-1">
-                <button type="button" class="btn auc-btn fw-bold" (click)="auctionEntry(specificChitData?._id)">Auction
-                  Entry</button>
+                <!-- <button type="button" class="btn auc-btn fw-bold" (click)="auctionEntry(specificChitData?._id)">Auction
+                  Entry</button> -->
+
+                  <button type="button" class="btn auc-btn fw-bold" *ngIf="specificChitData?.chitSubscribers?.length >= 20" (click)="auctionEntry(specificChitData?._id)" [disabled]="">Auction Entry</button> 
+
               </div>
             </div>
           </div>

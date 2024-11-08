@@ -4,8 +4,8 @@
             <div class="row">
                 <div class="col-lg-12 d-flex justify-content-between py-3">
                     <app-breadcrumb [data]="breadcrumsData"></app-breadcrumb>
-                    <button class="btn next-btn px-4 py-3 fw-bold" (click)="auctionEntry(chitData?._id)"
-                        *ngIf="canCreate">Auction Entry</button>
+                    <button class="btn next-btn px-4 py-3 fw-bold"  (click)="auctionEntry(chitData?._id)"
+                        *ngIf="canCreate&&chitData.chitSubscribers.length >= 20">Auction Entry</button>
                 </div>
             </div>
             <div class="card py-3  px-4">
@@ -30,7 +30,7 @@
                     <div class="col-4 ">
                         <div class="d-flex flex-column ">
                             <h6><strong>Auctions Completed</strong></h6>
-                            <p class="">{{bidHistory?.length}}</p>
+                            <p class="">{{auctionCycle}}</p>
                         </div>
                     </div>
                 </div>
@@ -38,7 +38,7 @@
                     <div class="col-4 ">
                         <div class=" d-flex flex-column ">
                             <h6><strong>Prized Subscribers Count</strong></h6>
-                            <p class="">{{prizedSubsCount}}</p>
+                            <p class="">{{prizedSub}}</p>
                         </div>
                     </div>
                     <div class="col-4 ">
@@ -47,30 +47,31 @@
                             <p class="">{{formatToIndianCurrency(chitSubscriberTotal)}}</p>
                         </div>
                     </div>
-                    <div class="col-4 ">
+                    <!-- <div class="col-4 ">
                         <div class="d-flex flex-column ">
                             <h6><strong>Additional Wallet Balance</strong></h6>
                             <p class="">{{formatToIndianCurrency(addSubscriberTotal)}}</p>
                         </div>
-                    </div>
+                    </div> -->
+                    
                 </div>
                 <div class="row py-3">
                     <div class="col-4 ">
                         <div class=" d-flex flex-column red">
                             <h6><strong>TKN A/C</strong></h6>
-                            <p class="">{{sumPrizedAmount}}</p>
+                            <p class="">{{formatToIndianCurrency(amountOutstanding)}}</p>
                         </div>
                     </div>
                     <div class="col-4 ">
                         <div class=" d-flex flex-column ">
                             <h6><strong>TKN Company</strong></h6>
-                            <p class="">{{sumTKNDataWalletBalance}}</p>
+                            <p class="">{{formatToIndianCurrency(tknAmount)}}</p>
                         </div>
                     </div>
                     <div class="col-4 ">
                         <div class="d-flex flex-column ">
                             <h6><strong>Profit Chit Counts</strong></h6>
-                            <p class="">{{countProfitChitData}}</p>
+                            <p class="">{{profitCount}}</p>
                         </div>
                     </div>
                 </div>
@@ -103,7 +104,9 @@
                     </div>
                 </button>
                 <div *ngIf="showBidHistory" class="border rounded shadow-sm">
-                    <table class="table rounded m-0">
+                    <app-ag-grid [columns]="column"   [rowData]="bidHistory"  [searchImg]="searchImg" [filterImg]="filterImg"  width="100%" height="500px" [pageSize]="20" [search]="true" filter="true"></app-ag-grid>
+
+                    <!-- <table class="table rounded m-0">
                         <thead class="rounded">
                             <tr>
                                 <th *ngFor="let column of DummyData" class="rounded">
@@ -118,7 +121,7 @@
                                 </td>
                             </tr>
                         </tbody>
-                    </table>
+                    </table> -->
                 </div>
 
 
@@ -226,8 +229,8 @@
                                             </div>
                                         </div>
                                     </form>
-                                    <button type="button" class="btn view-btn px-4 my-3"
-                                        (click)="edit(filteredSubscribers[0]?.passbookNo)">Edit</button>
+                                    <button type="button" class="btn view-btn my-3"
+                                        (click)="edit(filteredSubscribers[0]?.passbookNo)">Save changes</button>
                                 </td>
                             </tr>
                         </tbody>
@@ -246,9 +249,12 @@
                                 <!--(click)="auctionEntry(specificChitData?._id)"-->
                             </div>
 
-                        </div>
                     </div>
                 </div>
+                <button type="button" class="btn view-btn my-3"
+                (click)="subPage(filteredSubscribers[0]?._id)">Payment Detail</button>
+
+            </div>
             </div>
             <div class="card details p-3 mt-4" *ngIf="isSubscriberListVisible">
 
@@ -364,3 +370,52 @@
 
     </div>
 </div>
+
+<div *ngIf="showDetails">
+    <div class="modal fade" id="redeemDetailsModal" tabindex="-1" class="modal" role="dialog" [ngClass]="{'d-block': showDetails}">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Bid History</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" (click)="closeModel()"></button>
+          </div>
+          <div class="modal-body">
+            <div class="row">
+              <div class="col-lg-6">
+                <p><strong>Name:</strong> {{ chitDetail?.subscriberName }}</p>
+              </div>
+
+              <div class="col-lg-6">
+                <p><strong>Date:</strong> {{ recDate }}</p>
+              </div>
+              <div class="col-lg-6">
+                <p><strong>Passbook Number:</strong> {{ chitDetail?.passbookNumber }}</p>
+              </div>
+              <div class="col-lg-6">
+                <p><strong>Prized Amount:</strong> {{ chitDetail?.prizedAmount }}</p>
+              </div>
+              <div class="col-lg-6">
+                <p><strong>Group ID:</strong> {{ datas?.groupId }}</p>
+              </div>
+              <div class="col-lg-6">
+                <p><strong>Location:</strong> {{ chitDetail?.location }}</p>
+              </div>
+  
+              <div class="col-lg-6">
+                <p><strong>Winning Bid:</strong> {{ chitDetail?.winningBid }}</p>
+              </div>
+
+              <div class="col-lg-6">
+                <!-- <p><strong>Occupation:</strong> {{ chitDetail?.occupation }}</p> -->
+              </div>
+
+            </div>
+          </div>
+          <!-- <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" (click)="close()">Close</button>
+          </div> -->
+        </div>
+      </div>
+    </div>
+  
+  </div>

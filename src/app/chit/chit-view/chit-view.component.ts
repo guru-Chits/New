@@ -63,8 +63,37 @@ export class ChitViewComponent implements OnInit {
   collectionTypes: any;
   showall = false; // To toggle "View More"
   showGroups = false
+  showDetails:boolean=false
+  chitDetails:any
+  datas:any
+  recDate:String
+  recTime:String
+  prizedSub:number
+  amountOutstanding:any
+  auctionCycle:number
+  profitCount:any
+  tknAmount:number
   constructor(private activatedRoute: ActivatedRoute, private router: Router, private service: ChitService, private paymentService: PaymentService, private authService: AuthService, private subservice: SubscriberService, private settings: ServiceService) { }
+column: ITableColumn[] = [
+  { field: 'passbookNumber', label: 'Passbook No' },
+  { field: 'subscriberName',  label: 'Name' ,sortable: false, filter: false },
+  // { field: '', sortable: false, filter: false },
 
+  { field: 'location', label:"Location" ,sortable: false, filter: false },
+  // { field: 'occupation', label:"Occupation" ,sortable: false, filter: false },
+  { field: 'winningBid',  label:"WinningBid",sortable: false, filter: false },
+  { field: 'viewDetails',  label:"'View Details'",sortable: false, filter: false ,
+    cellStyle: function (params: any) {
+      return { color: '#50A1A5' ,cursor:'pointer'};
+    },
+    onCellClicked: (event: CellClickedEvent) =>
+  
+      this.getDataById(event.data.passbookNumber)
+  
+
+  },
+
+];
   getAllChit() {
     this.service.getAllChit().subscribe((data) => {
       this.totalChitData = data;
@@ -93,17 +122,27 @@ export class ChitViewComponent implements OnInit {
           this.chitData = data;
           this.chitData = this.chitData.ChitsGroup;
           this.groupId = this.chitData.chitGroupId;
-          this.service.getChitAuctionById(this.groupId).subscribe((res) => {
-            this.bidHistory = res.data;
-            // Filter and count objects that have a 'subscriberName' key
-            // this.prizedSubsCount = this.bidHistory.filter(item => item.subscriberName || item.extraPaymentData?.subscriberName || item.TKNData?.subscriberName || item.profitChitData?.subscriberName || item.purchaseChitData?.subscriberName).length;
-            // this.countProfitChitData = this.bidHistory.filter(item => item.profitChitData).length;
-            // this.sumTKNDataWalletBalance = this.bidHistory.filter(item => item.TKNData) // Filter items that have TKNData
-              // .reduce((sum, item) => sum + item.walletBalance, 0); // Sum up walletBalance
-            // this.sumPrizedAmount = this.bidHistory.filter(item => item.purchaseChitData)  // Filter objects that contain purchaseChitData
-              // .reduce((sum, item) => sum + item.purchaseChitData.prizedAmount, 0); // Sum the prizedAmount
 
-          })
+          this.service.getTicketId(this.groupId).subscribe((res) => {
+            this.amountOutstanding=res.totalPrizedAmount
+            this.profitCount=res.profitCount
+            this.tknAmount=res.totalTknCompany
+            this.bidHistory=res.allData
+            this.auctionCycle=res.auctionCycle
+            console.log(this.bidHistory?.length);
+            this.prizedSub=this.bidHistory?.length
+            this.bidHistory=  res.allData.map(history=>({
+              passbookNumber:history.passbookNumber,
+              subscriberName:history.subscriberName,
+              location:history.location,
+              // occupation:history.occupation,
+              winningBid:history.winningBid,
+              prizedAmount:history.prizedAmount,
+              viewDetails:"View Details"
+            }))
+             });
+      
+          
           if (this.chitData.addChitSubscribers && this.chitData.addChitSubscribers.length > 0) {
             const lastSubscriber = this.chitData.addChitSubscribers[this.chitData.addChitSubscribers.length - 1];
 
@@ -141,6 +180,50 @@ export class ChitViewComponent implements OnInit {
       }
     });
 
+
+  }
+
+  getDataById(id:any){
+    console.log(id)
+    this.service.getSubAuction(id).subscribe(
+      data => {
+        console.log("e354");
+        
+        if(data.subscriberAuc.extraPaymentData){
+        this.chitDetail = data.subscriberAuc.extraPaymentData;
+        }else if(data.subscriberAuc.profitChitData){
+          this.chitDetail = data.subscriberAuc.profitChitData;
+        }else if(data.subscriberAuc.purchaseChitData){
+          this.chitDetail = data.subscriberAuc.purchaseChitData;
+        } else if(data.subscriberAuc.TKNData){
+          this.chitDetail = data.subscriberAuc.TKNData;
+        }else{
+          this.chitDetail = data.subscriberAuc;
+
+        }
+        this.showDetails=true
+        this.datas=data.subscriberAuc;
+
+        this.showDetail()
+      const createdAtDate = new Date(this.datas.createdAt);
+      this.recDate =createdAtDate.toISOString().split('T')[0]; // Formats the date
+      this.recTime = createdAtDate.toLocaleTimeString();  // Formats the time
+        console.log(this.datas)
+        console.log(this.chitDetail)
+      },
+      error => {
+        console.error('Error fetching subscriber', error);
+      }
+    );
+  
+  }
+  showDetail(): void {
+    this.showDetails=true
+  }
+  closeModel(){
+    this.showDetails=false
+    this.chitDetail={}
+    this.datas={}
   }
   viewMore(): void {
     if (!this.showall) {
@@ -162,20 +245,12 @@ export class ChitViewComponent implements OnInit {
       this.showGroups = false;
     }
   }
-  formatToIndianCurrency(amount: number | string): string {
-    if (!amount) return '';
-
-    let amountStr = amount.toString();
-    const isNegative = amountStr.startsWith('-');
-    if (isNegative) {
-      amountStr = amountStr.slice(1);
-    }
-
-    let [integer, decimal] = amountStr.split('.');
-
-    integer = integer.replace(/\B(?=(\d{3})+(?!\d))/g, ',').replace(/(\d+)(?=(\d{2})+(\d{3})(?!\d))/g, '$1,');
-    const formattedAmount = decimal ? `${integer}.${decimal}` : integer;
-    return isNegative ? `-${formattedAmount}` : formattedAmount;
+  formatToIndianCurrency(amount: number): string  {
+    return new Intl.NumberFormat('en-IN', {
+      style: 'currency',
+      currency: 'INR',
+      maximumFractionDigits: 2
+    }).format(amount);
   }
 
   closeTicket(type: 'close') {
@@ -397,27 +472,27 @@ export class ChitViewComponent implements OnInit {
     })
   }
 
-  getAuctionById(id: string) {
-    this.service.getChitAuctionById(id).subscribe((res) => {
-      this.bidHistory = res.data;
-      this.bidHistory = this.bidHistory.map(data => {
-        // Initialize base fields from top level
-        const result = {
-          auctionCycle: data.auctionCycle || data.TKNData?.auctionCycle || 'N/A',
-          subscriberName: data.subscriberName || data.extraPaymentData?.subscriberName || data.TKNData?.subscriberName || data.profitChitData?.subscriberName || data.purchaseChitData?.subscriberName || 'N/A',
-          winningBid: data.winningBid || data.extraPaymentData?.winningBid || data.TKNData?.winningBid || data.profitChitData?.winningBid || data.purchaseChitData?.winningBid || 'N/A',
-          prizedAmount: data.prizedAmount || data.extraPaymentData?.prizedAmount || data.TKNData?.prizedAmount || data.profitChitData?.prizedAmount || data.purchaseChitData?.prizedAmount || 'N/A',
-          walletBalance: data.walletBalance
-        };
-        return result;
-      });
-    })
-  }
+  // getAuctionById(id: string) {
+  //   this.service.getChitAuctionById(id).subscribe((res) => {
+  //     this.bidHistory = res.data;
+  //     this.bidHistory = this.bidHistory.map(data => {
+  //       // Initialize base fields from top level
+  //       const result = {
+  //         auctionCycle: data.auctionCycle || data.TKNData?.auctionCycle || 'N/A',
+  //         subscriberName: data.subscriberName || data.extraPaymentData?.subscriberName || data.TKNData?.subscriberName || data.profitChitData?.subscriberName || data.purchaseChitData?.subscriberName || 'N/A',
+  //         winningBid: data.winningBid || data.extraPaymentData?.winningBid || data.TKNData?.winningBid || data.profitChitData?.winningBid || data.purchaseChitData?.winningBid || 'N/A',
+  //         prizedAmount: data.prizedAmount || data.extraPaymentData?.prizedAmount || data.TKNData?.prizedAmount || data.profitChitData?.prizedAmount || data.purchaseChitData?.prizedAmount || 'N/A',
+  //         walletBalance: data.walletBalance
+  //       };
+  //       return result;
+  //     });
+  //   })
+  // }
 
   openBidHistory(groupId: string) {
     this.showBidHistory = !this.showBidHistory
     if (this.showBidHistory) {
-      this.getAuctionById(groupId)
+      // this.getAuctionById(groupId)
     }
   }
 
@@ -426,7 +501,7 @@ export class ChitViewComponent implements OnInit {
     // const ticketId = params.data.ticketId;
     return `
       <div style="display: flex; align-items: center;">
-        <img src="${imageUrl}" alt="Profile Image" width="35" height="35" style="border-radius: 50%; margin-right: 10px;">
+        <img src="${imageUrl}" alt="Profile Image" width="30" height="30" style="border-radius: 50%; margin-right: 10px;">
         <span style="color: #50A1A5;"></span>
       </div>
     `;
@@ -443,7 +518,7 @@ export class ChitViewComponent implements OnInit {
   getChitById(id: string) {
     this.showTicket = true;
     this.filteredSubscribers = this.subscribers.filter(subscriber => subscriber._id === id);
-    this.filteredAdditionalSubs = this.addSubscribers.filter(subscriber => subscriber._id === id);
+    // this.filteredAdditionalSubs = this.addSubscribers.filter(subscriber => subscriber._id === id);
     const subscriber = this.filteredSubscribers[0];
     this.collectionTypeForm.patchValue({
       collectionType: subscriber.collectionType  // Patch the collectionType value from the filtered subscriber
@@ -511,13 +586,17 @@ export class ChitViewComponent implements OnInit {
           })
           // You can add code here to handle success, like showing a success message or updating the UI
         },
-        (error: any) => {
-          // Handle the error appropriately, like showing an error message
-        }
+
       );
     });
   }
   isSubscriberInChit(subscriberId: string): boolean {
     return this.subscribers.some(chitSubscriber => chitSubscriber.subscriberId === subscriberId);
+  }
+
+  subPage(id:string){
+    console.log(id);
+    // this.router.navigate([`subscriber/view/${id}`]);
+
   }
 }

@@ -70,6 +70,8 @@ export class AuctionComponent implements OnInit {
   regularFirst: boolean = false
   colorCode: any
   isConfirmationModalOpen: boolean = false;
+  isSubmitted: boolean = false;
+  type: string
   // chitType: string = 'Regular Chit'; 
 
   constructor(
@@ -94,10 +96,11 @@ export class AuctionComponent implements OnInit {
       auctionStart: [],
       amountOutstanding: ['']
     },);
-    
+
     this.updatedChanges()
   }
   updatedChanges() {
+
     const auctionStart = this.auctionForm.get('auctionStart')?.value;
     if (auctionStart) {
       this.auctionForm.enable();
@@ -130,7 +133,7 @@ export class AuctionComponent implements OnInit {
               routerLink: `chit/view/${paramData.id}`,
             },
             {
-              key: `Chit Auction`,
+              key: `Auction Entry`,
               routerLink: `/chit/auction/${paramData.id}`,
             },
           ];
@@ -263,14 +266,19 @@ export class AuctionComponent implements OnInit {
       data => {
 
         if (data.subscriberAuc.extraPaymentData) {
+          this.type = "Extra Payments"
           this.chitDetail = data.subscriberAuc.extraPaymentData;
         } else if (data.subscriberAuc.profitChitData) {
+          this.type = "Profit Chit"
           this.chitDetail = data.subscriberAuc.profitChitData;
         } else if (data.subscriberAuc.purchaseChitData) {
+          this.type = "Purchase Chit"
           this.chitDetail = data.subscriberAuc.purchaseChitData;
         } else if (data.subscriberAuc.TKNData) {
+          this.type = "TKN company"
           this.chitDetail = data.subscriberAuc.TKNData;
         } else {
+          this.type = "Regular Chit"
           this.chitDetail = data.subscriberAuc;
         }
 
@@ -515,15 +523,24 @@ export class AuctionComponent implements OnInit {
 
   toggleFormControls(): void {
     const auctionStart = this.auctionForm.get('auctionStart')?.value;
+    const passbookInput = document.getElementById('passbookNumber') as HTMLInputElement;
+    const prizedAmountInput = document.getElementById('prizedAmount') as HTMLInputElement;
+    const auctionTypeSelect = document.getElementById('auctionType') as HTMLInputElement;
+
     if (auctionStart) {
       this.auctionForm.enable();
       this.auctionStart = false
       this.auctionForm.patchValue({
         passbookNumber: 'PB-'
       })
-
+      passbookInput?.setAttribute('readonly', 'true');
+      prizedAmountInput?.setAttribute('readonly', 'true');
+      auctionTypeSelect?.setAttribute('readonly', 'true');
     } else {
       // this.auctionForm.disable();
+      passbookInput?.removeAttribute('readonly');
+      prizedAmountInput?.removeAttribute('readonly');
+      auctionTypeSelect?.removeAttribute('readonly');
       this.auctionForm.get('auctionStart')?.enable();
       this.auctionStart = true
 
@@ -630,6 +647,7 @@ export class AuctionComponent implements OnInit {
     }
     this.service.saveAuctionDetails(payload).subscribe((response: any) => {
       this.auctionData = response.data;
+      this.isSubmitted = true;
       if (this.purchase == true) {
         this.service.deleteAuction(this.purchaseId).subscribe((res) => {
           console.log(res);
@@ -662,7 +680,7 @@ export class AuctionComponent implements OnInit {
       this.year = createdAtDate.getFullYear();  // Year
       var walletBalance = 0
       if (this.regular) {
-         walletBalance = response.data.prizedAmount + response.data.foremanCommision
+        walletBalance = response.data.prizedAmount + response.data.foremanCommision
 
         this.receipt = {
           time: this.time,
@@ -787,7 +805,7 @@ export class AuctionComponent implements OnInit {
           })
           this.auctionStart = false
           this.regularFirst = false
- 
+
           this.auctionForm.patchValue({
             auctionType: "",
             subscriberName: '',
@@ -797,6 +815,24 @@ export class AuctionComponent implements OnInit {
             prizedAmount: ''
 
           });
+          setTimeout(() => {
+            this.paymentService.getTransactionById(this.groupId).subscribe((response) => {
+              console.log(response);
+              this.walletBalance = response;
+              this.walletBalance = this.walletBalance.payment;
+
+              this.walletBalance.forEach((amount) => {
+                this.chitSubscriberTotal = amount.walletBalance;
+                console.log(this.chitSubscriberTotal, "red");
+
+                // Update the form with the wallet balance
+                this.auctionForm.patchValue({
+                  walletBalance: this.chitSubscriberTotal
+                });
+              });
+            });
+          }, 3 * 60 * 1000); // 3 minutes = 180,000 milliseconds
+
           this.updatedChanges()
 
 
@@ -901,7 +937,6 @@ export class AuctionComponent implements OnInit {
 
     // Revert body content
     document.body.innerHTML = originalContent;
-    window.location.reload(); // Reload to restore state
   }
 
 
@@ -943,15 +978,12 @@ export class AuctionComponent implements OnInit {
   }
   close() {
     this.invoiceGen = false
-    window.location.reload();
 
   }
 
   confirm() {
     this.isConfirmationModalOpen = false;
     this.invoiceGen = false
-    window.location.reload();
-
   }
 
   showModal(): void {
@@ -978,6 +1010,8 @@ export class AuctionComponent implements OnInit {
     { field: 'location', label: "Location", sortable: false, filter: false },
     // { field: 'occupation', label:"Occupation" ,sortable: false, filter: false },
     { field: 'winningBid', label: "WinningBid", sortable: false, filter: false },
+    { field: 'prizedAmount', label: "Prized Amount", sortable: false, filter: false },
+
     {
       field: 'viewDetails', label: "'View Details'", sortable: false, filter: false,
       cellStyle: function (params: any) {

@@ -199,15 +199,23 @@ export class AreaCreateComponent implements OnInit{
       console.log("selected regionId", this.selectedRegionId);
       const region = this.regionIdList.find((module) => module._id === this.selectedRegionId);
       if(region){
-        this.selectedRegionName = region.regionName
-        this.routeForm.get('routeName').patchValue("");
+        this.selectedRegionName = region.regionId
+        // this.routeForm.get('routeName').patchValue("");
         this.routeForm.get('routeId').patchValue("");
+        this.getRouteNameValue()
       }
       console.log("route form", this.routeForm);
       
     }
     getRouteNameValue() {
+      const region = this.regionIdList.find((module) => module._id === this.selectedRegionId);
+      if(region){
+        this.selectedRegionName = region.regionId
+      }
       const routeNameValue = this.routeForm.get('routeName').value;
+      const regionId = this.routeForm.get('regionId').value;
+      console.log('form region id:', regionId);
+
       
       console.log('Route Name:', routeNameValue);
       this.selectedRouteName = routeNameValue

@@ -101,11 +101,6 @@ border-radius: 3px;
   float: right;
 }
 
-.row-green { background-color: green; }
-.row-orange { background-color: orange; }
-.row-red { background-color: red; }
-.row-yellow { background-color: yellow; }
-
 .auction{
   background-color: #eef6f6;
 }
@@ -149,8 +144,8 @@ border-radius: 3px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   border-left: 4px solid #3E3A97;
   font-size: 12px;
-  width: 110px;
-  height: 90px;
+  /* width: 110px;
+  height: 90px; */
 
 }
 
@@ -176,10 +171,10 @@ color: red; /* Blue for purId */
   }
 
 .profit-id-row{
-  color:rgb(214, 214, 77)
+  color:rgb(161, 239, 161)
 }
 .tkn-id-row{
-  color:blue;
+  color:rgb(30, 194, 30);
 }
 
 /* Table Styles */
@@ -214,4 +209,13 @@ color: red; /* Blue for purId */
   height: 30px; /* Fixed height */
   border-radius: 50%; /* Make it round */
   object-fit: cover; /* Ensure image covers the area */
+}
+
+.dot {
+  height: 10px;
+  margin-top: 7px;
+  margin-left: 10px;
+  width: 10px;
+  border-radius: 50%;
+  display: inline-block;
 }

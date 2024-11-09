@@ -43,6 +43,9 @@
                     
                   </div>
                   </div>
+                  <div>
+                    
+                  </div>
                   <div class="row justify-content-around">
                       <div class="col-lg-4">
                         <div class="form-group">
@@ -141,32 +144,84 @@
                       <div class="col-lg-5">
                       <div class="form-check form-switch">
                           <input class="form-check-input" type="checkbox" formControlName="auctionStart" role="switch" id="flexSwitchCheckChecked"  (change)="toggleFormControls()" >
-                          <label class="form-check-label" for="flexSwitchCheckChecked">Auction Status</label>
-                          
+                          <label class="form-check-label" *ngIf="auctionStart" for="flexSwitchCheckChecked">Auction Start</label>
+                          <label class="form-check-label" *ngIf="!auctionStart" for="flexSwitchCheckChecked">Auction End</label>
+
                         </div> 
-                        <h6 style="color: red;"class="mt-3">
-                          * Turn On Auction Status
-                        </h6>         
+                        <h6 style="color: red;"class="mt-3"  *ngIf="auctionStart" >
+                          * Turn on to Start Auction
+                        </h6>    
+                        <h6 style="color: red;"class="mt-3"  *ngIf="!auctionStart" >
+                          * Turn Off to End Auction
+                        </h6>     
                        </div>
                        
-                       <div class="col-lg-3"  >
-                        <button class="btn btn-primary px-2 py-2" [disabled]="!purchase||!auctionStart||!auctionForm.valid" *ngIf="regular||profitChit" (click)="onSubmit()" data-bs-toggle="modal" data-bs-target="#auctionModal">Redeem TKN A/C</button>
+                       <div class="col-lg-3">
+                        <button
+                          class="btn btn-primary px-2 py-2"
+                          *ngIf="regular || profitChit"
+                          [disabled]="!purchase || !auctionStart || !auctionForm.valid || isSubmitted"
+                          (click)="onSubmit()"
+                          data-bs-toggle="modal"
+                          data-bs-target="#auctionModal"
+                        >
+                          Redeem TKN A/C
+                        </button>
                       </div>
-                      <!-- <div class="col-lg-3">
-                          <button class="btn px-2  py-2" >TKN Company</button>
-                      </div>                        p -->
+                      
                       <div class="col-lg-3" *ngIf="purchaseChit">
-                        <button type="submit" class="btn px-4  py-2" style="background-color: #AA3028;" data-bs-toggle="modal" data-bs-target="#auctionModal"   [disabled]="!auctionStart || purchase || !auctionForm.valid"   (click)="onSubmit()">Purchase</button>
-                    </div>
-                      <div class="col-lg-3"  *ngIf="extraPayments">
-                        <button type="submit" class="btn px-4  py-2" data-bs-toggle="modal" data-bs-target="#auctionModal"  [disabled]="!auctionStart || purchase || !auctionForm.valid"   (click)="onSubmit()">Extra Payments Done</button>
-                    </div>
-                      <div class="col-lg-3"  *ngIf="tknCompany">
-                        <button type="submit" class="btn px-4  py-2" data-bs-toggle="modal" data-bs-target="#auctionModal"  [disabled]="!auctionStart || purchase"   (click)="onSubmit()">Create Invoice</button>
-                    </div>
-                    <div class="col-lg-3" *ngIf="regular||profitChit" >
-                      <button type="submit" class="btn px-4  py-2" data-bs-toggle="modal" data-bs-target="#auctionModal"  [disabled]="!auctionStart || purchase || !auctionForm.valid"   (click)="onSubmit()">Submit</button>
-                    </div>
+                        <button
+                          type="submit"
+                          class="btn px-4 py-2"
+                          style="background-color: #AA3028;"
+                          [disabled]="!auctionStart || purchase || !auctionForm.valid || isSubmitted"
+                          (click)="onSubmit()"
+                          data-bs-toggle="modal"
+                          data-bs-target="#auctionModal"
+                        >
+                          Purchase
+                        </button>
+                      </div>
+                      
+                      <div class="col-lg-3" *ngIf="extraPayments">
+                        <button
+                          type="submit"
+                          class="btn px-4 py-2"
+                          [disabled]="!auctionStart || purchase || !auctionForm.valid || isSubmitted"
+                          (click)="onSubmit()"
+                          data-bs-toggle="modal"
+                          data-bs-target="#auctionModal"
+                        >
+                          Extra Payments Done
+                        </button>
+                      </div>
+                      
+                      <div class="col-lg-3" *ngIf="tknCompany">
+                        <button
+                          type="submit"
+                          class="btn px-4 py-2"
+                          [disabled]="!auctionStart || purchase || isSubmitted"
+                          (click)="onSubmit()"
+                          data-bs-toggle="modal"
+                          data-bs-target="#auctionModal"
+                        >
+                          Create Invoice
+                        </button>
+                      </div>
+                      
+                      <div class="col-lg-3" *ngIf="regular || profitChit">
+                        <button
+                          type="submit"
+                          class="btn px-4 py-2"
+                          [disabled]="!auctionStart || purchase || !auctionForm.valid || isSubmitted"
+                          (click)="onSubmit()"
+                          data-bs-toggle="modal"
+                          data-bs-target="#auctionModal"
+                        >
+                          Submit
+                        </button>
+                      </div>
+                      
 
                     </div>
                    
@@ -261,7 +316,7 @@
             <div class="col-6 mb-3">
               <div class="card p-3 text-center">
                 <div>Completed Auctions</div>
-                <div>{{auctionCycle-1}}</div>
+                <div>{{auctionCycle}}</div>
               </div>
             </div>
             <div class="col-6 mb-3">
@@ -302,7 +357,17 @@
             </div>
           </div>
         </div>
-        
+        <div class="card my-3">
+          <h5 class="card-title text-center">Color Coding</h5>
+          <div class="card-body">
+            <p class="card-text">Regular Chit - <span class="dot" style="background-color: green;"></span> </p>
+            <p class="card-text">Profit Chit - <span class="dot" style="background-color: rgb(161, 239, 161);"></span> </p>
+            <p class="card-text">TKN Company - <span class="dot" style="background-color: rgb(30, 194, 30);"></span> </p>
+            <p class="card-text">Extra Payments - <span class="dot" style="background-color: orange;"></span> </p>
+            <p class="card-text">Purchase - <span class="dot" style="background-color: red;"></span> </p>
+
+          </div>
+      </div>
       </div>
 
   </div>
@@ -395,7 +460,7 @@
                           <img src="../../../assets/navbar/brand.svg" alt="" width="100px" height="90px">
                           <div class="d-flex flex-column justify-content-center align-items-center">
                               <p class="fs-5 fw-bold m-0">Guru Chits Private Limited</p>
-                              <span>Payment Receipt for {{month}} Month {{year}}</span>
+                              <span>Auction Invoice</span>
                           </div>
                       </div>
                       <hr class="border border-dark m-0" >
@@ -490,7 +555,7 @@
               </div>
 
               <div class="col-lg-6">
-                <!-- <p><strong>Occupation:</strong> {{ chitDetail?.occupation }}</p> -->
+                <p><strong>Type:</strong> {{ type }}</p>
               </div>
 
             </div>

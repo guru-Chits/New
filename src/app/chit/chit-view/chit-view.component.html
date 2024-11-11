@@ -75,21 +75,21 @@
                         </div>
                     </div>
                 </div>
-                <div class="row py-3" aria-disabled="true" style="pointer-events: none; opacity: 0.5;">
+                <div class="row py-3" >
                     <div class="col-4 ">
                         <div class=" d-flex flex-column ">
                             <h6><strong>Chit Commencement</strong></h6>
-                            <p class="">30</p>
+                            <p class="">{{chitData?.auctionDate}}</p>
                         </div>
                     </div>
                     <div class="col-4">
-                        <div class=" d-flex flex-column red">
+                        <div class=" d-flex flex-column red" aria-disabled="true" style="pointer-events: none; opacity: 0.5;">
                             <h6><strong>Amount Outstanding</strong></h6>
                             <p>{{formatToIndianCurrency(7500)}}</p>
                         </div>
                     </div>
                     <div class="col-4 ">
-                        <div class="d-flex flex-column ">
+                        <div class="d-flex flex-column" aria-disabled="true" style="pointer-events: none; opacity: 0.5;">
                             <h6><strong>Surplus Amount Collected</strong></h6>
                             <p class="">0</p>
                         </div>
@@ -191,25 +191,25 @@
                                 <td class="py-3">{{filteredSubscribers[0]?.aliasName ||
                                     filteredAdditionalSubs[0]?.aliasName}}</td>
                             </tr>
-                            <tr>
+                            <tr  *ngIf="aucData.prizedAmount">
                                 <td class="py-3"><strong>Prized Amount</strong></td>
-                                <td class="py-3">2</td>
+                                <td class="py-3">{{aucData.prizedAmount}}</td>
                             </tr>
-                            <tr>
-                                <td class="py-3"><strong>Winning Bid</strong></td>
-                                <td class="py-3">150000</td>
+                            <tr *ngIf="aucData.winningBid">
+                                <td class="py-3" ><strong>Winning Bid</strong></td>
+                                <td class="py-3">{{aucData.winningBid}}</td>
                             </tr>
                             <tr>
                                 <td class="py-3"><strong>Current Chit Payment</strong></td>
-                                <td class="py-3">30000</td>
+                                <td class="py-3">{{total}}</td>
                             </tr>
                             <tr>
-                                <td class="py-3"><strong>Balance</strong></td>
+                                <!-- <td class="py-3"><strong>Balance</strong></td>
                                 <td class="py-3">56000</td>
-                            </tr>
+                            </tr> -->
                             <tr>
                                 <td class="py-3"><strong>Other Enrolments</strong></td>
-                                <td class="py-3">45000</td>
+                                <td class="py-3">{{count}}</td>
                             </tr>
                             <tr>
                                 <td class="py-3"><strong>Collection Type</strong></td>

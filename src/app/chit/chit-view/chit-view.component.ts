@@ -23,9 +23,13 @@ export class ChitViewComponent implements OnInit {
   breadcrumsData: any = [];
   chitId: string = "";
   payment: any
+  total:any
   totalChitData: any;
   groupId: string;
+  paymentHistory:any
   walletBalance: any
+  chitGroups: any
+  count: number = 0
   chitSubscriberTotal = 0;
   addSubscriberTotal = 0;
   canCreate: boolean = false;
@@ -36,6 +40,7 @@ export class ChitViewComponent implements OnInit {
   showTicket: boolean = false;
   ticketDetail: any;
   filteredSubscribers: any;
+  aucData:any
   filteredAdditionalSubs: any;
   isSubscriberListVisible: boolean = false;
   displayedSubscribers: any[];
@@ -106,6 +111,7 @@ column: ITableColumn[] = [
   ngOnInit(): void {
     this.getAllChit()
     this.getAllAuction()
+
     this.authService.checkAccess('Chit Management', 'create').subscribe((hasAccess: boolean) => {
       if (hasAccess) {
         this.canCreate = true
@@ -518,17 +524,58 @@ column: ITableColumn[] = [
   getChitById(id: string) {
     this.showTicket = true;
     this.filteredSubscribers = this.subscribers.filter(subscriber => subscriber._id === id);
+    this.count=0
     // this.filteredAdditionalSubs = this.addSubscribers.filter(subscriber => subscriber._id === id);
     const subscriber = this.filteredSubscribers[0];
     this.collectionTypeForm.patchValue({
       collectionType: subscriber.collectionType  // Patch the collectionType value from the filtered subscriber
     });
+    this.aucData={}
+    this.paymentService.getPaymentByPassbook(subscriber.passbookNo).subscribe(response => {
+      this.paymentHistory = response
+      // this.paymentData = this.paymentHistory.payments.map((paymentDetail, index) => ({
+      //   receiptNumber: paymentDetail.receiptNumber,
+      //   amount: paymentDetail.amount,
+      //   groupId: paymentDetail.groupId,
+      //   collectionType: paymentDetail.collectionType
+      // }))
+      this.subservice.getChitGroupById(subscriber?.subscriberId).subscribe(
+        response => {
+          this.chitGroups = response;
+          console.log(subscriber.subscriberId,this.chitGroups);
+          this.count=this.chitGroups.length-1
+        }
+      )
+      this.total= this.paymentHistory.payments.reduce((total, payment) => {
+        return total + parseFloat(payment.amount);
+      }, 0);
+      console.log(this.total,"pay");
+      
+    })
+    this.service.getSubAuction(subscriber.passbookNo).subscribe((data)=>{
+      if (data.subscriberAuc.extraPaymentData) {
+        this.aucData = data.subscriberAuc.extraPaymentData;
+      } else if (data.subscriberAuc.profitChitData) {
+        this.aucData = data.subscriberAuc.profitChitData;
+      } else if (data.subscriberAuc.purchaseChitData) {
+        this.aucData = data.subscriberAuc.purchaseChitData;
+      } else if (data.subscriberAuc.TKNData) {
+        this.aucData = data.subscriberAuc.TKNData;
+      } else {
+        this.aucData = data.subscriberAuc;
+      }
+    })
+
+
     this.settings.getAllCollection().subscribe(
       (data) => {
         this.collectionTypes = data
         this.collectionTypes = this.collectionTypes.res
       }
     )
+
+
+
     return this.filteredSubscribers;
 
   }

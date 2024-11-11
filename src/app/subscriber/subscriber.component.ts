@@ -140,6 +140,7 @@ export class SubscriberComponent {
   ];
 
   getSubscriberById(id: string): void {
+    this.chitGroup=0
     this.service.getsubscriberById(id).subscribe(
       data => {
         this.subscriberDetail = data;

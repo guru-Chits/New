@@ -43,6 +43,8 @@ export class AuctionComponent implements OnInit {
   chitSubscriberTotal = 0;
   subDetails: any
   purchase: boolean = false
+  subCount:number
+  extraCount:boolean=false
   regId: any[]
   extraId: any[]
   auctionCycle: any
@@ -58,6 +60,7 @@ export class AuctionComponent implements OnInit {
   isModalOpen: boolean = false;
   bidHistory: any
   showDetails: boolean = false
+  invoiceClick:boolean=false
   chitDetail: any
   datas: any
   recDate: String
@@ -109,7 +112,12 @@ export class AuctionComponent implements OnInit {
         passbookNumber: 'PB-'
       })
       this.auctionStart = false
-
+      this.regular=false
+      this.purchaseChit=false
+      this.tknCompany=false
+      this.extraPayments=false
+      this.profitChit=false
+      this.extraCount=false
     } else {
       this.auctionForm.disable();
       this.auctionForm.get('auctionStart')?.enable();
@@ -137,8 +145,6 @@ export class AuctionComponent implements OnInit {
               routerLink: `/chit/auction/${paramData.id}`,
             },
           ];
-
-          console.log(this.chitData.addChitSubscribers);
           // this.fetchTicketIds(this.groupId)
 
           const groupId = this.chitData?.chitGroupId
@@ -147,16 +153,27 @@ export class AuctionComponent implements OnInit {
           this.service.getTicketId(this.groupId).subscribe((res) => {
 
             this.colorCode = res
-            console.log(this.colorCode);
+            const extraCount=this.colorCode?.extraTid?.length
+            const extraNeeded=this.subCount- 20
+            console.log(extraNeeded, extraCount);
+            
 
+            console.log(this.extraCount);
+            if(extraCount < extraNeeded){
+              this.extraCount=false
+              
+            }
+            else{
+              this.extraCount=true
+            }
+             
+            
             // Optionally, fetch subscribers here if needed
           });
 
           this.service.getTicketId(this.chitData.chitGroupId).subscribe((res) => {
             this.bidHistory = res.allData
-            console.log(this.bidHistory?.length);
             this.regularFirst = this.bidHistory?.length
-
             const firstAuction = this.bidHistory?.length || 0;
             this.regularFirst = firstAuction === 0;
 
@@ -172,12 +189,10 @@ export class AuctionComponent implements OnInit {
             }))
           });
           this.paymentService.getTransactionById(this.groupId).subscribe((response) => {
-            console.log(response);
             this.walletBalance = response
             this.walletBalance = this.walletBalance.payment
             this.walletBalance.forEach(amount => {
               this.chitSubscriberTotal = amount.walletBalance
-              console.log(this.chitSubscriberTotal, "red");
               this.auctionForm.patchValue({
                 walletBalance: this.chitSubscriberTotal
               })
@@ -207,8 +222,6 @@ export class AuctionComponent implements OnInit {
               this.lastAuction = res.auction
             }
 
-            console.log(this.lastAuction, "last");
-
           });
 
 
@@ -224,7 +237,8 @@ export class AuctionComponent implements OnInit {
           })
 
           this.subscribers = this.chitData.chitSubscribers;
-          console.log(this.subscribers, "34");
+          this.subCount=this.subscribers.length
+          
 
           // You can also store these values in separate arrays if needed
           this.subscribers = this.subscribers.map(subscriber => ({
@@ -237,8 +251,6 @@ export class AuctionComponent implements OnInit {
             profileImageUrl: subscriber.profileImageUrl
           }));
 
-
-          // console.log('Subscriber Details:', subscriberDetails);
 
           this.autofillForm();
         });
@@ -261,7 +273,6 @@ export class AuctionComponent implements OnInit {
   }
 
   getDataById(id: any) {
-    console.log(id)
     this.service.getSubAuction(id).subscribe(
       data => {
 
@@ -289,8 +300,6 @@ export class AuctionComponent implements OnInit {
         const createdAtDate = new Date(this.datas.createdAt);
         this.recDate = createdAtDate.toISOString().split('T')[0]; // Formats the date
         this.recTime = createdAtDate.toLocaleTimeString();  // Formats the time
-        console.log(this.datas)
-        console.log(this.chitDetail)
       },
       error => {
         console.error('Error fetching subscriber', error);
@@ -307,21 +316,14 @@ export class AuctionComponent implements OnInit {
     this.auctionForm.patchValue(chitDetails);
     this.auctionForm.get('passbookNumber')?.valueChanges.subscribe((passbookNumber) => {
       this.service.findTicketInGroup(this.groupId, passbookNumber).subscribe((res) => {
-        console.log("res tickeer id", res.result);
         if (res.result === true) {
-          // Set a validation error if the ticket already exists
           this.purchase = false
-          console.log(this.purchaseId);
-
           this.auctionForm.get('passbookNumber')?.setErrors({ ticketExists: true });
         }
         else if (res.inGroup === false) {
           this.auctionForm.get('passbookNumber')?.setErrors({ notExist: true });
-
         }
         else if (res.purchase === true && this.purchaseChit === true) {
-          console.log("already purchased");
-
           this.auctionForm.get('passbookNumber')?.setErrors({ alreadyPurchased: true });
 
         }
@@ -335,47 +337,28 @@ export class AuctionComponent implements OnInit {
           this.auctionForm.get('passbookNumber')?.setErrors(null);
           this.purchase = false
         }
-        // You can call this after validation to handle other logic
         this.fetchSubscriberDetails();
       })
     });
   }
 
-  // incrementAuctionCycle(): void {
-  //   this.auctionForm.get('auctionCycle')?.setValue(this.auctionCycle++);
-  // }
-
-  // Fetch ticket ids
-  //  async fetchTicketIds(groupId: string) {
-  //   const res = await this.service.getTicketId(groupId).toPromise();
-  //   this.regId = res?.regId.ticketId
-  //     this.extraId = res?.extraId
-  //     this.purId = res?.purId.purchaseChitData.ticketId
-  //     console.log(res);
-
-  // }
-
-
   getRowClass(passbookNumber: number): string {
 
-    this.regId = this.colorCode.regId
-    this.extraId = this.colorCode.tknTid
-      ; // Store the extraId array
-    this.purId = this.colorCode.purId; // Store the purId array
-    console.log(this.colorCode);
-
+    this.regId = this.colorCode?.regId
+    this.extraId = this.colorCode?.tknTid; // Store the extraId array
+    this.purId = this.colorCode?.purId; // Store the purId array
     // Use includes to check membership in the arrays 
-    if (this.regId.includes(passbookNumber)) {
+    if (this.regId?.includes(passbookNumber)) {
       return 'reg-id-row';
-    } else if (this.colorCode.tknTid.includes(passbookNumber)) {
+    } else if (this.colorCode?.tknTid?.includes(passbookNumber)) {
       return 'tkn-id-row';
-    } else if (this.colorCode.purId.includes(passbookNumber)) {
+    } else if (this.colorCode?.purId?.includes(passbookNumber)) {
       return 'pur-id-row';
     }
-    else if (this.colorCode.extraTid.includes(passbookNumber)) {
+    else if (this.colorCode?.extraTid?.includes(passbookNumber)) {
       return 'extra-id-row';
     }
-    else if (this.colorCode.profitTid.includes(passbookNumber)) {
+    else if (this.colorCode?.profitTid?.includes(passbookNumber)) {
       return 'profit-id-row';
     }
     else {
@@ -404,16 +387,13 @@ export class AuctionComponent implements OnInit {
   getRouteNameValue() {
     const winningBid = this.auctionForm.get('winningBid').value;
     const prizedAmount = `${this.chitData.chitAmount - winningBid}`
-    console.log('minus value', prizedAmount)
     this.auctionForm.get('prizedAmount').patchValue(prizedAmount)
 
     const finalprizedAmount = this.auctionForm.get('prizedAmount').value;
     const walletBalance = this.chitSubscriberTotal
     if (this.regular || this.profitChit || this.tknCompany) {
       const sumOfTwo = Number(finalprizedAmount) + Number(this.chitData.foremanCommission);
-      console.log('sum of Two', sumOfTwo)
       const finalWallet = this.chitSubscriberTotal - sumOfTwo
-      console.log('final value', finalWallet)
       this.auctionForm.get('walletBalance').patchValue(finalWallet)
 
     }
@@ -494,7 +474,6 @@ export class AuctionComponent implements OnInit {
 
     if (passbookNumber && groupId) {
       this.service.getByPassbooNo(passbookNumber).subscribe((details: SubscriberDetails) => {
-        console.log(details);
         this.subDetails = details
 
         this.auctionForm.patchValue({
@@ -504,16 +483,17 @@ export class AuctionComponent implements OnInit {
       });
     }
   }
-
+  validateNumber(event: any): void {
+    const input = event.target as HTMLInputElement;
+    input.value = input.value.replace(/[^0-9]/g, '');
+  }
   incrementAuctionCycle(): void {
     const groupId = this.chitData?.chitGroupId;
-    console.log(groupId);
 
     if (groupId) {
       this.service.getTicketId(groupId).subscribe((data) => {
         const cycle = data
         this.auctionCycle = data.auctionCycle
-        console.log('increased cycle', cycle)
         this.auctionForm.patchValue({
           auctionCycle: `${cycle?.auctionCycle + 1}`
         })
@@ -524,23 +504,25 @@ export class AuctionComponent implements OnInit {
   toggleFormControls(): void {
     const auctionStart = this.auctionForm.get('auctionStart')?.value;
     const passbookInput = document.getElementById('passbookNumber') as HTMLInputElement;
-    const prizedAmountInput = document.getElementById('prizedAmount') as HTMLInputElement;
+    const prizedAmountInput = document.getElementById('winningBid') as HTMLInputElement;
     const auctionTypeSelect = document.getElementById('auctionType') as HTMLInputElement;
-
+    
     if (auctionStart) {
       this.auctionForm.enable();
       this.auctionStart = false
       this.auctionForm.patchValue({
         passbookNumber: 'PB-'
       })
+      passbookInput?.removeAttribute('readonly');
+      prizedAmountInput?.removeAttribute('readonly');
+      this.auctionForm.get('auctionType')?.enable();
+
+    } else {
       passbookInput?.setAttribute('readonly', 'true');
       prizedAmountInput?.setAttribute('readonly', 'true');
       auctionTypeSelect?.setAttribute('readonly', 'true');
-    } else {
-      // this.auctionForm.disable();
-      passbookInput?.removeAttribute('readonly');
-      prizedAmountInput?.removeAttribute('readonly');
-      auctionTypeSelect?.removeAttribute('readonly');
+      this.auctionForm.get('auctionType')?.disable();
+
       this.auctionForm.get('auctionStart')?.enable();
       this.auctionStart = true
 
@@ -552,12 +534,8 @@ export class AuctionComponent implements OnInit {
   }
 
   onSubmit() {
-    // var payload = this.auctionForm.value
-    console.log();
 
     if (this.regular) {
-      console.log("Regular");
-
       payload = {
         groupId: this.auctionForm.value.groupId,
         walletBalance: this.auctionForm.value.walletBalance,
@@ -650,8 +628,6 @@ export class AuctionComponent implements OnInit {
       this.isSubmitted = true;
       if (this.purchase == true) {
         this.service.deleteAuction(this.purchaseId).subscribe((res) => {
-          console.log(res);
-
         })
       }
       var nextWallet = this.chitData.chitAmount
@@ -667,11 +643,8 @@ export class AuctionComponent implements OnInit {
         }
         this.paymentService.saveTransactionDetails(response.data.groupId, nextWallet, nextMonth).subscribe(
           (response) => {
-            console.log(response);
           })
       }
-
-      console.log('auctionForm', this.auctionData)
       // this.ticketId=this.auctionData.ticketId
       const createdAtDate = new Date(response.data.createdAt);
       this.date = createdAtDate.toISOString().split('T')[0]; // Formats the date
@@ -751,7 +724,6 @@ export class AuctionComponent implements OnInit {
         walletBalance = response.data.TKNData.prizedAmount + response.data.TKNData.foremanCommision
         this.service.getTicketId(this.chitData.chitGroupId).subscribe((res) => {
           this.bidHistory = res.allData
-          console.log(this.bidHistory?.length);
           this.regularFirst = this.bidHistory?.length
 
           const firstAuction = this.bidHistory?.length || 0;
@@ -786,18 +758,15 @@ export class AuctionComponent implements OnInit {
 
       this.paymentService.saveTransactionDetails(response.data.groupId, -walletBalance).subscribe(
         (response) => {
-          console.log(response);
           this.purchase = false
           // this.auctionForm.reset()
           this.incrementAuctionCycle()
 
           this.paymentService.getTransactionById(this.groupId).subscribe((response) => {
-            console.log(response);
             this.walletBalance = response
             this.walletBalance = this.walletBalance.payment
             this.walletBalance.forEach(amount => {
               this.chitSubscriberTotal = amount.walletBalance
-              console.log(this.chitSubscriberTotal, "red");
               this.auctionForm.patchValue({
                 walletBalance: this.chitSubscriberTotal
               })
@@ -817,13 +786,11 @@ export class AuctionComponent implements OnInit {
           });
           setTimeout(() => {
             this.paymentService.getTransactionById(this.groupId).subscribe((response) => {
-              console.log(response);
               this.walletBalance = response;
               this.walletBalance = this.walletBalance.payment;
 
               this.walletBalance.forEach((amount) => {
                 this.chitSubscriberTotal = amount.walletBalance;
-                console.log(this.chitSubscriberTotal, "red");
 
                 // Update the form with the wallet balance
                 this.auctionForm.patchValue({
@@ -888,10 +855,8 @@ export class AuctionComponent implements OnInit {
       </div>
     `;
   }
-  // <span style="color: #50A1A5;">${ticketId}</span>
   downloadAsPDF() {
     const element = document.getElementById('print-section');
-
     // Set the width to ensure correct layout
     element.style.width = '700px';  // Adjust according to your modal's size
 
@@ -927,7 +892,6 @@ export class AuctionComponent implements OnInit {
   print() {
     const printContent = document.getElementById('print-section').innerHTML;
     const originalContent = document.body.innerHTML;
-    console.log(originalContent);
 
     // Replace body content with modal content
     document.body.innerHTML = printContent;
@@ -957,10 +921,15 @@ export class AuctionComponent implements OnInit {
   }
 
   createInvoice() {
-    // Add logic here to create an invoice
-    console.log("Invoice created");
+    this.invoiceClick=true
+    this.closeModel()
   }
+  closeInvoice(){
+    this.invoiceClick=false
+    this.chitDetail = {}
+    this.datas = {}
 
+  }
   openConfirmationModal() {
     this.closeModal();  // Close the modal after creating the invoice
     this.isConfirmationModalOpen = true;
@@ -978,7 +947,6 @@ export class AuctionComponent implements OnInit {
   }
   close() {
     this.invoiceGen = false
-
   }
 
   confirm() {
@@ -987,20 +955,11 @@ export class AuctionComponent implements OnInit {
   }
 
   showModal(): void {
-    // setTimeout(() => {
-    //   const modal = document.getElementById('purchaseDetailModel');
-    //   if (modal) {
-    //     modal.style.display = 'block';
-    //   }
-    // }, 0);
     this.showDetails = true
-
   }
 
   closeModel() {
     this.showDetails = false
-    this.chitDetail = {}
-    this.datas = {}
   }
   column: ITableColumn[] = [
     { field: 'passbookNumber', label: 'Passbook No' },
@@ -1020,10 +979,56 @@ export class AuctionComponent implements OnInit {
       onCellClicked: (event: CellClickedEvent) =>
 
         this.getDataById(event.data.passbookNumber)
-
-
     },
 
   ];
 
+
+  printDetails(){
+    const printContent = document.getElementById('download-section').innerHTML;
+    const originalContent = document.body.innerHTML;
+
+    // Replace body content with modal content
+    document.body.innerHTML = printContent;
+
+    // Trigger print
+    window.print();
+
+    // Revert body content
+    document.body.innerHTML = originalContent;
+
+  }
+  download() {
+    const element = document.getElementById('download-section');
+    
+    element.style.width = '700px';  // Adjust according to your modal's size
+
+    html2canvas(element, {
+      scale: 2, // Increase the scale to improve image quality
+      useCORS: true,  // Enable cross-origin resource sharing if images are hosted externally
+      allowTaint: true // Allow cross-origin images to be rendered into the canvas
+    }).then((canvas) => {
+      const imgData = canvas.toDataURL('image/png');
+
+      // Initialize jsPDF (Portrait orientation, Millimeters, A4 size)
+      const pdf = new jsPDF('p', 'mm', 'a4');
+
+      // Calculate the width and height to fit the content on A4 page size
+      const pageWidth = pdf.internal.pageSize.getWidth();
+      const pageHeight = pdf.internal.pageSize.getHeight();
+
+      const canvasWidth = canvas.width;
+      const canvasHeight = canvas.height;
+
+      const ratio = Math.min(pageWidth / canvasWidth, pageHeight / canvasHeight);
+
+      const imgWidth = canvasWidth * ratio;
+      const imgHeight = canvasHeight * ratio;
+
+      pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
+
+      pdf.save(`${this.chitDetail.subscriberName}.pdf`);
+      element.style.width = '';
+    });
+  }
 }

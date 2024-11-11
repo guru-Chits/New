@@ -75,6 +75,7 @@
                   <label for="role" class="form-control-label">Role <span class="required">*</span></label>
                   <select type="text" class="form-control form-control-sm form-select" formControlName="role">
                     <option value="">Role</option>
+                    <option *ngIf="role" value="SuperAdmin">SuperAdmin</option>
                     <option *ngIf="role" value="Admin">Admin</option>
                     <option value="Collection Staff">Collection Staff</option>
                     <option value="Office Staff">Office Staff</option>

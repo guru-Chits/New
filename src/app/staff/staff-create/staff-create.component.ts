@@ -63,6 +63,8 @@ export class StaffCreateComponent implements OnInit {
     role = role ? role.replace(/"/g, '') : null; // Clean up role string
     if (role == "SuperAdmin") {
       this.role = true
+    }else{
+      this.role=false
     }
     this.staffsForm = this.fb.group({
       employeeId: [{ value: '', disabled: true },],

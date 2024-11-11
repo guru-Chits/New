@@ -64,6 +64,7 @@ export class AuctionComponent implements OnInit {
   chitDetail: any
   datas: any
   recDate: String
+  objId:string
   recTime: String
   lastAuction: any
   preAuc: any
@@ -128,9 +129,12 @@ export class AuctionComponent implements OnInit {
 
       if (Object.keys(paramData)?.length) {
         this.service.getChitById(paramData.id).subscribe((data) => {
+          this.objId=paramData.id
           this.chitData = data;
           this.chitData = this.chitData.ChitsGroup;
           this.groupId = this.chitData.chitGroupId;
+
+          // this.fetchTicketIds(this.groupId)
           this.breadcrumsData = [
             {
               key: 'Chit Management',
@@ -145,8 +149,6 @@ export class AuctionComponent implements OnInit {
               routerLink: `/chit/auction/${paramData.id}`,
             },
           ];
-          // this.fetchTicketIds(this.groupId)
-
           const groupId = this.chitData?.chitGroupId
           this.groupId = groupId
 
@@ -531,6 +533,53 @@ export class AuctionComponent implements OnInit {
 
   selectTab(tabName: string) {
     this.activeTab = tabName;
+    if(this.activeTab==='extra')
+      {
+        this.breadcrumsData = [
+          {
+            key: 'Chit Management',
+            routerLink: '/chit',
+          },
+          {
+            key: `${this.groupId}`,
+            routerLink: `chit/view/${this.objId}`,
+          },
+          {
+            key: `Purchase/Extra Payments Details`,
+            routerLink: `/chit/auction/${this.objId}`,
+          },
+        ];
+      }else if(this.activeTab==='tkn'){
+        this.breadcrumsData = [
+          {
+            key: 'Chit Management',
+            routerLink: '/chit',
+          },
+          {
+            key: `${this.groupId}`,
+            routerLink: `chit/view/${this.objId}`,
+          },
+          {
+            key: `TKN Company Redeem`,
+            routerLink: `/chit/auction/${this.objId}`,
+          },
+        ];
+      }else{
+        this.breadcrumsData = [
+          {
+            key: 'Chit Management',
+            routerLink: '/chit',
+          },
+          {
+            key: `${this.groupId}`,
+            routerLink: `chit/view/${this.objId}`,
+          },
+          {
+            key: `Auction Entry`,
+            routerLink: `/chit/auction/${this.objId}`,
+          },
+        ];
+      }
   }
 
   onSubmit() {

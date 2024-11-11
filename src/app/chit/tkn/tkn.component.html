@@ -1,73 +1,8 @@
-<!-- <form [formGroup]="tknForm">
-  <div class="row justify-content-around">
-    <div class="col-lg-4">
-      <div class="form-group">
-        <label for="groupId" class="form-control-label">Chit Group ID</label>
-        <input type="text" placeholder="Group Id" class="form-control form-control-sm" formControlName="groupId" readonly/>
-      </div>
-    </div>
-
-    <div class="col-lg-4">
-      <div class="form-group">
-        <label for="walletBalance" class="form-control-label">Wallet Balance</label>
-        <input type="text" placeholder="Wallet Balance" class="form-control form-control-sm" formControlName="walletBalance" readonly/>
-      </div>
-    </div>
-
-    <div class="col-lg-4">
-      <div class="form-group">
-        <label for="foremanCommision" class="form-control-label">Foreman Commission</label>
-        <input type="text" placeholder="Foreman Commission" class="form-control form-control-sm" formControlName="foremanCommision" readonly/>
-      </div>
-    </div>
-  </div>
-  <div class="row justify-content-around">
-    <div class="col-lg-4">
-      <div class="form-group">
-        <label for="winnningBid" class="form-control-label">Winning Bid</label>
-        <input type="text" placeholder="Winning Bid" class="form-control form-control-sm man" formControlName="winningBid" (change)="winningBidChange()"/>
-      </div>
-    </div>
-
-    <div class="col-lg-4">
-      <div class="form-group">
-        <label for="prizedAmmount" class="form-control-label">Prized Amount</label>
-        <input type="text" placeholder="Prizes Amount" class="form-control form-control-sm" formControlName="prizedAmount" readonly />
-      </div>
-    </div>
-    <div class="col-lg-4">
-      <div class="form-group">
-        <label for="auctionCycle" class="form-control-label">Auction Cycle</label>
-        <input type="text" placeholder="Auction Cycle" class="form-control form-control-sm" formControlName="auctionCycle" readonly />
-      </div>
-                      
-
-    </div>
-
-  </div>
-  
-      <div class="row">
-        <div class="col-lg-3">
-        <div class="form-check form-switch">
-            <input class="form-check-input" type="checkbox" formControlName="isActive" role="switch" id="flexSwitchCheckChecked"  (change)="toggleFormControls()" >
-            <label class="form-check-label" for="flexSwitchCheckChecked">Auction Status</label>
-          </div>   
-          <h6 style="color: red;">
-            * Turn On Auction Status
-          </h6>                       
-         </div>                  
-         <div class="col-lg-9 d-flex justify-content-end">
-            <button type="submit" class="btn px-2  py-2"  data-bs-target="#auctionModal" [disabled]= "!tknForm.valid || !auctionStart"   (click)="onSubmit()">TKN Company Done</button>
-        </div>
-      </div>
-    </form> -->
-
-
 <div *ngFor="let data of tknData let i=index">
   <form [formGroup]="redeemForm">
     <div class="row">
       <div class="col-lg-4">
-        <h6>TKN Company Redeem</h6>
+        <h6>TKN Company Redeem {{i+1}}</h6>
       </div>
       <div class="col-lg-3">
         <div class="form-check form-switch">
@@ -88,8 +23,8 @@
       <div class="col-lg-4">
         <div class="form-group">
           <label for="prizedAmount" class="form-control-label">Prized Amount</label>
-          <input type="text" placeholder="Prizes Amount" class="form-control form-control-sm"
-            formControlName="prizedAmount" (change)="balance($event.target.value,data)" />
+          <input type="text" placeholder="Prizes Amount" class="form-control form-control-sm man"
+            formControlName="prizedAmount" (change)="balance($event.target.value,data)" id="prizedAmount" />
         </div>
       </div>
 
@@ -109,37 +44,13 @@
             readonly />
         </div>
       </div>
-
-      <!-- <div class="col-lg-4">
-        <div class="form-group">
-          <label for="ticketId" class="form-control-label">Ticket Id</label>
-          <input type="text" placeholder="Ticket Id" class="form-control form-control-sm" formControlName="ticketId" (change)="subData($event.target.value,data)" 
-          [ngClass]="{'is-invalid': redeemForm.get('ticketId')?.invalid && redeemForm.get('ticketId')?.touched}"
-          />
-        </div>
-        <div *ngIf="redeemForm.get('ticketId')?.hasError('ticketExists')" class="invalid-feedback">
-          This ticket is already in use for this group.
-        </div>
-
-        <div *ngIf="redeemForm.hasError('ticketIdOutOfRange') && redeemForm.get('ticketId')?.touched">
-          <small class="text-danger">{{ redeemForm.getError('ticketIdOutOfRange') }}</small>
-        </div>
-  
-      </div> -->
-      <!-- <div class="col-lg-4">
-        <div class="form-group">
-          <label for="subscriberName" class="form-control-label">Prized Subscriber Name</label>
-          <input type="text" placeholder="Prized Subscriber Name" class="form-control form-control-sm" formControlName="subscriberName" readonly />
-        </div>
-      </div>   -->
       <div class="col-lg-4">
         <div class="form-group">
           <label for="passbookNumber" class="form-control-label">Passbook Number</label>
-          <input type="text" placeholder="Passbook Number" class="form-control form-control-sm"
-            formControlName="passbookNumber" (change)="subData($event.target.value,data)" 
+          <input type="text" placeholder="Passbook Number" class="form-control form-control-sm man"
+            formControlName="passbookNumber" (change)="subData($event.target.value,data)"
             [ngClass]="{'is-invalid': redeemForm.get('passbookNumber')?.invalid && redeemForm.get('passbookNumber')?.touched}"
-            (input)="onInputChange($event)" (keydown)="blockPrefix($event)" 
-            />
+            (input)="onInputChange($event)" (keydown)="blockPrefix($event)" id="passbookNumber" />
         </div>
         <div *ngIf="redeemForm.get('passbookNumber')?.hasError('ticketExists')" class="invalid-feedback">
           This ticket is already in use for this group.
@@ -154,37 +65,32 @@
       </div>
     </div>
     <div class="row">
-      <!-- <div class="col-lg-4">
-            <div class="form-group">
-              <label for="subscriberName" class="form-control-label">Prized Subscriber Name</label>
-              <input type="text" placeholder="Prized Subscriber Name" class="form-control form-control-sm" formControlName="subscriberName" readonly />
-            </div>
-          </div>          -->
+
       <div class="row justify-content-end">
         <div class="col-lg-12 d-flex justify-content-end">
           <button type="submit" class="btn px-2" data-bs-toggle="modal" data-bs-target="#auctionModal"
-            [disabled]="!redeemForm.valid" (click)="redeem(data)">Submit</button>
+            [disabled]="!redeemForm.valid || !auctionStart" (click)="redeem(data)">Submit</button>
         </div>
       </div>
     </div>
   </form>
 </div>
-<div  class="my-3">
+<div class="my-3">
   <h6>TKN Company Redeemed Subscribers in <div style="color:#50A1A5">{{groupId}}</div>
   </h6>
   <app-ag-grid [columns]="redeemedColumn" [rowData]="redeemData" width="100%" height="200px">
   </app-ag-grid>
 
 </div>
-<!-- Modal -->
-
 <div *ngIf="showDetails">
-  <div class="modal fade" id="redeemDetailsModal" tabindex="-1" class="modal" role="dialog" [ngClass]="{'d-block': showDetails}">
+  <div class="modal fade" id="redeemDetailsModal" tabindex="-1" class="modal" role="dialog"
+    [ngClass]="{'d-block': showDetails}">
     <div class="modal-dialog modal-lg">
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title" id="exampleModalLabel">TKN Redeemed Details</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" (click)="closeModel()"></button>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
+            (click)="closeModel()"></button>
         </div>
         <div class="modal-body">
           <div class="row">
@@ -218,21 +124,19 @@
             </div>
           </div>
         </div>
-        <!-- <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" (click)="close()">Close</button>
-        </div> -->
       </div>
     </div>
   </div>
 
 </div>
 
-<div class="modal fade show" tabindex="-1" role="dialog"  [ngClass]="{'d-block': isModalOpen}" >
+<div class="modal fade show" tabindex="-1" role="dialog" [ngClass]="{'d-block': isModalOpen}">
   <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
       <div class="modal-header justify-content-center">
         <h5 class="modal-title text-center">Bid History</h5>
-        <button type="button" class="close position-absolute" style="right: 15px;" aria-label="Close" (click)="closeModal()">
+        <button type="button" class="close position-absolute" style="right: 15px;" aria-label="Close"
+          (click)="closeModal()">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
@@ -245,7 +149,7 @@
             <p><strong>Location:</strong>{{receipt?.location}}</p>
             <p><strong>Occupation:</strong>{{receipt?.occupation}}</p>
           </div>
-      
+
           <!-- Right-aligned content (Remaining items) -->
           <div class="col-md-6">
             <p><strong>Date:</strong> {{date}} - {{time}}</p>
@@ -254,179 +158,105 @@
           </div>
         </div>
       </div>
-      
+
       <div class="modal-footer">
-        <button type="button" class="btn btn-primary"  (click)="openConfirmationModal()">Create Invoice</button>
+        <button type="button" class="btn btn-primary" (click)="openConfirmationModal()">Create Invoice</button>
       </div>
     </div>
   </div>
 </div>
 
-<!-- Create Invoice Button -->
-<!-- <button type="button" class="btn btn-primary" (click)="openConfirmationModal()">Create Invoice</button> -->
-
-<!-- Confirmation Modal -->
 <div class="modal fade show" tabindex="-1" role="dialog" [ngClass]="{'d-block': isConfirmationModalOpen}">
-<div class="modal-dialog modal-dialog-centered" role="document">
-  <div class="modal-content">
-    <div class="modal-header">
-      <h5 class="modal-title">Are you Sure?</h5>
-      <button type="button" class="close" aria-label="Close" (click)="closeConfirmationModal()">
-        <span aria-hidden="true">&times;</span>
-      </button>
-    </div>
-    <div class="modal-body text-center">
-      <p>Are you sure you want to Create Invoice for <strong>TKN Company</strong>?</p>
-      <p>Click Confirm to Create Invoice</p>
-    </div>
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Are you Sure?</h5>
+        <button type="button" class="close" aria-label="Close" (click)="closeConfirmationModal()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body text-center">
+        <p>Are you sure you want to Create Invoice for <strong>TKN Company</strong>?</p>
+        <p>Click Confirm to Create Invoice</p>
+      </div>
 
-    <div class="modal-footer justify-content-center">
-      <button type="button" class="btn btn-outline-primary" (click)="closeConfirmationModal()">Cancel</button>
-      <button type="button" class="btn btn-primary" (click)="invoice()">Confirm</button>
+      <div class="modal-footer justify-content-center">
+        <button type="button" class="btn btn-outline-primary" (click)="closeConfirmationModal()">Cancel</button>
+        <button type="button" class="btn btn-primary" (click)="invoice()">Confirm</button>
 
-    </div>
-  </div>
-</div>
-</div>
-
-<div class="modal fade show" id="auctionModal"  tabindex="-1"  role="dialog"  [ngClass]="{'d-block': invoiceGen}">
-    <div class="modal-dialog modal-lg modal-dialog-centered">
-        <div class="modal-content p-4">
-            <div class="popup-body">
-                <div class="text-center pb-2 fs-4 fw-bold">
-                    Invoice Details
-                </div>
-                <div class="d-flex justify-content-end py-2">
-                    <button class="btn mx-3 btn-success popup-btn" (click)="print()">
-                        <img src="../../../assets/popup/printer.svg" alt="" width="20px" height="20px" > Generate Receipt</button>
-                    <button class="btn me-3 btn-success popup-btn"  (click)="downloadAsPDF()">
-                        <img src="../../../assets/popup/download.svg" alt="" width="20px" height="20px"> Download</button>
-                </div>
-                <div class="border border-dark" id="print-section">
-                    <div class="popup-header">
-                        <img src="../../../assets/navbar/brand.svg" alt="" width="100px" height="90px">
-                        <div class="d-flex flex-column justify-content-center align-items-center">
-                            <p class="fs-5 fw-bold m-0">Guru Chits Private Limited</p>
-                            <span>Payment Receipt for {{month}} Month {{year}}</span>
-                        </div>
-                    </div>
-                    <hr class="border border-dark m-0" >
-                    <div class="row py-3">
-                      <div class="col-6 d-flex justify-content-around">
-                          <div class="col-5 fw-bold">Group ID</div>
-                          <div class="col-5">{{receipt?.groupId}}</div>
-                      </div>
-                      <div class="col-6 d-flex justify-content-around" >
-                          <div class="col-5 fw-bold">Date & Time</div>
-                          <div class="col-5">{{date}} - {{time}}</div>
-                      </div>
-                  </div>
-                  <div class="row pb-3">
-                      <div class="col-6 d-flex justify-content-around">
-                          <div class="col-5 fw-bold">Prized Amount</div>
-                          <div class="col-5">{{receipt?.prizedAmount}}</div>
-                      </div>
-                      <div class="col-6 d-flex justify-content-around">
-                        <div class="col-5 fw-bold">Prized Subscriber Name</div>
-                        <div class="col-5">{{receipt?.subscriberName}}</div>
-                      </div>
-                  </div>
-                  <div class="row pb-3">
-                      <div class="col-6 d-flex justify-content-around">
-                          <div class="col-5 fw-bold">Passbook Number</div>
-                          <div class="col-5">{{receipt?.passbookNo}}</div>
-                      </div>
-                      <div class="col-6 d-flex justify-content-around">
-                        <div class="col-5 fw-bold">Foreman Commission</div>
-                        <div class="col-5">{{receipt?.foremanCommision}}</div>
-                    </div>
-                  </div>
-
-                  <div class="row pb-3">
-                    <div class="col-6 d-flex justify-content-around">
-                        <div class="col-5 fw-bold">Auction Cycle</div>
-                        <div class="col-5">{{receipt?.auctionCycle}}</div>
-                    </div>
-                    <div class="col-6 d-flex justify-content-around">
-                      <div class="col-5 fw-bold">Winning Bid</div>
-                      <div class="col-5">{{receipt?.winningBid}}</div>
-                  </div>
-                </div>
-                <div class="row pb-3">
-                  <!-- <div class="col-6 d-flex justify-content-around">
-                      <div class="col-5 fw-bold">Ticket Id</div>
-                      <div class="col-5">{{ticketId}}</div>
-                  </div> -->
-
-                  </div>
-                </div>
-            </div>
-            <div class="d-flex justify-content-end py-4">
-                <button type="button" class="btn next-btn px-4 py-2 fw-bold" (click)="close()">Close</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- <div *ngIf="chitData">
-  <div class="modal fade" id="auctionModal" tabindex="-1" aria-labelledby="auctionModalLabel">
-    <div class="modal-dialog modal-lg modal-dialog-centered">
-      <div class="modal-content p-4">
-        <div class="popup-body">
-          <div class="text-center pb-2 fs-4 fw-bold">
-            Invoice Details
-          </div>
-          <div class="d-flex justify-content-end py-2">
-            <button class="btn mx-3 btn-success popup-btn" (click)="print()">
-              <img src="../../../assets/popup/printer.svg" alt="" width="20px" height="20px"> Generate Receipt</button>
-            <button class="btn me-3 btn-success popup-btn" (click)="downloadAsPDF()">
-              <img src="../../../assets/popup/download.svg" alt="" width="20px" height="20px"> Download</button>
-          </div>
-          <div class="border border-dark" id="print-section">
-            <div class="popup-header">
-              <img src="../../../assets/navbar/brand.svg" alt="" width="100px" height="90px">
-              <div class="d-flex flex-column justify-content-center align-items-center">
-                <p class="fs-5 fw-bold m-0">Guru Chits Private Limited</p>
-                <span>Payment Receipt for {{month}} Month {{year}}</span>
-              </div>
-            </div>
-            <hr class="border border-dark m-0">
-            <div class="row py-3">
-              <div class="col-6 d-flex justify-content-around">
-                <div class="col-5 fw-bold">Group ID</div>
-                <div class="col-5">{{groupId}}</div>
-              </div>
-              <div class="col-6 d-flex justify-content-around">
-                <div class="col-5 fw-bold">Date & Time</div>
-                <div class="col-5">{{date}} - {{time}}</div>
-              </div>
-            </div>
-            <div class="row pb-3">
-              <div class="col-6 d-flex justify-content-around">
-                <div class="col-5 fw-bold">Prized Amount</div>
-                <div class="col-5">{{receipt?.prizedAmount}}</div>
-              </div>
-              <div class="col-6 d-flex justify-content-around">
-                <div class="col-5 fw-bold">Prized Subscriber Name</div>
-                <div class="col-5">{{receipt?.subscriberName}}</div>
-              </div>
-            </div>
-            <div class="row pb-3">
-              <div class="col-6 d-flex justify-content-around">
-                <div class="col-5 fw-bold">Passbook Number</div>
-                <div class="col-5">{{receipt?.passbookNo}}</div>
-              </div>
-              <div class="col-6 d-flex justify-content-around">
-                <div class="col-5 fw-bold">Winning Bid</div>
-                <div class="col-5">{{receipt?.winningBid}}</div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="d-flex justify-content-end py-4">
-          <button type="button" class="btn next-btn px-4 py-2 fw-bold" data-bs-dismiss="modal">Close</button>
-        </div>
       </div>
     </div>
   </div>
-</div> -->
+</div>
+
+<div class="modal fade show" id="auctionModal" tabindex="-1" role="dialog" [ngClass]="{'d-block': invoiceGen}">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content p-4">
+      <div class="popup-body">
+        <div class="text-center pb-2 fs-4 fw-bold">
+          Invoice Details
+        </div>
+        <div class="d-flex justify-content-end py-2">
+          <button class="btn mx-3 btn-success popup-btn" (click)="print()">
+            <img src="../../../assets/popup/printer.svg" alt="" width="20px" height="20px"> Generate Receipt</button>
+          <button class="btn me-3 btn-success popup-btn" (click)="downloadAsPDF()">
+            <img src="../../../assets/popup/download.svg" alt="" width="20px" height="20px"> Download</button>
+        </div>
+        <div class="border border-dark" id="print-section">
+          <div class="popup-header">
+            <img src="../../../assets/navbar/brand.svg" alt="" width="100px" height="90px">
+            <div class="d-flex flex-column justify-content-center align-items-center">
+              <p class="fs-5 fw-bold m-0">Guru Chits Private Limited</p>
+              <span>Payment Receipt for {{month}} Month {{year}}</span>
+            </div>
+          </div>
+          <hr class="border border-dark m-0">
+          <div class="row py-3">
+            <div class="col-6 d-flex justify-content-around">
+              <div class="col-5 fw-bold">Group ID</div>
+              <div class="col-5">{{receipt?.groupId}}</div>
+            </div>
+            <div class="col-6 d-flex justify-content-around">
+              <div class="col-5 fw-bold">Date & Time</div>
+              <div class="col-5">{{date}} - {{time}}</div>
+            </div>
+          </div>
+          <div class="row pb-3">
+            <div class="col-6 d-flex justify-content-around">
+              <div class="col-5 fw-bold">Prized Amount</div>
+              <div class="col-5">{{receipt?.prizedAmount}}</div>
+            </div>
+            <div class="col-6 d-flex justify-content-around">
+              <div class="col-5 fw-bold">Prized Subscriber Name</div>
+              <div class="col-5">{{receipt?.subscriberName}}</div>
+            </div>
+          </div>
+          <div class="row pb-3">
+            <div class="col-6 d-flex justify-content-around">
+              <div class="col-5 fw-bold">Passbook Number</div>
+              <div class="col-5">{{receipt?.passbookNo}}</div>
+            </div>
+            <div class="col-6 d-flex justify-content-around">
+              <div class="col-5 fw-bold">Foreman Commission</div>
+              <div class="col-5">{{receipt?.foremanCommision}}</div>
+            </div>
+          </div>
+
+          <div class="row pb-3">
+            <div class="col-6 d-flex justify-content-around">
+              <div class="col-5 fw-bold">Auction Cycle</div>
+              <div class="col-5">{{receipt?.auctionCycle}}</div>
+            </div>
+            <div class="col-6 d-flex justify-content-around">
+              <div class="col-5 fw-bold">Winning Bid</div>
+              <div class="col-5">{{receipt?.winningBid}}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="d-flex justify-content-end py-4">
+        <button type="button" class="btn next-btn px-4 py-2 fw-bold" (click)="close()">Close</button>
+      </div>
+    </div>
+  </div>
+</div>

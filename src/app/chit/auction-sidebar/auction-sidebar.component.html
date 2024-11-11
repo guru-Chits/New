@@ -8,20 +8,20 @@
   <table class="table-card mx-3">
     <tbody>
       <tr *ngFor="let auction of displayedAuctions">
-      <div class="view-all my-2">
-        <div class="align-items-center">
-          <div class="row" (click)="nav(auction._id)">
-              <div class="col border d-flex flex-column justify-content-center align-items-center py-3 rounded-3 shadow-sm auction">
+        <div class="view-all my-2">
+          <div class="align-items-center">
+            <div class="row" (click)="nav(auction._id)">
+              <div
+                class="col border d-flex flex-column justify-content-center align-items-center py-3 rounded-3 shadow-sm auction">
                 <h6><strong>{{ auction.chitGroupId }}</strong></h6>
-                <!-- <p class="m-0">Time: {{ auction.auctionDate }}</p> -->
               </div>
+            </div>
           </div>
         </div>
-      </div>
       </tr>
     </tbody>
   </table>
-  <button class="btn align-self-center view-btn mt-3" *ngIf="!showGroups"  (click)="viewAll()">View More Chits</button>
-  <button class="btn align-self-center view-btn mt-3" *ngIf="showGroups"  (click)="viewLess()">View Less</button>
+  <button class="btn align-self-center view-btn mt-3" *ngIf="!showGroups" (click)="viewAll()">View More Chits</button>
+  <button class="btn align-self-center view-btn mt-3" *ngIf="showGroups" (click)="viewLess()">View Less</button>
 
 </div>

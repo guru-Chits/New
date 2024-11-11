@@ -1,79 +1,83 @@
-.items{
-background-color: white;
-padding: 15px;
-margin: 15px;
+.items {
+  background-color: white;
+  padding: 15px;
+  margin: 15px;
 }
-.nav-item {
-    color: black; /* Change color to black */
-    cursor: pointer;
-    margin-right: 15px;
-  }
-  
-  .nav-item .nav-link {
-    color: black;
-    padding: 5px 10px;
-    text-decoration: none;
-  }
-  
-  .nav-item.active .nav-link {
-    border-bottom: 2px solid #3E3A97; /* Underline when active */
-  }
-  
-  .nav-item:hover .nav-link {
-    color: #555; /* Slight color change on hover */
-  }
-  
-  .form-group {
-    margin-bottom: 1rem;
-  }
-  
-  .form-control-label {
-    font-weight: 500;
-    font-size: 14px;
-    color: #333;
-    margin-bottom: 0.5rem;
-    display: block;
-  }
-  
-  .form-control-sm {
-    padding: 0.375rem 0.75rem;
-    font-size: 14px;
-    border-radius: 0.25rem;
-    border: 1px solid #ced4da;
-    background-color:rgb(230, 230, 230);
-    color: #495057;
-  }
-  
-  .form-control-sm[readonly] {
-    opacity: 1;
-  }
-  
-  input::placeholder {
-    color: #6c757d;
-    opacity: 1;
-  }
-  
-  .row {
-    margin-top: 1rem;
-  }
-  
-  .col-lg-4 {
-    padding: 0 15px;
-  }
-  
-  .btn{
-background-color: #3E3A97;
-color: white;
-border-radius: 3px;
-  }
-  .nxt-btn
-  {
-    background-color: white;
-    color: #3E3A97;
-    border: 1px solid #3E3A97;
-  }
 
-  /* In your styles.css or auction.component.css */
+.nav-item {
+  color: black;
+  /* Change color to black */
+  cursor: pointer;
+  margin-right: 15px;
+}
+
+.nav-item .nav-link {
+  color: black;
+  padding: 5px 10px;
+  text-decoration: none;
+}
+
+.nav-item.active .nav-link {
+  border-bottom: 2px solid #3E3A97;
+  /* Underline when active */
+}
+
+.nav-item:hover .nav-link {
+  color: #555;
+  /* Slight color change on hover */
+}
+
+.form-group {
+  margin-bottom: 1rem;
+}
+
+.form-control-label {
+  font-weight: 500;
+  font-size: 14px;
+  color: #333;
+  margin-bottom: 0.5rem;
+  display: block;
+}
+
+.form-control-sm {
+  padding: 0.375rem 0.75rem;
+  font-size: 14px;
+  border-radius: 0.25rem;
+  border: 1px solid #ced4da;
+  background-color: rgb(230, 230, 230);
+  color: #495057;
+}
+
+.form-control-sm[readonly] {
+  opacity: 1;
+}
+
+input::placeholder {
+  color: #6c757d;
+  opacity: 1;
+}
+
+.row {
+  margin-top: 1rem;
+}
+
+.col-lg-4 {
+  padding: 0 15px;
+}
+
+.btn {
+  background-color: #3E3A97;
+  color: white;
+  border-radius: 3px;
+}
+
+.nxt-btn {
+  background-color: white;
+  color: #3E3A97;
+  border: 1px solid #3E3A97;
+}
+
+/* In your styles.css or auction.component.css */
 .highlighted-row {
   background-color: lightgreen !important;
 }
@@ -81,6 +85,7 @@ border-radius: 3px;
 .green-background {
   background-color: green !important;
 }
+
 /* .pink-background{
   background-color: pink !important;
 
@@ -92,19 +97,22 @@ border-radius: 3px;
 .invalid-feedback {
   color: #dc3545;
 }
-.man{
+
+.man {
   background-color: white;
 }
-.close{
+
+.close {
   border: none;
   background-color: white;
   float: right;
 }
 
-.auction{
+.auction {
   background-color: #eef6f6;
 }
-.view-btn{
+
+.view-btn {
   color: #3E3A97;
   background-color: #FFFFFF;
   border-color: #3E3A97;
@@ -160,55 +168,69 @@ border-radius: 3px;
 }
 
 .reg-id-row {
-  color: green; /* Green for regId */
+  color: rgb(54, 183, 54);
+  /* Green for regId */
 }
 
 .pur-id-row {
-color: red; /* Blue for purId */
+  color: red;
+  /* Blue for purId */
 }
-.extra-id-row {
-  color: orange; /* Blue for purId */
-  }
 
-.profit-id-row{
-  color:rgb(161, 239, 161)
+.extra-id-row {
+  color: orange;
+  /* Blue for purId */
 }
-.tkn-id-row{
-  color:rgb(30, 194, 30);
+
+.profit-id-row {
+  color: rgb(54, 183, 54);;
+}
+
+.tkn-id-row {
+  color: rgb(54, 183, 54);;
 }
 
 /* Table Styles */
 .subscriber-table {
   width: 100%;
-  margin: 20px 0; /* Spacing around the table */
+  margin: 20px 0;
+  /* Spacing around the table */
   /* border: 1px; */
   border: 1px solid #ddd;
 }
 
 /* Table Heading Styles */
 .subscriber-table th {
-  background-color: #EEF6F6; /* Green background for header */
-  color: black; /* White text color */
-  padding: 15px; /* Padding for cells */
+  background-color: #EEF6F6;
+  /* Green background for header */
+  color: black;
+  /* White text color */
+  padding: 15px;
+  /* Padding for cells */
   font-size: 14px;
-  text-align: left; /* Left-align text */
+  text-align: left;
+  /* Left-align text */
 }
 
 /* Table Data Cell Styles */
 .subscriber-table td {
   font-size: 15px;
   border-bottom: 1px solid #e3e4e6;
-  padding-left:5px;
+  padding-left: 5px;
   padding-top: 3px;
   padding-bottom: 2px;
 }
 
 /* Profile Image Styles */
 .profile-image {
-  width: 30px; /* Fixed width */
-  height: 30px; /* Fixed height */
-  border-radius: 50%; /* Make it round */
-  object-fit: cover; /* Ensure image covers the area */
+  width: 30px;
+  /* Fixed width */
+  height: 30px;
+  /* Fixed height */
+  border-radius: 50%;
+  /* Make it round */
+  object-fit: cover;
+  /* Ensure image covers the area */
 }
 
 .dot {
@@ -219,3 +241,12 @@ color: red; /* Blue for purId */
   border-radius: 50%;
   display: inline-block;
 }
+
+.modal {
+  background: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+  }
+  
+  .modal-dialog {
+  margin: 5% auto;
+  /* max-width: 80%; */
+  }

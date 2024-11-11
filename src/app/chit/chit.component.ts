@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { NavigationEnd, Router } from '@angular/router';
 import { ChitService } from './shared/service/chit.service';
 import { LoginComponent } from '../login/login.component';
 import { AuthService } from '../shared/service/auth.service';
@@ -59,7 +59,6 @@ export class ChitComponent implements OnInit {
         this.canCreate = true
       }
     });
-
     this.service.getAllChit().subscribe((data) => {
       this.chitdata = data;
       this.chitdata = this.chitdata?.AllChitGroups
@@ -69,13 +68,16 @@ export class ChitComponent implements OnInit {
 
       this.totalPages = Math.ceil(this.displayedChit.length / this.itemsPerPage);
     })
-
+    this.router.events.subscribe((event) => {
+      if (event instanceof NavigationEnd) {
+        this.fetchChitData();
+      }
+    });
+    
     this.service.getAuctionToday().subscribe((data => {
       this.auctions = data
       this.auctions = this.auctions.todaysAuction
       this.displayedAuctions = this.auctions.slice(0, 5)
-      console.log(this.auctions);
-
     }))
 
 
@@ -98,11 +100,9 @@ export class ChitComponent implements OnInit {
       }, 0);
 
     }));
-    
+
     this.subscriberService.getsubscriberAll().subscribe((data) => {
       this.subscriberData = data;
-      console.log(this.subscriberData, "Deta");
-
       this.data = this.subscriberData.AllSubscriber.map((subscriberDetails, index) => ({
 
         enroll: this.subscriberService.getChitGroupById(subscriberDetails?.subscriberId).subscribe(
@@ -118,6 +118,16 @@ export class ChitComponent implements OnInit {
 
       }))
     })
+  }
+
+    fetchChitData(): void {
+    this.service.getAllChit().subscribe((data) => {
+      this.chitdata = data;
+      this.chitdata = this.chitdata?.AllChitGroups
+      this.total = this.chitdata.length
+      this.displayedChit = this.chitdata;
+      this.totalPages = Math.ceil(this.displayedChit.length / this.itemsPerPage);
+    });
   }
   // Move to the next page
   nextPage() {
@@ -167,21 +177,19 @@ export class ChitComponent implements OnInit {
 
             this.bidHistory = res.allData;
 
-            const len = this.bidHistory?.length 
+            const len = this.bidHistory?.length
             if (len > 0) {
               this.subCount = res.allData.length
-              const lastItem = this.bidHistory[len-1];
+              const lastItem = this.bidHistory[len - 1];
               this.latestWinningBid = lastItem?.winningBid;
               this.auctionCycle = res.auctionCycle
 
             } else {
-              this.subCount=0
+              this.subCount = 0
               this.latestWinningBid = 0;
-              this.auctionCycle=0
+              this.auctionCycle = 0
 
             }
-
-            console.log(this.latestWinningBid, "last");
           })
 
           this.paymentService.getTransactionById(this.groupId).subscribe((response) => {
@@ -230,7 +238,6 @@ export class ChitComponent implements OnInit {
   }
 
   nav(id: string) {
-    console.log(id);
     this.router.navigate([`chit/auction/${id}`])
   }
 

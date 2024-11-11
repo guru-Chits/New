@@ -30,8 +30,7 @@
                     id</span>
                 </div>
                 <div class="mb-3 form-group">
-                  <label for="password" class="form-control-label"
-                    style="font-size:14px; font-weight: 700;">Password</label>
+                  <label for="password" class="form-label">Password</label>
                   <div class=" input-fields  d-flex align-items-center"
                     [ngClass]="{'is-invalid': passwordControl.touched && passwordControl.hasError('required') || !passwordsMatch||passwordControl.hasError('pattern')||passwordControl.hasError('maxlength')||passwordControl.hasError('minlength')}">
                     <input [type]=" isPasswordVisible ? 'text': 'password'" class="form-control" id="password"

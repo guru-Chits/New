@@ -7,9 +7,16 @@
           <div class="col-lg-4">
             <div class="form-group">
               <label for="auctionDate" class="form-control-label">First Auction Date</label>
-              <input type="date" class="form-control p-2 form-control-sm mt-2" id="auctionDate"
-                formControlName="auctionDate" placeholder="auctionDate" (change)="validateDate($event)" />
-                 
+              <input
+                type="date"
+                class="form-control p-2 form-control-sm mt-2"
+                id="auctionDate"
+                formControlName="auctionDate"
+                placeholder="auctionDate"
+                (change)="validateDate($event)"
+                [min]="minDate"
+                [max]="maxDate"
+              />
             </div>
           </div>
           <div class="col-lg-4">

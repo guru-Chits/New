@@ -12,10 +12,9 @@ import { PaymentService } from '../../payments/shared/service/payment.service';
 @Component({
   selector: 'app-chit-create',
   templateUrl: './chit-create.component.html',
-  styleUrl: './chit-create.component.css'
+  styleUrl: './chit-create.component.css',
 })
 export class ChitCreateComponent {
-
   errorMessage: string = '';
   breadcrumsData: any = [
     {
@@ -28,7 +27,7 @@ export class ChitCreateComponent {
     },
   ];
   showList = false;
-  listId: any
+  listId: any;
   showall = false; // To toggle "View More"
 
   modalErrorMessage: string = '';
@@ -37,65 +36,83 @@ export class ChitCreateComponent {
   data: any[] = [];
   chitdata: any;
   subscriberDetail: any;
-  subscriberData: any = {}
-  subData: any = {}
-  addSubData: any = {}
+  subscriberData: any = {};
+  subData: any = {};
+  addSubData: any = {};
   chitSubscribersData = [];
   displayedSubscribers: any[];
-  selectedSubscriberId: string
+  selectedSubscriberId: string;
   itemsPerPage = 10; // Subscribers per page
   isSubscriberListVisible: boolean = false;
-  searchInput: string = ""
-  chitGroupForm: FormGroup
+  searchInput: string = '';
+  chitGroupForm: FormGroup;
   displayedChits: any[];
   currentDate: any;
   selectedFileName: string = '';
   chitSubLength: any;
   collectionTypes: any;
-  collectionTypeForm: FormGroup
+  collectionTypeForm: FormGroup;
   minDate: string;
   maxDate: string;
   minDay = 1;
-  walletBalance:number
-  futureDate: Date  // Format: YYYY-MM-DDTHH:MM (ISO 8601)  groupId:string
+  walletBalance: number;
+  futureDate: Date; // Format: YYYY-MM-DDTHH:MM (ISO 8601)  groupId:string
   maxDay = 10;
-  constructor(private subService: SubscriberService, private chitService: ChitService, private router: Router, private settings: ServiceService,private paymentService:PaymentService) {
-
-  }
+  constructor(
+    private subService: SubscriberService,
+    private chitService: ChitService,
+    private router: Router,
+    private settings: ServiceService,
+    private paymentService: PaymentService
+  ) {}
 
   ngOnInit(): void {
     this.chitGroupForm = new FormGroup({
       auctionDate: new FormControl('', [Validators.required]),
-      chitAmount: new FormControl('', [Validators.required, Validators.pattern('^[0-9]*$')]),
+      chitAmount: new FormControl('', [
+        Validators.required,
+        Validators.pattern('^[0-9]*$'),
+      ]),
       foremanCommission: new FormControl('', [Validators.required]),
       monthlyInstall: new FormControl('', [Validators.required]),
       document: new FormControl(''),
       chitSubscribers: new FormControl([]),
-      addChitSubscribers: new FormControl([])
+      addChitSubscribers: new FormControl([]),
     });
     this.collectionTypeForm = new FormGroup({
       collectionType: new FormControl('', [Validators.required]),
     });
 
-    const today = new Date().toISOString().split('T')[0];
-    this.currentDate = today;
-    const FirstChitDate = new Date()
-    const year = FirstChitDate.getFullYear();
-    const month = FirstChitDate.getMonth() + 1; // Month is zero-based, add 1
-    // Set minimum date to the first day of the current year
-    this.minDate = `${year}-01-01`;
+    // const today = new Date().toISOString().split('T')[0];
+    // this.currentDate = today;
+    // const FirstChitDate = new Date()
+    // const year = FirstChitDate.getFullYear();
+    // const month = FirstChitDate.getMonth() + 1; // Month is zero-based, add 1
+    // // Set minimum date to the first day of the current year
+    // this.minDate = `${year}-01-01`;
 
-    // Set maximum date to the end of the year
-    this.maxDate = `${year}-12-31`;
+    // // Set maximum date to the end of the year
+    // this.maxDate = `${year}-12-31`;
+
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = today.getMonth() + 1; // Month is 0-indexed
+
+    // Set the min date to the 1st of the current month
+    this.minDate = `${year}-${String(month).padStart(2, '0')}-01`;
+    // Set the max date to the 10th of the current month
+    this.maxDate = `${year}-${String(month).padStart(2, '0')}-10`;
 
     this.subService.getsubscriberAll().subscribe((data) => {
       this.subscriberData = data;
-      this.data = this.subscriberData.AllSubscriber.map((subscriberDetails, index) => ({
-        id: subscriberDetails?._id,
-        subscriberId: subscriberDetails?.subscriberId,
-        subscriberName: `${subscriberDetails?.firstName} ${subscriberDetails?.lastName}`,
-        subscriberProfile: subscriberDetails?.profileImageUrl
-      }))
+      this.data = this.subscriberData.AllSubscriber.map(
+        (subscriberDetails, index) => ({
+          id: subscriberDetails?._id,
+          subscriberId: subscriberDetails?.subscriberId,
+          subscriberName: `${subscriberDetails?.firstName} ${subscriberDetails?.lastName}`,
+          subscriberProfile: subscriberDetails?.profileImageUrl,
+        })
+      );
       this.displayedSubscribers = this.data.slice(0, this.itemsPerPage);
     });
   }
@@ -113,8 +130,7 @@ export class ChitCreateComponent {
       }
     }
     // this.closeSubscriberList();
-    this.subscriberDetail = null
-
+    this.subscriberDetail = null;
   }
   // Method to handle the file selection and display the file name
   onFileSelected(event: Event): void {
@@ -159,10 +175,10 @@ export class ChitCreateComponent {
   }
 
   getformanVal() {
-    const chitAmount = this.chitGroupForm.get("chitAmount").value;
+    const chitAmount = this.chitGroupForm.get('chitAmount').value;
     const forman = chitAmount * 0.05;
-    this.chitGroupForm.get('foremanCommission').patchValue(forman)
-    this.chitGroupForm.get('monthlyInstall').patchValue(forman)
+    this.chitGroupForm.get('foremanCommission').patchValue(forman);
+    this.chitGroupForm.get('monthlyInstall').patchValue(forman);
   }
 
   onSelectedFile(event: any): void {
@@ -172,13 +188,16 @@ export class ChitCreateComponent {
     }
   }
   applyFilter(filterValue: string) {
-    const filteredSubscribers = this.data.filter(subscriber => {
-      const subscriberId = subscriber.subscriberId?.toString().toLowerCase() || '';
+    const filteredSubscribers = this.data.filter((subscriber) => {
+      const subscriberId =
+        subscriber.subscriberId?.toString().toLowerCase() || '';
       const subscriberName = subscriber.subscriberName?.toLowerCase() || '';
       const email = subscriber.email?.toLowerCase() || '';
-      return subscriberId.includes(filterValue.toLowerCase()) ||
+      return (
+        subscriberId.includes(filterValue.toLowerCase()) ||
         subscriberName.includes(filterValue.toLowerCase()) ||
-        email.includes(filterValue.toLowerCase());
+        email.includes(filterValue.toLowerCase())
+      );
     });
 
     this.displayedSubscribers = filteredSubscribers.slice(0, this.itemsPerPage);
@@ -186,12 +205,12 @@ export class ChitCreateComponent {
 
   getSubscribersById(id: string): void {
     this.subService.getsubscriberById(id).subscribe(
-      data => {
+      (data) => {
         this.subscriberDetail = data;
-        this.selectedSubscriberId = this.subscriberDetail.Subscriber.subscriberId;
-
+        this.selectedSubscriberId =
+          this.subscriberDetail.Subscriber.subscriberId;
       },
-      error => {
+      (error) => {
         console.error('Error fetching subscriber', error);
       }
     );
@@ -199,19 +218,19 @@ export class ChitCreateComponent {
 
   onButtonClick(id: string): void {
     this.getSubscribersById(id);
-    this.collectionTypeForm.reset()
-    this.listId = id
-    this.settings.getAllCollection().subscribe(
-      (data) => {
-        this.collectionTypes = data
-        this.collectionTypes = this.collectionTypes.res
-      }
-    )
+    this.collectionTypeForm.reset();
+    this.listId = id;
+    this.settings.getAllCollection().subscribe((data) => {
+      this.collectionTypes = data;
+      this.collectionTypes = this.collectionTypes.res;
+    });
     if (this.subscriberDetail && this.subscriberDetail.id === id) {
       // If the same subscriber is clicked, toggle off the details
       this.subscriberDetail = null;
     } else {
-      this.subscriberDetail = this.displayedSubscribers.find(sub => sub.id === id);
+      this.subscriberDetail = this.displayedSubscribers.find(
+        (sub) => sub.id === id
+      );
     }
   }
 
@@ -220,14 +239,16 @@ export class ChitCreateComponent {
     this.isSubscriberListVisible = true;
     this.subService.getsubscriberAll().subscribe((data) => {
       this.subscriberData = data;
-      this.data = this.subscriberData.AllSubscriber.map((subscriberDetails, index) => ({
-        id: subscriberDetails?._id,
-        subscriberId: subscriberDetails?.subscriberId,
-        subscriberName: `${subscriberDetails?.firstName} ${subscriberDetails?.lastName}`,
-        subscriberProfile: subscriberDetails?.profileImageUrl
-      }))
+      this.data = this.subscriberData.AllSubscriber.map(
+        (subscriberDetails, index) => ({
+          id: subscriberDetails?._id,
+          subscriberId: subscriberDetails?.subscriberId,
+          subscriberName: `${subscriberDetails?.firstName} ${subscriberDetails?.lastName}`,
+          subscriberProfile: subscriberDetails?.profileImageUrl,
+        })
+      );
       this.displayedSubscribers = this.data;
-    })
+    });
   }
 
   viewMore() {
@@ -237,15 +258,15 @@ export class ChitCreateComponent {
     }
   }
   addSubscriberById(id: string): void {
-
-    const chitSubscribers = this.chitGroupForm.get('chitSubscribers').value || [];
+    const chitSubscribers =
+      this.chitGroupForm.get('chitSubscribers').value || [];
     if (chitSubscribers.length >= 25) {
       this.showModal('Cannot add more than 25 subscribers.');
       return;
     }
 
     this.subService.getsubscriberById(id).subscribe(
-      res => {
+      (res) => {
         this.subData = res;
         const newSubscriber = {
           subscriberId: this.subData.Subscriber.subscriberId,
@@ -254,10 +275,16 @@ export class ChitCreateComponent {
           firstName: this.subData.Subscriber.firstName,
           place: this.subData.Subscriber.routeId,
           occupation: this.subData.Subscriber.occupation,
-          collectionType: this.collectionTypeForm.get('collectionType')?.value
+          collectionType: this.collectionTypeForm.get('collectionType')?.value,
         };
-        if (chitSubscribers.some(sub => sub.subscriberId === newSubscriber.subscriberId)) {
-          this.showModal('Duplicate subscriber ID detected. This subscriber cannot be added.');
+        if (
+          chitSubscribers.some(
+            (sub) => sub.subscriberId === newSubscriber.subscriberId
+          )
+        ) {
+          this.showModal(
+            'Duplicate subscriber ID detected. This subscriber cannot be added.'
+          );
           return;
         }
         chitSubscribers.push(newSubscriber);
@@ -265,9 +292,14 @@ export class ChitCreateComponent {
         this.chitSubscribersData = [...chitSubscribers];
         this.chitSubLength = this.chitSubscribersData.length;
       },
-      error => {
-        if (error.status === 400 && error.error.message.includes('Duplicate subscriberId')) {
-          this.showModal('Duplicate subscriber ID detected. This subscriber cannot be added.');
+      (error) => {
+        if (
+          error.status === 400 &&
+          error.error.message.includes('Duplicate subscriberId')
+        ) {
+          this.showModal(
+            'Duplicate subscriber ID detected. This subscriber cannot be added.'
+          );
         } else {
           console.error('Error fetching subscriber:', error);
         }
@@ -276,7 +308,9 @@ export class ChitCreateComponent {
   }
   column: ITableColumn[] = [
     {
-      label: 'profileImageUrl', field: '', sortable: false,
+      label: 'profileImageUrl',
+      field: '',
+      sortable: false,
       cellRenderer: this.profileImageWithIdRenderer,
     },
     { label: 'Alias Name', field: 'aliasName', sortable: true },
@@ -305,20 +339,21 @@ export class ChitCreateComponent {
     this.addSubscriberById(id);
   }
   onSubmit(): void {
-    const payload = this.chitGroupForm.value
+    const payload = this.chitGroupForm.value;
 
     this.chitService.saveChitDetails(payload).subscribe((data) => {
-       const groupId = data.newChitGroup.chitGroupId;
+      const groupId = data.newChitGroup.chitGroupId;
       this.walletBalance = data.newChitGroup.chitAmount;
-      this.futureDate = data.newChitGroup.auctionDate
-    
+      this.futureDate = data.newChitGroup.auctionDate;
+
       // Debug logs
       console.log('groupId:', groupId);
       console.log('walletBalance:', this.walletBalance);
       console.log('auctionDateString:', this.futureDate);
-    
+
       if (this.walletBalance !== null) {
-        this.paymentService.saveTransactionDetails(groupId, this.walletBalance, this.futureDate)
+        this.paymentService
+          .saveTransactionDetails(groupId, this.walletBalance, this.futureDate)
           .subscribe(
             (response) => {
               console.log('Transaction response:', response);
@@ -333,24 +368,22 @@ export class ChitCreateComponent {
         // alert('Please provide the necessary details.');
       }
     });
-    
+
     if (this.chitGroupForm.valid) {
     } else {
       console.warn('Form is invalid.');
     }
-    this.router.navigate(["/chit"]);
+    this.router.navigate(['/chit']);
   }
 
   validateDate(event: Event) {
     const input = event.target as HTMLInputElement;
     let selectedDate = new Date(input.value);
 
-    if (selectedDate.getDate() < this.minDay) {
-      // Set to the 1st of the selected month if less than minimum day
-      selectedDate.setDate(this.minDay);
-    } else if (selectedDate.getDate() > this.maxDay) {
-      // Set to the 10th of the selected month if greater than maximum day
-      selectedDate.setDate(this.maxDay);
+    if (selectedDate.getDate() < 1) {
+      selectedDate.setDate(1);
+    } else if (selectedDate.getDate() > 10) {
+      selectedDate.setDate(10);
     }
 
     // Update the input value if changed
@@ -359,12 +392,14 @@ export class ChitCreateComponent {
 
   formatDate(date: Date): string {
     const year = date.getFullYear();
-    const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Ensure two digits for the month
-    const day = date.getDate().toString().padStart(2, '0'); // Ensure two digits for the day
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
     return `${year}-${month}-${day}`;
   }
 
   isSubscriberInChit(subscriberId: string): boolean {
-    return this.chitSubscribersData.some(chitSubscriber => chitSubscriber.subscriberId === subscriberId);
+    return this.chitSubscribersData.some(
+      (chitSubscriber) => chitSubscriber.subscriberId === subscriberId
+    );
   }
 }

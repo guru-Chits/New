@@ -62,40 +62,47 @@ export class SubscriberCreateComponent implements OnInit {
   ngOnInit(): void {
     this.subscriberForm = this.fb.group({
       subscriberId: [{ value: '', disabled: true }],
-      firstName: ['', [Validators.required, Validators.pattern(/^[A-Z][a-zA-Z]+$/), Validators.maxLength(25), Validators.minLength(2)]],
-      lastName: ['', [Validators.required, Validators.pattern(/^[A-Z][a-zA-Z]+$/), Validators.maxLength(25), Validators.minLength(2)]],
+      firstName: ['', [Validators.required, Validators.pattern(/^[a-zA-Z ]*$/), Validators.maxLength(25), Validators.minLength(2)]],
+      lastName: ['', [
+        this.conditionalValidator(() => !!this.subscriberForm?.get('lastName')?.value, Validators.pattern(/^[A-Z][a-z ]*$/)),
+        this.conditionalValidator(() => !!this.subscriberForm?.get('lastName')?.value, Validators.maxLength(25)),
+        this.conditionalValidator(() => !!this.subscriberForm?.get('lastName')?.value, Validators.minLength(2))
+      ]],
       aliasName: ['', [
-        this.conditionalValidator(() => !!this.subscriberForm?.get('aliasName')?.value, Validators.pattern(/^[A-Z][a-zA-Z\/\-() ]+$/)),
+        this.conditionalValidator(() => !!this.subscriberForm?.get('aliasName')?.value, Validators.pattern(/^[A-Z][a-zA-Z\/\-()&.@,' ]*$/)),
         this.conditionalValidator(() => !!this.subscriberForm?.get('aliasName')?.value, Validators.maxLength(25)),
         this.conditionalValidator(() => !!this.subscriberForm?.get('aliasName')?.value, Validators.minLength(2))
       ]],
       contact: ["+91 ", [Validators.required, Validators.pattern(/^\+91\s?\d{10}$/)]],
-      place: ['', [Validators.required, Validators.minLength(10), Validators.maxLength(100), Validators.pattern(/^[a-zA-Z0-9\s,.'-]+$/)]],
+      secContact:["+91 ",
+         [        this.conditionalValidator(() => !!this.subscriberForm?.get('aliasName')?.value, Validators.pattern((/^\+91\s?\d{10}$/))),]],
+      
+      place: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(100), Validators.pattern(/^[a-zA-Z0-9\s,.'-]+$/)]],
       gender: ['', Validators.required],
       dob: ['', [
         this.conditionalValidator(() => !!this.subscriberForm?.get('dob')?.value, this.ageValidator(18)),
       ]],
-      occupation: ['', [
-        this.conditionalValidator(() => !!this.subscriberForm?.get('occupation')?.value, Validators.pattern(/^[a-zA-Z\s-]+$/)),
+      occupation: ['', [ Validators.required,
+        this.conditionalValidator(() => !!this.subscriberForm?.get('occupation')?.value, Validators.pattern(/^[a-zA-Z\/\-()&.@,' ]*$/)),
         Validators.minLength(2),
         Validators.maxLength(50)
       ]],
-      routeId: ['', Validators.required],
-      accountNumber: ['', [Validators.required,
+      routeId: [''],
+      accountNumber: ['', [
       this.conditionalValidator(() => !!this.subscriberForm?.get('accountNumber')?.value, Validators.pattern(/^\d{8,12}$/))
       ]],
-      ifsc: ['', [Validators.required,
+      ifsc: ['', [
       this.conditionalValidator(() => !!this.subscriberForm?.get('ifsc')?.value, Validators.pattern(/^[A-Za-z]{4}\d{7}$/))
       ]],
-      upi_id: ['', [Validators.required, this.conditionalValidator(() => !!this.subscriberForm?.get('upi_id')?.value, Validators.pattern(/^[a-zA-Z0-9.\-_]{2,}@[a-zA-Z]{3,}$/))
+      upi_id: ['', [ this.conditionalValidator(() => !!this.subscriberForm?.get('upi_id')?.value, Validators.pattern(/^[a-zA-Z0-9.\-_]{2,}@[a-zA-Z]{3,}$/))
       ]],
       panCardNumber: ['', [
         this.conditionalValidator(() => !!this.subscriberForm?.get('panCardNumber')?.value, Validators.pattern(/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/))
       ]],
-      aadharNumber: ['', [Validators.required,
+      aadharNumber: ['', [
       this.conditionalValidator(() => !!this.subscriberForm?.get('aadharNumber')?.value, Validators.pattern(/^\d{4}\s\d{4}\s\d{4}$/))
       ]],
-      bankName: ['', [Validators.required,
+      bankName: ['', [
       this.conditionalValidator(() => !!this.subscriberForm?.get('bankName')?.value, Validators.pattern(/^[a-zA-Z\s]+$/))
       ]],
       referralClient: [''],
@@ -220,8 +227,17 @@ export class SubscriberCreateComponent implements OnInit {
 
   // Use this method on form inputs
   onFirstNameKeyPress(event: KeyboardEvent): void {
-    this.allowValidInput(event, /^[A-Za-z]+$/); // Only letters allowed
+    this.allowValidInput(event,/^[a-zA-Z ]*$/); // Only letters allowed
+  }   // Only letters allowed
+
+  onLastNameKeyPress(event: KeyboardEvent): void {
+    this.allowValidInput(event,/^[a-z ]*$/); // Only letters allowed
+  }   // Only letters allowed
+
+  onAliasNameKeyPress(event: KeyboardEvent): void {
+    this.allowValidInput(event, (/^[a-zA-Z\/\-()&.@,' ]*$/)); // Only letters allowed
   }
+  
   onAccNoKeyPress(event: KeyboardEvent): void {
     this.allowValidInput(event, /^[0-9]+$/); // Only letters allowed
   }
@@ -297,6 +313,14 @@ export class SubscriberCreateComponent implements OnInit {
   onContactChange(event: any) {
     let inputValue = event.target.value;
     let numbersOnly = inputValue.replace(/[^\d]/g, '');
+    const allowedKeys = ['Backspace', 'Tab'];
+    if (
+      !allowedKeys.includes(event.key) &&
+      (event.key < '0' || event.key > '9')
+    ) {
+      event.preventDefault();
+    }
+  
     if (numbersOnly.startsWith('91')) {
       numbersOnly = '+91 ' + numbersOnly.substring(2, 12); // Take only 10 digits after +91
     } else {
@@ -306,8 +330,26 @@ export class SubscriberCreateComponent implements OnInit {
       contact: numbersOnly
     });
   }
+  onSecContactChange(event: any) {
+    let inputValue = event.target.value;
+    let numbersOnly = inputValue.replace(/[^\d]/g, '');
+    if (numbersOnly.startsWith('91')) {
+      numbersOnly = '+91 ' + numbersOnly.substring(2, 12); // Take only 10 digits after +91
+    } else {
+      numbersOnly = '+91 ';
+    }
+    this.subscriberForm.patchValue({
+      secContact: numbersOnly
+    });
+  }
   blockPrefix(event: any) {
-    const inputValue = this.subscriberForm.get('contact')?.value;
+    // const inputValue = this.subscriberForm.get('contact')?.value;
+    if (event.target.selectionStart < 4 && event.key !== 'Tab') {
+      event.preventDefault();
+    }
+  }
+  secblockPrefix(event: any) {
+    // const inputValue = this.subscriberForm.get('contact')?.value;
     if (event.target.selectionStart < 4 && event.key !== 'Tab') {
       event.preventDefault();
     }

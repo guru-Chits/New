@@ -39,6 +39,18 @@
             </div>
             <div class="row justify-content-around">
               <div class="col-lg-4">
+              <div class="form-group">
+                <label for="date" class="form-control-label">Auction Date</label>
+                <input
+                  type="Date"
+                  class="form-control p-2 form-control-sm mt-2"
+                  id="date"
+                  formControlName="date"
+                  placeholder="Date"
+                />
+              </div>
+              </div>
+              <div class="col-lg-4">
                 <div class="form-group">
                   <label for="groupId" class="form-control-label">Group ID</label>
                   <input type="text" placeholder="Group Id" class="form-control form-control-sm"
@@ -54,6 +66,9 @@
                 </div>
               </div>
 
+
+            </div>
+            <div class="row justify-content-around">
               <div class="col-lg-4">
                 <div class="form-group">
                   <label for="foremanCommision" class="form-control-label">Foreman Commission</label>
@@ -61,8 +76,6 @@
                     formControlName="foremanCommision" readonly />
                 </div>
               </div>
-            </div>
-            <div class="row justify-content-around">
               <div class="col-lg-4">
                 <div class="form-group">
                   <label for="winningBid" class="form-control-label">Winning Bid</label>
@@ -88,6 +101,10 @@
                     formControlName="prizedAmount" readonly />
                 </div>
               </div>
+
+            
+            </div>
+            <div class="row">
               <div class="col-lg-4" *ngIf="!purchaseChit">
                 <div class="form-group">
                   <label for="auctionCycle" class="form-control-label">Auction Cycle</label>
@@ -102,8 +119,6 @@
                     formControlName="amountOutstanding" readonly />
                 </div>
               </div>
-            </div>
-            <div class="row">
               <div class="col-lg-4" *ngIf="!tknCompany">
                 <div class="form-group">
                   <label for="passbookNumber" class="form-control-label">Passbook Number</label>
@@ -320,7 +335,7 @@
     </div>
   </div>
 </div>
-<div class="modal fade show" tabindex="-1" role="dialog" [ngClass]="{'d-block': isModalOpen || purchase}">
+<div class="modal fade show" tabindex="-1" role="dialog" [ngClass]="{'d-block': isModalOpen }">
   <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
       <div class="modal-header justify-content-center">

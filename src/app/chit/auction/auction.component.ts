@@ -88,6 +88,7 @@ export class AuctionComponent implements OnInit {
 
   ngOnInit(): void {
     this.auctionForm = this.fb.group({
+      date:['',[Validators.required]],
       auctionType: ['', [Validators.required]],
       groupId: ['', [Validators.required]],
       walletBalance: ['', [Validators.required]],
@@ -180,15 +181,19 @@ export class AuctionComponent implements OnInit {
             this.regularFirst = firstAuction === 0;
 
 
-            this.bidHistory = res.allData.map(history => ({
+            this.bidHistory = res.allData.map((history, index) => ({
+              sNo: index + 1, // Use the index parameter and add 1 for serial number
               passbookNumber: history.passbookNumber,
               subscriberName: history.subscriberName,
               location: history.location,
-              // occupation:history.occupation,
+              walletBalance: history.walletBalance,
+              month: this.convertDateToMonth(history.date), // Convert the date to the month
               winningBid: history.winningBid,
               prizedAmount: history.prizedAmount,
               viewDetails: "View Details"
-            }))
+            }));
+            console.log( this.bidHistory);
+            
           });
           this.paymentService.getTransactionById(this.groupId).subscribe((response) => {
             this.walletBalance = response
@@ -267,6 +272,13 @@ export class AuctionComponent implements OnInit {
       });
     }
   }
+
+  convertDateToMonth(dateString: string): string {
+    const date = new Date(dateString); // Parse the ISO date string into a Date object
+    return date.toLocaleString('default', { month: 'long' }); // Extract the month name
+  }
+
+  
   blockPrefix(event: any) {
     const inputValue = this.auctionForm.get('passbookNumber')?.value;
     if (event.target.selectionStart < 3 && event.key !== 'Tab') {
@@ -592,6 +604,8 @@ export class AuctionComponent implements OnInit {
         foremanCommision: this.auctionForm.value.foremanCommision,
         winningBid: this.auctionForm.value.winningBid,
         prizedAmount: this.auctionForm.value.prizedAmount,
+        date:this.auctionForm.value.date,
+        type: "Regular Chit",
         // ticketId:this.auctionForm.value.ticketId,
         location: this.subDetails.subscriberDetails.place,
         occupation: this.subDetails.subscriberDetails.occupation,
@@ -608,10 +622,15 @@ export class AuctionComponent implements OnInit {
         groupId: this.auctionForm.value.groupId,
         walletBalance: this.auctionForm.value.walletBalance,
         auctionCycle: this.auctionForm.value.auctionCycle,
+        date:this.auctionForm.value.date,
+
         profitChitData: {
           foremanCommision: this.auctionForm.value.foremanCommision,
           winningBid: this.auctionForm.value.winningBid,
           prizedAmount: this.auctionForm.value.prizedAmount,
+          walletBalance: this.auctionForm.value.walletBalance,
+          date:this.auctionForm.value.date,
+          type: "Profit Chit",
           occupation: this.subDetails.subscriberDetails.occupation,
           location: this.subDetails.subscriberDetails.place,
           auctionCycle: this.auctionForm.value.auctionCycle,
@@ -623,14 +642,18 @@ export class AuctionComponent implements OnInit {
       payload = {
         groupId: this.auctionForm.value.groupId,
         walletBalance: this.auctionForm.value.walletBalance,
+        date:this.auctionForm.value.date,
 
         purchaseChitData: {
           foremanCommision: this.auctionForm.value.foremanCommision,
           winningBid: this.auctionForm.value.winningBid,
           prizedAmount: this.auctionForm.value.prizedAmount,
+          type: "Purchase",
           occupation: this.subDetails.subscriberDetails.occupation,
           location: this.subDetails.subscriberDetails.place,
           auctionCycle: this.auctionForm.value.auctionCycle,
+          walletBalance: this.auctionForm.value.walletBalance,
+          date:this.auctionForm.value.date,
           subscriberName: this.auctionForm.value.subscriberName,
           passbookNumber: this.auctionForm.value.passbookNumber,
           amountOutstanding: this.auctionForm.value.amountOutstanding
@@ -640,6 +663,7 @@ export class AuctionComponent implements OnInit {
       payload = {
         groupId: this.auctionForm.value.groupId,
         walletBalance: this.auctionForm.value.walletBalance,
+        date:this.auctionForm.value.date,
 
         extraPaymentData: {
           foremanCommision: this.auctionForm.value.foremanCommision,
@@ -649,6 +673,9 @@ export class AuctionComponent implements OnInit {
           auctionCycle: this.auctionForm.value.auctionCycle,
           occupation: this.subDetails.subscriberDetails.occupation,
           location: this.subDetails.subscriberDetails.place,
+          walletBalance: this.auctionForm.value.walletBalance,
+          date:this.auctionForm.value.date,
+          type: "Extra Payments",
           passbookNumber: this.auctionForm.value.passbookNumber,
         },
       }
@@ -658,6 +685,7 @@ export class AuctionComponent implements OnInit {
         groupId: this.auctionForm.value.groupId,
         walletBalance: this.auctionForm.value.walletBalance,
         auctionCycle: this.auctionForm.value.auctionCycle,
+        date:this.auctionForm.value.date,
 
         TKNData: {
           foremanCommision: this.auctionForm.value.foremanCommision,
@@ -666,6 +694,8 @@ export class AuctionComponent implements OnInit {
           tknWallet: this.auctionForm.value.prizedAmount,
           isActive: this.auctionForm.value.isActive,
           auctionCycle: this.auctionForm.value.auctionCycle,
+          walletBalance: this.auctionForm.value.walletBalance,
+          date:this.auctionForm.value.date,
           redeem: false
         },
       }
@@ -779,15 +809,18 @@ export class AuctionComponent implements OnInit {
           this.regularFirst = firstAuction === 0;
 
 
-          this.bidHistory = res.allData.map(history => ({
+          this.bidHistory = res.allData.map((history, index) => ({
+            sNo: index + 1, // Use the index parameter and add 1 for serial number
             passbookNumber: history.passbookNumber,
             subscriberName: history.subscriberName,
             location: history.location,
-            // occupation:history.occupation,
+            walletBalance: history.walletBalance,
+            month: this.convertDateToMonth(history.date), // Convert the date to the month
             winningBid: history.winningBid,
             prizedAmount: history.prizedAmount,
             viewDetails: "View Details"
-          }))
+          }));
+          
         });
         this.receipt = {
           time: this.time,
@@ -847,7 +880,7 @@ export class AuctionComponent implements OnInit {
                 });
               });
             });
-          }, 3 * 60 * 1000); // 3 minutes = 180,000 milliseconds
+          }, 10 * 1000); // 3 minutes = 180,000 milliseconds
 
           this.updatedChanges()
 
@@ -1011,11 +1044,13 @@ export class AuctionComponent implements OnInit {
     this.showDetails = false
   }
   column: ITableColumn[] = [
+    { field: 'sNo', label: 'Serial No' },
     { field: 'passbookNumber', label: 'Passbook No' },
     { field: 'subscriberName', label: 'Name', sortable: false, filter: false },
     // { field: '', sortable: false, filter: false },
-
     { field: 'location', label: "Location", sortable: false, filter: false },
+    { field: 'month', label: 'Month' },
+    { field: 'walletBalance', label: 'Wallet Balance' },
     // { field: 'occupation', label:"Occupation" ,sortable: false, filter: false },
     { field: 'winningBid', label: "WinningBid", sortable: false, filter: false },
     { field: 'prizedAmount', label: "Prized Amount", sortable: false, filter: false },

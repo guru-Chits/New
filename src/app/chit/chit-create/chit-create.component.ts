@@ -276,6 +276,7 @@ export class ChitCreateComponent {
           place: this.subData.Subscriber.routeId,
           occupation: this.subData.Subscriber.occupation,
           collectionType: this.collectionTypeForm.get('collectionType')?.value,
+          subId: this.subData.Subscriber._id
         };
         if (
           chitSubscribers.some(
@@ -373,7 +374,10 @@ export class ChitCreateComponent {
     } else {
       console.warn('Form is invalid.');
     }
-    this.router.navigate(['/chit']);
+    setTimeout(() => {
+      this.router.navigate(['/chit']);
+    }, 1 * 1000); // 3 minutes = 180,000 milliseconds
+
   }
 
   validateDate(event: Event) {

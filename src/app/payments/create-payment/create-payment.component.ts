@@ -52,7 +52,9 @@ export class CreatePaymentComponent {
     private service: PaymentService) { }
 
   ngOnInit(): void {
-    this.reasonCancelForm = new FormGroup({ deleteReason: new FormControl(null) })
+    this.reasonCancelForm =this.formBuilder.group({
+      deleteReason:["", [Validators.required]]
+    })
     this.authService.checkAccess('Payments', 'create').subscribe((hasAccess: boolean) => {
       if (hasAccess) {
         this.canCreate = true
@@ -91,17 +93,19 @@ export class CreatePaymentComponent {
             groupId: paymentDetail?.groupId,
             amount: paymentDetail?.amount,
             receiptNumber: paymentDetail?.receiptNumber,
+            subscriberName:paymentDetail?.subscriberName,
+            installmentMonth:paymentDetail?.installmentMonth,
             cancelled: paymentDetail?.cancelled,
           };
 
           // Push to appropriate array based on cancelled status
-          if (paymentDetail?.cancelled) {
+          if (paymentDetail?.cancelled && !paymentDetail?.verified) {
             this.cancelled.push({
               ...formattedPayment,
               sno: cancelledSno++,
-              // deleteReason: paymentDetail?.deleteReason,
+              deleteReason: paymentDetail?.deleteReason,
             });
-          } else if (!paymentDetail?.cancelled) {
+          } else if (!paymentDetail?.cancelled && !paymentDetail?.verified) {
             this.data.push({
               ...formattedPayment,
               sno: availableSno++,
@@ -134,7 +138,7 @@ export class CreatePaymentComponent {
         // Counters for serial numbers
         let availableSno = 1;
         let cancelledSno = 1;
-
+        
         if (this.paymentData.AllPayment) {
           this.paymentData.AllPayment.forEach((paymentDetail) => {
             const formattedPayment = {
@@ -143,17 +147,19 @@ export class CreatePaymentComponent {
               groupId: paymentDetail?.groupId,
               amount: paymentDetail?.amount,
               receiptNumber: paymentDetail?.receiptNumber,
+              subscriberName:paymentDetail?.subscriberName,
+              installmentMonth:paymentDetail?.installmentMonth,
               cancelled: paymentDetail?.cancelled,
             };
 
             // Push to appropriate array based on cancelled status
-            if (paymentDetail?.cancelled) {
+            if (paymentDetail?.cancelled && !paymentDetail?.verified) {
               this.cancelled.push({
                 ...formattedPayment,
                 sno: cancelledSno++,
                 deleteReason: paymentDetail?.deleteReason,
               });
-            } else {
+            } else if (!paymentDetail?.cancelled && !paymentDetail?.verified) {
               this.data.push({
                 ...formattedPayment,
                 sno: availableSno++,
@@ -185,8 +191,20 @@ export class CreatePaymentComponent {
       onCellClicked: (event: CellClickedEvent) => this.getPaymentById(event.data.id)
     },
     {
+      label: 'Installment Month',
+      field: 'installmentMonth',
+      filterList: false,
+      onCellClicked: (event: CellClickedEvent) => this.getPaymentById(event.data.id)
+    },
+    {
       label: 'Receipt Number',
       field: 'receiptNumber',
+      filterList: false,
+      onCellClicked: (event: CellClickedEvent) => this.getPaymentById(event.data.id)
+    },
+    {
+      label: 'Subscriber Name',
+      field: 'subscriberName',
       filterList: false,
       onCellClicked: (event: CellClickedEvent) => this.getPaymentById(event.data.id)
     },
@@ -217,21 +235,29 @@ export class CreatePaymentComponent {
       label: 'Serial No',
       field: 'sno',
       filterList: false,
+      onCellClicked: (event: CellClickedEvent) => this.getPaymentById(event.data.id)
+
     },
     {
       label: 'Receipt Number',
       field: 'receiptNumber',
       filterList: false,
+      onCellClicked: (event: CellClickedEvent) => this.getPaymentById(event.data.id)
+
     },
     {
       label: 'Passbook Number',
       field: 'passbooknumber',
       filterList: true,
+      onCellClicked: (event: CellClickedEvent) => this.getPaymentById(event.data.id)
+
     },
     {
       label: 'Group Id',
       field: 'groupId',
       filterList: true,
+      onCellClicked: (event: CellClickedEvent) => this.getPaymentById(event.data.id)
+
     },
 
     {
@@ -239,6 +265,8 @@ export class CreatePaymentComponent {
       field: 'amount',
       filterList: false,
       cellStyle: { color: 'red' },
+      onCellClicked: (event: CellClickedEvent) => this.getPaymentById(event.data.id)
+
     },
 
     {
@@ -246,6 +274,8 @@ export class CreatePaymentComponent {
       field: 'deleteReason',
       filterList: false,
       cellStyle: { color: 'red' },
+      onCellClicked: (event: CellClickedEvent) => this.getPaymentById(event.data.id)
+
     },
   ];
 
@@ -273,11 +303,13 @@ export class CreatePaymentComponent {
   }
 
   delete(id) {
-    if (confirm) {
+    // if (confirm) {
       this.popup = true
-
-      this.showModal("Do you want to delete?")
-    }
+      // this.modalErrorMessage = message;
+      const modal = document.getElementById('deleteTypeModal');
+      modal.style.display = 'block';
+      // this.showModal("Do you want to delete?")
+    // }
   }
 
   cancel() {
@@ -285,6 +317,10 @@ export class CreatePaymentComponent {
   }
   changeTab(tab: string) {
     this.activeTab = tab;
+  }
+  closeModal(){
+    this.popup = false
+
   }
 }
 

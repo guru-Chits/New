@@ -67,7 +67,7 @@ export class SubscriberComponent {
       this.totalCount = this.subscriberData.AllSubscriber.length
       this.data = this.subscriberData.AllSubscriber.map((subscriberDetails, index) => ({
         id: subscriberDetails?._id,
-        displayName: `${subscriberDetails?.firstName} ${subscriberDetails?.aliasName}`,
+        displayName: `${subscriberDetails?.firstName} ${subscriberDetails?.lastName} ${subscriberDetails?.aliasName}`,
         occupation: subscriberDetails?.occupation,
         subscriberId: subscriberDetails?.subscriberId,
         location: subscriberDetails?.place,

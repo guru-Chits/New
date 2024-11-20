@@ -172,7 +172,7 @@
             </div>
             <div class="chit-details" *ngIf="showTicket">
                 <div class="card d-flex px-3 py-4 mt-2">
-                    <h5 class="title text-center fw-bold fs-4 m-0 py-3">Ticket ID {{filteredSubscribers[0]?.ticketId}}
+                    <h5 class="title text-center fw-bold fs-4 m-0 py-3">Subscrber 
                         Details</h5><!-- {{selectedChit}}-->
                     <div class="text-center">
                         <img src="{{filteredSubscribers[0]?.profileImageUrl || filteredAdditionalSubs[0]?.profileImageUrl}}"
@@ -186,6 +186,7 @@
                                 <td class="py-3">{{filteredSubscribers[0]?.firstName ||
                                     filteredAdditionalSubs[0].firstName}}</td><!--{{specificChitData?.chitGroupId}}-->
                             </tr>
+                            
                             <tr>
                                 <td class="py-3"><strong>Alias Name</strong></td>
                                 <td class="py-3">{{filteredSubscribers[0]?.aliasName ||
@@ -252,7 +253,7 @@
                     </div>
                 </div>
                 <button type="button" class="btn view-btn my-3"
-                (click)="subPage(filteredSubscribers[0]?._id)">Payment Detail</button>
+                (click)="subPage(link)">Payment Detail</button>
 
             </div>
             </div>

@@ -78,6 +78,7 @@ filter:false;
       action: "View Details"
       
     }))
+    
     this.uniqueRegions = [...new Set(this.data.map(item => item.regionName))];
   })
 

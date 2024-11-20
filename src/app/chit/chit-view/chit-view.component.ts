@@ -41,6 +41,7 @@ export class ChitViewComponent implements OnInit {
   ticketDetail: any;
   filteredSubscribers: any;
   aucData:any
+  link:any
   filteredAdditionalSubs: any;
   isSubscriberListVisible: boolean = false;
   displayedSubscribers: any[];
@@ -80,11 +81,14 @@ export class ChitViewComponent implements OnInit {
   tknAmount:number
   constructor(private activatedRoute: ActivatedRoute, private router: Router, private service: ChitService, private paymentService: PaymentService, private authService: AuthService, private subservice: SubscriberService, private settings: ServiceService) { }
 column: ITableColumn[] = [
+  { field: 'sNo', label: 'Serial No' },
   { field: 'passbookNumber', label: 'Passbook No' },
   { field: 'subscriberName',  label: 'Name' ,sortable: false, filter: false },
   // { field: '', sortable: false, filter: false },
-
   { field: 'location', label:"Location" ,sortable: false, filter: false },
+  { field: 'month', label: 'Month' },
+  {field:'type', label:"Type"},
+  { field: 'walletBalance', label: 'Wallet Balance' },
   // { field: 'occupation', label:"Occupation" ,sortable: false, filter: false },
   { field: 'winningBid',  label:"WinningBid",sortable: false, filter: false },
   { field: 'viewDetails',  label:"'View Details'",sortable: false, filter: false ,
@@ -137,15 +141,19 @@ column: ITableColumn[] = [
             this.auctionCycle=res.auctionCycle
             console.log(this.bidHistory?.length);
             this.prizedSub=this.bidHistory?.length
-            this.bidHistory=  res.allData.map(history=>({
-              passbookNumber:history.passbookNumber,
-              subscriberName:history.subscriberName,
-              location:history.location,
-              // occupation:history.occupation,
-              winningBid:history.winningBid,
-              prizedAmount:history.prizedAmount,
-              viewDetails:"View Details"
-            }))
+
+            this.bidHistory = res.allData.map((history, index) => ({
+              sNo: index + 1, // Use the index parameter and add 1 for serial number
+              passbookNumber: history.passbookNumber,
+              subscriberName: history.subscriberName,
+              location: history.location,
+              walletBalance: history.walletBalance,
+              month: this.convertDateToMonth(history.date), // Convert the date to the month
+              winningBid: history.winningBid,
+              type:history.type,
+              prizedAmount: history.prizedAmount,
+              viewDetails: "View Details"
+            }));
              });
       
           
@@ -181,12 +189,17 @@ column: ITableColumn[] = [
             },
           ];
           this.subscribers = this.chitData.chitSubscribers;
+
           this.addSubscribers = this.chitData.addChitSubscribers;
         });
       }
     });
 
 
+  }
+  convertDateToMonth(dateString: string): string {
+    const date = new Date(dateString); // Parse the ISO date string into a Date object
+    return date.toLocaleString('default', { month: 'long' }); // Extract the month name
   }
 
   getDataById(id:any){
@@ -272,7 +285,8 @@ column: ITableColumn[] = [
         id: subscriberDetails?._id,
         subscriberId: subscriberDetails?.subscriberId,
         subscriberName: `${subscriberDetails?.firstName} ${subscriberDetails?.lastName}`,
-        subscriberProfile: subscriberDetails?.profileImageUrl
+        subscriberProfile: subscriberDetails?.profileImageUrl,
+
       }))
       this.displayedSubscribers = this.data.slice(0, this.itemsPerPage);
     })
@@ -363,6 +377,7 @@ column: ITableColumn[] = [
           firstName: this.subData.Subscriber.firstName,
           place: this.subData.Subscriber.routeId,
           occupation: this.subData.Subscriber.occupation,
+          subId: this.subData.Subscriber._id,
           collectionType: this.collectionTypeForm.get('collectionType')?.value
         };
 
@@ -419,7 +434,7 @@ column: ITableColumn[] = [
           aliasName: this.addSubData.Subscriber.lastName,
           firstName: this.addSubData.Subscriber.firstName,
           place: this.addSubData.Subscriber.routeId,
-          occupation: this.addSubData.Subscriber.occupation
+          occupation: this.addSubData.Subscriber.occupation,
         };
 
         // Check for duplicate subscriber ID in both addChitSubscribers and chitSubscribers
@@ -550,7 +565,12 @@ column: ITableColumn[] = [
         return total + parseFloat(payment.amount);
       }, 0);
       console.log(this.total,"pay");
-      
+      this.service.getByPassbooNo(subscriber?.passbookNo).subscribe(res=>{
+        this.link=res
+        this.link=this.link.subscriberDetails.subId
+        console.log(this.link);
+        
+      })
     })
     this.service.getSubAuction(subscriber.passbookNo).subscribe((data)=>{
       if (data.subscriberAuc.extraPaymentData) {
@@ -642,8 +662,9 @@ column: ITableColumn[] = [
   }
 
   subPage(id:string){
-    console.log(id);
-    // this.router.navigate([`subscriber/view/${id}`]);
+
+    // this.link=id.subscriberDetails
+    this.router.navigate([`subscriber/view/${id}`]);
 
   }
 }

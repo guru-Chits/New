@@ -120,7 +120,6 @@ export class RegionCreateComponent implements OnInit{
           
           const updatedRegion = { ...this.editData.Region};
             this.regionForm.patchValue(updatedRegion);
-    
           })
         }
     this.getAllRegion()    

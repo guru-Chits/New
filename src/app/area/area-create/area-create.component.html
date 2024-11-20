@@ -26,7 +26,7 @@
                   
                     <div class="col-lg-4">
                       <label class="simple-text">Route Name</label>
-                      <input class="form-control" placeholder="Region Name" formControlName="routeName" (change)="getRouteNameValue()">
+                      <input class="form-control" placeholder="Route Name" formControlName="routeName" (change)="getRouteNameValue()">
                       <div *ngIf="routeForm.get('routeName').touched && routeForm.get('routeName').invalid">
                         <small *ngIf="routeForm.get('routeName').errors?.required" class="text-danger">Route Name is required.</small>
                         <small *ngIf="routeForm.get('routeName').errors?.pattern" class="text-danger">Route Name must start with a capital letter and contain only alphabetic characters.</small>

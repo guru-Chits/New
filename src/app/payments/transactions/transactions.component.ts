@@ -189,9 +189,12 @@ export class TransactionsComponent implements OnInit {
         RouteId: transDetails.region,
         SubscriberId: transDetails.subscriberId,
         PassbookNumber: transDetails.passbooknumber,
+        SubscriberName:transDetails.subscriberName,
+        CollectionDate:transDetails.date,
         receiptNumber: transDetails.receiptNumber,
         InstallmentMonth: transDetails.installmentMonth,
         CollectionType: transDetails.collectionType,
+        chitAmount:transDetails.chitAmount,
         Amount: transDetails.amount
       }));
 
@@ -214,22 +217,25 @@ export class TransactionsComponent implements OnInit {
         ['From Date:' + fromDate, 'To Date:' + toDate],
 
         // Add header row
-        ['S No', 'Route ID', 'Subscriber ID', 'Passbook No.', 'Receipt No.', 'Installment Month', 'Collection Type', 'Amount'],
+        ['S No','Route Id', 'Collection Date', 'Passbook No.', 'Receipt No.', 'Installment Month','Subscriber ID', 'Subscriber Name', 'Collection Type', 'Chit Value','Amount'],
 
         // Add the data rows
         ...this.downloadData.map((data: any, index: number) => [
           index + 1,
           data.RouteId,
-          data.SubscriberId,
+          this.datePipe.transform(data.CollectionDate, 'dd-MM-YYYY') || '',
           data.PassbookNumber,
           data.receiptNumber,
           data.InstallmentMonth,
+          data.SubscriberId,
+          data.SubscriberName,
           data.CollectionType,
+          data.chitAmount,
           data.Amount
         ]),
         [],
 
-        ['', '', '', '', '', '', 'Amount', "₹" + formattedGrandTotal.toLocaleString('en-IN', { style: 'currency', currency: 'INR' })]
+        ['', '', '', '', '', '', '','','Amount', "₹" + formattedGrandTotal.toLocaleString('en-IN', { style: 'currency', currency: 'INR' })]
       ];
 
       this.transactionForm.patchValue({
@@ -270,7 +276,12 @@ export class TransactionsComponent implements OnInit {
         subscriberId: transDetails.subscriberId,
         subscriberName: transDetails.subscriberName,
         chitAmount: transDetails.chitAmount,
+        PassbookNumber: transDetails.passbooknumber,
+        receiptNumber: transDetails.receiptNumber,
         amount: transDetails.amount,
+        InstallmentMonth: transDetails.installmentMonth,
+        CollectionType: transDetails.collectionType,
+
       }));
 
 
@@ -290,20 +301,24 @@ export class TransactionsComponent implements OnInit {
         ['From Date:' + fromDate, 'To Date:' + toDate, 'Route ID:' + routeId],
 
         // Add header row
-        ['S No', 'Date', 'Subscriber ID', 'Subscriber Name', 'Chit Amount', 'Amount'],
+        ['S No',  'Collection Date', 'Passbook No.', 'Receipt No.', 'Installment Month','Subscriber ID', 'Subscriber Name', 'Collection Type', 'Chit Value','Amount'],
 
         // Add the data rows
         ...this.downloadData.map((data: any, index: number) => [
           index + 1,
           this.datePipe.transform(data.date, 'dd-MM-YYYY') || '',
+          data.PassbookNumber,
+          data.receiptNumber,
+          data.InstallmentMonth,
           data.subscriberId,
           data.subscriberName,
+          data.CollectionType,
           data.chitAmount,
           data.amount
         ]),
 
         [],
-        ['', '', '', '', 'Amount', "₹" + formattedGrandTotal.toLocaleString('en-IN', { style: 'currency', currency: 'INR' })]
+        ['', '', '', '','','', 'Amount', "₹" + formattedGrandTotal.toLocaleString('en-IN', { style: 'currency', currency: 'INR' })]
       ];
       this.transactionForm.patchValue({
         totalSerialNumberCount: this.data.length,

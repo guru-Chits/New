@@ -111,6 +111,7 @@ export class SubscriberViewComponent implements OnInit {
           this.paymentHistory = response
           this.paymentData = this.paymentHistory.payments.map((paymentDetail, index) => ({
             receiptNumber: paymentDetail.receiptNumber,
+            installmentMonth:paymentDetail.installmentMonth,
             amount: paymentDetail.amount,
             groupId: paymentDetail.groupId,
             collectionType: paymentDetail.collectionType

@@ -59,36 +59,7 @@
                     </div>
                 </div>
             </div>
-            <div *ngIf="popup">
-                <div id="deleteTypeModal" class="modal" tabindex="-1" role="dialog">
-                    <div class="modal-dialog" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header  d-flex justify-content-center">
-                                <h5 class="modal-title"> Cancel Receipt</h5>
-                            </div>
-                            <div class="card-body mt-2">
-                                <form [formGroup]="reasonCancelForm">
 
-                                    <div class="form-group ms-3 me-3 mb-3">
-                                        <label>
-                                            Reason for Cancellation
-                                        </label>
-                                        <select class="form-control form-control-sm form-select"
-                                            formControlName="deleteReason" placeholder="select reason">
-                                            <option value="">Select reason</option>
-                                            <option *ngFor="let reason of reasonData" [value]="reason.deleteType">{{
-                                                reason.deleteType }}</option>
-                                        </select>
-                                        <button class="btn2 px-3 py-1 mt-2"
-                                            (click)="deleteConfirm(paymentDetail.payment._id)" *ngIf="canDelete">Cancel
-                                            Bill</button>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
             <div class="col-lg-4">
                 <div *ngIf="paymentDetail&& activeTab == 'home'">
                     <div class="card">
@@ -154,7 +125,7 @@
                                 <button type="button" class="btn1 px-3 py-1" (click)="cancel()">Cancel</button>
 
                                 <button class="btn2 px-3 py-1" (click)="delete(paymentDetail.payment._id)"
-                                    *ngIf="canDelete">Cancel Bill</button>
+                                    *ngIf="canDelete && !paymentDetail.payment.cancelled">Cancel Bill</button>
                             </div>
                         </div>
                     </div>
@@ -162,5 +133,40 @@
             </div>
         </div>
 
+    </div>
+</div>
+
+<div *ngIf="popup">
+    <div id="deleteTypeModal" class="modal" tabindex="-1" role="dialog"  [ngClass]="{'d-block': popup}">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header  d-flex justify-content-center">
+                    <h5 class="modal-title"> Cancel Receipt</h5>
+                    <button type="button" class="close position-absolute" style="right: 15px;" aria-label="Close"
+                    (click)="closeModal()">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="card-body mt-2">
+                    <form [formGroup]="reasonCancelForm">
+
+                        <div class="form-group ms-3 me-3 mb-3">
+                            <label>
+                                Reason for Cancellation
+                            </label>
+                            <select class="form-control form-control-sm form-select"
+                                formControlName="deleteReason" placeholder="select reason">
+                                <option value="">Select reason</option>
+                                <option *ngFor="let reason of reasonData" [value]="reason.deleteType">{{
+                                    reason.deleteType }}</option>
+                            </select>
+                            <button class="btn2 px-3 py-1 mt-2"
+                                (click)="deleteConfirm(paymentDetail.payment._id)" *ngIf="canDelete" [disabled]="!reasonCancelForm.valid" >Cancel
+                                Bill</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
 </div>

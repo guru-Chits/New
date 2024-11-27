@@ -8,11 +8,14 @@ import { ITableColumn } from '../../shared/interface/list-table';
 import { CellClickedEvent } from 'ag-grid-community';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-tkn',
   templateUrl: './tkn.component.html',
-  styleUrl: './tkn.component.css'
+  styleUrl: './tkn.component.css',
+  providers: [DatePipe]
+
 })
 export class TknComponent implements OnInit {
   time: any
@@ -42,6 +45,7 @@ export class TknComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private service: ChitService,
+    private datePipe: DatePipe,
     private paymentService: PaymentService) { }
   ngOnInit(): void {
     this.redeemForm = this.fb.group({
@@ -102,7 +106,7 @@ export class TknComponent implements OnInit {
     this.redeemData = res.redeemData.map(item => ({
       passbookNumber: item.TKNData?.passbookNumber,
       subscriberName: item.TKNData?.subscriberName,
-      tknWallet: item.TKNData?.tknWallet,
+      tknCompanyWallet: item.TKNData?.tknWallet,
       prizedAmount: item.TKNData?.prizedAmount,
       balance: item.TKNData?.balance,
       viewDetails: "View Details",
@@ -150,6 +154,9 @@ export class TknComponent implements OnInit {
       } else if (res.result === true) {
         this.redeemForm.get('passbookNumber')?.setErrors({ ticketExists: true });
       }
+      else if (res.inGroup === false) {
+        this.redeemForm.get('passbookNumber')?.setErrors({ notExist: true });
+      }
       else {
         this.redeemForm.get('passbookNumber')?.setErrors(null);
       }
@@ -172,7 +179,7 @@ export class TknComponent implements OnInit {
     const payload = {
       groupId: this.redeemForm.value.groupId,
       walletBalance: data.TKNData.walletBalance,
-
+      date:data.TKNData.date,
       TKNData: {
         foremanCommision: data.TKNData.foremanCommision,
         winningBid: data.TKNData.winningBid,
@@ -203,7 +210,7 @@ export class TknComponent implements OnInit {
 
       this.receipt = {
         time: this.time,
-        date: this.date,
+        date: this.datePipe.transform(response.data.TKNData.date, 'dd-MM-yyyy') || '',
         prizedAmount: response.data.TKNData.prizedAmount,
         subscriberName: response.data.TKNData.subscriberName,
         groupId: response.data.groupId,
@@ -222,10 +229,10 @@ export class TknComponent implements OnInit {
         this.chitDetail = data.data;
         this.isChitShow = true
         this.showModal()
-        const createdAtDate = new Date(this.chitDetail.updatedAt);
-
+        const createdAtDate = new Date(this.chitDetail.date);
+        
         this.date = createdAtDate.toISOString().split('T')[0]; // Formats the date
-        this.time = createdAtDate.toLocaleTimeString();  // Formats the time
+        // this.time = createdAtDate.toLocaleTimeString();  // Formats the time
       },
       error => {
         console.error('Error fetching subscriber', error);
@@ -234,17 +241,16 @@ export class TknComponent implements OnInit {
   }
 
   redeemedColumn: ITableColumn[] = [
-    {
+    { field: 'passbookNumber',
       label: 'Passbook Number',
-      field: 'passbookNumber',
       filter: false,
     },
-    { label: 'Name', field: 'subscriberName' },
-    { label: 'TKN Amount', field: 'tknWallet' },
-    { label: 'Prized Amount', field: 'prizedAmount' },
-    { label: 'Balance', field: 'balance' },
-    {
-      label: ' ', field: 'viewDetails',
+    { field: 'subscriberName',label: 'Name',  },
+    { field: 'tknCompanyWallet',label: 'TKN company Wallet',},
+    {field: 'prizedAmount', label: 'Prized Amount' },
+    { field: 'balance', label: 'Balance', },
+    { field: 'viewDetails',
+      label: ' ',
       cellStyle: function (params: any) {
         return { color: '#50A1A5', cursor: 'pointer' };
       },

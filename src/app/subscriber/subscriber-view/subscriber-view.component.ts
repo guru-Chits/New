@@ -4,11 +4,14 @@ import { ActivatedRoute, ResolveStart, Router } from '@angular/router';
 import { ChitService } from '../../chit/shared/service/chit.service';
 import { PaymentService } from '../../payments/shared/service/payment.service';
 import { AuthService } from '../../shared/service/auth.service';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-subscriber-view',
   templateUrl: './subscriber-view.component.html',
-  styleUrl: './subscriber-view.component.css'
+  styleUrl: './subscriber-view.component.css',
+  providers: [DatePipe]
+
 })
 export class SubscriberViewComponent implements OnInit {
   profileImageUrl: string | ArrayBuffer | null = null;
@@ -33,7 +36,8 @@ export class SubscriberViewComponent implements OnInit {
   paymentHistoryToggled: boolean[] = [];
   canEdit = false
   aucData: any
-  constructor(private service: SubscriberService, private authService: AuthService, private activatedRoute: ActivatedRoute, private router: Router, private chitService: ChitService, private paymentService: PaymentService) { }
+  constructor(private service: SubscriberService, private authService: AuthService, private activatedRoute: ActivatedRoute, private router: Router, private chitService: ChitService, private paymentService: PaymentService,    private datePipe: DatePipe,
+  ) { }
 
   ngOnInit(): void {
 
@@ -108,15 +112,30 @@ export class SubscriberViewComponent implements OnInit {
         this.selectedIndex = index;
         this.isShowDiv = !this.isShowDiv;
         this.paymentService.getPaymentByPassbook(data.passbookno).subscribe(response => {
-          this.paymentHistory = response
-          this.paymentData = this.paymentHistory.payments.map((paymentDetail, index) => ({
-            receiptNumber: paymentDetail.receiptNumber,
-            installmentMonth:paymentDetail.installmentMonth,
-            amount: paymentDetail.amount,
-            groupId: paymentDetail.groupId,
-            collectionType: paymentDetail.collectionType
-          }))
-        })
+          this.paymentHistory = response;
+        
+          let installmentNo = 0; // Start from 1
+          let previousInstallmentMonth = ''; // Track the last installmentMonth
+        
+          this.paymentData = this.paymentHistory.payments.map((paymentDetail, index) => {
+            // Check if the current installmentMonth differs from the previous one
+            if (paymentDetail.installmentMonth !== previousInstallmentMonth) {
+              installmentNo++; // Increment the installment number
+              previousInstallmentMonth = paymentDetail.installmentMonth; // Update the previous installmentMonth
+            }
+        
+            return {
+              receiptNumber: paymentDetail.receiptNumber,
+              installmentMonth: paymentDetail.installmentMonth,
+              installmentNo: installmentNo, // Assign the calculated installment number
+              date: this.datePipe.transform(paymentDetail.date, 'dd-MM-yyyy') || '',
+              amount: paymentDetail.amount,
+              groupId: paymentDetail.groupId,
+              collectionType: paymentDetail.collectionType,
+            };
+          });
+        });
+        
       }
     })
   }

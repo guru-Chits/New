@@ -9,10 +9,13 @@ import { CellClickedEvent, ColDef } from 'ag-grid-community';
 import { Subscriber } from 'rxjs';
 import { ServiceService } from '../../settings/shared/service.service';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { DatePipe } from '@angular/common';
+
 @Component({
   selector: 'app-chit-view',
   templateUrl: './chit-view.component.html',
-  styleUrl: './chit-view.component.css'
+  styleUrl: './chit-view.component.css',
+  providers: [DatePipe]
 })
 export class ChitViewComponent implements OnInit {
   data: any[] = [];
@@ -78,8 +81,13 @@ export class ChitViewComponent implements OnInit {
   amountOutstanding:any
   auctionCycle:number
   profitCount:any
+  regId: any[]
+  extraId: any[]
+  purId: any[]
+  colorCode: any
   tknAmount:number
-  constructor(private activatedRoute: ActivatedRoute, private router: Router, private service: ChitService, private paymentService: PaymentService, private authService: AuthService, private subservice: SubscriberService, private settings: ServiceService) { }
+  extraCount:number
+  constructor(private activatedRoute: ActivatedRoute, private router: Router, private service: ChitService, private paymentService: PaymentService, private authService: AuthService, private subservice: SubscriberService, private settings: ServiceService,private datePipe: DatePipe,) { }
 column: ITableColumn[] = [
   { field: 'sNo', label: 'Serial No' },
   { field: 'passbookNumber', label: 'Passbook No' },
@@ -87,7 +95,7 @@ column: ITableColumn[] = [
   // { field: '', sortable: false, filter: false },
   { field: 'location', label:"Location" ,sortable: false, filter: false },
   { field: 'month', label: 'Month' },
-  {field:'type', label:"Type"},
+  {field:'type', label:"Auction Type"},
   { field: 'walletBalance', label: 'Wallet Balance' },
   // { field: 'occupation', label:"Occupation" ,sortable: false, filter: false },
   { field: 'winningBid',  label:"WinningBid",sortable: false, filter: false },
@@ -96,10 +104,7 @@ column: ITableColumn[] = [
       return { color: '#50A1A5' ,cursor:'pointer'};
     },
     onCellClicked: (event: CellClickedEvent) =>
-  
       this.getDataById(event.data.passbookNumber)
-  
-
   },
 
 ];
@@ -137,11 +142,10 @@ column: ITableColumn[] = [
             this.amountOutstanding=res.totalPrizedAmount
             this.profitCount=res.profitCount
             this.tknAmount=res.totalTknCompany
+            this.extraCount=res.extraTid.length
             this.bidHistory=res.allData
             this.auctionCycle=res.auctionCycle
-            console.log(this.bidHistory?.length);
             this.prizedSub=this.bidHistory?.length
-
             this.bidHistory = res.allData.map((history, index) => ({
               sNo: index + 1, // Use the index parameter and add 1 for serial number
               passbookNumber: history.passbookNumber,
@@ -150,10 +154,11 @@ column: ITableColumn[] = [
               walletBalance: history.walletBalance,
               month: this.convertDateToMonth(history.date), // Convert the date to the month
               winningBid: history.winningBid,
-              type:history.type,
+              type: history.type ? history.type : "Regular Chit", // Conditional logic for type
               prizedAmount: history.prizedAmount,
-              viewDetails: "View Details"
+              viewDetails: "View Details",
             }));
+            
              });
       
           
@@ -169,7 +174,6 @@ column: ITableColumn[] = [
               this.chitSubscriberTotal = amount.walletBalance
             });
           })
-
           this.paymentService.getAddWallet(this.groupId).subscribe((response) => {
             this.addPayment = response
             this.addPayment = this.addPayment.payment
@@ -188,8 +192,23 @@ column: ITableColumn[] = [
               routerLink: `chit/view/${paramData.id}`,
             },
           ];
-          this.subscribers = this.chitData.chitSubscribers;
 
+          this.subscribers = this.chitData.chitSubscribers;
+            this.service.getTicketId(this.groupId).subscribe((res) => {
+            this.colorCode = res
+          });
+          const updatedSubscribers = this.subscribers.map(async (subscriber) => {
+            const result = await this.service.findTicketInGroup(this.groupId, subscriber.passbookNo).toPromise();
+            
+            return {
+              ...subscriber,
+              auctionStatus: result.result ? "Prized" : "Non Prized" // Add auctionStatus based on result
+            };
+          });
+          
+          Promise.all(updatedSubscribers).then((finalSubscribers) => {
+            this.subscribers = finalSubscribers;
+          });
           this.addSubscribers = this.chitData.addChitSubscribers;
         });
       }
@@ -203,11 +222,8 @@ column: ITableColumn[] = [
   }
 
   getDataById(id:any){
-    console.log(id)
     this.service.getSubAuction(id).subscribe(
-      data => {
-        console.log("e354");
-        
+      data => {        
         if(data.subscriberAuc.extraPaymentData){
         this.chitDetail = data.subscriberAuc.extraPaymentData;
         }else if(data.subscriberAuc.profitChitData){
@@ -227,8 +243,6 @@ column: ITableColumn[] = [
       const createdAtDate = new Date(this.datas.createdAt);
       this.recDate =createdAtDate.toISOString().split('T')[0]; // Formats the date
       this.recTime = createdAtDate.toLocaleTimeString();  // Formats the time
-        console.log(this.datas)
-        console.log(this.chitDetail)
       },
       error => {
         console.error('Error fetching subscriber', error);
@@ -236,6 +250,30 @@ column: ITableColumn[] = [
     );
   
   }
+  getRowClass(passbookNumber: number): string {
+    
+    this.regId = this.colorCode?.regId
+    this.extraId = this.colorCode?.tknTid; // Store the extraId array
+    this.purId = this.colorCode?.purId; // Store the purId array
+    // Use includes to check membership in the arrays 
+    if (this.regId?.includes(passbookNumber)) {
+      return 'reg-id-row';
+    } else if (this.colorCode?.tknTid?.includes(passbookNumber)) {
+      return 'tkn-id-row';
+    } else if (this.colorCode?.purId?.includes(passbookNumber)) {
+      return 'pur-id-row';
+    }
+    else if (this.colorCode?.extraTid?.includes(passbookNumber)) {
+      return 'extra-id-row';
+    }
+    else if (this.colorCode?.profitTid?.includes(passbookNumber)) {
+      return 'profit-id-row';
+    }
+    else {
+      return '';
+    }
+  }
+
   showDetail(): void {
     this.showDetails=true
   }
@@ -536,7 +574,7 @@ column: ITableColumn[] = [
     this.router.navigate([`chit/auction/${id}`])
   }
 
-  getChitById(id: string) {
+  getChitById(id: string) {    
     this.showTicket = true;
     this.filteredSubscribers = this.subscribers.filter(subscriber => subscriber._id === id);
     this.count=0
@@ -557,19 +595,15 @@ column: ITableColumn[] = [
       this.subservice.getChitGroupById(subscriber?.subscriberId).subscribe(
         response => {
           this.chitGroups = response;
-          console.log(subscriber.subscriberId,this.chitGroups);
           this.count=this.chitGroups.length-1
         }
       )
       this.total= this.paymentHistory.payments.reduce((total, payment) => {
         return total + parseFloat(payment.amount);
       }, 0);
-      console.log(this.total,"pay");
       this.service.getByPassbooNo(subscriber?.passbookNo).subscribe(res=>{
         this.link=res
-        this.link=this.link.subscriberDetails.subId
-        console.log(this.link);
-        
+        this.link=this.link.subscriberDetails.subId        
       })
     })
     this.service.getSubAuction(subscriber.passbookNo).subscribe((data)=>{
@@ -602,21 +636,22 @@ column: ITableColumn[] = [
 
 
 
-  subscriberColumn: ITableColumn[] = [
-    {
-      label: 'profileImageUrl',
-      field: ' ',
-      filter: false,
-      cellRenderer: this.profileImageWithIdRenderer,
-      onCellClicked: (event: CellClickedEvent) => this.getChitById(event.data._id)
-    }, { label: 'Name', field: 'firstName', onCellClicked: (event: CellClickedEvent) => this.getChitById(event.data._id) },
-    { label: 'Alias Name', field: 'aliasName', onCellClicked: (event: CellClickedEvent) => this.getChitById(event.data._id) },
-    { label: 'Passbook Number', field: 'passbookNo', onCellClicked: (event: CellClickedEvent) => this.getChitById(event.data._id) },
-    { label: 'Place', field: 'place', onCellClicked: (event: CellClickedEvent) => this.getChitById(event.data._id) },
-    { label: 'Occupation', field: 'occupation', onCellClicked: (event: CellClickedEvent) => this.getChitById(event.data._id) },
-    { label: 'Collection Type', field: 'collectionType', onCellClicked: (event: CellClickedEvent) => this.getChitById(event.data._id) },
+  // subscriberColumn: ITableColumn[] = [
+  //   {
+  //     label: 'profileImageUrl',
+  //     field: ' ',
+  //     filter: false,
+  //     cellRenderer: this.profileImageWithIdRenderer,
+  //     onCellClicked: (event: CellClickedEvent) => this.getChitById(event.data._id)
+  //   }, { label: 'Name', field: 'firstName', onCellClicked: (event: CellClickedEvent) => this.getChitById(event.data._id) },
+  //   { label: 'Alias Name', field: 'aliasName', onCellClicked: (event: CellClickedEvent) => this.getChitById(event.data._id) },
+  //   {label:'auction Status',field:'auctionStatus'},
+  //   { label: 'Passbook Number', field: 'passbookNo', onCellClicked: (event: CellClickedEvent) => this.getChitById(event.data._id) },
+  //   { label: 'Place', field: 'place', onCellClicked: (event: CellClickedEvent) => this.getChitById(event.data._id) },
+  //   { label: 'Occupation', field: 'occupation', onCellClicked: (event: CellClickedEvent) => this.getChitById(event.data._id) },
+  //   { label: 'Collection Type', field: 'collectionType', onCellClicked: (event: CellClickedEvent) => this.getChitById(event.data._id) },
 
-  ];
+  // ];
 
 
   DummyData = [

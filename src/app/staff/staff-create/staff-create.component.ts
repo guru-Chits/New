@@ -72,7 +72,7 @@ export class StaffCreateComponent implements OnInit {
       lastName: ["", [Validators.required, Validators.pattern(/^[A-Z][a-zA-Z]+$/), Validators.maxLength(25), Validators.minLength(2)]],
       gender: ["", [Validators.required]],
       role: ["", [Validators.required]],
-      contact: ["+91 ", [Validators.required, Validators.pattern(/^\+91\s?\d{10}$/)]],
+      contact: ["", [Validators.required, Validators.pattern(/^\+91\s?\d{10}$/)]],
       address: ["", [Validators.required, Validators.pattern(/^[a-zA-Z0-9\s,.'-]+$/)]],
       emailId: ["", [Validators.required, Validators.email, Validators.minLength(10), Validators.maxLength(100)]],
       dob: ['', [Validators.required,
@@ -94,7 +94,7 @@ export class StaffCreateComponent implements OnInit {
       aadharNumber: [, [Validators.required,
       this.conditionalValidator(() => !!this.staffsForm?.get('aadharNumber')?.value, Validators.pattern(/^\d{4}\s\d{4}\s\d{4}$/))
       ]],
-      aadharUrl: ["", [Validators.required]],
+      aadharUrl: [""],
       drivingLicenseUrl: [""],
       drivingLicenseNumber: ["", this.conditionalValidator(() => !!this.staffsForm?.get('drivingLicenseNumber')?.value, Validators.pattern(/^[A-Z]{2}[- ]?[A-Z0-9]{2}[ ]?[0-9]{4}[ ]?[0-9]{7}$/))],
       bankName: ["", [Validators.required]],
@@ -104,10 +104,6 @@ export class StaffCreateComponent implements OnInit {
       bgVerification_remark: [""],
       profileUrl: [""],
       password: ["Staff@578"]
-    });
-
-    this.staffsForm.patchValue({
-      contact: '+91 '
     });
 
     this.activatedRoute.params.subscribe(paramData => {

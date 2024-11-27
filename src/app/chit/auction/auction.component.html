@@ -20,15 +20,16 @@
             <div class="row">
               <div class="col-lg-12">
                 <div class="form-group">
-                  <label for="auctionType" class="form-control-label">Auction Type</label>
-                  <select id="auctionType" class="form-control form-control-sm form-select man" 
+                  <label for="auctionType" class="form-control-label">Auction Type <span
+                      class="required">*</span></label>
+                  <select id="auctionType" class="form-control form-control-sm form-select man"
                     (change)="onAuctionTypeChange($event)" formControlName="auctionType">
-                    <option  value="" disabled selected>Select Auction Type</option>
-                    <option value="regularChit">Regular Chit</option>
-                    <option value="profitChit" *ngIf="!regularFirst">Profit Chit</option>
-                    <option value="purchase" *ngIf="!regularFirst">Purchase</option>
-                    <option value="tknCompany" *ngIf="!regularFirst">TKN Company</option>
-                    <option value="extraPayments" *ngIf="!regularFirst &&  !extraCount">Extra Payments</option>
+                    <option value="" disabled selected>Select Auction Type</option>
+                    <option value="regularChit" *ngIf="!noReg && !tknMonth">Regular Chit</option>
+                    <option value="profitChit" *ngIf="!regularFirst && noReg && !tknMonth">Profit Chit</option>
+                    <option value="purchase" *ngIf="!regularFirst && noReg && !tknMonth">Purchase</option>
+                    <option value="tknCompany" *ngIf="!regularFirst && !noReg && !tknMonth">TKN Company</option>
+                    <option value="extraPayments" *ngIf="!regularFirst &&  !extraCount && !tknMonth">Extra Payments</option>
                   </select>
                 </div>
 
@@ -39,16 +40,11 @@
             </div>
             <div class="row justify-content-around">
               <div class="col-lg-4">
-              <div class="form-group">
-                <label for="date" class="form-control-label">Auction Date</label>
-                <input
-                  type="Date"
-                  class="form-control p-2 form-control-sm mt-2"
-                  id="date"
-                  formControlName="date"
-                  placeholder="Date"
-                />
-              </div>
+                <div class="form-group">
+                  <label for="date" class="form-control-label ">Auction Date <span class="required">*</span></label>
+                  <input type="Date" class="form-control p-2 form-control-sm mt-2 man" id="date" formControlName="date"
+                    placeholder="Date" readonly />
+                </div>
               </div>
               <div class="col-lg-4">
                 <div class="form-group">
@@ -65,8 +61,6 @@
                     formControlName="walletBalance" readonly />
                 </div>
               </div>
-
-
             </div>
             <div class="row justify-content-around">
               <div class="col-lg-4">
@@ -78,22 +72,12 @@
               </div>
               <div class="col-lg-4">
                 <div class="form-group">
-                  <label for="winningBid" class="form-control-label">Winning Bid</label>
-                  <input 
-                    type="text" 
-                    placeholder="Winning Bid" 
-                    class="form-control form-control-sm man"
-                    formControlName="winningBid" 
-                    (change)="getRouteNameValue()" 
-                    id="winningBid"
-                    (input)="validateNumber($event)" 
-                    inputmode="numeric" 
-                    pattern="[0-9]*" 
-                  />
+                  <label for="winningBid" class="form-control-label">Winning Bid <span class="required">*</span></label>
+                  <input type="text" placeholder="Winning Bid" class="form-control form-control-sm man"
+                    formControlName="winningBid" (change)="getRouteNameValue()" id="winningBid"
+                    (input)="validateNumber($event)" inputmode="numeric" pattern="[0-9]*" />
                 </div>
-                
               </div>
-
               <div class="col-lg-4">
                 <div class="form-group">
                   <label for="prizedAmount" class="form-control-label">Prized Amount</label>
@@ -101,8 +85,6 @@
                     formControlName="prizedAmount" readonly />
                 </div>
               </div>
-
-            
             </div>
             <div class="row">
               <div class="col-lg-4" *ngIf="!purchaseChit">
@@ -121,7 +103,8 @@
               </div>
               <div class="col-lg-4" *ngIf="!tknCompany">
                 <div class="form-group">
-                  <label for="passbookNumber" class="form-control-label">Passbook Number</label>
+                  <label for="passbookNumber" class="form-control-label">Passbook Number <span
+                      class="required">*</span></label>
                   <input type="text" placeholder="Passbook Number" class="form-control form-control-sm man"
                     formControlName="passbookNumber" id="passbookNumber"
                     [ngClass]="{'is-invalid': auctionForm.get('passbookNumber')?.invalid && auctionForm.get('passbookNumber')?.touched}"
@@ -135,10 +118,8 @@
                   <div *ngIf="auctionForm.get('passbookNumber')?.hasError('notExist')" class="invalid-feedback">
                     Not Exist
                   </div>
-
                 </div>
               </div>
-
               <div class="col-lg-4" *ngIf="!tknCompany">
                 <div class="form-group">
                   <label for="subscriberName" class="form-control-label">Prized Subscriber Name</label>
@@ -146,9 +127,7 @@
                     formControlName="subscriberName" readonly />
                 </div>
               </div>
-
             </div>
-
             <div class="row justify-content-around">
               <div class="col-lg-5">
                 <div class="form-check form-switch">
@@ -166,7 +145,6 @@
                   * Turn Off to End Auction
                 </h6>
               </div>
-
               <div class="col-lg-3">
                 <button class="btn btn-primary px-2 py-2" *ngIf="regular || profitChit"
                   [disabled]="!purchase || !auctionStart || !auctionForm.valid || isSubmitted" (click)="onSubmit()"
@@ -174,7 +152,6 @@
                   Redeem TKN A/C
                 </button>
               </div>
-
               <div class="col-lg-3" *ngIf="purchaseChit">
                 <button type="submit" class="btn px-4 py-2" style="background-color: #AA3028;"
                   [disabled]="!auctionStart || purchase || !auctionForm.valid || isSubmitted" (click)="onSubmit()"
@@ -182,7 +159,6 @@
                   Purchase
                 </button>
               </div>
-
               <div class="col-lg-3" *ngIf="extraPayments">
                 <button type="submit" class="btn px-4 py-2"
                   [disabled]="!auctionStart || purchase || !auctionForm.valid || isSubmitted" (click)="onSubmit()"
@@ -190,14 +166,12 @@
                   Extra Payments Done
                 </button>
               </div>
-
               <div class="col-lg-3" *ngIf="tknCompany">
                 <button type="submit" class="btn px-4 py-2" [disabled]="!auctionStart || purchase || isSubmitted"
                   (click)="onSubmit()" data-bs-toggle="modal" data-bs-target="#auctionModal">
                   Create Invoice
                 </button>
               </div>
-
               <div class="col-lg-3" *ngIf="regular || profitChit">
                 <button type="submit" class="btn px-4 py-2"
                   [disabled]="!auctionStart || purchase || !auctionForm.valid || isSubmitted" (click)="onSubmit()"
@@ -205,13 +179,9 @@
                   Submit
                 </button>
               </div>
-
-
             </div>
-
           </form>
         </div>
-
         <div *ngIf="activeTab === 'profit'">
           <app-profit-chit [chitData]="chitData"></app-profit-chit>
         </div>
@@ -231,7 +201,7 @@
 
         </div>
 
-        <div class="my-5" *ngIf="activeTab === 'regular'">
+        <div class="my-5" *ngIf="activeTab === 'regular' || 'tkn'">
 
           <h6 class="ps-3 pb-2">Subscribers</h6>
           <!-- <app-ag-grid [columns]="subscriberColumn"    [gridOptions]="gridOptions" [rowData]="subscribers"  [searchImg]="searchImg" [filterImg]="filterImg"  width="100%" height="500px" [pageSize]="20" [search]="true" filter="true"></app-ag-grid> -->
@@ -247,7 +217,8 @@
               </tr>
             </thead>
             <tbody>
-              <tr *ngFor="let subscriber of subscribers ; let i = index" [ngClass]="getRowClass(subscriber?.passbookNo)">
+              <tr *ngFor="let subscriber of subscribers ; let i = index"
+                [ngClass]="getRowClass(subscriber?.passbookNo)">
                 <td class="ms-3">{{i+1}} <img [src]="subscriber?.profileImageUrl" alt="Profile Image"
                     class="profile-image ms-3">
                 </td>
@@ -324,10 +295,11 @@
           </div>
         </div>
       </div>
-      <div class="card my-3"  *ngIf="activeTab === 'regular'">
+      <div class="card my-3" *ngIf="activeTab === 'regular'">
         <h5 class="card-title text-center mt-2">Colour Classification</h5>
         <div class="card-body">
-          <p class="card-text">Prized Subscribers - <span class="dot" style="background-color: rgb(54, 183, 54);"></span> </p>
+          <p class="card-text">Prized Subscribers - <span class="dot"
+              style="background-color: rgb(54, 183, 54);"></span> </p>
           <p class="card-text">Purchase - <span class="dot" style="background-color: red;"></span> </p>
           <p class="card-text">Extra Payments - <span class="dot" style="background-color: orange;"></span> </p>
         </div>
@@ -353,7 +325,7 @@
             <p><strong>Location:</strong>{{receipt?.location}}</p>
           </div>
           <div class="col-md-6">
-            <p><strong>Date:</strong> {{date}} - {{time}}</p>
+            <p><strong>Auction Date:</strong> {{receipt?.date}} - {{time}}</p>
             <p><strong>Prized Amount:</strong> {{receipt?.prizedAmount}}</p>
             <p><strong>Winning Bid Amount:</strong> {{receipt?.winningBid}}</p>
           </div>
@@ -425,7 +397,7 @@
             </div>
             <div class="col-6 d-flex justify-content-around">
               <div class="col-5 fw-bold">Date & Time</div>
-              <div class="col-5">{{date}} - {{time}}</div>
+              <div class="col-5">{{receipt?.date}} - {{time}}</div>
             </div>
           </div>
           <div class="row pb-2">
@@ -484,7 +456,7 @@
             </div>
 
             <div class="col-lg-6">
-              <p><strong>Date:</strong> {{ recDate }}</p>
+              <p><strong>Auction Date:</strong> {{ datas?.date| date: 'dd-MM-YYYY' }}</p>
             </div>
             <div class="col-lg-6">
               <p><strong>Passbook Number:</strong> {{ chitDetail?.passbookNumber }}</p>
@@ -510,8 +482,9 @@
           </div>
         </div>
         <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" (click)="createInvoice()">Create Invoice</button>
-          </div>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" (click)="createInvoice()">Create
+            Invoice</button>
+        </div>
       </div>
     </div>
   </div>
@@ -546,8 +519,8 @@
               <div class="col-5">{{datas?.groupId}}</div>
             </div>
             <div class="col-6 d-flex justify-content-around">
-              <div class="col-5 fw-bold">Date & Time</div>
-              <div class="col-5">{{recDate}} - {{recTime}}</div>
+              <div class="col-5 fw-bold">Auction Date & Time</div>
+              <div class="col-5">{{chitDetail?.date| date: 'dd-MM-YYYY' }} - {{recTime}}</div>
             </div>
           </div>
           <div class="row pb-2">
@@ -570,7 +543,6 @@
               <div class="col-5">{{chitDetail?.foremanCommision}}</div>
             </div>
           </div>
-
           <div class="row pb-2">
             <div class="col-6 d-flex justify-content-around">
               <div class="col-5 fw-bold">Auction Cycle</div>

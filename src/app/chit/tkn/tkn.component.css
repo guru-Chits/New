@@ -97,3 +97,14 @@ background: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
 margin: 5% auto;
 /* max-width: 80%; */
 }
+.required {
+  color: red;
+}
+
+.form-control.ng-invalid.ng-touched {
+  border-color: red;
+}
+
+.form-control.ng-invalid.ng-touched {
+  border-color: red;
+}

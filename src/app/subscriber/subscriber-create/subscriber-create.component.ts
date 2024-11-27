@@ -73,8 +73,8 @@ export class SubscriberCreateComponent implements OnInit {
         this.conditionalValidator(() => !!this.subscriberForm?.get('aliasName')?.value, Validators.maxLength(25)),
         this.conditionalValidator(() => !!this.subscriberForm?.get('aliasName')?.value, Validators.minLength(2))
       ]],
-      contact: ["+91 ", [Validators.required, Validators.pattern(/^\+91\s?\d{10}$/)]],
-      secContact:["+91 ",
+      contact: ["", [Validators.required, Validators.pattern(/^\+91\s?\d{10}$/)]],
+      secContact:["",
          [        this.conditionalValidator(() => !!this.subscriberForm?.get('aliasName')?.value, Validators.pattern((/^\+91\s?\d{10}$/))),]],
       
       place: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(100), Validators.pattern(/^[a-zA-Z0-9\s,.'-]+$/)]],
@@ -135,9 +135,9 @@ export class SubscriberCreateComponent implements OnInit {
       panUrl: ['']
     });
 
-    this.subscriberForm.patchValue({
-      contact: '+91 '
-    });
+    // this.subscriberForm.patchValue({
+    //   contact: '+91 '
+    // });
 
     this.routeService.getrouteAll().subscribe((data) => {
       this.routeData = data;

@@ -4,14 +4,14 @@ const staging ='https://staging.guruchits.com'
 const localUrl='http://localhost:8000'
 const ren='https://chitfundapi.onrender.com'
 export const environment = {
-    paymentServiceUrl: `${staging}/api`,
-    subscriberServiceUrl:`${staging}/api`,
-    chitServiceUrl:`${staging}/api`,
-    staffServiceUrl:`${staging}/api`,
-    areaServiceUrl:`${staging}/api`,
-    loginServiceUrl:`${staging}/api`,
-    accessServiceUrl:`${staging}/api`,
-    auctionServiceUrl:`${staging}/api`,
-    settingsServiceUrl:`${staging}/api/settings`
+    paymentServiceUrl: `${localUrl}/api`,
+    subscriberServiceUrl:`${localUrl}/api`,
+    chitServiceUrl:`${localUrl}/api`,
+    staffServiceUrl:`${localUrl}/api`,
+    areaServiceUrl:`${localUrl}/api`,
+    loginServiceUrl:`${localUrl}/api`,
+    accessServiceUrl:`${localUrl}/api`,
+    auctionServiceUrl:`${localUrl}/api`,
+    settingsServiceUrl:`${localUrl}/api/settings`
 
 }

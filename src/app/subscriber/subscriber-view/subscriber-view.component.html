@@ -191,19 +191,27 @@
             <div *ngFor="let payment of paymentData">
               <div class="full-card m-4 p-2" *ngIf="selectedIndex === i">
                 <div class="row align-items-center">
-                  <div class="col-md-3">
+                  <div class="col-md-2">
                     <h6 class="mb-1">Receipt No</h6>
                     <p>{{payment?.receiptNumber}}</p>
                   </div>
-                  <div class="col-md-3">
+                  <div class="col-md-2">
                     <h6 class="mb-1">Installment Month</h6>
                     <p>{{payment?.installmentMonth}}</p>
                   </div>
-                  <div class="col-md-3">
+                  <div class="col-md-2">
+                    <h6 class="mb-1">Installment Number</h6>
+                    <p>{{payment?.installmentNo}}</p>
+                  </div>
+                  <div class="col-md-2">
+                    <h6 class="mb-1">Date</h6>
+                    <p>{{payment?.date }}</p>
+                  </div>
+                  <div class="col-md-2">
                     <h6 class="mb-1">Amount</h6>
                     <p>₹ {{payment?.amount}}</p>
                   </div>
-                  <div class="col-md-3">
+                  <div class="col-md-2">
                     <h6 class="mb-1">Group ID</h6>
                     <p>{{payment?.groupId}}</p>
                   </div>

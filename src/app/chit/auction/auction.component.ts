@@ -7,6 +7,7 @@ import { PaymentService } from '../../payments/shared/service/payment.service';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 import { CellClickedEvent, ICellRendererParams } from 'ag-grid-community';
+import { DatePipe } from '@angular/common';
 
 interface SubscriberDetails {
   firstName: string;
@@ -17,7 +18,9 @@ interface SubscriberDetails {
 @Component({
   selector: 'app-auction',
   templateUrl: './auction.component.html',
-  styleUrls: ['./auction.component.css']
+  styleUrls: ['./auction.component.css'],
+  providers: [DatePipe]
+
 })
 export class AuctionComponent implements OnInit {
   activeTab: string = 'regular'; // Default active tab
@@ -43,8 +46,8 @@ export class AuctionComponent implements OnInit {
   chitSubscriberTotal = 0;
   subDetails: any
   purchase: boolean = false
-  subCount:number
-  extraCount:boolean=false
+  subCount: number
+  extraCount: boolean = false
   regId: any[]
   extraId: any[]
   auctionCycle: any
@@ -60,22 +63,25 @@ export class AuctionComponent implements OnInit {
   isModalOpen: boolean = false;
   bidHistory: any
   showDetails: boolean = false
-  invoiceClick:boolean=false
+  invoiceClick: boolean = false
   chitDetail: any
   datas: any
   recDate: String
-  objId:string
+  objId: string
   recTime: String
   lastAuction: any
   preAuc: any
   amountOutstanding: any
   profitCount: any
+  noReg: boolean = false
   purchaseId: string
   regularFirst: boolean = false
   colorCode: any
   isConfirmationModalOpen: boolean = false;
   isSubmitted: boolean = false;
   type: string
+  monthFirst: boolean = false
+  tknMonth: boolean = false
   // chitType: string = 'Regular Chit'; 
 
   constructor(
@@ -83,12 +89,13 @@ export class AuctionComponent implements OnInit {
     private activatedRoute: ActivatedRoute,
     private service: ChitService,
     private paymentService: PaymentService,
-    private router: Router
+    private router: Router,
+    private datePipe: DatePipe,
   ) { }
 
   ngOnInit(): void {
     this.auctionForm = this.fb.group({
-      date:['',[Validators.required]],
+      date: ['', [Validators.required]],
       auctionType: ['', [Validators.required]],
       groupId: ['', [Validators.required]],
       walletBalance: ['', [Validators.required]],
@@ -114,12 +121,15 @@ export class AuctionComponent implements OnInit {
         passbookNumber: 'PB-'
       })
       this.auctionStart = false
-      this.regular=false
-      this.purchaseChit=false
-      this.tknCompany=false
-      this.extraPayments=false
-      this.profitChit=false
-      this.extraCount=false
+      this.regular = false
+      this.purchaseChit = false
+      this.tknCompany = false
+      this.extraPayments = false
+      this.profitChit = false
+      this.extraCount = false
+      this.noReg=false
+      this.regularFirst=false
+      this.tknMonth=false
     } else {
       this.auctionForm.disable();
       this.auctionForm.get('auctionStart')?.enable();
@@ -130,7 +140,7 @@ export class AuctionComponent implements OnInit {
 
       if (Object.keys(paramData)?.length) {
         this.service.getChitById(paramData.id).subscribe((data) => {
-          this.objId=paramData.id
+          this.objId = paramData.id
           this.chitData = data;
           this.chitData = this.chitData.ChitsGroup;
           this.groupId = this.chitData.chitGroupId;
@@ -156,22 +166,14 @@ export class AuctionComponent implements OnInit {
           this.service.getTicketId(this.groupId).subscribe((res) => {
 
             this.colorCode = res
-            const extraCount=this.colorCode?.extraTid?.length
-            const extraNeeded=this.subCount- 20
-            console.log(extraNeeded, extraCount);
-            
-
-            console.log(this.extraCount);
-            if(extraCount < extraNeeded){
-              this.extraCount=false
-              
+            const extraCount = this.colorCode?.extraTid?.length
+            const extraNeeded = this.subCount - 20
+            if (extraCount < extraNeeded) {
+              this.extraCount = false
             }
-            else{
-              this.extraCount=true
+            else {
+              this.extraCount = true
             }
-             
-            
-            // Optionally, fetch subscribers here if needed
           });
 
           this.service.getTicketId(this.chitData.chitGroupId).subscribe((res) => {
@@ -179,7 +181,32 @@ export class AuctionComponent implements OnInit {
             this.regularFirst = this.bidHistory?.length
             const firstAuction = this.bidHistory?.length || 0;
             this.regularFirst = firstAuction === 0;
+            const date = this.chitData.auctionDate
+            if (res?.lastChit?.passbookNumber && !res?.lastChit?.type) {
+              this.noReg = true
+            } else if (res?.lastChit?.type == "TKN Company") {
+              this.tknMonth = true
+            } else {
+              this.noReg = false
+              this.tknMonth = false
+            }
+            if (this.regularFirst) {
+              this.auctionForm.patchValue({
+                date: this.convertDateFormat(this.chitData.auctionDate)
+              })
+            } else if (this.noReg && !this.regularFirst && this.tknMonth) {
+              this.auctionForm.patchValue({
+                date: this.convertDateFormat(this.datePipe.transform(res.lastChit.date, 'dd-MM-yyyy'))
+              })
+            }
+            else {
+              let date = res.regular[res.regular.length - 1].date
+              date = this.getNextMonthSameDate(date)
+              this.auctionForm.patchValue({
+                date: this.convertDateFormat(this.datePipe.transform(date, 'dd-MM-yyyy'))
+              })
 
+            }
 
             this.bidHistory = res.allData.map((history, index) => ({
               sNo: index + 1, // Use the index parameter and add 1 for serial number
@@ -192,8 +219,6 @@ export class AuctionComponent implements OnInit {
               prizedAmount: history.prizedAmount,
               viewDetails: "View Details"
             }));
-            console.log( this.bidHistory);
-            
           });
           this.paymentService.getTransactionById(this.groupId).subscribe((response) => {
             this.walletBalance = response
@@ -244,8 +269,8 @@ export class AuctionComponent implements OnInit {
           })
 
           this.subscribers = this.chitData.chitSubscribers;
-          this.subCount=this.subscribers.length
-          
+          this.subCount = this.subscribers.length
+
 
           // You can also store these values in separate arrays if needed
           this.subscribers = this.subscribers.map(subscriber => ({
@@ -272,13 +297,28 @@ export class AuctionComponent implements OnInit {
       });
     }
   }
+  convertDateFormat(dateStr: string): string {
+    if (!dateStr) {
+      return '';
+    }
+    const dateParts = dateStr.split("-");
+    if (dateParts.length !== 3) {
+      return '';
+    }
+    const [day, month, year] = dateParts;
+    if (isNaN(Number(day)) || isNaN(Number(month)) || isNaN(Number(year))) {
+      return '';
+    }
+    const formattedDate = `${year}-${month}-${day}`;
 
+    return formattedDate;
+  }
   convertDateToMonth(dateString: string): string {
     const date = new Date(dateString); // Parse the ISO date string into a Date object
     return date.toLocaleString('default', { month: 'long' }); // Extract the month name
   }
 
-  
+
   blockPrefix(event: any) {
     const inputValue = this.auctionForm.get('passbookNumber')?.value;
     if (event.target.selectionStart < 3 && event.key !== 'Tab') {
@@ -520,7 +560,7 @@ export class AuctionComponent implements OnInit {
     const passbookInput = document.getElementById('passbookNumber') as HTMLInputElement;
     const prizedAmountInput = document.getElementById('winningBid') as HTMLInputElement;
     const auctionTypeSelect = document.getElementById('auctionType') as HTMLInputElement;
-    
+
     if (auctionStart) {
       this.auctionForm.enable();
       this.auctionStart = false
@@ -545,53 +585,54 @@ export class AuctionComponent implements OnInit {
 
   selectTab(tabName: string) {
     this.activeTab = tabName;
-    if(this.activeTab==='extra')
-      {
-        this.breadcrumsData = [
-          {
-            key: 'Chit Management',
-            routerLink: '/chit',
-          },
-          {
-            key: `${this.groupId}`,
-            routerLink: `chit/view/${this.objId}`,
-          },
-          {
-            key: `Purchase/Extra Payments Details`,
-            routerLink: `/chit/auction/${this.objId}`,
-          },
-        ];
-      }else if(this.activeTab==='tkn'){
-        this.breadcrumsData = [
-          {
-            key: 'Chit Management',
-            routerLink: '/chit',
-          },
-          {
-            key: `${this.groupId}`,
-            routerLink: `chit/view/${this.objId}`,
-          },
-          {
-            key: `TKN Company Redeem`,
-            routerLink: `/chit/auction/${this.objId}`,
-          },
-        ];
-      }else{
-        this.breadcrumsData = [
-          {
-            key: 'Chit Management',
-            routerLink: '/chit',
-          },
-          {
-            key: `${this.groupId}`,
-            routerLink: `chit/view/${this.objId}`,
-          },
-          {
-            key: `Auction Entry`,
-            routerLink: `/chit/auction/${this.objId}`,
-          },
-        ];
-      }
+    this.updatedChanges()
+
+    if (this.activeTab === 'extra') {
+      this.breadcrumsData = [
+        {
+          key: 'Chit Management',
+          routerLink: '/chit',
+        },
+        {
+          key: `${this.groupId}`,
+          routerLink: `chit/view/${this.objId}`,
+        },
+        {
+          key: `Purchase/Extra Payments Details`,
+          routerLink: `/chit/auction/${this.objId}`,
+        },
+      ];
+    } else if (this.activeTab === 'tkn') {
+      this.breadcrumsData = [
+        {
+          key: 'Chit Management',
+          routerLink: '/chit',
+        },
+        {
+          key: `${this.groupId}`,
+          routerLink: `chit/view/${this.objId}`,
+        },
+        {
+          key: `TKN Company Redeem`,
+          routerLink: `/chit/auction/${this.objId}`,
+        },
+      ];
+    } else {
+      this.breadcrumsData = [
+        {
+          key: 'Chit Management',
+          routerLink: '/chit',
+        },
+        {
+          key: `${this.groupId}`,
+          routerLink: `chit/view/${this.objId}`,
+        },
+        {
+          key: `Auction Entry`,
+          routerLink: `/chit/auction/${this.objId}`,
+        },
+      ];
+    }
   }
 
   onSubmit() {
@@ -604,7 +645,7 @@ export class AuctionComponent implements OnInit {
         foremanCommision: this.auctionForm.value.foremanCommision,
         winningBid: this.auctionForm.value.winningBid,
         prizedAmount: this.auctionForm.value.prizedAmount,
-        date:this.auctionForm.value.date,
+        date: this.auctionForm.value.date,
         type: "Regular Chit",
         // ticketId:this.auctionForm.value.ticketId,
         location: this.subDetails.subscriberDetails.place,
@@ -622,14 +663,14 @@ export class AuctionComponent implements OnInit {
         groupId: this.auctionForm.value.groupId,
         walletBalance: this.auctionForm.value.walletBalance,
         auctionCycle: this.auctionForm.value.auctionCycle,
-        date:this.auctionForm.value.date,
+        date: this.auctionForm.value.date,
 
         profitChitData: {
           foremanCommision: this.auctionForm.value.foremanCommision,
           winningBid: this.auctionForm.value.winningBid,
           prizedAmount: this.auctionForm.value.prizedAmount,
           walletBalance: this.auctionForm.value.walletBalance,
-          date:this.auctionForm.value.date,
+          date: this.auctionForm.value.date,
           type: "Profit Chit",
           occupation: this.subDetails.subscriberDetails.occupation,
           location: this.subDetails.subscriberDetails.place,
@@ -642,7 +683,7 @@ export class AuctionComponent implements OnInit {
       payload = {
         groupId: this.auctionForm.value.groupId,
         walletBalance: this.auctionForm.value.walletBalance,
-        date:this.auctionForm.value.date,
+        date: this.auctionForm.value.date,
 
         purchaseChitData: {
           foremanCommision: this.auctionForm.value.foremanCommision,
@@ -653,7 +694,7 @@ export class AuctionComponent implements OnInit {
           location: this.subDetails.subscriberDetails.place,
           auctionCycle: this.auctionForm.value.auctionCycle,
           walletBalance: this.auctionForm.value.walletBalance,
-          date:this.auctionForm.value.date,
+          date: this.auctionForm.value.date,
           subscriberName: this.auctionForm.value.subscriberName,
           passbookNumber: this.auctionForm.value.passbookNumber,
           amountOutstanding: this.auctionForm.value.amountOutstanding
@@ -663,7 +704,7 @@ export class AuctionComponent implements OnInit {
       payload = {
         groupId: this.auctionForm.value.groupId,
         walletBalance: this.auctionForm.value.walletBalance,
-        date:this.auctionForm.value.date,
+        date: this.auctionForm.value.date,
 
         extraPaymentData: {
           foremanCommision: this.auctionForm.value.foremanCommision,
@@ -674,7 +715,7 @@ export class AuctionComponent implements OnInit {
           occupation: this.subDetails.subscriberDetails.occupation,
           location: this.subDetails.subscriberDetails.place,
           walletBalance: this.auctionForm.value.walletBalance,
-          date:this.auctionForm.value.date,
+          date: this.auctionForm.value.date,
           type: "Extra Payments",
           passbookNumber: this.auctionForm.value.passbookNumber,
         },
@@ -685,7 +726,7 @@ export class AuctionComponent implements OnInit {
         groupId: this.auctionForm.value.groupId,
         walletBalance: this.auctionForm.value.walletBalance,
         auctionCycle: this.auctionForm.value.auctionCycle,
-        date:this.auctionForm.value.date,
+        date: this.auctionForm.value.date,
 
         TKNData: {
           foremanCommision: this.auctionForm.value.foremanCommision,
@@ -693,9 +734,10 @@ export class AuctionComponent implements OnInit {
           prizedAmount: this.auctionForm.value.prizedAmount,
           tknWallet: this.auctionForm.value.prizedAmount,
           isActive: this.auctionForm.value.isActive,
+          type: "TKN Company",
           auctionCycle: this.auctionForm.value.auctionCycle,
           walletBalance: this.auctionForm.value.walletBalance,
-          date:this.auctionForm.value.date,
+          date: this.auctionForm.value.date,
           redeem: false
         },
       }
@@ -710,7 +752,7 @@ export class AuctionComponent implements OnInit {
         })
       }
       var nextWallet = this.chitData.chitAmount
-      const nextMonth = this.getNextMonthSameDate(response.data.createdAt)
+      const nextMonth = this.getNextMonthSameDate(response.data.date)
       if (this.regular || this.tknCompany) {
         if (response.data.auctionCycle == 19) {
           nextWallet = this.chitData.chitAmount - response.data.walletBalance
@@ -733,10 +775,9 @@ export class AuctionComponent implements OnInit {
       var walletBalance = 0
       if (this.regular) {
         walletBalance = response.data.prizedAmount + response.data.foremanCommision
-
         this.receipt = {
           time: this.time,
-          date: this.date,
+          date: this.datePipe.transform(response.data.date, 'dd-MM-yyyy') || '',
           type: "Regular Chit",
           prizedAmount: response.data.prizedAmount,
           subscriberName: response.data.subscriberName,
@@ -753,11 +794,11 @@ export class AuctionComponent implements OnInit {
         walletBalance = response.data.profitChitData.prizedAmount + response.data.profitChitData.foremanCommision
         this.receipt = {
           time: this.time,
-          date: this.date,
           type: "Profit Chit",
           prizedAmount: response.data.profitChitData.prizedAmount,
           subscriberName: response.data.profitChitData.subscriberName,
           groupId: response.data.groupId,
+          date: this.datePipe.transform(response.data.profitChitData.date, 'dd-MM-yyyy') || '',
           occupation: response.data.profitChitData.occupation,
           location: response.data.profitChitData.location,
           passbookNo: response.data.profitChitData.passbookNumber,
@@ -769,7 +810,7 @@ export class AuctionComponent implements OnInit {
         walletBalance = 0
         this.receipt = {
           time: this.time,
-          date: this.date,
+          date: this.datePipe.transform(response.data.purchaseChitData.date, 'dd-MM-yyyy') || '',
           type: "Purchase",
           prizedAmount: response.data.purchaseChitData.prizedAmount,
           subscriberName: response.data.purchaseChitData.subscriberName,
@@ -786,8 +827,8 @@ export class AuctionComponent implements OnInit {
         walletBalance = 0
         this.receipt = {
           time: this.time,
-          date: this.date,
           type: "Extra Payments",
+          date: this.datePipe.transform(response.data.extraPaymentData.date, 'dd-MM-yyyy') || '',
           prizedAmount: response.data.extraPaymentData.prizedAmount,
           subscriberName: response.data.extraPaymentData.subscriberName,
           groupId: response.data.groupId,
@@ -820,15 +861,15 @@ export class AuctionComponent implements OnInit {
             prizedAmount: history.prizedAmount,
             viewDetails: "View Details"
           }));
-          
+
         });
         this.receipt = {
           time: this.time,
-          date: this.date,
           type: "Tkn Company",
           prizedAmount: response.data.TKNData.prizedAmount,
           // subscriberName:response.data.TKNData.subscriberName,
           groupId: response.data.groupId,
+          date: this.datePipe.transform(response.data.TKNData.date, 'dd-MM-yyyy') || '',
           // passbookNo:response.data.TKNData.passbookNumber,
           winningBid: response.data.TKNData.winningBid,
           auctionCycle: response.data.TKNData.auctionCycle,
@@ -856,7 +897,8 @@ export class AuctionComponent implements OnInit {
           })
           this.auctionStart = false
           this.regularFirst = false
-
+          this.noReg = false
+          this.tknMonth = false
           this.auctionForm.patchValue({
             auctionType: "",
             subscriberName: '',
@@ -867,6 +909,8 @@ export class AuctionComponent implements OnInit {
 
           });
           setTimeout(() => {
+            this.updatedChanges()
+
             this.paymentService.getTransactionById(this.groupId).subscribe((response) => {
               this.walletBalance = response;
               this.walletBalance = this.walletBalance.payment;
@@ -880,7 +924,7 @@ export class AuctionComponent implements OnInit {
                 });
               });
             });
-          }, 10 * 1000); // 3 minutes = 180,000 milliseconds
+          }, 10 * 60 * 1000); // 3 minutes = 180,000 milliseconds
 
           this.updatedChanges()
 
@@ -1003,11 +1047,11 @@ export class AuctionComponent implements OnInit {
   }
 
   createInvoice() {
-    this.invoiceClick=true
+    this.invoiceClick = true
     this.closeModel()
   }
-  closeInvoice(){
-    this.invoiceClick=false
+  closeInvoice() {
+    this.invoiceClick = false
     this.chitDetail = {}
     this.datas = {}
 
@@ -1068,7 +1112,7 @@ export class AuctionComponent implements OnInit {
   ];
 
 
-  printDetails(){
+  printDetails() {
     const printContent = document.getElementById('download-section').innerHTML;
     const originalContent = document.body.innerHTML;
 
@@ -1084,7 +1128,7 @@ export class AuctionComponent implements OnInit {
   }
   download() {
     const element = document.getElementById('download-section');
-    
+
     element.style.width = '700px';  // Adjust according to your modal's size
 
     html2canvas(element, {

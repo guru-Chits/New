@@ -97,3 +97,94 @@
   background-color: rgba(0, 0, 0, 0.1);
   opacity: 0.6;
 }
+
+.modal {
+  background: rgba(0, 0, 0, 0.5);
+  /* Semi-transparent background */
+}
+
+.modal-dialog {
+  margin: 5% auto;
+  /* max-width: 80%; */
+}
+
+.reg-id-row {
+  color: rgb(54, 183, 54);
+  /* Green for regId */
+}
+
+.pur-id-row {
+  color: red;
+  /* Blue for purId */
+}
+
+.extra-id-row {
+  color: orange;
+  /* Blue for purId */
+}
+
+.profit-id-row {
+  color: rgb(54, 183, 54);
+  ;
+}
+
+.tkn-id-row {
+  color: rgb(54, 183, 54);
+  ;
+}
+
+/* Table Styles */
+.subscriber-table {
+  width: 100%;
+  margin: 20px 0;
+  /* Spacing around the table */
+  /* border: 1px; */
+  border: 1px solid #ddd;
+  overflow: scroll;
+}
+
+/* Table Heading Styles */
+.subscriber-table th {
+  background-color: #EEF6F6;
+  /* Green background for header */
+  color: black;
+  /* White text color */
+  padding: 15px;
+  /* Padding for cells */
+  font-size: 14px;
+  text-align: left;
+  /* Left-align text */
+
+}
+
+/* Table Data Cell Styles */
+.subscriber-table td {
+  font-size: 15px;
+  border-bottom: 1px solid #e3e4e6;
+  padding-left: 5px;
+  padding-top: 3px;
+  padding-bottom: 2px;
+  cursor: pointer;
+
+}
+
+/* Profile Image Styles */
+.profile-image {
+  width: 30px;
+  /* Fixed width */
+  height: 30px;
+  /* Fixed height */
+  border-radius: 50%;
+  /* Make it round */
+  object-fit: cover;
+  /* Ensure image covers the area */
+}
+
+.dot {
+  height: 10px;
+  margin-top: 7px;
+  margin-left: 10px;
+  width: 10px;
+  border-radius: 50%;
+  display: inline-block;
+}

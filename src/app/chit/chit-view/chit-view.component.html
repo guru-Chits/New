@@ -47,12 +47,12 @@
                             <p class="">{{formatToIndianCurrency(chitSubscriberTotal)}}</p>
                         </div>
                     </div>
-                    <!-- <div class="col-4 ">
+                    <div class="col-4 ">
                         <div class="d-flex flex-column ">
-                            <h6><strong>Additional Wallet Balance</strong></h6>
-                            <p class="">{{formatToIndianCurrency(addSubscriberTotal)}}</p>
+                            <h6><strong>Extra Payment Count</strong></h6>
+                            <p class="">{{extraCount}}</p>
                         </div>
-                    </div> -->
+                    </div>
                     
                 </div>
                 <div class="row py-3">
@@ -127,9 +127,38 @@
 
                 <div class="row">
                     <p class="fw-bold fs-4 mt-4">Subscribers</p>
-                    <app-ag-grid [columns]="subscriberColumn" [rowData]="subscribers" class="p-0" width="100%"
-                        [pageSize]="20"></app-ag-grid>
+                    <!-- <app-ag-grid [columns]="subscriberColumn" [rowData]="subscribers" class="p-0" width="100%"
+                        [pageSize]="20"></app-ag-grid> -->
+                        
+                        <table class="subscriber-table">
+                            <thead>
+                              <tr>
+                                <th>S.No</th>
+                                <th>Name</th>
+                                <!-- <th>Alias Name</th> -->
+                                <th>Passbook Number</th>
+                                 <th>Location</th>
+                                <!-- <th>Occupation</th> -->
+                                <!-- <th>auctionStatus</th> -->
+                                <th>Collection Type</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr *ngFor="let subscriber of subscribers ; let i = index" [ngClass]="getRowClass(subscriber?.passbookNo)" (click)="getChitById(subscriber?._id)">
+                                <td class="ms-3">{{i+1}} <img [src]="subscriber?.profileImageUrl" alt="Profile Image"
+                                    class="profile-image ms-3">
+                                </td>
+                                <td>{{ subscriber?.firstName }}</td>
+                                <!-- <td>{{ subscriber?.aliasName }}</td> -->
+                                <td>{{ subscriber?.passbookNo }}</td>
+                                 <td>{{ subscriber?.place }}</td>
+                                <!--<td>{{ subscriber?.occupation }}</td> -->
+                                <!-- <td>{{ subscriber?.auctionStatus }}</td> -->
+                                <td>{{ subscriber?.collectionType }}</td>
 
+                              </tr>
+                            </tbody>
+                          </table>
                     <div class="col-lg-12 d-flex justify-content-end py-3 px-4">
                         <button type="button" class="btn next-btn px-4 py-3 fw-bold" (click)="showSubscriberList()">Add
                             Subscribers</button>
@@ -170,9 +199,17 @@
                     <button type="button" class="btn view-btn px-4" (click)="viewless1()">Viewless</button>
                 </div>
             </div>
+            <div class="card my-3" >
+                <h5 class="card-title text-center mt-2">Colour Classification</h5>
+                <div class="card-body">
+                  <p class="card-text">Prized Subscribers - <span class="dot" style="background-color: rgb(54, 183, 54);"></span> </p>
+                  <p class="card-text">Purchase - <span class="dot" style="background-color: red;"></span> </p>
+                  <p class="card-text">Extra Payments - <span class="dot" style="background-color: orange;"></span> </p>
+                </div>
+              </div>
             <div class="chit-details" *ngIf="showTicket">
                 <div class="card d-flex px-3 py-4 mt-2">
-                    <h5 class="title text-center fw-bold fs-4 m-0 py-3">Subscrber 
+                    <h5 class="title text-center fw-bold fs-4 m-0 py-3">Subscriber 
                         Details</h5><!-- {{selectedChit}}-->
                     <div class="text-center">
                         <img src="{{filteredSubscribers[0]?.profileImageUrl || filteredAdditionalSubs[0]?.profileImageUrl}}"
@@ -387,7 +424,7 @@
               </div>
 
               <div class="col-lg-6">
-                <p><strong>Date:</strong> {{ recDate }}</p>
+                <p><strong>Date:</strong> {{ chitDetail?.date |  date: 'dd-MM-YYYY' }}</p>
               </div>
               <div class="col-lg-6">
                 <p><strong>Passbook Number:</strong> {{ chitDetail?.passbookNumber }}</p>

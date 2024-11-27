@@ -76,8 +76,7 @@
                     class="form-control form-control-sm"
                     formControlName="contact"
                     (input)="onContactChange($event)"
-                    maxlength="10"
-                    (keydown)="blockPrefix($event)"
+                    maxlength="14"
                   />
                   <div
                     class="invalid-feedback"
@@ -99,7 +98,7 @@
                   <label for="secContact" class="form-control-label">Secondary Contact Number</label>
                   <input type="tel" placeholder="Contact Number" class="form-control form-control-sm"
                     formControlName="secContact" [value]="subscriberForm.get('secContact').value"
-                    (input)="onSecContactChange($event)" maxlength="14" (keydown)="secblockPrefix($event)" />
+                    (input)="onSecContactChange($event)" maxlength="14"/>
                   <div class="invalid-feedback"
                     *ngIf="subscriberForm.get('secContact').invalid && (subscriberForm.get('secContact').dirty || subscriberForm.get('secContact').touched)">
                     <!-- <div *ngIf="subscriberForm.get('secContact').errors.pattern">Contact Number should be exactly 10

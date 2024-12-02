@@ -2,7 +2,7 @@
     <div class="row justify-content-around">
         <div class="col-lg-4">
             <div class="form-group">
-                <label for="fromDate" class="form-control-label">From Date</label>
+                <label for="fromDate" class="form-control-label">From Date  <span class="required">*</span></label>
                 <input type="date" class="form-control p-2 form-control-sm" id="fromDate" formControlName="fromDate"/>
                 <div *ngIf="transactionForm.get('fromDate')?.hasError('invalidDate') && transactionForm.get('fromDate')?.touched">
                     <small class="text-danger">Please select valid date.</small>
@@ -12,7 +12,7 @@
         </div>
         <div class="col-lg-4">
             <div class="form-group">
-                <label for="toDate" class="form-control-label">To Date</label>
+                <label for="toDate" class="form-control-label">To Date  <span class="required">*</span> </label>
                 <input type="date" class="form-control p-2 form-control-sm" id="toDate" formControlName="toDate"/>
                 <div *ngIf="transactionForm.get('toDate')?.hasError('invalidDate') && transactionForm.get('toDate')?.touched">
                     <small class="text-danger">Please select valid date.</small>

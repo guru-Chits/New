@@ -113,3 +113,7 @@ button {
 .man {
   background-color: white;
 }
+.is-invalid {
+  border: 1px solid red;
+  box-shadow: 0 0 5px rgba(255, 0, 0, 0.5);
+}

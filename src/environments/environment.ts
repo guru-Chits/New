@@ -2,7 +2,7 @@
 const baseUrl = 'http://13.127.210.25';
 const staging ='https://staging.guruchits.com'
 const localUrl='http://localhost:8000'
-const ren='https://chitfundapi.onrender.com'
+const prod='https://api.guruchits.com'
 export const environment = {
     paymentServiceUrl: `${staging}/api`,
     subscriberServiceUrl:`${staging}/api`,
@@ -13,5 +13,4 @@ export const environment = {
     accessServiceUrl:`${staging}/api`,
     auctionServiceUrl:`${staging}/api`,
     settingsServiceUrl:`${staging}/api/settings`
-
 }

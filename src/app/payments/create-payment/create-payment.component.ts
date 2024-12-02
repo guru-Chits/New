@@ -171,7 +171,9 @@ export class CreatePaymentComponent {
     });
   }
   togglePayments() {
+    this.paymentDetail=null
     this.showCancelledPayments = !this.showCancelledPayments;
+   
   }
   getPaymentById(id: string): void {
     this.service.getPaymentById(id).subscribe(
@@ -244,6 +246,12 @@ export class CreatePaymentComponent {
       filterList: false,
       onCellClicked: (event: CellClickedEvent) => this.getPaymentById(event.data.id)
 
+    },
+    {
+      label: 'Installment Month',
+      field: 'installmentMonth',
+      filterList: false,
+      onCellClicked: (event: CellClickedEvent) => this.getPaymentById(event.data.id)
     },
     {
       label: 'Passbook Number',

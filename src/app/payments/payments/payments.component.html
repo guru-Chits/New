@@ -4,7 +4,7 @@
             <div class="form-group">
                 <label for="date" class="form-control-label">Date <span class="required">*</span></label>
                 <input type="date" class="form-control p-2 form-control-sm" id="date" formControlName="date"
-                    placeholder="Date" [min]="today" [(ngModel)]="today" [max]="today" />
+                    placeholder="Date" [min]="today" [(ngModel)]="today" [max]="today" readonly />
                 <div *ngIf="paymentForm.get('date')?.hasError('invalidDate') && paymentForm.get('date')?.touched">
                     <small class="text-danger">Please select today's date.</small>
                 </div>
@@ -90,10 +90,14 @@
                 <label for="amount" class="form-control-label">Amount<span class="required"
                         *ngIf="paymentForm.get('amount').hasError('required')">*</span></label>
                 <input class="form-control p-2 form-control-sm" id="amount" formControlName="amount"
-                    placeholder="Amount" />
+                    placeholder="Amount"   (input)="onContactChange($event)"
+                    [ngClass]="{'is-invalid': paymentForm.get('amount')?.invalid && paymentForm.get('amount')?.touched}"/>
                 <div *ngIf="paymentForm.errors?.amountExceedsChitAmount" style="color: red;">
                     Amount cannot be greater than Chit Amount.
                 </div>
+                <div *ngIf="paymentForm.get('amount').hasError('invalidNumber')" style="color: red;">
+                    Amount must be a positive number.
+                  </div>
             </div>
         </div>
         <div class="col-lg-4">

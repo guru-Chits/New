@@ -85,7 +85,7 @@ export class PaymentsComponent implements OnInit {
       deleteReason: [""]
     },
       {
-        validator: this.amountLessThanOrEqualChitAmount('amount', 'chitAmount') // Add custom validator here
+        validator: this.amountLessThanOrEqualChitAmount.bind(this)
       }
     );
 
@@ -121,18 +121,47 @@ export class PaymentsComponent implements OnInit {
     })
   }
 
-  amountLessThanOrEqualChitAmount(amountKey: string, chitAmountKey: string) {
-    return (formGroup: AbstractControl): ValidationErrors | null => {
-      const amount = formGroup.get(amountKey)?.value;
-      const chitAmount = formGroup.get(chitAmountKey)?.value;
-
-      if (amount && chitAmount && amount > chitAmount) {
+  amountLessThanOrEqualChitAmount(form: AbstractControl) {
+    const amount = +form.get('amount')?.value;
+    const chitAmount = +form.get('chitAmount')?.value;
+  
+    if (amount && chitAmount) {
+      if (amount <= 0) {
+        return { invalidAmount: true }; // Validation error for zero or negative amount
+      }
+      if (amount > chitAmount) {
         return { amountExceedsChitAmount: true }; // Validation error if amount > chitAmount
       }
-      return null; // No error if validation passes
-    };
+    }
+    return null; // Valid
   }
 
+  onContactChange(event: any) {
+    let inputValue = event.target.value;
+  
+    // Remove non-numeric characters
+    let numbersOnly = inputValue.replace(/[^\d]/g, '');
+  
+    // Ensure the value is greater than 0
+    if (+numbersOnly <= 0) {
+      numbersOnly = ''; // Clear the value if it is zero or less
+    }
+  
+    // Retrieve chitAmount from the form
+    const chitAmount = +this.paymentForm.get('chitAmount')?.value || 0;
+  
+    // Restrict the amount to chitAmount if it exceeds
+    if (+numbersOnly > chitAmount) {
+      numbersOnly = chitAmount.toString();
+    }
+  
+    // Patch the valid value to the form
+    this.paymentForm.patchValue({
+      amount: numbersOnly
+    });
+  }
+  
+  
   onInputChange(event: any) {
     let inputValue = event.target.value;
     if (!inputValue.startsWith('PB-')) {
@@ -251,10 +280,7 @@ export class PaymentsComponent implements OnInit {
         balanceAmount = expectedInstallmentAmount - totalAmountPaidForMonth;
         currentInstallmentMonth = lastPayment.installmentMonth;  // Keep the same month
         let balanceAm=amount-balanceAmount
-        
-  
-        console.log(this.amount);
-        
+                
         if(balanceAm>0){
           console.log(balanceAm);
           this.amount=balanceAm
@@ -272,6 +298,8 @@ export class PaymentsComponent implements OnInit {
         // If the previous payment was enough, move to the next month
         currentInstallmentMonth = this.incrementInstallmentMonth(lastPayment.installmentMonth);
         this.months=currentInstallmentMonth
+        console.log(this.months);
+        
       }
       
       let installmentMonths = currentInstallmentMonth;  // Start with the current month

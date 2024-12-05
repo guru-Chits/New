@@ -44,7 +44,7 @@
                 <div class="form-group">
                   <label for="lastName" class="form-control-label">Last Name<span class="required">*</span></label>
                   <input type="text" placeholder="Last Name" class="form-control form-control-sm"
-                    formControlName="lastName" (keypress)="onFirstNameKeyPress($event)" maxlength="25" minlength="2" />
+                    formControlName="lastName" (keypress)="onLastNameKeyPress($event)" maxlength="25" minlength="1" />
                   <div class="invalid-feedback"
                     *ngIf="staffsForm.get('lastName').invalid && (staffsForm.get('lastName').dirty || staffsForm.get('lastName').touched)">
                     <div *ngIf="staffsForm.get('lastName').errors.required">Last Name is required.</div>
@@ -104,7 +104,7 @@
                 <div class="form-group">
                   <label for="address" class="form-control-label">Place/Address<span class="required">*</span> </label>
                   <input type="text" placeholder="Place/Address" class="form-control form-control-sm"
-                    formControlName="address" maxlength="100" minlength="10" />
+                    formControlName="address" maxlength="100" minlength="3" />
                   <div class="invalid-feedback"
                     *ngIf="staffsForm.get('address').invalid && (staffsForm.get('address').dirty || staffsForm.get('address').touched) ">
                     <div *ngIf="staffsForm.get('address').errors.required">Address is required.</div>
@@ -149,13 +149,11 @@
                   <label for="accountNumber" class="form-control-label">Account Number <span
                       class="required">*</span></label>
                   <input type="text" placeholder="Account Number" class="form-control form-control-sm"
-                    formControlName="accountNumber" (keypress)="onAccNoKeyPress($event)" maxlength="12"
-                    minlength="12" />
+                    formControlName="accountNumber" (keypress)="onAccNoKeyPress($event)" maxlength="16"
+                    minlength="8" />
                   <div class="invalid-feedback"
                     *ngIf="staffsForm.get('accountNumber').invalid && (staffsForm.get('accountNumber').dirty || staffsForm.get('accountNumber').touched)">
                     <div *ngIf="staffsForm.get('accountNumber').errors.required">Account Number is required.</div>
-                    <div *ngIf="staffsForm.get('accountNumber').errors.pattern">Account Number should be 8 to 12 digits
-                      long.</div>
                   </div>
 
                 </div>
@@ -178,7 +176,7 @@
                   <label for="upiIdOrNumber" class="form-control-label">UPI ID/Number <span
                       class="required">*</span></label>
                   <input type="text" placeholder="UPI ID/Number" class="form-control form-control-sm"
-                    formControlName="upiIdOrNumber" maxlength="35" minlength="6" />
+                    formControlName="upiIdOrNumber" maxlength="35" minlength="1" />
                 </div>
               </div>
             </div>
@@ -189,8 +187,8 @@
                   <label for="panCardNumber" class="form-control-label">PAN Card Number <span class="required"
                       *ngIf="staffsForm.get('panCardNumber').hasError('required')">*</span></label>
                   <input type="text" placeholder="Pan Card Number" class="form-control form-control-sm"
-                    formControlName="panCardNumber" (input)="onIFSCAutoUppercase($event)"
-                    (keypress)="onPanCardKeyPress($event)" />
+                    formControlName="panCardNumber" 
+                    (keypress)="onPanCardKeyPress($event)"   (input)="onPanCardInput($event)" />
                 </div>
               </div>
               <div class="col-lg-4">
@@ -243,7 +241,7 @@
                 <div class="form-group">
                   <label for="bankName" class="form-control-label">Bank Name <span class="required">*</span></label>
                   <input type="text" placeholder="Bank Name" class="form-control form-control-sm"
-                    formControlName="bankName" (keypress)="onFirstNameKeyPress($event)" maxlength="25" minlength="2" />
+                    formControlName="bankName" (keypress)="onbankNameKeyPress($event)" maxlength="50" minlength="2" />
                 </div>
               </div>
               <div class="col-lg-4">
@@ -323,7 +321,7 @@
             <div class="row justify-content-center">
               <div class="col-lg-12 d-flex justify-content-end mb-2">
                 <button class="btn nxt-btn btn-outline-secondary" routerLink="/staff">Cancel</button>
-                <button class="btn save-btn " [disabled]="!staffsForm.valid || !workingStatus" (click)="onSubmit()"
+                <button class="btn save-btn " [disabled]="!staffsForm.valid" (click)="onSubmit()"
                   type="submit">{{submit}}</button>
               </div>
             </div>

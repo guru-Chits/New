@@ -46,7 +46,7 @@
                 <div class="form-group">
                   <label for="lastName" class="form-control-label">Last Name</label>
                   <input type="text" placeholder="Last Name" class="form-control form-control-sm"
-                    formControlName="lastName" (keypress)="onLastNameKeyPress($event)" maxlength="25" minlength="2" />
+                    formControlName="lastName" (keypress)="onLastNameKeyPress($event)" maxlength="25" minlength="1" />
                   <div class="invalid-feedback"
                     *ngIf="subscriberForm.get('lastName').invalid && (subscriberForm.get('lastName').dirty || subscriberForm.get('lastName').touched)">
                     <div *ngIf="subscriberForm.get('lastName').errors.required">Last Name is required.</div>
@@ -187,8 +187,8 @@
                     <!-- <span class="required">*</span> -->
                   </label>
                   <input type="text" placeholder="Account Number" class="form-control form-control-sm"
-                    formControlName="accountNumber" (keypress)="onAccNoKeyPress($event)" maxlength="12"
-                    minlength="12" />
+                    formControlName="accountNumber" (keypress)="onAccNoKeyPress($event)" maxlength="16"
+                    minlength="8" />
                   <div class="invalid-feedback"
                     *ngIf="subscriberForm.get('accountNumber').invalid && (subscriberForm.get('accountNumber').dirty || subscriberForm.get('accountNumber').touched)">
                     <div *ngIf="subscriberForm.get('accountNumber').errors.required">Account Number is required.</div>
@@ -232,7 +232,7 @@
                   <label for="panCardNumber" class="form-control-label">PAN Card Number<span class="required"
                       *ngIf="subscriberForm.get('panCardNumber').hasError('required')">*</span></label>
                   <input type="text" placeholder="PAN" class="form-control form-control-sm"
-                    formControlName="panCardNumber" (keypress)="onPanCardKeyPress($event)" />
+                    formControlName="panCardNumber" (keypress)="onPanCardKeyPress($event)" (input)="onPanCardInput($event)"  />
                   <div class="invalid-feedback"
                     *ngIf="subscriberForm.get('panCardNumber').invalid && (subscriberForm.get('panCardNumber').dirty || subscriberForm.get('panCardNumber').touched)">
                   </div>
@@ -243,7 +243,7 @@
                   <label for="panUrl" class="form-control-label">PAN Card<span class="required"
                       *ngIf="subscriberForm.get('panUrl').hasError('required')">*</span></label>
                   <input type="file" (change)="onFileChange($event, 'panUrl')" class="form-control form-control-sm"
-                    formControlName="panUrl" />
+                    formControlName="panUrl"  />
                 </div>
               </div>
               <div class="col-lg-4 mt-4">

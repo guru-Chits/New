@@ -22,6 +22,13 @@ export const NavigationMenus: INavigationMenu[] = [
     class: '',
   },
   { 
+    path:'/ledger',
+    title: 'Ledger',
+    img: '/assets/sidebar/inactive/chitgroup.svg',
+    activeImg:'/assets/sidebar/active/ledger selected.svg',
+    class: '',
+  },
+  { 
     path:'/payment',
     title: 'Payments',
     img: '/assets/sidebar/inactive/payment.svg',

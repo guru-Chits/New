@@ -29,6 +29,6 @@ loginUrl:string=environment.loginServiceUrl+'/login/'
   }
   passwordReset(employeeId: string, password: string): Observable<any> {
     const payload = { employeeId, password };
-    return this.http.post(`${this.loginUrl}/passwordReset`, payload);
+    return this.http.post(`${this.loginUrl}passwordReset`, payload);
   }
 }

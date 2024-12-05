@@ -41,7 +41,6 @@
           <input width="20" height="20" type="text" class="border-0" placeholder="Search"
             (input)="applyFilter($event.target.value)">
         </div>
-
         <div
           *ngFor="let group of displayedChit | slice:(currentPage - 1) * itemsPerPage:(currentPage) * itemsPerPage; let i = index"
           class="mb-1">
@@ -123,7 +122,7 @@
               </div>
               <div class="ms-1">
                 <button type="button" class="btn auc-btn fw-bold"
-                  *ngIf="specificChitData?.chitSubscribers?.length >= 20" (click)="auctionEntry(specificChitData?._id)"
+                  *ngIf="canCreate&&specificChitData?.chitSubscribers?.length >= 20" (click)="auctionEntry(specificChitData?._id)"
                   [disabled]="">Auction Entry</button>
               </div>
             </div>

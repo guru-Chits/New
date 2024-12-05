@@ -27,6 +27,12 @@ const routes: Routes = [
 
       },
       {
+        path: 'ledger',
+        data: { accKey: 'Staffs' },
+        loadChildren: () => import('../../app/ledger/ledger.module').then(m => m.LedgerModule),
+        // canActivate: [AuthGuard] 
+      },
+      {
         path: 'staff',
         loadChildren: () => import('../../app/staff/staff.module').then(m => m.StaffModule),
         canActivate: [AuthGuard],
@@ -55,7 +61,8 @@ const routes: Routes = [
         path: 'access',
         loadChildren: () => import('../../app/access/access.module').then(m => m.AccessModule),
         canActivate: [AuthGuard] // Optional, if needed for access control
-      }
+      },
+
     ]
   }
 ];

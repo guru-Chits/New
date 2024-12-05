@@ -66,7 +66,7 @@ export class SubscriberCreateComponent implements OnInit {
       lastName: ['', [
         this.conditionalValidator(() => !!this.subscriberForm?.get('lastName')?.value, Validators.pattern(/^[A-Z][a-z ]*$/)),
         this.conditionalValidator(() => !!this.subscriberForm?.get('lastName')?.value, Validators.maxLength(25)),
-        this.conditionalValidator(() => !!this.subscriberForm?.get('lastName')?.value, Validators.minLength(2))
+        this.conditionalValidator(() => !!this.subscriberForm?.get('lastName')?.value, Validators.minLength(1))
       ]],
       aliasName: ['', [
         this.conditionalValidator(() => !!this.subscriberForm?.get('aliasName')?.value, Validators.pattern(/^[A-Z][a-zA-Z\/\-()&.@,' ]*$/)),
@@ -89,15 +89,14 @@ export class SubscriberCreateComponent implements OnInit {
       ]],
       routeId: [''],
       accountNumber: ['', [
-      this.conditionalValidator(() => !!this.subscriberForm?.get('accountNumber')?.value, Validators.pattern(/^\d{8,12}$/))
+      this.conditionalValidator(() => !!this.subscriberForm?.get('accountNumber')?.value, Validators.pattern(/^\d{8,16}$/))
       ]],
       ifsc: ['', [
       this.conditionalValidator(() => !!this.subscriberForm?.get('ifsc')?.value, Validators.pattern(/^[A-Za-z]{4}\d{7}$/))
       ]],
-      upi_id: ['', [ this.conditionalValidator(() => !!this.subscriberForm?.get('upi_id')?.value, Validators.pattern(/^[a-zA-Z0-9.\-_]{2,}@[a-zA-Z]{3,}$/))
-      ]],
+      upi_id: [''],
       panCardNumber: ['', [
-        this.conditionalValidator(() => !!this.subscriberForm?.get('panCardNumber')?.value, Validators.pattern(/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/))
+        this.conditionalValidator(() => !!this.subscriberForm?.get('panCardNumber')?.value, Validators.pattern(/^[A-Za-z]{5}[0-9]{4}[A-Za-z]{1}$/))
       ]],
       aadharNumber: ['', [
       this.conditionalValidator(() => !!this.subscriberForm?.get('aadharNumber')?.value, Validators.pattern(/^\d{4}\s\d{4}\s\d{4}$/))
@@ -231,7 +230,7 @@ export class SubscriberCreateComponent implements OnInit {
   }   // Only letters allowed
 
   onLastNameKeyPress(event: KeyboardEvent): void {
-    this.allowValidInput(event,/^[a-z ]*$/); // Only letters allowed
+    this.allowValidInput(event,/^[a-zA-Z ]*$/); // Only letters allowed
   }   // Only letters allowed
 
   onAliasNameKeyPress(event: KeyboardEvent): void {
@@ -370,7 +369,27 @@ export class SubscriberCreateComponent implements OnInit {
 
     return formattedDate;
   }
-
+  
+  onPanCardInput(event: Event): void {
+    const inputElement = event.target as HTMLInputElement;
+    let input = inputElement.value;
+  
+    if (input.length > 0) {
+      // Ensure the last character is uppercase
+      const updatedInput =
+        input.slice(0, input.length - 1) + input.charAt(input.length - 1).toUpperCase();
+  
+      // Update the input value
+      inputElement.value = updatedInput;
+  
+      // Update the form control value explicitly
+      const control = this.subscriberForm.get('panCardNumber');
+      if (control) {
+        control.setValue(updatedInput, { emitEvent: false }); // Update form control value
+      }
+    }
+  }
+  
   formatAadharNumber(): void {
     let aadhar = this.subscriberForm.get('aadharNumber')?.value.replace(/\D/g, ''); // Remove non-numeric characters
     if (aadhar.length > 4) {

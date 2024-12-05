@@ -1,0 +1,40 @@
+  .line {
+    border-left: 4px solid #3E3A97;
+    padding: 20px;  
+    flex: auto;
+    text-align: center;
+    height: 120px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    background-color: white;
+  }
+  
+  .red-card {
+    border: 1px solid #F04438;
+    background-color: #FEECEB;
+    color: #F04438;
+    flex: auto;
+    height: 100px;
+    text-align: center;
+    height: 120px;
+
+  }
+
+  .table-group {
+    border-left: 4px solid #50a1a5;
+    flex: auto;
+    height: 70px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    background-color: white;
+  }
+  
+
+  .search-bar {
+    display: flex;
+    align-items: center;
+    background-color: white;
+    border: none;
+    padding: 5px;
+    width: 300px;
+  }
+  
+  

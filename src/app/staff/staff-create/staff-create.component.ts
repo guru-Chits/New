@@ -63,13 +63,13 @@ export class StaffCreateComponent implements OnInit {
     role = role ? role.replace(/"/g, '') : null; // Clean up role string
     if (role == "SuperAdmin") {
       this.role = true
-    }else{
-      this.role=false
+    } else {
+      this.role = false
     }
     this.staffsForm = this.fb.group({
       employeeId: [{ value: '', disabled: true },],
       firstName: ["", [Validators.required, Validators.pattern(/^[A-Z][a-zA-Z]+$/), Validators.maxLength(25), Validators.minLength(2)]],
-      lastName: ["", [Validators.required, Validators.pattern(/^[A-Z][a-zA-Z]+$/), Validators.maxLength(25), Validators.minLength(2)]],
+      lastName: ["", [Validators.required, Validators.pattern(/^[A-Z][a-z ]*$/), Validators.maxLength(25), Validators.minLength(1)]],
       gender: ["", [Validators.required]],
       role: ["", [Validators.required]],
       contact: ["", [Validators.required, Validators.pattern(/^\+91\s?\d{10}$/)]],
@@ -80,15 +80,15 @@ export class StaffCreateComponent implements OnInit {
       ]],
       routeId: [[], [Validators.required]],
       accountNumber: ["", [Validators.required,
-      this.conditionalValidator(() => !!this.staffsForm?.get('accountNumber')?.value, Validators.pattern(/^\d{8,12}$/))
+      this.conditionalValidator(() => !!this.staffsForm?.get('accountNumber')?.value, Validators.pattern(/^\d{8,16}$/))
       ]],
       ifscCode: ['', [Validators.required,
       this.conditionalValidator(() => !!this.staffsForm?.get('ifscCode')?.value, Validators.pattern(/^[A-Za-z]{4}\d{7}$/))
       ]],
-      upiIdOrNumber: ["", [Validators.required, this.conditionalValidator(() => !!this.staffsForm?.get('upiIdOrNumber')?.value, Validators.pattern(/^[\w.-]+@[\w.-]+$/))
+      upiIdOrNumber: ["", [Validators.required,
       ]],
       panCardNumber: ['', [
-        this.conditionalValidator(() => !!this.staffsForm?.get('panCardNumber')?.value, Validators.pattern(/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/))
+        this.conditionalValidator(() => !!this.staffsForm?.get('panCardNumber')?.value, Validators.pattern(/^[A-Za-z]{5}[0-9]{4}[A-Za-z]{1}$/))
       ]],
       panUrl: [""],
       aadharNumber: [, [Validators.required,
@@ -103,7 +103,7 @@ export class StaffCreateComponent implements OnInit {
       bgVerification: ["UnVerified"],
       bgVerification_remark: [""],
       profileUrl: [""],
-      password: ["Staff@578"]
+      password: [""]
     });
 
     this.activatedRoute.params.subscribe(paramData => {
@@ -120,6 +120,7 @@ export class StaffCreateComponent implements OnInit {
 
         this.heading = "Edit Staff Details"
         this.submit = "Save Changes"
+        
         this.service.getstaffById(paramData.id).subscribe((data) => {
           this.staffData = data;
           this.staffId = this.staffData.Staff._id
@@ -137,7 +138,6 @@ export class StaffCreateComponent implements OnInit {
           const utcDob = this.convertDateFormat(this.staffData.Staff.dob);
 
           const updatedStaff = { ...this.staffData.Staff, dob: utcDob };
-
           this.staffsForm.patchValue(updatedStaff);
         })
       }
@@ -181,6 +181,13 @@ export class StaffCreateComponent implements OnInit {
   onFirstNameKeyPress(event: KeyboardEvent): void {
     this.allowValidInput(event, /^[A-Za-z]+$/);
   }
+  onbankNameKeyPress(event: KeyboardEvent): void {
+    this.allowValidInput(event, /^[a-zA-Z ]*$/); // Only letters allowed
+  }   // Only letters allowed
+  onLastNameKeyPress(event: KeyboardEvent): void {
+    this.allowValidInput(event,/^[a-zA-Z ]*$/); // Only letters allowed
+  }   // Only letters allowed
+
   onAccNoKeyPress(event: KeyboardEvent): void {
     this.allowValidInput(event, /^[0-9]+$/);
   }
@@ -227,6 +234,27 @@ export class StaffCreateComponent implements OnInit {
       event.preventDefault();
     }
   }
+
+  onPanCardInput(event: Event): void {
+    const inputElement = event.target as HTMLInputElement;
+    let input = inputElement.value;
+  
+    if (input.length > 0) {
+      // Ensure the last character is uppercase
+      const updatedInput =
+        input.slice(0, input.length - 1) + input.charAt(input.length - 1).toUpperCase();
+  
+      // Update the input value
+      inputElement.value = updatedInput;
+  
+      // Update the form control value explicitly
+      const control = this.staffsForm.get('panCardNumber');
+      if (control) {
+        control.setValue(updatedInput, { emitEvent: false }); // Update form control value
+      }
+    }
+  }
+  
   onDrivingLicenseKeyPress(event: KeyboardEvent): void {
     const inputElement = event.target as HTMLInputElement;
     const input = inputElement.value;
@@ -282,6 +310,8 @@ export class StaffCreateComponent implements OnInit {
     inputElement.value = currentValue;
   }
 
+
+  
   formatAadharNumber(): void {
     let aadhar = this.staffsForm.get('aadharNumber')?.value.replace(/\D/g, ''); // Remove non-numeric characters
     if (aadhar.length > 4) {
@@ -457,9 +487,17 @@ export class StaffCreateComponent implements OnInit {
   onSubmit(): void {
     const formData = new FormData();
 
+
+
     const formValue = this.staffsForm.getRawValue();
 
     const isNewStaff = !this.staffId;
+
+    if (isNewStaff) {
+      formValue.password = "Staff@578";
+    } else {
+      formValue.password = this.staffData?.Staff?.password;
+    }
 
     if (!formValue.profileImageUrl) {
       const defaultProfileImage = this.generateDefaultProfileImage(formValue.firstName);
@@ -478,11 +516,11 @@ export class StaffCreateComponent implements OnInit {
     }
 
 
-
-    this.service.savestaffDetails(formData, this.staffId).subscribe((data) => {
+    this.service.savestaffDetails(formValue, this.staffId).subscribe((data) => {
       if (!this.staffId) {
+
         const mobile = this.staffsForm.get('contact')?.value;
-        const password = this.staffsForm.get('password')?.value
+        const password = "Staff@578"
         const loginLink = 'app.guruchits.com';
         const empId = this.staffsForm.get('employeeId')?.value
 

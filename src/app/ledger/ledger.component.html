@@ -1,7 +1,7 @@
 <div class="container-fluid d-flex flex-column">
-  <div class="row">
-    <!-- <div [ngClass]="{'col-md-8 col-lg-8': subscriberDetail, 'col-md-12 col-lg-12': !subscriberDetail}"> -->
-    <div class="col-md-8 col-lg-8">
+  <div class="row mt-3">
+    <div [ngClass]="{'col-md-8 col-lg-8': subShow, 'col-md-12 col-lg-12': !subShow}">
+      <!-- <div class="col-md-8 col-lg-8"> -->
       <app-breadcrumb [data]="breadcrumsData"></app-breadcrumb>
       <form [formGroup]="ledgerForm">
         <div class="row justify-content-center">
@@ -18,27 +18,27 @@
         <div class="col-4 ">
           <div class="line d-flex flex-column justify-content-center align-items-center rounded-end">
             <h6>Total Amount</h6>
-            <p class="m-0 fw-bold fs-4"></p>
+            <p class="m-0 fw-bold fs-4">{{total}}</p>
           </div>
         </div>
         <div class="col-4 ">
           <div class="line d-flex flex-column justify-content-center align-items-center rounded-end">
             <h6>Total Amount Collected</h6>
-            <p class="m-0 fw-bold fs-4"></p>
+            <p class="m-0 fw-bold fs-4">{{totalCollected}}</p>
           </div>
         </div>
         <div class="col-3 ">
           <div class="red-card d-flex flex-column justify-content-center align-items-center rounded">
-            <h6>Total Surplus Amount</h6>
-            <p class="m-0 fw-bold fs-4"></p>
+            <h6>Amount Outstanding</h6>
+            <p class="m-0 fw-bold fs-4">{{total-totalCollected}}</p>
           </div>
         </div>
       </div>
       <div class="row my-3">
         <div class="col-4 ">
           <div class="line d-flex flex-column justify-content-center align-items-center rounded-end">
-            <h6>No.of Subscribers in more than 1 group</h6>
-            <p class="m-0 fw-bold fs-4"></p>
+            <h6>Total Surplus Amount</h6>
+            <p class="m-0 fw-bold fs-4">{{totalSurplus}}</p>
           </div>
         </div>
       </div>
@@ -46,128 +46,266 @@
         <!-- Search Bar -->
         <div class="search-bar align-self-center mb-3">
           <span class="search-icon"><img src="assets/table/search.svg" alt="Search Icon"></span>
-          <input
-            type="text"
-            class="border-0"
-            placeholder="Search"
-            (input)="applyFilter($event.target.value)"
-          />
+          <input type="text" class="border-0" placeholder="Search" (input)="applyFilter($event.target.value)" />
         </div>
-      
+
         <!-- Chit Group Listing -->
         <div
           *ngFor="let group of displayedChit | slice:(currentPage - 1) * itemsPerPage:(currentPage) * itemsPerPage; let i = index"
-          class="mb-3"
-        >
-          <div
-            class="table-group my-2 px-3 d-flex justify-content-between align-items-center rounded-end border"
-          >
+          class="mb-3">
+          <div class="table-group my-2 px-3 d-flex justify-content-between align-items-center rounded-end border">
             <!-- Group Header -->
             <div>
               <span class="fw-bold fs-5">{{ group.chitGroupId }}</span>
             </div>
-      
+
             <!-- Toggle Details Button -->
-            <div
-              class="d-flex overlap-images"
-              style="color:#50A1A5; cursor: pointer;"
-              (click)="getByGroupId(group.chitGroupId, i)"
-            >
+            <div class="d-flex overlap-images" style="color:#50A1A5; cursor: pointer;"
+              (click)="getByGroupId(group.chitGroupId, i , group.chitSubscribers ,group.chitAmount)">
               View Details
               <img *ngIf="selectedIndex != i" class="ms-4" src="assets/subscriber/down arrow.svg">
-              <img *ngIf="selectedIndex === i" class="ms-4" src="assets/subscriber/right arrow.svg" alt="">
+              <img *ngIf="selectedIndex === i " class="ms-4" src="assets/subscriber/right arrow.svg" alt="">
 
             </div>
           </div>
-      
+
           <!-- Group Details -->
-          <div
-            class="card p-2 ps-2"
-            *ngIf="selectedIndex === i"
-          >
+          <div class="card p-2 ps-2" *ngIf="selectedIndex === i && groupPaymentData">
             <!-- Summary Row -->
             <div class="row mb-3">
-              <div class="col-md-3">
-                <span>Total Amount</span>
-                <h5 class="text-primary">{{ group.totalAmount }}</h5>
+              <div class="col-md-3 ms-4 py-2  card">
+                <div>Total Amount <span style="color: #50A1A5;">{{totalAmount}}</span></div>
+
               </div>
-              <div class="col-md-3">
-                <span>Amount Collected</span>
-                <h5 class="text-success">{{ group.amountCollected }}</h5>
+              <div class="col-md-3 ms-2 py-2 card">
+                <div>Amount Collected <span style="color: #50A1A5;">{{collectedAmount}}</span></div>
+
               </div>
-              <div class="col-md-3">
-                <span>Outstanding</span>
-                <h5 class="text-danger">{{ group.outstanding }}</h5>
+              <div class="col-md-3 ms-2 py-2  card">
+                <div>Outstanding <span style="color: #F04438;"
+                    *ngIf=" totalAmount - collectedAmount >= 0">{{totalAmount-collectedAmount}}</span> </div>
               </div>
-              <div class="col-md-3">
-                <span>Surplus</span>
-                <h5 class="text-info">{{ group.surplus }}</h5>
+              <div class="col-md-2 ms-2 py-2  card">
+                <div>Surplus <span style="color: #50A1A5;">{{groupSurplus}}</span>
+                </div>
               </div>
+
             </div>
-      
+
             <!-- Subscriber Details -->
             <div *ngFor="let payment of groupPaymentData align-items-center" class="border-bottom pb-3 mb-3">
-              <div class="row mb-2">
-                <div class="col-md-4">
-                  <span>Passbook No</span>
-                  <p>{{ payment.passbooknumber }}</p>
+              <div class="row mb-2 ms-3">
+                <div class="col-md-3 ">
+                  <span class="fw-bold">Name</span>
+                  <p>{{ payment.firstName }}</p>
                 </div>
-                <div class="col-md-4">
-                  <span>Name</span>
-                  <p>{{ payment.subscriberName }}</p>
+
+                <div class="col-md-3">
+                  <span class="fw-bold">Passbook No</span>
+                  <p>{{ payment.passbookNo }}</p>
                 </div>
-                <div class="col-md-4">
-                  <span>Region</span>
-                  <p>{{ payment.region }}</p>
+                <div class="col-md-3">
+                  <span class="fw-bold">Alias Name</span>
+                  <p>{{ payment.aliasName }}</p>
+                </div>
+                <div class="col-md-3">
+                  <span class="fw-bold">Region</span>
+                  <p>{{ payment.place }}</p>
                 </div>
               </div>
-                <div class="row mb-3">
-                  <div class="col-md-3">
-                    <span>Total Amount</span>
-                    <h5 class="text-primary">{{ group.totalAmount }}</h5>
+              <div class="row mb-3 ps-2">
+                <div class="col-md-2 ms-4 py-2  card">
+                  <div>Total Amount <span style="color: #50A1A5;">{{ group.chitAmount/20 }}</span></div>
+
+                </div>
+                <div class="col-md-2 ms-2 py-2 card">
+                  <div>Amount Collected <span style="color: #50A1A5;">{{ payment.amount }}</span></div>
+
+                </div>
+                <div class="col-md-2 ms-2 py-2  card">
+                  <div>Outstanding <span style="color: #F04438;" *ngIf=" group.chitAmount/20 - payment.amount >= 0">{{
+                      group.chitAmount/20 - payment.amount }}</span> </div>
+                </div>
+                <div class="col-md-2 ms-2 py-2  card">
+                  <div>Surplus <span style="color: #50A1A5;">{{ payment.totalPassbookNoAmount }}</span>
                   </div>
-                  <div class="col-md-3">
-                    <span>Amount Collected</span>
-                    <h5 class="text-success">{{ group.amountCollected }}</h5>
-                  </div>
-                  <div class="col-md-2">
-                    <span>Outstanding</span>
-                    <h5 class="text-danger">{{ group.outstanding }}</h5>
-                  </div>
-                  <div class="col-md-2">
-                    <span>Surplus</span>
-                    <h5 class="text-info">{{ group.surplus }}</h5>
-                  </div>
-               
-                <div class="col-md-2">
-                  <button class="btn btn-outline-primary btn-sm">View More</button>
+                </div>
+
+                <div class="col-md-2 mt-1">
+                  <button class="btn  btn-sm" style="color: #3E3A97; border-color: #3E3A97;"
+                    (click)="getSub(payment.passbookNo)">View More</button>
                 </div>
               </div>
             </div>
           </div>
-      
+
         </div>
-      
+
         <!-- Pagination Controls -->
         <div class="d-flex justify-content-center align-items-center mt-3">
-          <button
-            class="btn next-btn"
-            (click)="previousPage()"
-            [disabled]="currentPage === 1"
-          >
+          <button class="btn next-btn" (click)="previousPage()" [disabled]="currentPage === 1">
             Previous
           </button>
           <span class="px-4">Page {{ currentPage }} of {{ totalPages }}</span>
-          <button
-            class="btn next-btn"
-            (click)="nextPage()"
-            [disabled]="currentPage === totalPages"
-          >
+          <button class="btn next-btn" (click)="nextPage()" [disabled]="currentPage === totalPages">
             Next
           </button>
         </div>
       </div>
-      
+
     </div>
+    <div *ngIf="subShow" class="col-md-4 col-lg-4">
+      <div class="card d-flex p-3">
+        <h5 class="text-center my-2 fs-4 fw-bold">{{subPayment[0]?.subscriberName}}</h5>
+        <p class="text-center" style="color: #50A1A5;">{{subPayment[0]?.subscriberId}}</p>
+        <div>
+          <h6 class="fw-bold">Payment Details</h6>
+          <div><span class="fw-bold">Passbook ID</span> <span class="ms-4">{{subPayment[0]?.passbooknumber}}</span></div>
+        </div>
+        <table class="table-card mx-3">
+          <tbody>
+            <tr *ngFor="let subcriberPayment of subPayment  let i = index">
+              <div class="view-all my-2">
+                <div class="align-items-center">
+                  <div class="row">
+                    <div  class="col border d-flex flex-column justify-content-center align-items-center py-3 rounded-3 shadow-sm auction">
+                      <h6><strong>{{ subcriberPayment.receiptNumber }}</strong></h6>
+                      <div class="d-flex overlap-images" style="color:#50A1A5; cursor: pointer;"
+                        (click)="getSubscriber(subcriberPayment._id,i)">
+                        View Details
+                        <img *ngIf="selectedSub != i" class="ms-4" src="assets/subscriber/down arrow.svg">
+                        <img *ngIf="selectedSub === i" class="ms-4" src="assets/subscriber/right arrow.svg" alt="">
+                      </div>
+                     
+                    </div>
+                    <div class="card mt-2"  style="font-size:13px" *ngIf="selectedSub === i">
+                      <div class="row">
+                        <div class="col-6" ><span class="fw-bold">Date</span> <span class="ms-4">{{subscriber.date}}</span></div>
+                        <div  class="col-6"><span class="fw-bold">Amount Paid</span> <span class="ms-4">{{subscriber.amount}}</span></div>  
+                      </div>
+                      <div class="row">
+                        <div class="col-6"><span class="fw-bold">Installment Month</span> <span class="ms-4">{{subscriber.installmentMonth}}</span></div>
+                        <div class="col-6"><span class="fw-bold">Collected By</span> <span class="ms-4">{{subscriber.selectStaff}}</span></div>
+
+                      </div>
+                      <div><span class="fw-bold">Approved By</span> <span class="ms-4">{{subscriber.approvedBy}}</span></div>
+                      <button class="btn align-self-center my-2" style="color:white ; background-color: #3E3A97;" data-bs-toggle="modal"
+                      data-bs-target="#paymentModal"  (click)="viewAll()">Generate Duplicate Bill</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </tr>
+          </tbody>
+        </table>
+        <button class="btn align-self-center view-btn mt-3" *ngIf="!showGroups" (click)="viewAll()">View More
+          Chits</button>
+        <button class="btn align-self-center view-btn mt-3" *ngIf="showGroups" (click)="viewLess()">View Less</button>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="subscriber">
+  <div class="modal fade" id="paymentModal" tabindex="-1" aria-labelledby="paymentModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg modal-dialog-centered">
+          <div class="modal-content p-4">
+              <div class="popup-body">
+                  <div class="text-center pb-2 fs-4 fw-bold">
+                      Payment Details
+                  </div>
+                  <div class="d-flex justify-content-end py-2">
+                      <button class="btn mx-3  popup-btn" style="background-color: #50A1A5; color: white;" (click)="print()">
+                          <img src="../../../assets/popup/printer.svg" alt="" width="20px" height="20px"> Generate
+                          Receipt</button>
+                      <button class="btn me-3 popup-btn" (click)="downloadAsPDF()"  style="background-color: #50A1A5; color: white;">
+                          <img src="../../../assets/popup/download.svg" alt="" width="20px" height="20px">
+                          Download</button>
+                  </div>
+                  <div class="border border-dark" id="print-section">
+                      <div class="popup-header">
+                          <img src="../../../assets/navbar/brand.svg" alt="" width="100px" height="90px">
+                          <div class="d-flex flex-column justify-content-center align-items-center">
+                              <p class="fs-5 fw-bold m-0">Guru Chits Private Limited</p>
+                              <span>Payment Receipt for  Month {{subscriber.installmentMonth}}</span>
+                          </div>
+                      </div>
+                      <hr class="border border-dark m-0">
+                      <div class="row py-3">
+                          <div class="col-6 d-flex justify-content-around">
+                              <div class="col-5 fw-bold">Subscriber ID</div>
+                              <div class="col-5">{{subscriber.subscriberId}}</div>
+                          </div>
+                          <div class="col-6 d-flex justify-content-around">
+                              <div class="col-5 fw-bold">Serial Number</div>
+                              <div class="col-5">{{subscriber.serialNumber}}</div>
+                          </div>
+                      </div>
+                      <div class="row pb-3">
+                          <div class="col-6 d-flex justify-content-around">
+                              <div class="col-5 fw-bold">Subscriber Name</div>
+                              <div class="col-5">{{subscriber.subscriberName}}</div>
+                          </div>
+                          <div class="col-6 d-flex justify-content-around">
+                              <div class="col-5 fw-bold">Receipt Number</div>
+                              <div class="col-5">{{subscriber.receiptNumber}}</div>
+                          </div>
+                      </div>
+                      <div class="row pb-3">
+                          <div class="col-6 d-flex justify-content-around">
+                              <div class="col-5 fw-bold">Group ID</div>
+                              <div class="col-5">{{subscriber.groupId}}</div>
+                          </div>
+                          <div class="col-6 d-flex justify-content-around">
+                              <div class="col-5 fw-bold">Route ID</div>
+                              <div class="col-5">{{subscriber.region}}</div>
+                          </div>
+                      </div>
+                      <div class="row pb-3">
+                          <div class="col-6 d-flex justify-content-around">
+                              <div class="col-5 fw-bold">Passbook Number</div>
+                              <div class="col-5">{{subscriber.passbooknumber}}</div>
+                          </div>
+                          <div class="col-6 d-flex justify-content-around">
+                              <div class="col-5 fw-bold">Staff</div>
+                              <div class="col-5">{{subscriber.selectStaff}}</div>
+                          </div>
+                      </div>
+                      <div class="row pb-3">
+                          <div class="col-6 d-flex justify-content-around">
+                              <div class="col-5 fw-bold">Collection Type</div>
+                              <div class="col-5">{{subscriber.collectionType}}</div>
+                          </div>
+                          <div class="col-6 d-flex justify-content-around">
+                              <div class="col-5 fw-bold">Amount Paid</div>
+                              <div class="col-5">{{subscriber.amount}}</div>
+                          </div>
+                      </div>
+                      <div class="row pb-3">
+                          <div class="col-6 d-flex justify-content-around">
+                              <div class="col-5 fw-bold">Chit Value</div>
+                              <div class="col-5">{{subscriber.chitAmount}}</div>
+                          </div>
+                      </div>
+                      <div class="row pb-3">
+                          <div class="col-6 d-flex justify-content-around">
+                              <div class="col-5 fw-bold">Installment Month</div>
+                              <div class="col-5">{{subscriber.installmentMonth}}</div>
+                          </div>
+                          <div class="col-6 d-flex justify-content-around">
+                              <div class="col-5 fw-bold">Date of Payment</div>
+                              <div class="col-5">{{subscriber.date  }}</div>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+              <div class="d-flex justify-content-end py-4">
+                  <button type="button" class="btn view-btn px-4 py-2 fw-bold mx-2 "  data-bs-dismiss="modal" >Cancel</button>
+                  <!-- <button type="button" class="btn next-btn px-4 py-2 fw-bold " data-bs-dismiss="modal" (click)="onSubmit()">Submit</button> -->
+
+              </div>
+          </div>
+      </div>
   </div>
 </div>

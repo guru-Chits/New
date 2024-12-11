@@ -46,7 +46,7 @@ export class StaffCreateComponent implements OnInit {
     panUrl: null,
     aadharUrl: null,
     passbookUrl: null,
-    drivingLicenseUrl: null
+    drivingLicenceUrl: null
   };
   data: any[] = [];
   staffData: any = {}
@@ -95,7 +95,7 @@ export class StaffCreateComponent implements OnInit {
       this.conditionalValidator(() => !!this.staffsForm?.get('aadharNumber')?.value, Validators.pattern(/^\d{4}\s\d{4}\s\d{4}$/))
       ]],
       aadharUrl: [""],
-      drivingLicenseUrl: [""],
+      drivingLicenceUrl: [""],
       drivingLicenseNumber: ["", this.conditionalValidator(() => !!this.staffsForm?.get('drivingLicenseNumber')?.value, Validators.pattern(/^[A-Z]{2}[- ]?[A-Z0-9]{2}[ ]?[0-9]{4}[ ]?[0-9]{7}$/))],
       bankName: ["", [Validators.required]],
       passbookUrl: [""],
@@ -105,7 +105,8 @@ export class StaffCreateComponent implements OnInit {
       profileUrl: [""],
       password: [""]
     });
-
+      
+    
     this.activatedRoute.params.subscribe(paramData => {
       if (Object.keys(paramData).length) {
         this.breadcrumsData = [
@@ -125,7 +126,10 @@ export class StaffCreateComponent implements OnInit {
           this.staffData = data;
           this.staffId = this.staffData.Staff._id
           this.profileUrl = this.staffData.Staff.profileUrl
-
+          if (this.staffId) {    
+            const existingPassword=this.staffData?.Staff?.password
+            this.staffsForm.get('password')?.setValue(existingPassword)
+          }
           this.aadharUrl = this.staffData.Staff.aadharUrl
           this.staff = false
           if (this.staffData.Staff.workingStatus) {
@@ -140,6 +144,10 @@ export class StaffCreateComponent implements OnInit {
           const updatedStaff = { ...this.staffData.Staff, dob: utcDob };
           this.staffsForm.patchValue(updatedStaff);
         })
+      }else{
+        const tempPassword="Staff@578"
+        this.staffsForm.get('password')?.setValue(tempPassword)
+  
       }
     })
     this.service.getstaffAll().subscribe((data) => {
@@ -168,6 +176,7 @@ export class StaffCreateComponent implements OnInit {
         routeId: routeDetails?.routeId,
       }))
     })
+
 
   }
   allowValidInput(event: any, pattern: RegExp): void {
@@ -487,17 +496,7 @@ export class StaffCreateComponent implements OnInit {
   onSubmit(): void {
     const formData = new FormData();
 
-
-
-    const formValue = this.staffsForm.getRawValue();
-
-    const isNewStaff = !this.staffId;
-
-    if (isNewStaff) {
-      formValue.password = "Staff@578";
-    } else {
-      formValue.password = this.staffData?.Staff?.password;
-    }
+    const formValue = this.staffsForm.getRawValue();    
 
     if (!formValue.profileImageUrl) {
       const defaultProfileImage = this.generateDefaultProfileImage(formValue.firstName);
@@ -516,7 +515,7 @@ export class StaffCreateComponent implements OnInit {
     }
 
 
-    this.service.savestaffDetails(formValue, this.staffId).subscribe((data) => {
+    this.service.savestaffDetails(formData, this.staffId).subscribe((data) => {
       if (!this.staffId) {
 
         const mobile = this.staffsForm.get('contact')?.value;

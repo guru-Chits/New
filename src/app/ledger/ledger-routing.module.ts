@@ -8,8 +8,7 @@ const routes: Routes = [
     path: '',
     component: LedgerComponent, 
     canActivate: [AuthGuard],
-    data: { accKey: 'Reports', action: 'view' }
-
+    data: { accKey: 'Settings', action: 'view' },
   },
 ];
 

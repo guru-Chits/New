@@ -36,5 +36,35 @@
     padding: 5px;
     width: 300px;
   }
-  
-  
+  .search-bar input {
+    /* border: none;*/
+    outline: none;
+    background-color: white;
+    padding: 3px;
+    flex-grow: 1;
+    height: 20px;
+    /* width:%; */
+  }
+  .card {
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  .small-line {
+    border-left: 1px solid #50A1A5; /* Change color and width as needed */
+    padding-left:5px; /* Add some space between the line and content */
+    height: 100%; /* Adjust height to fit your element */
+  }
+
+  .auction{
+    background-color: #eef6f6;
+    cursor: pointer;
+}
+.view-btn{
+    color: #3E3A97;
+    background-color: #FFFFFF;
+    border-color: #3E3A97;
+}
+.next-btn {
+  background-color: #3E3A97;
+  color: #FFFFFF;
+}

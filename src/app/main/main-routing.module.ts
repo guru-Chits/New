@@ -28,9 +28,9 @@ const routes: Routes = [
       },
       {
         path: 'ledger',
-        data: { accKey: 'Staffs' },
         loadChildren: () => import('../../app/ledger/ledger.module').then(m => m.LedgerModule),
-        // canActivate: [AuthGuard] 
+        canActivate: [AuthGuard] ,
+        data: { accKey: 'Settings'},
       },
       {
         path: 'staff',

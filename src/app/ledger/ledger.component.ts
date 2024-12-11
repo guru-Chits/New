@@ -2,11 +2,15 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { ChitService } from '../chit/shared/service/chit.service';
 import { PaymentService } from '../payments/shared/service/payment.service';
+import html2canvas from 'html2canvas';
+import jsPDF from 'jspdf';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-ledger',
   templateUrl: './ledger.component.html',
   styleUrl: './ledger.component.css',
+  providers: [DatePipe]
 
 })
 export class LedgerComponent implements OnInit {
@@ -21,28 +25,55 @@ export class LedgerComponent implements OnInit {
   chosenDate: string;
   chitdata: any;
   displayedChit: any[] = []
-  itemsPerPage: number = 5;
+  itemsPerPage: number = 15;
   currentPage: number = 1;
   totalPages: number = 0;
   data: any[] = [];
   selectedIndex: string | null = null;
   groupPaymentData:any 
-
-  constructor(private fb:FormBuilder, private chitService:ChitService, private paymentService:PaymentService){}
+  subShow:boolean=false
+  totalAmount:number=0
+  collectedAmount:number=0
+  subPayment:any
+  subscriber:any
+  totalCollected:number
+  total:number
+  totalSurplus:number
+  groupSurplus:number
+  selectedSub:string | null = null;
+  constructor(private fb:FormBuilder, private chitService:ChitService, private paymentService:PaymentService,    private datePipe: DatePipe,
+  ){}
 ngOnInit(): void {
   this.ledgerForm=this.fb.group({
-    date:[]
+    date:[this.getCurrentMonth()]
   })
+  this.chosenDate=this.getCurrentMonth()
+  console.log(this.chosenDate);
+  
   this.chitService.getAllChit().subscribe((data) => {
     this.chitdata = data;
-    this.chitdata = this.chitdata?.AllChitGroups
-
+    this.chitdata = this.chitdata?.AllChitGroups  
     this.displayedChit = this.chitdata;
-
     this.totalPages = Math.ceil(this.displayedChit.length / this.itemsPerPage);
+    this.total = this.chitdata.reduce((acc, chitGroup) => {
+      const chitAmount = parseFloat(chitGroup.chitAmount) || 0; // Safeguard against invalid values
+      const subscribers = chitGroup.chitSubscribers?.length || 0; // Safeguard against undefined or null
+      return acc + (chitAmount / 20) * subscribers;
+  }, 0);
+  })
+
+  this.paymentService.getTotalByGroupId(this.chosenDate).subscribe(data => {
+    this.totalCollected=data.totalOfMonth
+    this.totalSurplus=data.totalFutureAmount
+    console.log(this.totalCollected);
   })
 }
-
+getCurrentMonth(): string {
+  const today = new Date();
+  const year = today.getFullYear();
+  const month = today.getMonth() + 1; // getMonth() is zero-based
+  return `${year}-${month.toString().padStart(2, '0')}`; // Format as YYYY-MM
+}
 applyFilter(filterValue: string) {
   this.displayedChit = this.chitdata;
   if (!filterValue || !this.data) {
@@ -58,6 +89,8 @@ applyFilter(filterValue: string) {
 nextPage() {
   if (this.currentPage < this.totalPages) {
     this.currentPage++;
+    this.subShow=false
+
   }
 }
 
@@ -65,29 +98,198 @@ nextPage() {
 previousPage() {
   if (this.currentPage > 1) {
     this.currentPage--;
+    this.subShow=false
+
   }
 }
 
 onChange(event:any){
 console.log(event.target.value);
 this.chosenDate=event.target.value
+this.paymentService.getTotalByGroupId(this.chosenDate).subscribe(data => {
+  this.totalSurplus=data.totalFutureAmount
+  this.totalCollected=data.totalOfMonth
+})
 
 }
-getByGroupId(groupId:string,index:any){
-  console.log(groupId,index);
+getByGroupId(groupId: string, index: any, chitSubscribers: any[] ,chitAmount:number) {
+  this.totalAmount=chitAmount/20 *chitSubscribers.length
+  this.subShow=false
+  if (this.selectedIndex === index) {
+    this.selectedIndex = null;
+    this.groupPaymentData = null;
+    this.collectedAmount=0
+  } else {
+    this.selectedIndex = index;
 
+    this.paymentService.getTotalByGroupId(this.chosenDate,groupId).subscribe(data => {
+      console.log(data);
+     this.groupSurplus=data.totalGroupAmount
+      // Consolidate duplicate passbooks
+      const consolidatedPayments = this.consolidatePayments(data.payments);
 
-    if (this.selectedIndex === index) {
-      this.selectedIndex = null;
-      this.groupPaymentData=null
+      // Match with chitSubscribers and set amounts for missing passbooks
+      const processedData = this.processPayments(consolidatedPayments, chitSubscribers);
+
+      // Assign the processed data to groupPaymentData
+      this.groupPaymentData = processedData;
+      this.collectedAmount = this.calculateTotalAmount(processedData);
+      console.log(this.groupPaymentData);
+      
+    });
+  }
+}
+
+/**
+ * Consolidates payments with the same passbook number by summing their amounts.
+ * @param payments - Array of payment objects.
+ * @returns Consolidated array of payments.
+ */
+private consolidatePayments(payments: any[]): any[] {
+  const paymentMap = new Map();
+
+  payments.forEach(payment => {
+    const passbookKey = payment.passbooknumber;
+
+    if (paymentMap.has(passbookKey)) {
+      const existingPayment = paymentMap.get(passbookKey);
+
+      // Convert and sum amounts
+      existingPayment.amount =Number(existingPayment.amount)+ Number(payment.amount || 0);
+      // existingPayment.amountCollected += Number(payment.amountCollected || 0);
+      // existingPayment.outstanding += Number(payment.outstanding || 0);
+      existingPayment.totalPassbookNoAmount =payment.totalPassbookNoAmount 
     } else {
-      this.selectedIndex = index;
-      this.paymentService.getTotalByGroupId(groupId,this.chosenDate).subscribe(data=>{
-        console.log(data);
-        this.groupPaymentData=data.payments
+      // Initialize new entry
+      paymentMap.set(passbookKey, { ...payment });
 
-      })
     }
+  });
 
+  return Array.from(paymentMap.values());
 }
+
+/**
+ * Matches consolidated payments with chit subscribers and sets missing amounts to 0.
+ * @param payments - Consolidated payments array.
+ * @param chitSubscribers - Array of all subscribers.
+ * @returns Processed array with amounts adjusted for missing passbooks.
+ */
+private processPayments(payments: any[], chitSubscribers: any[]): any[] {
+  // Create a map for consolidated payments keyed by passbook number
+  const paymentMap = new Map();
+  
+  payments.forEach(payment => {
+    const passbookKey = payment.passbooknumber;
+    
+    if (paymentMap.has(passbookKey)) {
+      const existingPayment = paymentMap.get(passbookKey);
+      
+      // Add amounts for the same passbook
+      existingPayment.amount = Number(existingPayment.amount)+ Number(payment.amount);
+      // existingPayment.amountCollected += Number(payment.amountCollected || 0);
+      // existingPayment.outstanding += Number(payment.outstanding || 0);
+      existingPayment.totalPassbookNoAmount = payment.totalPassbookNoAmount 
+     ;
+      
+      paymentMap.set(passbookKey, existingPayment);
+    } else {
+      // Initialize new payment
+      paymentMap.set(passbookKey, {
+        ...payment,
+        amount: payment.amount,
+        // amountCollected: Number(payment.amountCollected || 0),
+        // outstanding: Number(payment.outstanding || 0),
+        totalPassbookNoAmount: payment.totalPassbookNoAmount
+      });
+    }
+  });
+
+  // Match with chitSubscribers and set missing passbook amounts to 0
+  const result = chitSubscribers.map(subscriber => {
+    const matchingPayment = paymentMap.get(subscriber.passbookNo);
+
+    if (matchingPayment) {
+      // Use the matching payment and sum amounts if already consolidated
+      return {
+        ...subscriber,
+        ...matchingPayment
+      };
+    } else {
+      // No matching payment, set amounts to 0
+      return {
+        ...subscriber,
+        amount: 0,
+        totalPassbookNoAmount:0
+      };
+    }
+  });
+
+  return result;
+}
+
+getSub(passbookNumber:string){
+this.subShow=true
+this.paymentService.getPaymentByPassbook(passbookNumber).subscribe(response => {
+console.log(response);
+this.subPayment=response
+this.subPayment=this.subPayment.payments
+});
+}
+
+private calculateTotalAmount(payments: any[]): number {
+  return payments.reduce((total, payment) => total + (Number(payment.amount) || 0), 0);
+}
+
+getSubscriber(id:string,index:any)
+{
+  if(this.selectedSub==index){
+    this.selectedSub=null
+    this.subscriber=null
+  }else{
+    this.selectedSub=index
+    console.log(id);
+    this.paymentService.getPaymentById(id).subscribe(response=>{
+    this.subscriber=response
+    this.subscriber=this.subscriber.payment
+  })
+  }
+}
+
+  downloadAsPDF() {
+    const element = document.getElementById('print-section');
+    element.style.width = '700px';  // Adjust according to your modal's size
+
+    html2canvas(element, {
+      scale: 2, // Increase the scale to improve image quality
+      useCORS: true,  // Enable cross-origin resource sharing if images are hosted externally
+      allowTaint: true // Allow cross-origin images to be rendered into the canvas
+    }).then((canvas) => {
+      const imgData = canvas.toDataURL('image/png');
+      const pdf = new jsPDF('p', 'mm', 'a4');
+      const pageWidth = pdf.internal.pageSize.getWidth();
+      const pageHeight = pdf.internal.pageSize.getHeight();
+
+      const canvasWidth = canvas.width;
+      const canvasHeight = canvas.height;
+
+      const ratio = Math.min(pageWidth / canvasWidth, pageHeight / canvasHeight);
+
+      const imgWidth = canvasWidth * ratio;
+      const imgHeight = canvasHeight * ratio;
+
+      pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
+
+      pdf.save(`${this.subscriber.receiptNumber}.pdf`);
+      element.style.width = '';
+    });
+  }
+  print() {
+    const printContent = document.getElementById('print-section').innerHTML;
+    const originalContent = document.body.innerHTML;
+    document.body.innerHTML = printContent;
+    window.print();
+    document.body.innerHTML = originalContent;
+    window.location.reload();
+  }
 }

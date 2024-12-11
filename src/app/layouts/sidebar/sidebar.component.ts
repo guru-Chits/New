@@ -25,7 +25,7 @@ export class SidebarComponent implements OnInit {
         this.setActiveMenu();
       }
     });
-
+    
     // Fetch and filter the menu based on access
     this.filterMenuItemsBasedOnAccess();
   }
@@ -43,8 +43,12 @@ export class SidebarComponent implements OnInit {
       this.roleDetail = this.roleAccess?.roleAccess?.roleDetails;
 
       if (this.roleDetail) {
+        console.log(NavigationMenus);
+        
         this.menuItems = NavigationMenus.filter(menuItem => {
           const moduleAccess = this.roleDetail.find(rd => rd.moduleName === menuItem.title);
+          console.log(moduleAccess);
+          
           return moduleAccess && moduleAccess.accessType.view; // Show only menus with 'view' access
         });
       }
@@ -54,8 +58,10 @@ export class SidebarComponent implements OnInit {
   }
 
   setActiveMenu(menuItem?: INavigationMenu) {
+
     if (menuItem) {
       this.activeMenu = menuItem;
+      
     } else {
       this.activeMenu = this.findActiveMenu(this.menuItems, this.router.url);
 

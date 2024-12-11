@@ -104,8 +104,8 @@ getDataByCollection(fromDate: any, toDate:any,region?: string , collectionType?:
   return this.http.get(url);
 }
 
-getTotalByGroupId(groupId:string,insMonth:string): Observable<any> {
-  let url=`${this.paymentUrl}/getTotalByGroupId/${groupId}/${insMonth}`
+getTotalByGroupId(insMonth:string,groupId?:string,passbooknumber?:string): Observable<any> {
+  let url=`${this.paymentUrl}/getTotalByGroupId/${insMonth}/${groupId}/${passbooknumber}`
   return this.http.get(url)
 }
 

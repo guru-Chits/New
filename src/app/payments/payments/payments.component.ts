@@ -82,7 +82,8 @@ export class PaymentsComponent implements OnInit {
       chitAmount: ['', [Validators.required]],
       cancelled: [''],
       verified: [''],
-      deleteReason: [""]
+      deleteReason: [""],
+      approvedBy:[""]
     },
       {
         validator: this.amountLessThanOrEqualChitAmount.bind(this)

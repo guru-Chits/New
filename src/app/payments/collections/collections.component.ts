@@ -284,6 +284,7 @@ export class CollectionsComponent implements OnInit {
         selectStaff: payment.selectStaff,
         serialNumber: payment.serialNumber,
         collectionType: payment.collectionType,
+        approvedBy:this.collectionForm.get('verifiedBy')?.value
       };
 
       this.service.savePaymentDetails(this.paymentBody, payment.id).subscribe(

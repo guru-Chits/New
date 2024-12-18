@@ -160,7 +160,7 @@
                             </tbody>
                           </table>
                     <div class="col-lg-12 d-flex justify-content-end py-3 px-4">
-                        <button type="button" class="btn next-btn px-4 py-3 fw-bold" (click)="showSubscriberList()">Add
+                        <button type="button" class="btn next-btn px-4 py-3 fw-bold" *ngIf="canCreate" (click)="showSubscriberList()">Add
                             Subscribers</button>
                     </div>
                     <div>
@@ -249,7 +249,7 @@
                                 <td class="py-3"><strong>Other Enrolments</strong></td>
                                 <td class="py-3">{{count}}</td>
                             </tr>
-                            <tr>
+                            <tr *ngIf="canCreate">
                                 <td class="py-3"><strong>Collection Type</strong></td>
                                 <td>
                                     <form [formGroup]="collectionTypeForm">
@@ -268,7 +268,7 @@
                                         </div>
                                     </form>
                                     <button type="button" class="btn view-btn my-3"
-                                        (click)="edit(filteredSubscribers[0]?.passbookNo)">Save changes</button>
+                                        (click)="edit(filteredSubscribers[0]?.passbookNo)" >Save changes</button>
                                 </td>
                             </tr>
                         </tbody>
@@ -278,7 +278,7 @@
                         <div class=" d-flex justify-content-center">
                             <div class="me-1">
                                 <button type="button" class="btn view-btn-red"
-                                    (click)="removeSubscriber(filteredSubscribers[0]?.subscriberId)">Remove from
+                                    (click)="removeSubscriber(filteredSubscribers[0]?.subscriberId)" *ngIf="canCreate">Remove from
                                     Group</button><!--(click)="navigate(specificChitData?._id)"-->
                             </div>
                             <div class="ms-1">

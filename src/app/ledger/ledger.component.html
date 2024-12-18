@@ -127,7 +127,7 @@
                       group.chitAmount/20 - payment.amount }}</span> </div>
                 </div>
                 <div class="col-md-2 ms-2 py-2  card">
-                  <div>Surplus <span style="color: #50A1A5;">{{ payment.totalPassbookNoAmount }}</span>
+                  <div>Surplus <span style="color: #50A1A5;" > {{ chosenDate >= this.getCurrentMonth() ? payment.totalPassbookNoAmount : 0 }}</span>
                   </div>
                 </div>
 

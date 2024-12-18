@@ -194,12 +194,12 @@ export class AuctionComponent implements OnInit {
               this.auctionForm.patchValue({
                 date: this.convertDateFormat(this.chitData.auctionDate)
               })
-            } else if (this.noReg && !this.regularFirst && this.tknMonth) {
+            } else if (this.noReg && !this.regularFirst || this.tknMonth) {
               this.auctionForm.patchValue({
                 date: this.convertDateFormat(this.datePipe.transform(res.lastChit.date, 'dd-MM-yyyy'))
               })
             }
-            else {
+            else if (!this.noReg && !this.regularFirst || !this.tknMonth){
               let date = res.regular[res.regular.length - 1].date
               date = this.getNextMonthSameDate(date)
               this.auctionForm.patchValue({
@@ -445,9 +445,15 @@ export class AuctionComponent implements OnInit {
 
     const finalprizedAmount = this.auctionForm.get('prizedAmount').value;
     const walletBalance = this.chitSubscriberTotal
-    if (this.regular || this.profitChit || this.tknCompany) {
-      const sumOfTwo = Number(finalprizedAmount) + Number(this.chitData.foremanCommission);
-      const finalWallet = this.chitSubscriberTotal - sumOfTwo
+    if (this.regular  || this.tknCompany) {
+      // const sumOfTwo = Number(finalprizedAmount) + Number(this.chitData.foremanCommission);
+      const finalWallet =Number( this.chitSubscriberTotal) +Number (winningBid)
+      this.auctionForm.get('walletBalance').patchValue(finalWallet)
+
+    }else if(this.profitChit){
+      const prizedAm = this.chitData.chitAmount - winningBid
+
+      const finalWallet = this.chitSubscriberTotal -prizedAm
       this.auctionForm.get('walletBalance').patchValue(finalWallet)
 
     }
@@ -751,21 +757,30 @@ export class AuctionComponent implements OnInit {
         this.service.deleteAuction(this.purchaseId).subscribe((res) => {
         })
       }
-      var nextWallet = this.chitData.chitAmount
+      
       const nextMonth = this.getNextMonthSameDate(response.data.date)
       if (this.regular || this.tknCompany) {
-        if (response.data.auctionCycle == 19) {
-          nextWallet = this.chitData.chitAmount - response.data.walletBalance
-        } else if (response.data.auctionCycle >= 20) {
-          nextWallet = 0
-        }
-        else {
-          nextWallet = this.chitData.chitAmount
-        }
-        this.paymentService.saveTransactionDetails(response.data.groupId, nextWallet, nextMonth).subscribe(
+        // if (response.data.auctionCycle == 19) {
+        //   nextWallet = this.chitData.chitAmount - response.data.walletBalance
+        // } else if (response.data.auctionCycle >= 20) {
+        //   nextWallet = 0
+        // }
+        // else {
+        //   nextWallet = this.chitData.chitAmount
+        // }
+
+        var nextWallet =Number (this.auctionForm.value.winningBid)-Number(this.auctionForm.value.foremanCommision)
+        console.log(Number (this.auctionForm.value.winningBid));
+        
+        this.paymentService.saveTransactionDetails(response.data.groupId, +nextWallet).subscribe(
           (response) => {
           })
-      }
+        }else if(this.profitChit){
+          const profitPrized=this.auctionForm.value.prizedAmount
+          this.paymentService.saveTransactionDetails(response.data.groupId, -profitPrized).subscribe(
+        (response) => {
+         })
+        }
       // this.ticketId=this.auctionData.ticketId
       const createdAtDate = new Date(response.data.createdAt);
       this.date = createdAtDate.toISOString().split('T')[0]; // Formats the date
@@ -879,8 +894,7 @@ export class AuctionComponent implements OnInit {
         this.receipt = ""
       }
 
-      this.paymentService.saveTransactionDetails(response.data.groupId, -walletBalance).subscribe(
-        (response) => {
+
           this.purchase = false
           // this.auctionForm.reset()
           this.incrementAuctionCycle()
@@ -894,7 +908,7 @@ export class AuctionComponent implements OnInit {
                 walletBalance: this.chitSubscriberTotal
               })
             });
-          })
+          // })
           this.auctionStart = false
           this.regularFirst = false
           this.noReg = false
@@ -924,7 +938,7 @@ export class AuctionComponent implements OnInit {
                 });
               });
             });
-          }, 10 * 60 * 1000); // 3 minutes = 180,000 milliseconds
+          }, 10  * 60 * 1000); // 3 minutes = 180,000 milliseconds
 
           this.updatedChanges()
 

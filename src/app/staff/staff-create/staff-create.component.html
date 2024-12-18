@@ -7,9 +7,9 @@
           <div class="profile-picture-container">
             <div class="profile-picture">
               <form [formGroup]="staffsForm">
-                <img [src]="profileUrl || defaultImageUrl" alt="Profile Picture" class="profile-img">
+                <img [src]="uploaded|| profileUrl || defaultImageUrl " alt="Profile Picture" class="profile-img">
                 <div class="form-group">
-                  <input type="file" (change)="onFileSelected($event,'profileUrl')" hidden #profileFileInput
+                  <input type="file" (change)="onProfileSelected($event,'profileUrl')"  hidden #profileFileInput
                     formControlName="profileUrl">
                 </div>
               </form>
@@ -197,6 +197,11 @@
                       *ngIf="staffsForm.get('panUrl').hasError('required')">*</span></label>
                   <input type="file" class="form-control form-control-sm file-upload"
                     (change)="onFileSelected($event, 'panUrl')" formControlName="panUrl" />
+                    <span
+                    *ngIf="panFile"
+                    style="color: red;"
+                    >{{ panFile }}</span
+                  >
                 </div>
               </div>
               <div class="col-lg-4 mt-4">
@@ -227,7 +232,11 @@
                       *ngIf="staffsForm.get('aadharUrl').hasError('required')">*</span></label>
                   <input type="file" class="form-control form-control-sm file-upload" [value]="aadharUrl"
                     (change)="onFileSelected($event, 'aadharUrl')" formControlName="aadharUrl" />
-
+                    <span
+                    *ngIf="aadharFile"
+                    style="color: red;"
+                    >{{ aadharFile }}</span
+                  >
                 </div>
               </div>
               <div class="col-lg-4 mt-4">
@@ -250,6 +259,11 @@
                       *ngIf="staffsForm.get('passbookUrl').hasError('required')">*</span></label>
                   <input type="file" class="form-control form-control-sm file-upload"
                     (change)="onFileSelected($event, 'passbookUrl')" formControlName="passbookUrl" />
+                    <span
+                    *ngIf="passbookFile"
+                    style="color: red;"
+                    >{{ passbookFile }}</span
+                  >
                 </div>
               </div>
               <div class="col-lg-4 mt-4">
@@ -275,6 +289,11 @@
                   <label for="drivingLicenceUrl" class="form-control-label">Driving License</label>
                   <input type="file" class="form-control form-control-sm file-upload"
                     (change)="onFileSelected($event, 'drivingLicenceUrl')" formControlName="drivingLicenceUrl" />
+                    <span
+                    *ngIf="licenceFile"
+                    style="color: red;"
+                    >{{ licenceFile }}</span
+                  >
                 </div>
               </div>
               <div class="col-lg-4 mt-4">

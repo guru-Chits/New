@@ -96,6 +96,7 @@ export class CreatePaymentComponent {
             subscriberName:paymentDetail?.subscriberName,
             installmentMonth:paymentDetail?.installmentMonth,
             cancelled: paymentDetail?.cancelled,
+            serialNumber:paymentDetail?.serialNumber
           };
 
           // Push to appropriate array based on cancelled status
@@ -114,7 +115,7 @@ export class CreatePaymentComponent {
         });
       }
     });
-    this.getAllPayment()
+    // this.getAllPayment()
     this.settings.getAllReason().subscribe(
       (data) => {
         this.reasonData = data
@@ -125,9 +126,7 @@ export class CreatePaymentComponent {
 
   getAllPayment() {
     // Polling interval (every 10 seconds in this example)
-    const pollingInterval = interval(10000);
-
-    pollingInterval.subscribe(() => {
+    
       this.service.getTodayPayment().subscribe((data) => {
         this.paymentData = data;
 
@@ -168,7 +167,6 @@ export class CreatePaymentComponent {
           });
         }
       });
-    });
   }
   togglePayments() {
     this.paymentDetail=null
@@ -189,6 +187,12 @@ export class CreatePaymentComponent {
     {
       label: 'Serial No',
       field: 'sno',
+      filterList: false,
+      onCellClicked: (event: CellClickedEvent) => this.getPaymentById(event.data.id)
+    },
+    {
+      label: 'Serial No',
+      field: 'serialNumber',
       filterList: false,
       onCellClicked: (event: CellClickedEvent) => this.getPaymentById(event.data.id)
     },
@@ -239,6 +243,12 @@ export class CreatePaymentComponent {
       filterList: false,
       onCellClicked: (event: CellClickedEvent) => this.getPaymentById(event.data.id)
 
+    },
+    {
+      label: 'Serial No',
+      field: 'serialNumber',
+      filterList: false,
+      onCellClicked: (event: CellClickedEvent) => this.getPaymentById(event.data.id)
     },
     {
       label: 'Receipt Number',

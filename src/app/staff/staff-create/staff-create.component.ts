@@ -21,6 +21,11 @@ export class StaffCreateComponent implements OnInit {
   defaultImageUrl = 'assets/subscriber/user.svg';
   get employeeIdControl() { return this.staffsForm.get('employeeId'); };
   routeData: any
+  panFile:string
+  licenceFile:string
+  aadharFile:string
+  passbookFile:string
+  uploaded:any
   routes: Array<{ routeId: string }> = [];
   constructor(private fb: FormBuilder,
     private activatedRoute: ActivatedRoute,
@@ -58,6 +63,9 @@ export class StaffCreateComponent implements OnInit {
   workingStatus: boolean = false
   inputText = '';
   role: boolean = false
+  url
+  urls: any
+
   ngOnInit() {
     let role = sessionStorage.getItem('userRole')
     role = role ? role.replace(/"/g, '') : null; // Clean up role string
@@ -126,6 +134,16 @@ export class StaffCreateComponent implements OnInit {
           this.staffData = data;
           this.staffId = this.staffData.Staff._id
           this.profileUrl = this.staffData.Staff.profileUrl
+          this.panFile=this.staffData.Staff.panUrl
+          this.licenceFile=this.staffData.Staff.drivingLicenceUrl
+          this.aadharFile=this.staffData.Staff.aadharUrl
+          this.passbookFile=this.staffData.Staff.passbookUrl
+          this.urls = this.staffData.Staff
+
+          const formData = new FormData();
+          formData.append('panUrl',  this.staffData.Staff.panUrl);
+          console.log(formData);
+          
           if (this.staffId) {    
             const existingPassword=this.staffData?.Staff?.password
             this.staffsForm.get('password')?.setValue(existingPassword)
@@ -413,6 +431,31 @@ export class StaffCreateComponent implements OnInit {
     return password;
   }
 
+  onProfileSelected(event: any, controlName: string): void {
+    const file = event.target.files[0];
+    this.filesInfo[controlName] = event.target.files[0];
+
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e: any) => {
+          this.uploaded = e.target.result; // Set the preview URL
+        
+      };
+      reader.readAsDataURL(file);
+
+      // Update form value (optional for backend submission)
+      this.staffsForm.patchValue({
+        [controlName]: file,
+      });
+    }
+
+    if (event.target.files && event.target.files.length) {
+      const file = event.target.files[0];
+      this.staffsForm.patchValue({
+        [controlName]: file
+      });
+    }
+  }
   onFileSelected(event: any, controlName: string): void {
     this.filesInfo[controlName] = event.target.files[0];
     if (event.target.files && event.target.files.length) {
@@ -422,14 +465,66 @@ export class StaffCreateComponent implements OnInit {
       });
     }
   }
-
   viewFile(fileType: string): void {
-    const file = this.filesInfo[fileType];
+    this.url = fileType
+    let file=this.filesInfo[fileType]
     if (file) {
       const fileURL = URL.createObjectURL(file);
       window.open(fileURL, '_blank');
+    }else{
+    if (this.url === "panUrl") { file = this.urls.panUrl }
+    else if (this.url === "aadharUrl") { file = this.urls.aadharUrl }
+    else if (this.url == 'passbookUrl') { file = this.urls.passbookUrl }
+    else if (this.url == 'drivingLicenceUrl') { file = this.urls.drivingLicenceUrl }
+
+    if (file) {
+      if (typeof file === 'string') {
+        window.open(file, '_blank');
+      } else if (file instanceof File) {
+        const fileURL = URL.createObjectURL(file);
+        window.open(fileURL, '_blank');
+      }
+    } else {
     }
   }
+  }
+
+  // viewFile(fileType: string): void {
+  //   let file = this.filesInfo[fileType];
+  //   let url = fileType
+
+  //   if (file) {
+  //     const fileURL = URL.createObjectURL(file);
+  //     window.open(fileURL, '_blank');
+  //   }else{      
+  //     if(url=="panUrl"){ 
+  //       file=this.staffData?.Staff?.panUrl       
+  //       if (file) {
+  //         window.open(file, '_blank');
+  //       }
+  //     }else if(url=="aadharUrl"){
+  //       file=this.staffData?.Staff?.aadharUrl
+  //       if(file){
+  //         window.open(file, '_blank');
+  //       }
+  //     }else if(url=="passbookUrl"){
+  //       file=this.staffData?.Staff?.passbookUrl
+  //       if (file) {
+  //         window.open(file, '_blank');
+  //       }
+  //     }else if(url=="drivingLicenceUrl"){
+  //       file=this.staffData?.Staff?.drivingLicenceUrl
+  //       if (file) {
+  //         window.open(file, '_blank');
+  //       }else{
+
+  //       }
+  //     }
+  //     else{
+  //       file=null
+  //     }
+  //   }
+  // }
 
   removeFile(fileType: string): void {
     this.filesInfo[fileType] = null;
@@ -498,7 +593,7 @@ export class StaffCreateComponent implements OnInit {
 
     const formValue = this.staffsForm.getRawValue();    
 
-    if (!formValue.profileImageUrl) {
+    if (!formValue.profileUrl) {
       const defaultProfileImage = this.generateDefaultProfileImage(formValue.firstName);
       formData.append('profileUrl', defaultProfileImage);
     } else {

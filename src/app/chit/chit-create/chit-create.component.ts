@@ -352,22 +352,22 @@ export class ChitCreateComponent {
       console.log('walletBalance:', this.walletBalance);
       console.log('auctionDateString:', this.futureDate);
 
-      if (this.walletBalance !== null) {
-        this.paymentService
-          .saveTransactionDetails(groupId, this.walletBalance, this.futureDate)
-          .subscribe(
-            (response) => {
-              console.log('Transaction response:', response);
-              // alert(response.message);
-            },
-            (error) => {
-              console.error('Error:', error);
-              // alert('Failed to schedule or process the transaction');
-            }
-          );
-      } else {
-        // alert('Please provide the necessary details.');
-      }
+      // if (this.walletBalance !== null) {
+      //   this.paymentService
+      //     .saveTransactionDetails(groupId, this.walletBalance, this.futureDate)
+      //     .subscribe(
+      //       (response) => {
+      //         console.log('Transaction response:', response);
+      //         // alert(response.message);
+      //       },
+      //       (error) => {
+      //         console.error('Error:', error);
+      //         // alert('Failed to schedule or process the transaction');
+      //       }
+      //     );
+      // } else {
+      //   // alert('Please provide the necessary details.');
+      // }
     });
 
     if (this.chitGroupForm.valid) {

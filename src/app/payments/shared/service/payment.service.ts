@@ -87,7 +87,11 @@ getPaymentByPassbook(passbookNo:string){
   return this.http.get(url)
 
 }
+getVerifiedPaymentByPassbook(passbookNo:string){
+  let url=`${this.paymentUrl}/getVerifiedPaymentByPassbook/${passbookNo}`
+  return this.http.get(url)
 
+}
 getDataByDate(fromDate: any, toDate:any,region?: string , collectionType?:string){
   let url=`${this.paymentUrl}/getDataByDate/${fromDate}/${toDate}`
   if(region&&!collectionType){

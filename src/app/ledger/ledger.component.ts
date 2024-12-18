@@ -49,13 +49,23 @@ ngOnInit(): void {
   })
   this.chosenDate=this.getCurrentMonth()
   console.log(this.chosenDate);
-  
+
   this.chitService.getAllChit().subscribe((data) => {
     this.chitdata = data;
     this.chitdata = this.chitdata?.AllChitGroups  
-    this.displayedChit = this.chitdata;
-    this.totalPages = Math.ceil(this.displayedChit.length / this.itemsPerPage);
-    this.total = this.chitdata.reduce((acc, chitGroup) => {
+    const [chosenYear, chosenMonth] = this.chosenDate.split('-').map(Number);
+    const chosenDateObj = new Date(chosenYear, chosenMonth ); // Months are 0-indexed
+  
+    // Filter groups based on auctionDate
+    this.displayedChit = this.chitdata.filter((group: any) => {
+      const [day, month, year] = group.auctionDate.split('-').map(Number); // Parse DD-MM-YYYY
+      const auctionDateObj = new Date(year, month - 1, day); // Create a Date object
+  
+      return auctionDateObj <= chosenDateObj; // Compare the auction date with the chosen date
+    });
+
+     this.totalPages = Math.ceil(this.displayedChit.length / this.itemsPerPage);
+    this.total = this.displayedChit.reduce((acc, chitGroup) => {
       const chitAmount = parseFloat(chitGroup.chitAmount) || 0; // Safeguard against invalid values
       const subscribers = chitGroup.chitSubscribers?.length || 0; // Safeguard against undefined or null
       return acc + (chitAmount / 20) * subscribers;
@@ -106,11 +116,33 @@ previousPage() {
 onChange(event:any){
 console.log(event.target.value);
 this.chosenDate=event.target.value
+
+const [chosenYear, chosenMonth] = this.chosenDate.split('-').map(Number);
+const chosenDateObj = new Date(chosenYear, chosenMonth ); // Parse selectedDate
+
+this.displayedChit = this.chitdata.filter((group: any) => {
+  const [day, month, year] = group.auctionDate.split('-').map(Number);
+  const auctionDateObj = new Date(year, month - 1, day); // Parse auctionDate
+
+  return auctionDateObj <= chosenDateObj;
+});
+this.subShow=false
+this.selectedIndex=null
 this.paymentService.getTotalByGroupId(this.chosenDate).subscribe(data => {
-  this.totalSurplus=data.totalFutureAmount
+  if (this.chosenDate>=this.getCurrentMonth()) {
+    console.log(this.totalSurplus);
+    
+    this.totalSurplus=data.totalFutureAmount 
+  }else{
+    this.totalSurplus=0
+  }
   this.totalCollected=data.totalOfMonth
 })
-
+this.total = this.displayedChit.reduce((acc, chitGroup) => {
+  const chitAmount = parseFloat(chitGroup.chitAmount) || 0; // Safeguard against invalid values
+  const subscribers = chitGroup.chitSubscribers?.length || 0; // Safeguard against undefined or null
+  return acc + (chitAmount / 20) * subscribers;
+}, 0);
 }
 getByGroupId(groupId: string, index: any, chitSubscribers: any[] ,chitAmount:number) {
   this.totalAmount=chitAmount/20 *chitSubscribers.length
@@ -124,7 +156,11 @@ getByGroupId(groupId: string, index: any, chitSubscribers: any[] ,chitAmount:num
 
     this.paymentService.getTotalByGroupId(this.chosenDate,groupId).subscribe(data => {
       console.log(data);
-     this.groupSurplus=data.totalGroupAmount
+      if (this.chosenDate>=this.getCurrentMonth()) {        
+        this.groupSurplus=data.totalGroupAmount
+      }else{
+        this.groupSurplus=0
+      }
       // Consolidate duplicate passbooks
       const consolidatedPayments = this.consolidatePayments(data.payments);
 

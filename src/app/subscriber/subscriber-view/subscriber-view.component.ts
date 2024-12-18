@@ -111,7 +111,7 @@ export class SubscriberViewComponent implements OnInit {
       else {
         this.selectedIndex = index;
         this.isShowDiv = !this.isShowDiv;
-        this.paymentService.getPaymentByPassbook(data.passbookno).subscribe(response => {
+        this.paymentService.getVerifiedPaymentByPassbook(data.passbookno).subscribe(response => {
           this.paymentHistory = response;
         
           let installmentNo = 0; // Start from 1

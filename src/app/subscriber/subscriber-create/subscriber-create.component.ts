@@ -24,6 +24,10 @@ export class SubscriberCreateComponent implements OnInit {
   routeData: any
   routes: any[] = []
   url
+  panFile:string
+  aadharFile:string
+  passbookFile:string
+uploaded:any
   breadcrumsData: any = [
     {
       key: 'Subscriber Management',
@@ -165,6 +169,10 @@ export class SubscriberCreateComponent implements OnInit {
           this.subscriberData = data;
           this.subscriberId = this.subscriberData.Subscriber._id
           this.profileImageUrl = this.subscriberData.Subscriber.profileImageUrl
+          this.panFile=this.subscriberData.Subscriber.panUrl
+          this.aadharFile=this.subscriberData.Subscriber.aadharUrl
+          this.passbookFile=this.subscriberData.Subscriber.passbookUrl
+
           this.urls = this.subscriberData.Subscriber
           this.subscriber = false
           const utcDob = this.convertDateFormat(this.subscriberData.Subscriber.dob);
@@ -563,7 +571,31 @@ export class SubscriberCreateComponent implements OnInit {
     this.displayedSubscribers = filteredSubscribers.slice(0, this.itemsPerPage);
   }
 
+  onProfileSelected(event: any, controlName: string): void {
+    const file = event.target.files[0];
+    this.filesInfo[controlName] = event.target.files[0];
 
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e: any) => {
+          this.uploaded = e.target.result; // Set the preview URL
+        
+      };
+      reader.readAsDataURL(file);
+
+      // Update form value (optional for backend submission)
+      this.subscriberForm.patchValue({
+        [controlName]: file,
+      });
+    }
+
+    if (event.target.files && event.target.files.length) {
+      const file = event.target.files[0];
+      this.subscriberForm.patchValue({
+        [controlName]: file
+      });
+    }
+  }
 
   onFileSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
@@ -599,7 +631,11 @@ export class SubscriberCreateComponent implements OnInit {
 
   viewFile(fileType: string): void {
     this.url = fileType
-    let file
+    let file=this.filesInfo[fileType]
+    if (file) {
+      const fileURL = URL.createObjectURL(file);
+      window.open(fileURL, '_blank');
+    }else{
     if (this.url === "panUrl") { file = this.urls.panUrl }
     else if (this.url === "aadharUrl") { file = this.urls.aadharUrl }
     else if (this.url == 'passbookUrl') { file = this.urls.passbookUrl }
@@ -613,6 +649,7 @@ export class SubscriberCreateComponent implements OnInit {
       }
     } else {
     }
+  }
   }
 
   removeFile(fileType: string): void {

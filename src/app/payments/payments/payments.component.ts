@@ -49,6 +49,8 @@ export class PaymentsComponent implements OnInit {
   balanceMonth:string
   balanceAmount:number
   months:string
+  isLoading :boolean=false;
+
   passbookInstallmentData: any = {};
   constructor(private router: Router,
     private formBuilder: FormBuilder,
@@ -110,7 +112,7 @@ export class PaymentsComponent implements OnInit {
     });
     this.service.getTodayPayment().subscribe((data) => {
       this.totalPayment = data
-      this.serialNumberCounter = this.totalPayment.AllPayment.length + 1
+      this.serialNumberCounter = this.totalPayment.serialNo + 1
     })
     this.staffs = sessionStorage.getItem('name')
     this.staffs = this.staffs.replace(/"/g, '');
@@ -197,7 +199,10 @@ export class PaymentsComponent implements OnInit {
           const previousAmountPaid = lastPayment ? lastPayment.amount || 0 : 0;
 
           // Set receipt number and serial number
+          console.log(paymentData);
+          
           this.receiptNo = paymentData // Increment receipt number
+          console.log( this.receiptNo);
           
           this.receiptNo = this.receiptNo ? this.receiptNo.receiptNo + 1 : 1; // Increment receipt number
           let serialNumber = this.formatSerialNumber(this.serialNumberCounter);
@@ -564,7 +569,15 @@ export class PaymentsComponent implements OnInit {
         });
       });
     }
-
+    this.isLoading = true;
+        setTimeout(() => {
+          this.isLoading=false
+          // window.location.reload();
+          this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
+            this.router.navigate(['/payment']);
+          });
+    },1000); // Replace with actual API call logic
+  
   }
 
   validateCurrentDate(control: AbstractControl): { [key: string]: boolean } | null {

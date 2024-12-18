@@ -9,9 +9,9 @@
           <div class="profile-picture-container">
             <div class="profile-picture">
               <form [formGroup]="subscriberForm">
-                <img [src]="profileImageUrl || defaultImageUrl" alt="Profile Picture" class="profile-img">
+                <img [src]="uploaded||profileImageUrl || defaultImageUrl" alt="Profile Picture" class="profile-img">
                 <div class="form-group">
-                  <input type="file" (change)="onFileChange($event,'profileImageUrl')" class="form-control" hidden
+                  <input type="file" (change)="onProfileSelected($event,'profileImageUrl')" class="form-control" hidden
                     #profileFileInput formControlName="profileImageUrl">
                 </div>
               </form>
@@ -244,6 +244,11 @@
                       *ngIf="subscriberForm.get('panUrl').hasError('required')">*</span></label>
                   <input type="file" (change)="onFileChange($event, 'panUrl')" class="form-control form-control-sm"
                     formControlName="panUrl"  />
+                    <span
+                    *ngIf="panFile"
+                    style="color: red;"
+                    >{{ panFile }}</span
+                  >
                 </div>
               </div>
               <div class="col-lg-4 mt-4">
@@ -273,6 +278,11 @@
                       *ngIf="subscriberForm.get('aadharUrl').hasError('required')">*</span></label>
                   <input type="file" (change)="onFileChange($event, 'aadharUrl')" class="form-control form-control-sm"
                     formControlName="aadharUrl" />
+                    <span
+                    *ngIf="aadharFile"
+                    style="color: red;"
+                    >{{ aadharFile }}</span
+                  >
                 </div>
               </div>
               <div class="col-lg-4 mt-4">
@@ -304,6 +314,11 @@
                       *ngIf="subscriberForm.get('passbookUrl').hasError('required')">*</span></label>
                   <input type="file" (change)="onFileChange($event, 'passbookUrl')" class="form-control form-control-sm"
                     formControlName="passbookUrl" />
+                    <span
+                    *ngIf="passbookFile"
+                    style="color: red;"
+                    >{{ passbookFile }}</span
+                  >
                 </div>
               </div>
               <div class="col-lg-4 mt-4">

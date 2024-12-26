@@ -344,9 +344,9 @@
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">Are you Sure?</h5>
-        <button type="button" class="close" aria-label="Close" (click)="closeConfirmationModal()">
+        <!-- <button type="button" class="close" aria-label="Close" (click)="closeConfirmationModal()">
           <span aria-hidden="true">&times;</span>
-        </button>
+        </button> -->
       </div>
       <div class="modal-body text-center" *ngIf="regular || profitChit || extraPayments||purchaseChit">
         <p>Are you sure you want to Create Invoice for <strong>{{receipt?.type}}</strong>?</p>

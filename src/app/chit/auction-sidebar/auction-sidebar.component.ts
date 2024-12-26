@@ -19,7 +19,6 @@ export class AuctionSidebarComponent {
       this.auctions = this.auctions.todaysAuction
       this.displayedAuctions = this.auctions.slice(0, 5)
     }))
-
   }
   applyFilter(filterValue: string) {
     this.displayedAuctions = this.auctions;

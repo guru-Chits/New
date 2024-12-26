@@ -17,7 +17,8 @@ const loginRoutes: Routes = [
     path: '**',  // Wildcard route for a 404 page, if needed
     redirectTo: 'login',
     pathMatch: 'full'
-  }
+  },
+  
 ];
 
 

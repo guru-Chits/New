@@ -149,6 +149,8 @@ export class CreatePaymentComponent {
               subscriberName:paymentDetail?.subscriberName,
               installmentMonth:paymentDetail?.installmentMonth,
               cancelled: paymentDetail?.cancelled,
+              serialNumber:paymentDetail?.serialNumber
+
             };
 
             // Push to appropriate array based on cancelled status

@@ -4,6 +4,7 @@ import { MainComponent } from './main.component';
 import { SubscriberComponent } from '../subscriber/subscriber.component';
 import { ChitComponent } from '../chit/chit.component';
 import { AuthGuard } from '../shared/guard/auth.guard';
+import { DashboardComponent } from '../dashboard/dashboard.component';
 
 const routes: Routes = [
   { 
@@ -12,6 +13,12 @@ const routes: Routes = [
     canActivate: [AuthGuard],
     data: {accKey: 'Payments'},
     children: [
+      // {
+      //   path: '',
+      //   component: DashboardComponent, // Default route
+      //   data: { accKey: 'Payments' },
+      //   canActivate: [AuthGuard],
+      // },
       {
         path: 'subscriber',
         loadChildren: () => import('../../app/subscriber/subscriber.module').then(m => m.SubscriberModule),

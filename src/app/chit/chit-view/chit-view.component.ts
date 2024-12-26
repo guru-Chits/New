@@ -115,6 +115,7 @@ column: ITableColumn[] = [
       this.displayedChit = this.totalChitData
       this.displayedChit = this.totalChitData.slice(0, 5);
     })
+    
   }
 
   ngOnInit(): void {
@@ -167,13 +168,27 @@ column: ITableColumn[] = [
 
           } else {
           }
-          this.paymentService.getTransactionById(this.groupId).subscribe((response) => {
-            this.payment = response
-            this.payment = this.payment.payment
-            this.payment.forEach(amount => {
-              this.chitSubscriberTotal = amount.walletBalance
-            });
+
+          this.service.getAuctionCycleByGroupId(this.groupId).subscribe((data) => {
+            const lastAuction = data.latestChit.length
+            if (lastAuction<19) {
+              this.paymentService.getTransactionById(this.groupId).subscribe((response) => {
+                this.payment = response
+                this.payment = this.payment.payment
+                this.payment.forEach(amount => {
+                  this.chitSubscriberTotal = amount.walletBalance
+                });
+              })
+            }else if(lastAuction == 19) {
+              this.chitSubscriberTotal =  this.chitData.chitAmount
+            }else if (lastAuction >=20) {
+              this.chitSubscriberTotal =  0
+            }else{
+              this.chitSubscriberTotal =  0
+
+            }
           })
+
           this.paymentService.getAddWallet(this.groupId).subscribe((response) => {
             this.addPayment = response
             this.addPayment = this.addPayment.payment

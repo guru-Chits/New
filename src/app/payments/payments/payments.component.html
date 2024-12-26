@@ -17,7 +17,8 @@
         </div>
         <div class="col-lg-4">
             <div class="form-group">
-                <label for="passbooknumber" class="form-control-label">Passbook Number <span class="required">*</span></label>
+                <label for="passbooknumber" class="form-control-label">Passbook Number <span
+                        class="required">*</span></label>
                 <input class="form-control p-2 form-control-sm" id="passbooknumber" formControlName="passbooknumber"
                     placeholder="Passbook Number" [value]="paymentForm.get('passbooknumber').value"
                     (input)="onInputChange($event)" (keydown)="blockPrefix($event)" maxlength="15" />
@@ -95,13 +96,16 @@
                 <label for="amount" class="form-control-label">Amount<span class="required"
                         *ngIf="paymentForm.get('amount').hasError('required')">*</span></label>
                 <input class="form-control p-2 form-control-sm" id="amount" formControlName="amount"
-                    placeholder="Amount"   (input)="onContactChange($event)"
-                    [ngClass]="{'is-invalid': paymentForm.get('amount')?.invalid && paymentForm.get('amount')?.touched}"/>
+                    placeholder="Amount" (input)="onContactChange($event)"
+                    [ngClass]="{'is-invalid': paymentForm.get('amount')?.invalid && paymentForm.get('amount')?.touched}" />
                 <div *ngIf="paymentForm.errors?.amountExceedsChitAmount" style="color: red;">
                     Amount cannot be greater than Chit Amount.
                 </div>
                 <div *ngIf="paymentForm.get('amount').hasError('invalidNumber')" style="color: red;">
                     Amount must be a positive number.
+                </div>
+                <div *ngIf="paymentForm.get('amount')?.hasError('amountExceeds')">
+                    <small style="color: red;">Pay {{ chitValue/20 }} for Last Month</small>
                   </div>
             </div>
         </div>
@@ -133,11 +137,18 @@
             </div>
         </div>
     </div>
+
+  
     <div class="row">
         <div class="col-lg-12 d-flex justify-content-end py-3">
             <button type="submit" class="btn next-btn px-4 py-3 fw-bold" data-bs-toggle="modal"
                 data-bs-target="#paymentModal" [disabled]="!paymentForm.valid" (click)="preview()">Preview
                 Receipt</button>
+        </div>
+        <div class="row" *ngIf="lastMonth">
+            <p >Last Installment Month:<span style="color: #12B76A;"> {{lastMonth}}</span></p>
+            <p >Last Installment Amount: <span style="color: #12B76A;">{{lastAmount}}</span></p>
+    
         </div>
     </div>
 </form>
@@ -235,13 +246,15 @@
                     </div>
                 </div>
                 <div class="d-flex justify-content-end py-4">
-                    <button type="button" class="btn next-btn px-4 py-2 fw-bold mx-2 "  data-bs-dismiss="modal">Cancel</button>
-   
-                    <button type="button" class="btn next-btn px-4 py-2 fw-bold " data-bs-dismiss="modal" (click)="onSubmit()">Submit</button>
+                    <button type="button" class="btn next-btn px-4 py-2 fw-bold mx-2 "
+                        data-bs-dismiss="modal">Cancel</button>
+
+                    <button type="button" class="btn next-btn px-4 py-2 fw-bold " data-bs-dismiss="modal"
+                        (click)="onSubmit()">Submit</button>
 
                 </div>
             </div>
         </div>
     </div>
-    
+
 </div>

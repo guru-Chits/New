@@ -22,9 +22,11 @@ export class LedgerComponent implements OnInit {
       routerLink: 'ledger',
     },
   ];
+  payments:any
   chosenDate: string;
   chitdata: any;
   displayedChit: any[] = []
+  adjustedAmount:number
   itemsPerPage: number = 15;
   currentPage: number = 1;
   totalPages: number = 0;
@@ -41,6 +43,7 @@ export class LedgerComponent implements OnInit {
   totalSurplus:number
   groupSurplus:number
   selectedSub:string | null = null;
+  chitAmount:any
   constructor(private fb:FormBuilder, private chitService:ChitService, private paymentService:PaymentService,    private datePipe: DatePipe,
   ){}
 ngOnInit(): void {
@@ -50,26 +53,47 @@ ngOnInit(): void {
   this.chosenDate=this.getCurrentMonth()
   console.log(this.chosenDate);
 
-  this.chitService.getAllChit().subscribe((data) => {
+  this.chitService.getAllChit().subscribe(async (data) => {
     this.chitdata = data;
     this.chitdata = this.chitdata?.AllChitGroups  
     const [chosenYear, chosenMonth] = this.chosenDate.split('-').map(Number);
     const chosenDateObj = new Date(chosenYear, chosenMonth ); // Months are 0-indexed
   
-    // Filter groups based on auctionDate
-    this.displayedChit = this.chitdata.filter((group: any) => {
+    const filteredPromises = this.chitdata.map(async (group: any) => {
       const [day, month, year] = group.auctionDate.split('-').map(Number); // Parse DD-MM-YYYY
       const auctionDateObj = new Date(year, month - 1, day); // Create a Date object
   
-      return auctionDateObj <= chosenDateObj; // Compare the auction date with the chosen date
+      // Skip groups with auctionDate > chosenDate
+      if (auctionDateObj > chosenDateObj) {
+        return null;
+      }
+  
+      // Fetch auction cycle data
+      const auctionCycleData = await this.chitService.getAuctionCycleByGroupId(group.chitGroupId).toPromise();
+      const latestChit = auctionCycleData?.latestChit || [];
+  
+      if (latestChit.length >= 19) {
+        const lastInstallmentDate = this.datePipe.transform(
+          latestChit[latestChit.length - 1]?.date,
+          'MMMM-yyyy'
+        ); // Format to compare dates
+        const installmentMonth = this.datePipe.transform(this.chosenDate, 'MMMM-yyyy');
+        const installmentChosenDate = new Date(installmentMonth); 
+        const lastInstallment = new Date(lastInstallmentDate);   
+        
+        if (installmentChosenDate  > lastInstallment) {
+          return null;
+        }
+      }       
+      return group; // Include this group
     });
-
+    const filteredGroups = await Promise.all(filteredPromises);
+    this.displayedChit = filteredGroups.filter((group) => group !== null);
+    
      this.totalPages = Math.ceil(this.displayedChit.length / this.itemsPerPage);
-    this.total = this.displayedChit.reduce((acc, chitGroup) => {
-      const chitAmount = parseFloat(chitGroup.chitAmount) || 0; // Safeguard against invalid values
-      const subscribers = chitGroup.chitSubscribers?.length || 0; // Safeguard against undefined or null
-      return acc + (chitAmount / 20) * subscribers;
-  }, 0);
+     this.calculateTotal().then(() => {
+      console.log('Total calculated:', this.total);
+    });
   })
 
   this.paymentService.getTotalByGroupId(this.chosenDate).subscribe(data => {
@@ -78,6 +102,75 @@ ngOnInit(): void {
     console.log(this.totalCollected);
   })
 }
+
+
+async calculateTotal() {
+  this.total = 0;
+
+  const totalPromises = this.displayedChit.map(async (chitGroup) => {
+    const auctionCycleData = await this.chitService.getAuctionCycleByGroupId(chitGroup.chitGroupId).toPromise();
+    const latestChit = auctionCycleData?.latestChit || [];
+    const lastInstallmentDate = this.datePipe.transform(latestChit[latestChit.length - 1]?.date, 'MMMM-yyyy');
+    const installmentMonth = this.datePipe.transform(this.chosenDate, 'MMMM-yyyy');
+
+    if (latestChit.length >= 19 && lastInstallmentDate === installmentMonth) {
+      const transactionData = await this.paymentService.getTransactionById(chitGroup.chitGroupId).toPromise();
+      this.chitAmount  = transactionData
+      this.chitAmount=this.chitAmount.payment
+      const payments = this.chitAmount || [];
+      const walletBalance = payments.reduce((sum, payment) => sum + (payment.walletBalance || 0), 0);
+
+      const adjustedAmount = chitGroup.chitAmount - walletBalance;
+      const subscribers = chitGroup.chitSubscribers?.length || 0;
+
+      return (adjustedAmount / 20) * subscribers;
+    // }else if(lastInstallmentDate === installmentMonth){
+    //   const chitAmount =null
+    //   const subscribers = chitGroup.chitSubscribers?.length || 0;
+
+    //   return (chitAmount / 20) * subscribers;
+
+    }
+     else {
+      const chitAmount = parseFloat(chitGroup.chitAmount) || 0;
+      const subscribers = chitGroup.chitSubscribers?.length || 0;
+
+      return (chitAmount / 20) * subscribers;
+    }
+  });
+
+  const totalAmounts = await Promise.all(totalPromises);
+  this.total = totalAmounts.reduce((sum, amount) => sum + amount, 0);
+}
+async calculateChitAmount(chitAmount: number, chitGroupId: string): Promise<number> {
+  try {
+    // Fetch auction cycle data for the group
+    const auctionCycleData = await this.chitService.getAuctionCycleByGroupId(chitGroupId).toPromise();
+    const latestChit = auctionCycleData?.latestChit || [];
+    const lastInstallmentDate = this.datePipe.transform(latestChit[latestChit.length - 1]?.date, 'MMMM-yyyy');
+    const installmentMonth = this.datePipe.transform(this.chosenDate, 'MMMM-yyyy');
+
+    // Check condition: If auction cycle >= 19 and dates match
+    if (latestChit.length >= 19 && lastInstallmentDate === installmentMonth) {
+      // Fetch transactions for the group
+      const transactionData = await this.paymentService.getTransactionById(chitGroupId).toPromise();
+      this.payments=transactionData
+      const payments=this.payments?.payment || []
+      // Calculate wallet balance from payments
+      const walletBalance = payments.reduce((sum, payment) => sum + (payment.walletBalance || 0), 0);
+
+      // Calculate adjusted amount
+      return chitAmount - walletBalance;
+    }
+
+    // Return the original chitAmount if condition does not apply
+    return chitAmount;
+  } catch (error) {
+    console.error('Error calculating chit amount:', error);
+    return chitAmount; // Fallback to the original chitAmount in case of error
+  }
+}
+
 getCurrentMonth(): string {
   const today = new Date();
   const year = today.getFullYear();
@@ -113,19 +206,46 @@ previousPage() {
   }
 }
 
-onChange(event:any){
+  async onChange(event:any){
 console.log(event.target.value);
 this.chosenDate=event.target.value
 
 const [chosenYear, chosenMonth] = this.chosenDate.split('-').map(Number);
 const chosenDateObj = new Date(chosenYear, chosenMonth ); // Parse selectedDate
 
-this.displayedChit = this.chitdata.filter((group: any) => {
-  const [day, month, year] = group.auctionDate.split('-').map(Number);
-  const auctionDateObj = new Date(year, month - 1, day); // Parse auctionDate
+const filteredPromises = this.chitdata.map(async (group: any) => {
+  const [day, month, year] = group.auctionDate.split('-').map(Number); // Parse DD-MM-YYYY
+  const auctionDateObj = new Date(year, month - 1, day); // Create a Date object
 
-  return auctionDateObj <= chosenDateObj;
+  // Skip groups with auctionDate > chosenDate
+  if (auctionDateObj > chosenDateObj) {
+    return null;
+  }
+
+  // Fetch auction cycle data
+  const auctionCycleData = await this.chitService.getAuctionCycleByGroupId(group.chitGroupId).toPromise();
+  const latestChit = auctionCycleData?.latestChit || [];
+
+  if (latestChit.length >= 19) {
+    const lastInstallmentDate = this.datePipe.transform(
+      latestChit[latestChit.length - 1]?.date,
+      'MMMM-yyyy'
+    ); // Format to compare dates
+    const installmentMonth = this.datePipe.transform(this.chosenDate, 'MMMM-yyyy');
+    const installmentChosenDate = new Date(installmentMonth); 
+    const lastInstallment = new Date(lastInstallmentDate);   
+    
+    if (installmentChosenDate  > lastInstallment) {
+      return null;
+    }
+  }       
+  return group; // Include this group
 });
+const filteredGroups = await Promise.all(filteredPromises);
+this.displayedChit = filteredGroups.filter((group) => group !== null);
+
+
+
 this.subShow=false
 this.selectedIndex=null
 this.paymentService.getTotalByGroupId(this.chosenDate).subscribe(data => {
@@ -138,14 +258,18 @@ this.paymentService.getTotalByGroupId(this.chosenDate).subscribe(data => {
   }
   this.totalCollected=data.totalOfMonth
 })
-this.total = this.displayedChit.reduce((acc, chitGroup) => {
-  const chitAmount = parseFloat(chitGroup.chitAmount) || 0; // Safeguard against invalid values
-  const subscribers = chitGroup.chitSubscribers?.length || 0; // Safeguard against undefined or null
-  return acc + (chitAmount / 20) * subscribers;
-}, 0);
+
+
+this.calculateTotal().then(() => {
+  console.log('Total calculated:', this.total);
+});
 }
-getByGroupId(groupId: string, index: any, chitSubscribers: any[] ,chitAmount:number) {
-  this.totalAmount=chitAmount/20 *chitSubscribers.length
+
+  async getByGroupId(groupId: string, index: any, chitSubscribers: any[] ,chitAmount:number) {
+  this.adjustedAmount = await this.calculateChitAmount(chitAmount, groupId);
+  this.totalAmount=this.adjustedAmount/20 *chitSubscribers.length
+  
+
   this.subShow=false
   if (this.selectedIndex === index) {
     this.selectedIndex = null;
@@ -266,7 +390,7 @@ private processPayments(payments: any[], chitSubscribers: any[]): any[] {
 
 getSub(passbookNumber:string){
 this.subShow=true
-this.paymentService.getPaymentByPassbook(passbookNumber).subscribe(response => {
+this.paymentService.getVerifiedPaymentByPassbook(passbookNumber).subscribe(response => {
 console.log(response);
 this.subPayment=response
 this.subPayment=this.subPayment.payments

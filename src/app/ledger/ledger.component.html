@@ -50,12 +50,13 @@
         </div>
 
         <!-- Chit Group Listing -->
-        <div
-          *ngFor="let group of displayedChit | slice:(currentPage - 1) * itemsPerPage:(currentPage) * itemsPerPage; let i = index"
+        <div *ngFor="let group of displayedChit | slice:(currentPage - 1) * itemsPerPage:(currentPage) * itemsPerPage; let i = index"
           class="mb-3">
+
           <div class="table-group my-2 px-3 d-flex justify-content-between align-items-center rounded-end border">
+            
             <!-- Group Header -->
-            <div>
+            <div class="row">
               <span class="fw-bold fs-5">{{ group.chitGroupId }}</span>
             </div>
 
@@ -72,14 +73,15 @@
           <!-- Group Details -->
           <div class="card p-2 ps-2" *ngIf="selectedIndex === i && groupPaymentData">
             <!-- Summary Row -->
-            <div class="row mb-3">
+
+            <div class="row mb-5">
               <div class="col-md-3 ms-4 py-2  card">
                 <div>Total Amount <span style="color: #50A1A5;">{{totalAmount}}</span></div>
-
+  
               </div>
               <div class="col-md-3 ms-2 py-2 card">
                 <div>Amount Collected <span style="color: #50A1A5;">{{collectedAmount}}</span></div>
-
+  
               </div>
               <div class="col-md-3 ms-2 py-2  card">
                 <div>Outstanding <span style="color: #F04438;"
@@ -89,9 +91,8 @@
                 <div>Surplus <span style="color: #50A1A5;">{{groupSurplus}}</span>
                 </div>
               </div>
-
+  
             </div>
-
             <!-- Subscriber Details -->
             <div *ngFor="let payment of groupPaymentData align-items-center" class="border-bottom pb-3 mb-3">
               <div class="row mb-2 ms-3">
@@ -115,7 +116,7 @@
               </div>
               <div class="row mb-3 ps-2">
                 <div class="col-md-2 ms-4 py-2  card">
-                  <div>Total Amount <span style="color: #50A1A5;">{{ group.chitAmount/20 }}</span></div>
+                  <div>Total Amount <span style="color: #50A1A5;">{{ adjustedAmount/20 }}</span></div>
 
                 </div>
                 <div class="col-md-2 ms-2 py-2 card">
@@ -123,8 +124,8 @@
 
                 </div>
                 <div class="col-md-2 ms-2 py-2  card">
-                  <div>Outstanding <span style="color: #F04438;" *ngIf=" group.chitAmount/20 - payment.amount >= 0">{{
-                      group.chitAmount/20 - payment.amount }}</span> </div>
+                  <div>Outstanding <span style="color: #F04438;" *ngIf="adjustedAmount/20 - payment.amount >= 0">{{
+                    adjustedAmount/20 - payment.amount }}</span> </div>
                 </div>
                 <div class="col-md-2 ms-2 py-2  card">
                   <div>Surplus <span style="color: #50A1A5;" > {{ chosenDate >= this.getCurrentMonth() ? payment.totalPassbookNoAmount : 0 }}</span>
@@ -138,7 +139,7 @@
               </div>
             </div>
           </div>
-
+          
         </div>
 
         <!-- Pagination Controls -->

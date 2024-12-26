@@ -191,14 +191,27 @@ export class ChitComponent implements OnInit {
 
             }
           })
+          this.service.getAuctionCycleByGroupId(this.groupId).subscribe((data)=>{
+            const lastAuction=data.latestChit.length 
+            console.log(lastAuction);
+            if (lastAuction<19) {
+              this.paymentService.getTransactionById(this.groupId).subscribe((response) => {
+                this.payment = response
+                this.payment = this.payment.payment
+                this.payment.forEach(amount => {
+                  this.chitSubscriberTotal = amount.walletBalance
+                });
+              })
+            }else if(lastAuction == 19) {
+              this.chitSubscriberTotal =  this.specificChitData.chitAmount
+            }else if (lastAuction >=20) {
+              this.chitSubscriberTotal =  0
+            }else{
+              this.chitSubscriberTotal =  0
 
-          this.paymentService.getTransactionById(this.groupId).subscribe((response) => {
-            this.payment = response
-            this.payment = this.payment.payment
-            this.payment.forEach(amount => {
-              this.chitSubscriberTotal = amount.walletBalance
-            });
+            }
           })
+
           this.getAuctionById(this.groupId)
         }
 

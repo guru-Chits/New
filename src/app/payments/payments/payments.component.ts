@@ -43,14 +43,20 @@ export class PaymentsComponent implements OnInit {
   canEdit: boolean = false;
   canDelete: boolean = false;
   canView: boolean = false
-  amount:any
+  amount: any
   payments: any
-  balance:boolean=false
-  balanceMonth:string
-  balanceAmount:number
-  months:string
-  isLoading :boolean=false;
-
+  balance: boolean = false
+  balanceMonth: string
+  balanceAmount: number
+  months: string
+  isLoading: boolean = false;
+  chitAmount: any
+  passbookNo: string
+  chitValue: any
+  lastMonth: String
+  lastAmount: any
+  amountPayments: any
+  lastPayment:boolean=false
   passbookInstallmentData: any = {};
   constructor(private router: Router,
     private formBuilder: FormBuilder,
@@ -85,7 +91,7 @@ export class PaymentsComponent implements OnInit {
       cancelled: [''],
       verified: [''],
       deleteReason: [""],
-      approvedBy:[""]
+      approvedBy: [""]
     },
       {
         validator: this.amountLessThanOrEqualChitAmount.bind(this)
@@ -100,16 +106,122 @@ export class PaymentsComponent implements OnInit {
     this.paymentForm.get('passbooknumber').valueChanges.subscribe(passbooknumber => {
       if (passbooknumber) {
         this.getSubByPassbookNo(passbooknumber);
+        this.passbookNo = passbooknumber
       }
-      this.paymentForm.get('amount')?.valueChanges.subscribe((amount) => {
-        const chitAmount = this.paymentForm.get('chitAmount')?.value;
-        if (chitAmount && amount > 0) {
-          const expectedInstallmentAmount = chitAmount / 20;  // Monthly installment calculation
-          this.amount=amount
-          this.handleAmountChange(amount, expectedInstallmentAmount, passbooknumber);
-        }
-      });
+
     });
+
+    this.paymentForm.get('amount')?.valueChanges.subscribe((amount) => {
+      console.log(this.passbookNo);
+
+      // this.getSubByPassbookNo(this.passbookNo);
+
+      //     const expectedAmountPerInstallment = this.paymentForm.get('chitAmount')?.value;
+
+      const groupId = this.paymentForm.get('groupId')?.value;
+      const installmentMonth = this.paymentForm.get('installmentMonth')?.value;
+      this.chitService.getAuctionCycleByGroupId(groupId).subscribe((data) => {
+        console.log(data.latestChit);
+
+        if (data.latestChit.length > 1) {
+          console.log(data.latestChit[data.latestChit.length - 1].date);
+
+          const installMent = this.datePipe.transform(data?.latestChit[data?.latestChit.length - 1].date, 'dd-MMMM-yyyy')
+          const installmentDate = new Date(installmentMonth);
+          const lastInstallmentDate = new Date(installMent);
+
+          const auctionCycle = data.auctionCycle
+          if (auctionCycle >= 20 && installmentDate.getTime() == lastInstallmentDate.getTime()) {
+            console.log("equal");
+            this.lastPayment = true
+            this.service.getTransactionById(groupId).subscribe((response) => {
+              this.chitAmount = response
+              this.chitAmount = this.chitAmount.payment
+              this.chitAmount.forEach(Amount => {
+                const chitAmount = this.paymentForm.get('chitAmount')?.value - Amount.walletBalance
+                console.log(chitAmount);
+                this.chitValue = chitAmount
+                if (chitAmount && amount > 0) {
+                  const expectedInstallmentAmount = chitAmount / 20;  // Monthly installment calculation
+                  this.amount = amount
+                  console.log(amount, expectedInstallmentAmount);
+
+                  const amountControl = this.paymentForm.get('amount');
+                  console.log(expectedInstallmentAmount);
+
+                  if (this.paymentForm.get('amount')?.value > expectedInstallmentAmount) {
+                    // Set a custom error on the form control
+                    console.log(this.paymentForm.get('amount')?.value);
+
+                    this.paymentForm.get('amount')?.setErrors({ amountExceeds: true });
+                    console.log({ amountExceeds: true }, "max");
+
+                  }
+                  else {
+                    // Clear any existing errors if the condition is satisfied
+                    amountControl?.setErrors(null);
+                  }
+
+                  this.handleAmountChange(amount, expectedInstallmentAmount, this.passbookNo);
+                }
+              });
+            })
+          }
+          else if (installmentDate.getTime() < lastInstallmentDate.getTime()) {
+            const chitAmount = this.paymentForm.get('chitAmount')?.value;
+            this.chitValue = chitAmount
+            console.log("lesser");
+
+            if (chitAmount && amount > 0) {
+              const expectedInstallmentAmount = chitAmount / 20;  // Monthly installment calculation
+              console.log(amount, expectedInstallmentAmount);
+
+              this.amount = amount
+              this.handleAmountChange(amount, expectedInstallmentAmount, this.passbookNo);
+            }
+          }
+          else if (installmentDate.getTime() > lastInstallmentDate.getTime()) {
+            console.log("greater");
+
+            // this.chitValue=0
+            window.alert("Paid all Months")
+            setTimeout(() => {
+              this.isLoading = false
+              // window.location.reload();
+              this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
+                this.router.navigate(['/payment']);
+              });
+            }, 1000);
+            // this.handleAmountChange(amount, 1, passbooknumber);
+          }
+
+        } else {
+          const chitAmount = this.paymentForm.get('chitAmount')?.value;
+
+          if (chitAmount && amount > 0) {
+            const expectedInstallmentAmount = chitAmount / 20;  // Monthly installment calculation
+            this.amount = amount
+            this.handleAmountChange(amount, expectedInstallmentAmount, this.passbookNo);
+          }
+        }
+      })
+      if (!amount || amount.trim() === '') { // Check if amount is null, undefined, or an empty string
+        // this.receiptNo=""
+        this.amount = 0
+        this.balance = false
+        this.balanceMonth = ""
+        this.balanceAmount = 0
+        // this.receiptNo=""
+        this.paymentForm.patchValue({
+        
+          installmentMonth:"",
+         
+          receiptNumber: ""
+        });
+        this.getSubByPassbookNo(this.passbookNo);
+      }
+    });
+
     this.service.getTodayPayment().subscribe((data) => {
       this.totalPayment = data
       this.serialNumberCounter = this.totalPayment.serialNo + 1
@@ -127,7 +239,7 @@ export class PaymentsComponent implements OnInit {
   amountLessThanOrEqualChitAmount(form: AbstractControl) {
     const amount = +form.get('amount')?.value;
     const chitAmount = +form.get('chitAmount')?.value;
-  
+
     if (amount && chitAmount) {
       if (amount <= 0) {
         return { invalidAmount: true }; // Validation error for zero or negative amount
@@ -141,30 +253,30 @@ export class PaymentsComponent implements OnInit {
 
   onContactChange(event: any) {
     let inputValue = event.target.value;
-  
+
     // Remove non-numeric characters
     let numbersOnly = inputValue.replace(/[^\d]/g, '');
-  
+
     // Ensure the value is greater than 0
     if (+numbersOnly <= 0) {
       numbersOnly = ''; // Clear the value if it is zero or less
     }
-  
+
     // Retrieve chitAmount from the form
     const chitAmount = +this.paymentForm.get('chitAmount')?.value || 0;
-  
+
     // Restrict the amount to chitAmount if it exceeds
     if (+numbersOnly > chitAmount) {
       numbersOnly = chitAmount.toString();
     }
-  
+
     // Patch the valid value to the form
     this.paymentForm.patchValue({
       amount: numbersOnly
     });
   }
-  
-  
+
+
   onInputChange(event: any) {
     let inputValue = event.target.value;
     if (!inputValue.startsWith('PB-')) {
@@ -182,10 +294,20 @@ export class PaymentsComponent implements OnInit {
   }
 
   getSubByPassbookNo(passbooknumber: string): void {
+
     this.chitService.getByPassbooNo(passbooknumber).subscribe(data => {
       if (data) {
         this.subDetail = data;
-        const chitAmount = this.subDetail.chitAmount;
+        let chitAmount = this.subDetail.chitAmount;
+
+        // if(this.chitAmount){
+        //    chitAmount = this.chitAmount;
+        // }else{
+        //   chitAmount = this.subDetail.chitAmount;
+        // }
+        
+        console.log(this.chitValue);
+
         const expectedAmountPerInstallment = chitAmount / 20; // Monthly installment calculation
         const date = this.datePipe.transform(this.subDetail.auctionDate, 'dd-MMMM-YYYY') || '';
 
@@ -200,19 +322,19 @@ export class PaymentsComponent implements OnInit {
 
           // Set receipt number and serial number
           console.log(paymentData);
-          
+
           this.receiptNo = paymentData // Increment receipt number
-          console.log( this.receiptNo);
-          
+          console.log(this.receiptNo);
+
           this.receiptNo = this.receiptNo ? this.receiptNo.receiptNo + 1 : 1; // Increment receipt number
           let serialNumber = this.formatSerialNumber(this.serialNumberCounter);
           let balanceAmount = 0;
           let nextInstallmentMonth = date;
-          
+
           // Fetch total amount for the current installment month and handle underpayments
           this.service.getAmountByMonth(passbooknumber, lastPayment?.installmentMonth).subscribe((data) => {
             const totalAmountPaidForMonth = data.totalAmount || 0;
-            
+
             // If the total amount for the previous month is less than the expected installment
             if (totalAmountPaidForMonth < expectedAmountPerInstallment) {
               balanceAmount = expectedAmountPerInstallment - totalAmountPaidForMonth; // Calculate pending balance
@@ -244,11 +366,52 @@ export class PaymentsComponent implements OnInit {
               collectionType: subscriberDetails.collectionType,
               installmentMonth: nextInstallmentMonth,
               region: subscriberDetails.place,
-              chitAmount: chitAmount,
+              chitAmount:  this.subDetail.chitAmount,
               serialNumber: serialNumber,
               receiptNumber: this.receiptNo
             });
+            const groupId = this.paymentForm.get('groupId')?.value;
+            const installmentMonth = this.paymentForm.get('installmentMonth')?.value;
+            this.chitService.getAuctionCycleByGroupId(groupId).subscribe((data) => {
+              console.log(data.latestChit);
 
+              if (data.latestChit.length > 1) {
+                console.log(data.latestChit[data.latestChit.length - 1].date);
+
+                const installMent = this.datePipe.transform(data?.latestChit[data?.latestChit.length - 1].date, 'dd-MMMM-yyyy')
+                const installmentDate = new Date(installmentMonth);
+                const lastInstallmentDate = new Date(installMent);
+
+                const auctionCycle = data.auctionCycle
+
+
+                if (auctionCycle == 19) {
+                  this.lastMonth = this.incrementInstallmentMonth(installMent)
+                  this.service.getTransactionById(groupId).subscribe((response) => {
+                    this.lastAmount = response
+                    this.lastAmount = this.lastAmount.payment
+                    this.lastAmount.forEach(Amount => {
+                      const chitAmount = (this.paymentForm.get('chitAmount')?.value - Amount.walletBalance) / 20
+                      console.log(chitAmount);
+                      this.lastAmount = chitAmount
+                    });
+                  })
+                }
+                else if (auctionCycle >= 20) {
+                  this.lastMonth = installMent
+                  this.service.getTransactionById(groupId).subscribe((response) => {
+                    this.lastAmount = response
+                    this.lastAmount = this.lastAmount.payment
+                    this.lastAmount.forEach(Amount => {
+
+                      const chitAmount = (this.paymentForm.get('chitAmount')?.value - Amount.walletBalance) / 20
+                      console.log(chitAmount);
+                      this.lastAmount = chitAmount
+                    });
+                  })
+                }
+              }
+            })
             if (receiptNumber2) {
               this.paymentForm.patchValue({
                 receiptNumber: this.receiptNo,
@@ -265,19 +428,23 @@ export class PaymentsComponent implements OnInit {
 
 
   handleAmountChange(amount: number, expectedInstallmentAmount: number, passbooknumber: any) {
+    console.log(amount);
+
     // Fetch the last payment or set default values if no previous payment exists
     const lastPayment = this.payments?.[this.payments.length - 1] || null;
     const previousAmountPaid = lastPayment ? lastPayment.amount || 0 : 0;
-    const chitAmount = this.subDetail.chitAmount;
+    const chitAmount = this.chitValue;
+
     const expectedAmountPerInstallment = chitAmount / 20; // Monthly installment calculation
 
     let balanceAmount = 0;
     let currentInstallmentMonth = this.datePipe.transform(this.subDetail.auctionDate, 'dd-MMMM-YYYY') || '';
+    console.log(this.lastMonth);
 
     // Fetch total amount for the last payment's month to check underpayment
     this.service.getAmountByMonth(passbooknumber, lastPayment?.installmentMonth).subscribe((data) => {
       const totalAmountPaidForMonth = data.totalAmount || 0;
-      
+
       // If there's no previous payment, set balanceAmount to 0
       if (!lastPayment) {
         balanceAmount = 0;  // No balance to carry forward for the first payment
@@ -285,50 +452,50 @@ export class PaymentsComponent implements OnInit {
         // If there was a previous underpayment, calculate the pending balance
         balanceAmount = expectedInstallmentAmount - totalAmountPaidForMonth;
         currentInstallmentMonth = lastPayment.installmentMonth;  // Keep the same month
-        let balanceAm=amount-balanceAmount
-                
-        if(balanceAm>0){
+        let balanceAm = amount - balanceAmount
+
+        if (balanceAm > 0 && !this.lastPayment) {
           console.log(balanceAm);
-          this.amount=balanceAm
-          this.balance=true
-          this.balanceMonth=currentInstallmentMonth
-          this.balanceAmount=balanceAmount
-          console.log(this.balanceAmount,this.balanceMonth);
-          
+          this.amount = balanceAm
+          this.balance = true
+          this.balanceMonth = currentInstallmentMonth
+          this.balanceAmount = balanceAmount
+          console.log(this.balanceAmount, this.balanceMonth);
+
           currentInstallmentMonth = this.installmentMonth(lastPayment.installmentMonth);
-          this.months=this.incrementInstallmentMonth(lastPayment.installmentMonth);
+          this.months = this.incrementInstallmentMonth(lastPayment.installmentMonth);
           console.log(this.months);
-          
+
         }
-        } else {
+      } else {
         // If the previous payment was enough, move to the next month
         currentInstallmentMonth = this.incrementInstallmentMonth(lastPayment.installmentMonth);
-        this.months=currentInstallmentMonth
+        this.months = currentInstallmentMonth
         console.log(this.months);
-        
+
       }
-      
+
       let installmentMonths = currentInstallmentMonth;  // Start with the current month
       let remainingAmount = amount;
       let appliedAmountForMonth = 0;
       let nextInstallmentMonth = '';
 
       // Apply the amount first to the balance for the current month
-      if (remainingAmount > balanceAmount) {
+      if (remainingAmount > balanceAmount && !this.lastPayment) {
         appliedAmountForMonth = balanceAmount;
         console.log(appliedAmountForMonth);
 
         remainingAmount -= balanceAmount;  // Subtract balance amount from the paid amount
-        
+
       } else {
         // If the remaining amount is less than or equal to the balance
-        
+
         appliedAmountForMonth = remainingAmount;
         remainingAmount = 0;  // No amount left to apply to future months
       }
 
       // Iterate and apply the remaining amount across multiple months
-      while (remainingAmount > 0) {
+      while (remainingAmount > 0 && !this.lastPayment) {
 
         if (remainingAmount > expectedInstallmentAmount) {
           console.log(remainingAmount);
@@ -344,9 +511,9 @@ export class PaymentsComponent implements OnInit {
           remainingAmount = 0;  // No amount left to apply
         }
       }
-      if(!this.balance){
-        this.months=installmentMonths
-        
+      if (!this.balance&& !this.lastPayment) {
+        this.months = installmentMonths
+
       }
       this.paymentForm.patchValue({
         installmentMonth: installmentMonths,  // Patch all the months in which payments were applied
@@ -374,7 +541,8 @@ export class PaymentsComponent implements OnInit {
     // Return the new date with the same day and the incremented month and year if needed
     return `${day}-${nextMonth}-${year}`;
   }
-   installmentMonth(currentMonth: string): string {
+
+  installmentMonth(currentMonth: string): string {
     const dateParts = currentMonth.split('-');
     const day = dateParts[0]; // Keep the day
     const monthName = dateParts[1]; // Extract the month name
@@ -394,6 +562,7 @@ export class PaymentsComponent implements OnInit {
     // Return the new date with the same day and the incremented month and year if needed
     return `${currentMonth} , ${day}-${nextMonth}-${year}`;
   }
+  
   incrementInstallment(currentMonth: string): string {
     const dateParts = currentMonth.split('-');
     const day = dateParts[0]; // Keep the day
@@ -427,13 +596,15 @@ export class PaymentsComponent implements OnInit {
     return months[monthIndex];
   }
 
-  preview(){
+  preview() {
     const payload = this.paymentForm.value;
     this.installMonth = this.paymentForm.get('installmentMonth')?.value
     this.installAmount = this.paymentForm.get('amount')?.value
     const installmentMonths = payload.installmentMonth.split(',').map(month => month.trim()); // Split by comma and trim spaces
 
-    const chitAmount = payload.chitAmount;
+    const chitAmount = this.chitValue;
+    console.log(chitAmount);
+
     const baseAmount = Math.floor(chitAmount / 20); // Base amount for each month
     let months = installmentMonths.length
     const remainingAmount = this.installAmount - (baseAmount * (months - 1))
@@ -449,36 +620,38 @@ export class PaymentsComponent implements OnInit {
       }
       this.receiptData = payload;
       const date = new Date(payload.date);
-     
+
       this.month = date.toLocaleString('default', { month: 'long' });
       this.year = date.getFullYear();
-      
+
 
     });
   }
 
-  
-  onSubmit(): void { 
+
+  onSubmit(): void {
     if (this.balance) {
       const payload = this.paymentForm.value;
-    this.installMonth = this.months
-    this.installAmount = this.amount
+      this.installMonth = this.months
+      this.installAmount = this.amount
 
-    console.log(this.installAmount,this.installMonth);
-    
-    const installmentMonths = this.months.split(',').map(month => month.trim()); // Split by comma and trim spaces
+      console.log(this.installAmount, this.installMonth);
 
-    const chitAmount = payload.chitAmount;
-    const baseAmount = Math.floor(chitAmount / 20); // Base amount for each month
-    let months = installmentMonths.length
-    const remainingAmount = this.installAmount - (baseAmount * (months - 1))
+      const installmentMonths = this.months.split(',').map(month => month.trim()); // Split by comma and trim spaces
+
+      const chitAmount = this.chitValue;
+      console.log();
+
+      const baseAmount = Math.floor(chitAmount / 20); // Base amount for each month
+      let months = installmentMonths.length
+      const remainingAmount = this.installAmount - (baseAmount * (months - 1))
       // Adjust the months by inserting balance month at the 0th index
       const adjustedMonths = [this.balanceMonth, ...installmentMonths]; // Prepend the balance month
-    
+
       adjustedMonths.forEach((month, index) => {
         // Create a copy of the payload for each month
         const monthPayload = { ...payload, installmentMonth: month };
-    
+
         // Set the amount for each month
         if (index === 0) {
           monthPayload.amount = this.balanceAmount; // Set the balance amount for the balance month
@@ -487,22 +660,23 @@ export class PaymentsComponent implements OnInit {
         } else {
           monthPayload.amount = remainingAmount; // Set remaining amount for the last month
         }
-    
+
         // Trigger PDF download
-        this.downloadAsPDF();
-    
+
         // Save payment details for each month
         this.service.savePaymentDetails(monthPayload).subscribe((response: any) => {
           this.receiptData = response.newPayment;
+
           const date = new Date(response.newPayment.date);
-    
+          this.downloadAsPDF();
+
           this.month = date.toLocaleString('default', { month: 'long' });
           this.year = date.getFullYear();
           this.months = '';
           this.amount = 0;
           this.balanceAmount = 0;
           this.balance = false;
-    
+
           const currentDate = this.paymentForm.get('date')?.value;
           this.paymentForm.reset({
             date: currentDate, // Keep the 'date' field intact
@@ -514,55 +688,55 @@ export class PaymentsComponent implements OnInit {
           });
         });
       });
-    }    
-    else{
+    }
+    else {
       const payload = this.paymentForm.value;
       this.installMonth = this.paymentForm.get('installmentMonth')?.value
       this.installAmount = this.paymentForm.get('amount')?.value
       const installmentMonths = payload.installmentMonth.split(',').map(month => month.trim()); // Split by comma and trim spaces
-  
-      const chitAmount = payload.chitAmount;
+
+      const chitAmount = this.chitValue;
       const baseAmount = Math.floor(chitAmount / 20); // Base amount for each month
       let months = installmentMonths.length
       const remainingAmount = this.installAmount - (baseAmount * (months - 1))
-  
+
       installmentMonths.forEach((month, index) => {
         // Create a copy of the payload for each month
         const monthPayload = { ...payload, installmentMonth: month };
-        
+
         // Set the amount for each month
         if (index < months - 1) {
           monthPayload.amount = baseAmount; // Set amount for the first 4 months
         } else {
           monthPayload.amount = remainingAmount; // Set remaining amount for the last month
         }
-            this.downloadAsPDF()
-  
+        this.downloadAsPDF()
+
         // Save payment details for each month
         this.service.savePaymentDetails(monthPayload).subscribe((response: any) => {
           this.receiptData = response.newPayment;
           const date = new Date(response.newPayment.date);
-         
+
           this.month = date.toLocaleString('default', { month: 'long' });
           this.year = date.getFullYear();
-          
+
           // setTimeout(() => {
           //   this.downloadAsPDF()
           // }, 1 * 1000);
-           // 3 minutes = 180,000 milliseconds
-           this.months=""
+          // 3 minutes = 180,000 milliseconds
+          this.months = ""
 
-          this.balance=false
-          this.amount=0
+          this.balance = false
+          this.amount = 0
           const currentDate = this.paymentForm.get('date')?.value;
           this.paymentForm.reset({
             date: currentDate  // Keep the 'date' field intact
           });
           this.paymentForm.get('cancelled')?.setValue(false)
           this.paymentForm.get('verified')?.setValue(false)
-          this.balance=false
-          this.balanceAmount=0
-          
+          this.balance = false
+          this.balanceAmount = 0
+
           this.paymentForm.patchValue({
             passbooknumber: 'PB-',
           });
@@ -570,14 +744,14 @@ export class PaymentsComponent implements OnInit {
       });
     }
     this.isLoading = true;
-        setTimeout(() => {
-          this.isLoading=false
-          // window.location.reload();
-          this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
-            this.router.navigate(['/payment']);
-          });
-    },1000); // Replace with actual API call logic
-  
+    setTimeout(() => {
+      this.isLoading = false
+      // window.location.reload();
+      this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
+        this.router.navigate(['/payment']);
+      });
+    }, 1000); // Replace with actual API call logic
+
   }
 
   validateCurrentDate(control: AbstractControl): { [key: string]: boolean } | null {

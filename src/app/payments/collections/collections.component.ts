@@ -321,7 +321,10 @@ export class CollectionsComponent implements OnInit {
     //  }
     this.service.saveCollectionDetails(payload).subscribe((response: any) => {
       this.collectionForm.reset()
+
     })
+    this.avlData = [];
+    this.canData = [];
   }
 
   cancel() {

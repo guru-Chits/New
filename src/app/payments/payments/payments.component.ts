@@ -120,41 +120,33 @@ export class PaymentsComponent implements OnInit {
 
       const groupId = this.paymentForm.get('groupId')?.value;
       const installmentMonth = this.paymentForm.get('installmentMonth')?.value;
-      this.chitService.getAuctionCycleByGroupId(groupId).subscribe((data) => {
-        console.log(data.latestChit);
+      this.chitService.getTicketId(groupId).subscribe((data) => {
 
-        if (data.latestChit.length > 1) {
-          console.log(data.latestChit[data.latestChit.length - 1].date);
+        if (data.auctionCycle > 1) {
 
-          const installMent = this.datePipe.transform(data?.latestChit[data?.latestChit.length - 1].date, 'dd-MMMM-yyyy')
+          const installMent = this.datePipe.transform(data?.allData[data?.allData.length - 1].date, 'dd-MMMM-yyyy')
           const installmentDate = new Date(installmentMonth);
           const lastInstallmentDate = new Date(installMent);
 
           const auctionCycle = data.auctionCycle
           if (auctionCycle >= 20 && installmentDate.getTime() == lastInstallmentDate.getTime()) {
-            console.log("equal");
             this.lastPayment = true
             this.service.getTransactionById(groupId).subscribe((response) => {
               this.chitAmount = response
               this.chitAmount = this.chitAmount.payment
               this.chitAmount.forEach(Amount => {
                 const chitAmount = this.paymentForm.get('chitAmount')?.value - Amount.walletBalance
-                console.log(chitAmount);
                 this.chitValue = chitAmount
                 if (chitAmount && amount > 0) {
                   const expectedInstallmentAmount = chitAmount / 20;  // Monthly installment calculation
                   this.amount = amount
-                  console.log(amount, expectedInstallmentAmount);
 
                   const amountControl = this.paymentForm.get('amount');
-                  console.log(expectedInstallmentAmount);
 
                   if (this.paymentForm.get('amount')?.value > expectedInstallmentAmount) {
                     // Set a custom error on the form control
-                    console.log(this.paymentForm.get('amount')?.value);
 
                     this.paymentForm.get('amount')?.setErrors({ amountExceeds: true });
-                    console.log({ amountExceeds: true }, "max");
 
                   }
                   else {
@@ -174,7 +166,6 @@ export class PaymentsComponent implements OnInit {
 
             if (chitAmount && amount > 0) {
               const expectedInstallmentAmount = chitAmount / 20;  // Monthly installment calculation
-              console.log(amount, expectedInstallmentAmount);
 
               this.amount = amount
               this.handleAmountChange(amount, expectedInstallmentAmount, this.passbookNo);
@@ -372,13 +363,13 @@ export class PaymentsComponent implements OnInit {
             });
             const groupId = this.paymentForm.get('groupId')?.value;
             const installmentMonth = this.paymentForm.get('installmentMonth')?.value;
-            this.chitService.getAuctionCycleByGroupId(groupId).subscribe((data) => {
-              console.log(data.latestChit);
+            this.chitService.getTicketId(groupId).subscribe((data) => {
+              console.log(data.allData);
 
-              if (data.latestChit.length > 1) {
-                console.log(data.latestChit[data.latestChit.length - 1].date);
+              if (data.auctionCycle> 1) {
+                console.log(data.allData[data.allData.length - 1].date);
 
-                const installMent = this.datePipe.transform(data?.latestChit[data?.latestChit.length - 1].date, 'dd-MMMM-yyyy')
+                const installMent = this.datePipe.transform(data?.allData[data?.allData.length - 1].date, 'dd-MMMM-yyyy')
                 const installmentDate = new Date(installmentMonth);
                 const lastInstallmentDate = new Date(installMent);
 
@@ -428,7 +419,6 @@ export class PaymentsComponent implements OnInit {
 
 
   handleAmountChange(amount: number, expectedInstallmentAmount: number, passbooknumber: any) {
-    console.log(amount);
 
     // Fetch the last payment or set default values if no previous payment exists
     const lastPayment = this.payments?.[this.payments.length - 1] || null;
@@ -439,7 +429,6 @@ export class PaymentsComponent implements OnInit {
 
     let balanceAmount = 0;
     let currentInstallmentMonth = this.datePipe.transform(this.subDetail.auctionDate, 'dd-MMMM-YYYY') || '';
-    console.log(this.lastMonth);
 
     // Fetch total amount for the last payment's month to check underpayment
     this.service.getAmountByMonth(passbooknumber, lastPayment?.installmentMonth).subscribe((data) => {
@@ -448,42 +437,64 @@ export class PaymentsComponent implements OnInit {
       // If there's no previous payment, set balanceAmount to 0
       if (!lastPayment) {
         balanceAmount = 0;  // No balance to carry forward for the first payment
-      } else if (totalAmountPaidForMonth < expectedInstallmentAmount) {
+      } 
+      else if (totalAmountPaidForMonth < expectedInstallmentAmount) {
         // If there was a previous underpayment, calculate the pending balance
         balanceAmount = expectedInstallmentAmount - totalAmountPaidForMonth;
         currentInstallmentMonth = lastPayment.installmentMonth;  // Keep the same month
         let balanceAm = amount - balanceAmount
 
         if (balanceAm > 0 && !this.lastPayment) {
-          console.log(balanceAm);
           this.amount = balanceAm
           this.balance = true
           this.balanceMonth = currentInstallmentMonth
           this.balanceAmount = balanceAmount
-          console.log(this.balanceAmount, this.balanceMonth);
-
-          currentInstallmentMonth = this.installmentMonth(lastPayment.installmentMonth);
-          this.months = this.incrementInstallmentMonth(lastPayment.installmentMonth);
-          console.log(this.months);
+         
+          const next = this.incrementInstallmentMonth(this.balanceMonth);
+ 
+          currentInstallmentMonth =this.incrementInstallmentMonth(lastPayment.installmentMonth);;
+          this.months = this.incrementInstallmentMonth(currentInstallmentMonth);
 
         }
-      } else {
+      }
+      
+    //   else if (totalAmountPaidForMonth < expectedInstallmentAmount) {
+    //     console.log(lastPayment.installmentMonth);
+
+    //     // If there was a previous underpayment, calculate the pending balance
+    //     balanceAmount = expectedInstallmentAmount - totalAmountPaidForMonth;
+    //     let balanceAm = amount - balanceAmount;
+    
+    //     if (balanceAm > 0 && !this.lastPayment) {
+    //         this.amount = balanceAm;
+    //         this.balance = true;
+    //         this.balanceAmount = balanceAmount;
+    
+    //         // Increment to the next month instead of keeping the same month
+    //         this.balanceMonth =lastPayment.installmentMonth
+    //         currentInstallmentMonth =this.incrementInstallmentMonth(lastPayment.installmentMonth);;
+    
+    //         // Increment further if necessary for subsequent months
+    //         this.months = this.incrementInstallmentMonth(currentInstallmentMonth);
+    //     }
+    // }
+    
+    
+       else {
         // If the previous payment was enough, move to the next month
         currentInstallmentMonth = this.incrementInstallmentMonth(lastPayment.installmentMonth);
         this.months = currentInstallmentMonth
-        console.log(this.months);
 
       }
-
+      console.log(this.months);
       let installmentMonths = currentInstallmentMonth;  // Start with the current month
       let remainingAmount = amount;
       let appliedAmountForMonth = 0;
       let nextInstallmentMonth = '';
-
+      
       // Apply the amount first to the balance for the current month
       if (remainingAmount > balanceAmount && !this.lastPayment) {
         appliedAmountForMonth = balanceAmount;
-        console.log(appliedAmountForMonth);
 
         remainingAmount -= balanceAmount;  // Subtract balance amount from the paid amount
 
@@ -493,12 +504,11 @@ export class PaymentsComponent implements OnInit {
         appliedAmountForMonth = remainingAmount;
         remainingAmount = 0;  // No amount left to apply to future months
       }
-
+      
       // Iterate and apply the remaining amount across multiple months
       while (remainingAmount > 0 && !this.lastPayment) {
 
         if (remainingAmount > expectedInstallmentAmount) {
-          console.log(remainingAmount);
 
           remainingAmount -= expectedInstallmentAmount;
           appliedAmountForMonth = expectedInstallmentAmount;
@@ -513,12 +523,14 @@ export class PaymentsComponent implements OnInit {
       }
       if (!this.balance&& !this.lastPayment) {
         this.months = installmentMonths
-
       }
+      console.log(this.months);
       this.paymentForm.patchValue({
         installmentMonth: installmentMonths,  // Patch all the months in which payments were applied
       });
     });
+
+   
   }
 
   incrementInstallmentMonth(currentMonth: string): string {
@@ -630,53 +642,116 @@ export class PaymentsComponent implements OnInit {
 
 
   onSubmit(): void {
+    // if (this.balance) {
+    //   const payload = this.paymentForm.value;
+    //   this.installMonth =this.paymentForm.get('installmentMonth')?.value
+    //   this.installAmount = this.amount
+      
+    //   console.log(this.installAmount, this.installMonth);
+
+    //   const installmentMonths = this.installMonth.split(',').map(month => month.trim()); // Split by comma and trim spaces
+
+    //   const chitAmount = this.chitValue;
+    //   console.log(installmentMonths);
+
+    //   const baseAmount = Math.floor(chitAmount / 20); // Base amount for each month
+    //   let months = installmentMonths.length
+    //   const remainingAmount = this.installAmount - (baseAmount * (months - 1))
+    //   // Adjust the months by inserting balance month at the 0th index
+    //   const adjustedMonths = [ this.balanceMonth, ...installmentMonths]; // Prepend the balance month
+    //   console.log(adjustedMonths);
+      
+    //   adjustedMonths.forEach((month, index) => {
+    //     // Create a copy of the payload for each month
+    //     const monthPayload = { ...payload, installmentMonth: month };
+
+    //     // Set the amount for each month
+    //     if (index === 0) {
+    //       monthPayload.amount = this.balanceAmount; // Set the balance amount for the balance month
+    //     } else if (index < adjustedMonths.length - 1) {
+    //       monthPayload.amount = baseAmount; // Set base amount for the middle months
+    //     } else {
+    //       monthPayload.amount = remainingAmount; // Set remaining amount for the last month
+    //     }
+
+    //     // Trigger PDF download
+
+    //     // Save payment details for each month
+    //     this.service.savePaymentDetails(monthPayload).subscribe((response: any) => {
+    //       this.receiptData = response.newPayment;
+
+    //       const date = new Date(response.newPayment.date);
+    //       this.downloadAsPDF();
+
+    //       this.month = date.toLocaleString('default', { month: 'long' });
+    //       this.year = date.getFullYear();
+    //       this.months = '';
+    //       this.amount = 0;
+    //       this.balanceAmount = 0;
+    //       this.balance = false;
+
+    //       const currentDate = this.paymentForm.get('date')?.value;
+    //       this.paymentForm.reset({
+    //         date: currentDate, // Keep the 'date' field intact
+    //       });
+    //       this.paymentForm.get('cancelled')?.setValue(false);
+    //       this.paymentForm.get('verified')?.setValue(false);
+    //       this.paymentForm.patchValue({
+    //         passbooknumber: 'PB-',
+    //       });
+    //     });
+    //   });
+    // }
+
     if (this.balance) {
       const payload = this.paymentForm.value;
-      this.installMonth = this.months
-      this.installAmount = this.amount
-
+      this.installMonth = this.paymentForm.get('installmentMonth')?.value;
+      this.installAmount = this.amount;
+    
       console.log(this.installAmount, this.installMonth);
-
-      const installmentMonths = this.months.split(',').map(month => month.trim()); // Split by comma and trim spaces
-
+    
+      const installmentMonths = this.installMonth.split(',').map((month) => month.trim()); // Split by comma and trim spaces
       const chitAmount = this.chitValue;
-      console.log();
-
+      console.log(installmentMonths);
+    
       const baseAmount = Math.floor(chitAmount / 20); // Base amount for each month
-      let months = installmentMonths.length
-      const remainingAmount = this.installAmount - (baseAmount * (months - 1))
-      // Adjust the months by inserting balance month at the 0th index
-      const adjustedMonths = [this.balanceMonth, ...installmentMonths]; // Prepend the balance month
-
-      adjustedMonths.forEach((month, index) => {
+      let months = installmentMonths.length;
+      const remainingAmount = this.installAmount - baseAmount * (months - 1);
+    
+      // Adjust the months by inserting the balance month at the 0th index
+      const adjustedMonths = [this.balanceMonth, ...installmentMonths];
+    
+      // Sort the months in chronological order
+      const sortedMonths = adjustedMonths.sort((a, b) => new Date(a).getTime() - new Date(b).getTime());
+      console.log(sortedMonths);
+    
+      sortedMonths.forEach((month, index) => {
         // Create a copy of the payload for each month
         const monthPayload = { ...payload, installmentMonth: month };
-
+    
         // Set the amount for each month
         if (index === 0) {
           monthPayload.amount = this.balanceAmount; // Set the balance amount for the balance month
-        } else if (index < adjustedMonths.length - 1) {
+        } else if (index < sortedMonths.length - 1) {
           monthPayload.amount = baseAmount; // Set base amount for the middle months
         } else {
           monthPayload.amount = remainingAmount; // Set remaining amount for the last month
         }
-
-        // Trigger PDF download
-
+    
         // Save payment details for each month
         this.service.savePaymentDetails(monthPayload).subscribe((response: any) => {
           this.receiptData = response.newPayment;
-
+    
           const date = new Date(response.newPayment.date);
           this.downloadAsPDF();
-
+    
           this.month = date.toLocaleString('default', { month: 'long' });
           this.year = date.getFullYear();
           this.months = '';
           this.amount = 0;
           this.balanceAmount = 0;
           this.balance = false;
-
+    
           const currentDate = this.paymentForm.get('date')?.value;
           this.paymentForm.reset({
             date: currentDate, // Keep the 'date' field intact
@@ -689,6 +764,8 @@ export class PaymentsComponent implements OnInit {
         });
       });
     }
+    
+    
     else {
       const payload = this.paymentForm.value;
       this.installMonth = this.paymentForm.get('installmentMonth')?.value

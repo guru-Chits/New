@@ -69,10 +69,10 @@ ngOnInit(): void {
       }
   
       // Fetch auction cycle data
-      const auctionCycleData = await this.chitService.getAuctionCycleByGroupId(group.chitGroupId).toPromise();
-      const latestChit = auctionCycleData?.latestChit || [];
+      const auctionCycleData = await this.chitService.getTicketId(group.chitGroupId).toPromise();
+      const latestChit = auctionCycleData?.allData || [];
   
-      if (latestChit.length >= 19) {
+      if (auctionCycleData.auctionCycle >= 19) {
         const lastInstallmentDate = this.datePipe.transform(
           latestChit[latestChit.length - 1]?.date,
           'MMMM-yyyy'
@@ -108,12 +108,12 @@ async calculateTotal() {
   this.total = 0;
 
   const totalPromises = this.displayedChit.map(async (chitGroup) => {
-    const auctionCycleData = await this.chitService.getAuctionCycleByGroupId(chitGroup.chitGroupId).toPromise();
-    const latestChit = auctionCycleData?.latestChit || [];
+    const auctionCycleData = await this.chitService.getTicketId(chitGroup.chitGroupId).toPromise();
+    const latestChit = auctionCycleData?.allData || [];
     const lastInstallmentDate = this.datePipe.transform(latestChit[latestChit.length - 1]?.date, 'MMMM-yyyy');
     const installmentMonth = this.datePipe.transform(this.chosenDate, 'MMMM-yyyy');
 
-    if (latestChit.length >= 19 && lastInstallmentDate === installmentMonth) {
+    if (auctionCycleData.auctionCycle >= 19 && lastInstallmentDate === installmentMonth) {
       const transactionData = await this.paymentService.getTransactionById(chitGroup.chitGroupId).toPromise();
       this.chitAmount  = transactionData
       this.chitAmount=this.chitAmount.payment
@@ -145,13 +145,13 @@ async calculateTotal() {
 async calculateChitAmount(chitAmount: number, chitGroupId: string): Promise<number> {
   try {
     // Fetch auction cycle data for the group
-    const auctionCycleData = await this.chitService.getAuctionCycleByGroupId(chitGroupId).toPromise();
-    const latestChit = auctionCycleData?.latestChit || [];
+    const auctionCycleData = await this.chitService.getTicketId(chitGroupId).toPromise();
+    const latestChit = auctionCycleData?.allData || [];
     const lastInstallmentDate = this.datePipe.transform(latestChit[latestChit.length - 1]?.date, 'MMMM-yyyy');
     const installmentMonth = this.datePipe.transform(this.chosenDate, 'MMMM-yyyy');
 
     // Check condition: If auction cycle >= 19 and dates match
-    if (latestChit.length >= 19 && lastInstallmentDate === installmentMonth) {
+    if (auctionCycleData.auctionCycle >= 19 && lastInstallmentDate === installmentMonth) {
       // Fetch transactions for the group
       const transactionData = await this.paymentService.getTransactionById(chitGroupId).toPromise();
       this.payments=transactionData
@@ -223,10 +223,10 @@ const filteredPromises = this.chitdata.map(async (group: any) => {
   }
 
   // Fetch auction cycle data
-  const auctionCycleData = await this.chitService.getAuctionCycleByGroupId(group.chitGroupId).toPromise();
-  const latestChit = auctionCycleData?.latestChit || [];
+  const auctionCycleData = await this.chitService.getTicketId(group.chitGroupId).toPromise();
+  const latestChit = auctionCycleData?.allData || [];
 
-  if (latestChit.length >= 19) {
+  if (auctionCycleData.auctionCycle >= 19) {
     const lastInstallmentDate = this.datePipe.transform(
       latestChit[latestChit.length - 1]?.date,
       'MMMM-yyyy'

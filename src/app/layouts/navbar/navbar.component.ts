@@ -52,16 +52,16 @@ export class NavbarComponent implements OnInit {
     this.sidebarToggle.emit();
   }
   getUserInfo() {
-    this.profile = sessionStorage.getItem('profile');
+    this.profile = localStorage.getItem('profile');
     this.profile = this.profile.replace(/"/g, '')
-    this.users = sessionStorage.getItem('name')
+    this.users = localStorage.getItem('name')
     this.users = this.users.replace(/"/g, '');
-    this.role = sessionStorage.getItem('userRole')
+    this.role = localStorage.getItem('userRole')
     this.role = this.role.replace(/"/g, '')
     return this.users;
   }
   logout() {
-    sessionStorage.clear();
+    localStorage.clear();
     this.router.navigate(['/login']);
   }
 }

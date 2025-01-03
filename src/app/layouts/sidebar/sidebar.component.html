@@ -4,12 +4,15 @@
       <img src="../../../assets/navbar/brand.svg" alt="Logo">
     </div>
     <ul class="sidebar-menu">
-      <li *ngFor="let menuItem of menuItems" [routerLink]="menuItem.path" routerLinkActive="active" class="sidebar-menu-item" (click)="setActiveMenu(menuItem)">
-        <img [src]="isActive(menuItem) ? menuItem.activeImg : menuItem.img" class="sidebar-menu-icon">
-        <span class="sidebar-menu-text">{{ menuItem.title }}</span>
-        <div *ngIf="isActive(menuItem)" class="active-line"></div>
-      </li>    
-
+      <a *ngFor="let menuItem of menuItems" [routerLink]="menuItem.path"
+        (click)="$event.preventDefault(); setActiveMenu(menuItem)" [attr.href]="menuItem.path" target="_self"
+        rel="noopener noreferrer" style="text-decoration: none;">
+        <li class="sidebar-menu-item">
+          <img [src]="isActive(menuItem) ? menuItem.activeImg : menuItem.img" class="sidebar-menu-icon">
+          <span class="sidebar-menu-text">{{ menuItem.title }}</span>
+          <div *ngIf="isActive(menuItem)" class="active-line"></div>
+        </li>
+      </a>
     </ul>
   </div>
 </div>

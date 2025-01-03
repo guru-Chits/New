@@ -45,7 +45,7 @@ export class ChitComponent implements OnInit {
   itemsPerPage: number = 5;
   currentPage: number = 1;
   totalPages: number = 0;
-  count: number = 0
+  // count: number = 0
   auctions: any
 
   displayedAuctions: any
@@ -105,16 +105,16 @@ export class ChitComponent implements OnInit {
       this.subscriberData = data;
       this.data = this.subscriberData.AllSubscriber.map((subscriberDetails, index) => ({
 
-        enroll: this.subscriberService.getChitGroupById(subscriberDetails?.subscriberId).subscribe(
-          response => {
-            this.chitGroups = response;
-            // Check if the chitGroup length is greater than 1
-            if (this.chitGroups.length > 1) {
-              // Increment the totalCount
-              this.count++;
-            }
-          }
-        )
+        // enroll: this.subscriberService.getChitGroupById(subscriberDetails?.subscriberId).subscribe(
+        //   response => {
+        //     this.chitGroups = response;
+        //     // Check if the chitGroup length is greater than 1
+        //     if (this.chitGroups.length > 1) {
+        //       // Increment the totalCount
+        //       this.count++;
+        //     }
+        //   }
+        // )
 
       }))
     })

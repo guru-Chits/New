@@ -37,14 +37,14 @@ export class AuthGuard implements CanLoad, CanActivate {
       this.router.navigate(['/login']);
       return of(false);
     }
-    if (!this.authService.isVerified()) {
-      this.router.navigate(['/verify']); 
-      return of(false);
-    }
+    // if (!this.authService.isVerified()) {
+    //   this.router.navigate(['/verify']); 
+    //   return of(false);
+    // }
     if (this.roleAccess) {
       return of(this.validateAccess(accKey, action));
     }
-    const role = sessionStorage.getItem('userRole')?.replace(/"/g, '');  
+    const role = localStorage.getItem('userRole')?.replace(/"/g, '');  
     if (!role) {
       this.router.navigate(['/login']);
       return of(false);

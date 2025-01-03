@@ -57,6 +57,7 @@ export class PaymentsComponent implements OnInit {
   lastAmount: any
   amountPayments: any
   lastPayment:boolean=false
+  submitted:boolean=false
   passbookInstallmentData: any = {};
   constructor(private router: Router,
     private formBuilder: FormBuilder,
@@ -197,17 +198,15 @@ export class PaymentsComponent implements OnInit {
         }
       })
       if (!amount || amount.trim() === '') { // Check if amount is null, undefined, or an empty string
-        // this.receiptNo=""
+        this.receiptNo=""
         this.amount = 0
         this.balance = false
         this.balanceMonth = ""
         this.balanceAmount = 0
         // this.receiptNo=""
         this.paymentForm.patchValue({
-        
-          installmentMonth:"",
-         
-          receiptNumber: ""
+          receiptNumber:"",
+          installmentMonth:"", 
         });
         this.getSubByPassbookNo(this.passbookNo);
       }
@@ -217,7 +216,7 @@ export class PaymentsComponent implements OnInit {
       this.totalPayment = data
       this.serialNumberCounter = this.totalPayment.serialNo + 1
     })
-    this.staffs = sessionStorage.getItem('name')
+    this.staffs = localStorage.getItem('name')
     this.staffs = this.staffs.replace(/"/g, '');
     this.routeService.getrouteAll().subscribe((data) => {
       this.routeData = data;
@@ -405,7 +404,7 @@ export class PaymentsComponent implements OnInit {
             })
             if (receiptNumber2) {
               this.paymentForm.patchValue({
-                receiptNumber: this.receiptNo,
+                // receiptNumber: this.receiptNo,
                 nextInstallmentMonth: secondInstallmentMonth
               });
             }
@@ -641,194 +640,221 @@ export class PaymentsComponent implements OnInit {
   }
 
 
-  onSubmit(): void {
-    // if (this.balance) {
-    //   const payload = this.paymentForm.value;
-    //   this.installMonth =this.paymentForm.get('installmentMonth')?.value
-    //   this.installAmount = this.amount
-      
-    //   console.log(this.installAmount, this.installMonth);
+//   onSubmit(): void {
+   
+//     this.submitted=true
+//     if (this.balance) {
+//       const payload = this.paymentForm.value;
+//       this.installMonth = this.paymentForm.get('installmentMonth')?.value;
+//       this.installAmount = this.amount;
+    
+//       console.log(this.installAmount, this.installMonth);
+    
+//       const installmentMonths = this.installMonth.split(',').map((month) => month.trim()); // Split by comma and trim spaces
+//       const chitAmount = this.chitValue;
+//       console.log(installmentMonths);
+    
+//       const baseAmount = Math.floor(chitAmount / 20); // Base amount for each month
+//       let months = installmentMonths.length;
+//       const remainingAmount = this.installAmount - baseAmount * (months - 1);
+    
+//       // Adjust the months by inserting the balance month at the 0th index
+//       const adjustedMonths = [this.balanceMonth, ...installmentMonths];
+    
+//       // Sort the months in chronological order
+//       const sortedMonths = adjustedMonths.sort((a, b) => new Date(a).getTime() - new Date(b).getTime());
+//       console.log(sortedMonths);
+    
+//       sortedMonths.forEach((month, index) => {
+//         // Create a copy of the payload for each month
+//         const monthPayload = { ...payload, installmentMonth: month };
+//         console.log(monthPayload);
+        
+//         // Set the amount for each month
+//         if (index === 0) {
+//           monthPayload.amount = this.balanceAmount; // Set the balance amount for the balance month
+//         } else if (index < sortedMonths.length - 1) {
+//           monthPayload.amount = baseAmount; // Set base amount for the middle months
+//         } else {
+//           monthPayload.amount = remainingAmount; // Set remaining amount for the last month
+//         }
+    
+//         // Save payment details for each month
+//         this.service.savePaymentDetails(monthPayload).subscribe((response: any) => {
+//           this.receiptData = response.newPayment;
+          
+//           const date = new Date(response.newPayment.date);
+    
+//           this.month = date.toLocaleString('default', { month: 'long' });
+//           this.year = date.getFullYear();
+//           this.months = '';
+//           this.amount = 0;
+//           this.balanceAmount = 0;
+//           this.balance = false;
+    
+//           const currentDate = this.paymentForm.get('date')?.value;
+//           this.paymentForm.reset({
+//             date: currentDate, // Keep the 'date' field intact
+//           });
+//           this.paymentForm.get('cancelled')?.setValue(false);
+//           this.paymentForm.get('verified')?.setValue(false);
+//           this.paymentForm.patchValue({
+//             passbooknumber: 'PB-',
+//           });
+//         });
+//       });
+//     }
+    
+    
+//     else {
+//       const payload = this.paymentForm.value;
+//       this.installMonth = this.paymentForm.get('installmentMonth')?.value
+//       this.installAmount = this.paymentForm.get('amount')?.value
+//       const installmentMonths = payload.installmentMonth.split(',').map(month => month.trim()); // Split by comma and trim spaces
 
-    //   const installmentMonths = this.installMonth.split(',').map(month => month.trim()); // Split by comma and trim spaces
+//       const chitAmount = this.chitValue;
+//       const baseAmount = Math.floor(chitAmount / 20); // Base amount for each month
+//       let months = installmentMonths.length
+//       const remainingAmount = this.installAmount - (baseAmount * (months - 1))
 
-    //   const chitAmount = this.chitValue;
-    //   console.log(installmentMonths);
+//       installmentMonths.forEach((month, index) => {
+//         // Create a copy of the payload for each month
+//         const monthPayload = { ...payload, installmentMonth: month };
 
-    //   const baseAmount = Math.floor(chitAmount / 20); // Base amount for each month
-    //   let months = installmentMonths.length
-    //   const remainingAmount = this.installAmount - (baseAmount * (months - 1))
-    //   // Adjust the months by inserting balance month at the 0th index
-    //   const adjustedMonths = [ this.balanceMonth, ...installmentMonths]; // Prepend the balance month
-    //   console.log(adjustedMonths);
-      
-    //   adjustedMonths.forEach((month, index) => {
-    //     // Create a copy of the payload for each month
-    //     const monthPayload = { ...payload, installmentMonth: month };
+//         // Set the amount for each month
+//         if (index < months - 1) {
+//           monthPayload.amount = baseAmount; // Set amount for the first 4 months
+//         } else {
+//           monthPayload.amount = remainingAmount; // Set remaining amount for the last month
+//         }
 
-    //     // Set the amount for each month
-    //     if (index === 0) {
-    //       monthPayload.amount = this.balanceAmount; // Set the balance amount for the balance month
-    //     } else if (index < adjustedMonths.length - 1) {
-    //       monthPayload.amount = baseAmount; // Set base amount for the middle months
-    //     } else {
-    //       monthPayload.amount = remainingAmount; // Set remaining amount for the last month
-    //     }
+//         // Save payment details for each month
+//         this.service.savePaymentDetails(monthPayload).subscribe((response: any) => {
+//           this.receiptData = response.newPayment;
+//           const date = new Date(response.newPayment.date);
 
-    //     // Trigger PDF download
+//           this.month = date.toLocaleString('default', { month: 'long' });
+//           this.year = date.getFullYear();
 
-    //     // Save payment details for each month
-    //     this.service.savePaymentDetails(monthPayload).subscribe((response: any) => {
-    //       this.receiptData = response.newPayment;
+//           // setTimeout(() => {
+//           //   this.downloadAsPDF()
+//           // }, 1 * 1000);
+//           // 3 minutes = 180,000 milliseconds
+//           this.months = ""
 
-    //       const date = new Date(response.newPayment.date);
-    //       this.downloadAsPDF();
+//           this.balance = false
+//           this.amount = 0
+//           const currentDate = this.paymentForm.get('date')?.value;
+//           this.paymentForm.reset({
+//             date: currentDate  // Keep the 'date' field intact
+//           });
+//           this.paymentForm.get('cancelled')?.setValue(false)
+//           this.paymentForm.get('verified')?.setValue(false)
+//           this.balance = false
+//           this.balanceAmount = 0
 
-    //       this.month = date.toLocaleString('default', { month: 'long' });
-    //       this.year = date.getFullYear();
-    //       this.months = '';
-    //       this.amount = 0;
-    //       this.balanceAmount = 0;
-    //       this.balance = false;
+//           this.paymentForm.patchValue({
+//             passbooknumber: 'PB-',
+//           });
+//         });
+//       });
+//     }
+//     this.isLoading = true;
+// // Replace with actual API call logic
 
-    //       const currentDate = this.paymentForm.get('date')?.value;
-    //       this.paymentForm.reset({
-    //         date: currentDate, // Keep the 'date' field intact
-    //       });
-    //       this.paymentForm.get('cancelled')?.setValue(false);
-    //       this.paymentForm.get('verified')?.setValue(false);
-    //       this.paymentForm.patchValue({
-    //         passbooknumber: 'PB-',
-    //       });
-    //     });
-    //   });
-    // }
+//   }
 
-    if (this.balance) {
-      const payload = this.paymentForm.value;
-      this.installMonth = this.paymentForm.get('installmentMonth')?.value;
-      this.installAmount = this.amount;
-    
-      console.log(this.installAmount, this.installMonth);
-    
-      const installmentMonths = this.installMonth.split(',').map((month) => month.trim()); // Split by comma and trim spaces
-      const chitAmount = this.chitValue;
-      console.log(installmentMonths);
-    
-      const baseAmount = Math.floor(chitAmount / 20); // Base amount for each month
-      let months = installmentMonths.length;
-      const remainingAmount = this.installAmount - baseAmount * (months - 1);
-    
-      // Adjust the months by inserting the balance month at the 0th index
-      const adjustedMonths = [this.balanceMonth, ...installmentMonths];
-    
-      // Sort the months in chronological order
-      const sortedMonths = adjustedMonths.sort((a, b) => new Date(a).getTime() - new Date(b).getTime());
-      console.log(sortedMonths);
-    
-      sortedMonths.forEach((month, index) => {
-        // Create a copy of the payload for each month
-        const monthPayload = { ...payload, installmentMonth: month };
-    
-        // Set the amount for each month
-        if (index === 0) {
-          monthPayload.amount = this.balanceAmount; // Set the balance amount for the balance month
-        } else if (index < sortedMonths.length - 1) {
-          monthPayload.amount = baseAmount; // Set base amount for the middle months
-        } else {
-          monthPayload.amount = remainingAmount; // Set remaining amount for the last month
-        }
-    
-        // Save payment details for each month
-        this.service.savePaymentDetails(monthPayload).subscribe((response: any) => {
-          this.receiptData = response.newPayment;
-    
-          const date = new Date(response.newPayment.date);
-          this.downloadAsPDF();
-    
-          this.month = date.toLocaleString('default', { month: 'long' });
-          this.year = date.getFullYear();
-          this.months = '';
-          this.amount = 0;
-          this.balanceAmount = 0;
-          this.balance = false;
-    
-          const currentDate = this.paymentForm.get('date')?.value;
-          this.paymentForm.reset({
-            date: currentDate, // Keep the 'date' field intact
-          });
-          this.paymentForm.get('cancelled')?.setValue(false);
-          this.paymentForm.get('verified')?.setValue(false);
-          this.paymentForm.patchValue({
-            passbooknumber: 'PB-',
-          });
-        });
-      });
+async onSubmit(): Promise<void> {
+  this.submitted = true;
+
+  const processMonths = async (months: string[], baseAmount: number, remainingAmount: number, payload: any) => {
+    for (let index = 0; index < months.length; index++) {
+      const month = months[index];
+      const monthPayload = { ...payload, installmentMonth: month };
+
+      // Set the amount for each month
+      if (index === 0 && this.balance) {
+        monthPayload.amount = this.balanceAmount; // Set balance amount for the balance month
+      } else if (index < months.length - 1) {
+        monthPayload.amount = baseAmount; // Set base amount for middle months
+      } else {
+        monthPayload.amount = remainingAmount; // Set remaining amount for the last month
+      }
+
+      await this.savePaymentDetails(monthPayload);
     }
-    
-    
-    else {
-      const payload = this.paymentForm.value;
-      this.installMonth = this.paymentForm.get('installmentMonth')?.value
-      this.installAmount = this.paymentForm.get('amount')?.value
-      const installmentMonths = payload.installmentMonth.split(',').map(month => month.trim()); // Split by comma and trim spaces
+  };
 
-      const chitAmount = this.chitValue;
-      const baseAmount = Math.floor(chitAmount / 20); // Base amount for each month
-      let months = installmentMonths.length
-      const remainingAmount = this.installAmount - (baseAmount * (months - 1))
+  if (this.balance) {
+    const payload = this.paymentForm.value;
+    this.installMonth = this.paymentForm.get('installmentMonth')?.value;
+    this.installAmount = this.amount;
 
-      installmentMonths.forEach((month, index) => {
-        // Create a copy of the payload for each month
-        const monthPayload = { ...payload, installmentMonth: month };
+    const installmentMonths = this.installMonth.split(',').map((month) => month.trim()); // Split by comma and trim spaces
+    const chitAmount = this.chitValue;
+    const baseAmount = Math.floor(chitAmount / 20); // Base amount for each month
+    const remainingAmount = this.installAmount - baseAmount * (installmentMonths.length - 1);
 
-        // Set the amount for each month
-        if (index < months - 1) {
-          monthPayload.amount = baseAmount; // Set amount for the first 4 months
-        } else {
-          monthPayload.amount = remainingAmount; // Set remaining amount for the last month
-        }
-        this.downloadAsPDF()
+    // Adjust the months by inserting the balance month at the 0th index
+    const adjustedMonths = [this.balanceMonth, ...installmentMonths];
+    const sortedMonths = adjustedMonths.sort((a, b) => new Date(a).getTime() - new Date(b).getTime());
 
-        // Save payment details for each month
-        this.service.savePaymentDetails(monthPayload).subscribe((response: any) => {
-          this.receiptData = response.newPayment;
-          const date = new Date(response.newPayment.date);
+    await processMonths(sortedMonths, baseAmount, remainingAmount, payload);
+  } else {
+    const payload = this.paymentForm.value;
+    this.installMonth = this.paymentForm.get('installmentMonth')?.value;
+    this.installAmount = this.paymentForm.get('amount')?.value;
 
-          this.month = date.toLocaleString('default', { month: 'long' });
-          this.year = date.getFullYear();
+    const installmentMonths = payload.installmentMonth.split(',').map((month) => month.trim()); // Split by comma and trim spaces
+    const chitAmount = this.chitValue;
+    const baseAmount = Math.floor(chitAmount / 20); // Base amount for each month
+    const remainingAmount = this.installAmount - baseAmount * (installmentMonths.length - 1);
 
-          // setTimeout(() => {
-          //   this.downloadAsPDF()
-          // }, 1 * 1000);
-          // 3 minutes = 180,000 milliseconds
-          this.months = ""
+    await processMonths(installmentMonths, baseAmount, remainingAmount, payload);
+  }
 
-          this.balance = false
-          this.amount = 0
-          const currentDate = this.paymentForm.get('date')?.value;
-          this.paymentForm.reset({
-            date: currentDate  // Keep the 'date' field intact
-          });
-          this.paymentForm.get('cancelled')?.setValue(false)
-          this.paymentForm.get('verified')?.setValue(false)
-          this.balance = false
-          this.balanceAmount = 0
+  this.isLoading = true;
+}
 
-          this.paymentForm.patchValue({
-            passbooknumber: 'PB-',
-          });
+private async savePaymentDetails(monthPayload: any): Promise<void> {
+  return new Promise((resolve, reject) => {
+    this.service.savePaymentDetails(monthPayload).subscribe({
+      next: (response: any) => {
+        this.receiptData = response.newPayment;
+
+        const date = new Date(response.newPayment.date);
+        this.month = date.toLocaleString('default', { month: 'long' });
+        this.year = date.getFullYear();
+        this.months = '';
+        this.amount = 0;
+        this.balanceAmount = 0;
+        this.balance = false;
+
+        const currentDate = this.paymentForm.get('date')?.value;
+        this.paymentForm.reset({
+          date: currentDate, // Keep the 'date' field intact
         });
-      });
-    }
-    this.isLoading = true;
+        this.paymentForm.get('cancelled')?.setValue(false);
+        this.paymentForm.get('verified')?.setValue(false);
+        this.paymentForm.patchValue({
+          passbooknumber: 'PB-',
+        });
+
+        resolve();
+      },
+      error: (err) => reject(err),
+    });
+  });
+}
+
+  close(){
     setTimeout(() => {
       this.isLoading = false
       // window.location.reload();
       this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
         this.router.navigate(['/payment']);
       });
-    }, 1000); // Replace with actual API call logic
-
+    }, 1000); 
   }
 
   validateCurrentDate(control: AbstractControl): { [key: string]: boolean } | null {

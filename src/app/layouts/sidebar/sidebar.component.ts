@@ -31,7 +31,7 @@ export class SidebarComponent implements OnInit {
   }
 
   filterMenuItemsBasedOnAccess() {
-    let user = sessionStorage.getItem('userRole');
+    let user = localStorage.getItem('userRole');
     user = user?.replace(/"/g, '');  // Clean up the role string from session storage
 
     if (!user) {

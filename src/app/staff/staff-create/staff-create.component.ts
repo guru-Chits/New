@@ -67,7 +67,7 @@ export class StaffCreateComponent implements OnInit {
   urls: any
 
   ngOnInit() {
-    let role = sessionStorage.getItem('userRole')
+    let role = localStorage.getItem('userRole')
     role = role ? role.replace(/"/g, '') : null; // Clean up role string
     if (role == "SuperAdmin") {
       this.role = true

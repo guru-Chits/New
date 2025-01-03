@@ -69,7 +69,7 @@ export class CollectionsComponent implements OnInit {
       }
     });
 
-    this.staffs = sessionStorage.getItem('name')
+    this.staffs = localStorage.getItem('name')
     this.staffs = this.staffs.replace(/"/g, '')
     this.collectionForm.get('date').valueChanges.subscribe(date => {
       this.date = date;

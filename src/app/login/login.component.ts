@@ -123,27 +123,27 @@ export class LoginComponent {
         } else {
           if (this.response.success === true && password === this.response.user.password && empId == this.employeeId) {
             this.userdata = response;
-            sessionStorage.setItem('profile', JSON.stringify(this.userdata.userProfile));
-            sessionStorage.setItem('name', JSON.stringify(this.userdata.userName));
+            localStorage.setItem('profile', JSON.stringify(this.userdata.userProfile));
+            localStorage.setItem('name', JSON.stringify(this.userdata.userName));
 
             this.mobileNumber = this.userdata.mobileNumber;
             this.role = this.userdata.role;
-            sessionStorage.setItem('userRole', JSON.stringify(this.role));
+            localStorage.setItem('userRole', JSON.stringify(this.role));
 
             // Check if the user has access before proceeding
             this.accessService.getAccessByRole(this.role).subscribe(roleResponse => {
               this.roleAccess = roleResponse
               if (this.roleAccess && this.roleAccess.roleAccess.roleDetails) {
                 const otpUrl = `https://2factor.in/API/V1/b1037ef1-2ed8-11ef-8b60-0200cd936042/SMS/${this.mobileNumber}/AUTOGEN/OTPTemplate`;
-            // this.router.navigate(['/subscriber']);  // Navigate after OTP success
+            this.router.navigate(['/subscriber']);  // Navigate after OTP success
  
-                this.HttpClient.get(otpUrl).subscribe(
-                  (otpResponse: any) => {
-                    this.verified = true;
-                  },
-                  (error) => {
-                  }
-                );
+                // this.HttpClient.get(otpUrl).subscribe(
+                //   (otpResponse: any) => {
+                //     this.verified = true;
+                //   },
+                //   (error) => {
+                //   }
+                // );
               } else {
                 alert('Access denied. Please contact admin.');
               }

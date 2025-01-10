@@ -80,7 +80,7 @@ export class StaffCreateComponent implements OnInit {
       lastName: ["", [Validators.required, Validators.pattern(/^[A-Z][a-z ]*$/), Validators.maxLength(25), Validators.minLength(1)]],
       gender: ["", [Validators.required]],
       role: ["", [Validators.required]],
-      contact: ["", [Validators.required, Validators.pattern(/^\+91\s?\d{10}$/)]],
+      contact: ["", [Validators.required]],
       address: ["", [Validators.required, Validators.pattern(/^[a-zA-Z0-9\s,.'-]+$/)]],
       emailId: ["", [Validators.required, Validators.email, Validators.minLength(10), Validators.maxLength(100)]],
       dob: ['', [Validators.required,
@@ -365,11 +365,11 @@ export class StaffCreateComponent implements OnInit {
 
     let numbersOnly = inputValue.replace(/[^\d]/g, '');
 
-    if (numbersOnly.startsWith('91')) {
-      numbersOnly = '+91 ' + numbersOnly.substring(2, 12); // Take only 10 digits after +91
-    } else {
-      numbersOnly = '+91 ';
-    }
+    // if (numbersOnly.startsWith('91')) {
+    //   numbersOnly = '+91 ' + numbersOnly.substring(2, 12); // Take only 10 digits after +91
+    // } else {
+    //   numbersOnly = '+91 ';
+    // }
 
     this.staffsForm.patchValue({
       contact: numbersOnly

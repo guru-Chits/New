@@ -36,7 +36,10 @@ export class SubscriberViewComponent implements OnInit {
   paymentHistoryToggled: boolean[] = [];
   canEdit = false
   aucData: any
-  constructor(private service: SubscriberService, private authService: AuthService, private activatedRoute: ActivatedRoute, private router: Router, private chitService: ChitService, private paymentService: PaymentService,    private datePipe: DatePipe,
+  totalAmountOutstanding: number = 0
+  balance: number = 0
+  groups: any
+  constructor(private service: SubscriberService, private authService: AuthService, private activatedRoute: ActivatedRoute, private router: Router, private chitService: ChitService, private paymentService: PaymentService, private datePipe: DatePipe,
   ) { }
 
   ngOnInit(): void {
@@ -53,7 +56,29 @@ export class SubscriberViewComponent implements OnInit {
           this.subscriberId = this.subscriberDetail.Subscriber._id
           this.service.getChitGroupById(this.subscriberDetail.Subscriber.subscriberId).subscribe(data => {
             this.chitGroup = data;  // Array of chit groups
+            this.groups = this.chitGroup
             this.chitGroup.forEach((group, index) => {
+              this.groups = group
+              this.chitService.getTicketId(group.chitGroupId).subscribe((acuData) => {
+                const auctionData = acuData.allData
+                const fistAuc = this.datePipe.transform(auctionData[0].date, 'yyyy-MM')
+                const lastAuc = this.datePipe.transform(auctionData[auctionData.length - 1].date, 'yyyy-MM')
+                this.paymentService.getTotalByGroupId(fistAuc, group.chitGroupId, group.passbookNo, lastAuc).subscribe((PayData) => {
+                  let toPay = acuData.allData.length * group.chitAmount / 20
+                  let paid = PayData.totalPassbookNoAmount
+                  let balance = toPay - paid
+                  this.balance = balance
+                  this.chitGroup[index] = {
+                    ...this.chitGroup[index],
+                    balance: balance,
+                    winningBid: auctionData[auctionData.length - 1].winningBid,
+                    prizedAmount: auctionData[auctionData.length - 1].prizedAmount,
+                  };
+                  if (balance > 0) {
+                    this.totalAmountOutstanding += balance;
+                  }
+                })
+              })
               this.chitService.getSubAuction(group.passbookNo).subscribe(response => {
                 if (response.subscriberAuc.passbookNumber) {
                   this.chitGroup[index].chitAuc = response.subscriberAuc;
@@ -106,24 +131,22 @@ export class SubscriberViewComponent implements OnInit {
         this.selectedIndex = null;
         this.paymentData = [];
         this.isShowDiv = this.isShowDiv;
-
       }
       else {
         this.selectedIndex = index;
         this.isShowDiv = !this.isShowDiv;
         this.paymentService.getVerifiedPaymentByPassbook(data.passbookno).subscribe(response => {
           this.paymentHistory = response;
-        
+
           let installmentNo = 0; // Start from 1
           let previousInstallmentMonth = ''; // Track the last installmentMonth
-        
+
           this.paymentData = this.paymentHistory.payments.map((paymentDetail, index) => {
             // Check if the current installmentMonth differs from the previous one
             if (paymentDetail.installmentMonth !== previousInstallmentMonth) {
               installmentNo++; // Increment the installment number
               previousInstallmentMonth = paymentDetail.installmentMonth; // Update the previous installmentMonth
             }
-        
             return {
               receiptNumber: paymentDetail.receiptNumber,
               installmentMonth: paymentDetail.installmentMonth,
@@ -135,10 +158,10 @@ export class SubscriberViewComponent implements OnInit {
             };
           });
         });
-        
       }
     })
   }
+
   onFileSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files[0]) {
@@ -189,7 +212,6 @@ export class SubscriberViewComponent implements OnInit {
           this.chitService.getSubAuction(group.passbookNo).subscribe(response => {
             if (response.subscriberAuc.passbookNumber) {
               this.chitGroup[index].chitAuc = response.subscriberAuc;
-
             }
             else if (response.subscriberAuc.profitChitData) {
               this.chitGroup[index].chitAuc = response.subscriberAuc.profitChitData;

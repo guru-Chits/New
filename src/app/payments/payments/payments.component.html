@@ -236,7 +236,8 @@
                         <div class="row pb-3">
                             <div class="col-6 d-flex justify-content-around">
                                 <div class="col-5 fw-bold">Installment Month</div>
-                                <div class="col-5">{{installMonth}}</div>
+                                <!-- <div class="col-5" *ngIf="balanceMonth">{{balanceMonth}}</div> -->
+                                <div class="col-5">{{balanceMonth}} {{installMonth}}</div>
                             </div>
                             <div class="col-6 d-flex justify-content-around">
                                 <div class="col-5 fw-bold">Date of Payment</div>

@@ -77,9 +77,11 @@ uploaded:any
         this.conditionalValidator(() => !!this.subscriberForm?.get('aliasName')?.value, Validators.maxLength(50)),
         this.conditionalValidator(() => !!this.subscriberForm?.get('aliasName')?.value, Validators.minLength(2))
       ]],
-      contact: ["", [Validators.required, Validators.pattern(/^\d{10}$/)]],
+      contact: ["", [Validators.required]],
       secContact:["",
-         [        this.conditionalValidator(() => !!this.subscriberForm?.get('aliasName')?.value, Validators.pattern((/^\d{10}$/))),]],
+        //  [       
+        //    this.conditionalValidator(() => !!this.subscriberForm?.get('secContact')?.value, Validators.pattern((/^\d$/))),]
+          ],
       
       place: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(100), Validators.pattern(/^[a-zA-Z0-9\s,.'-]+$/)]],
       gender: ['', Validators.required],

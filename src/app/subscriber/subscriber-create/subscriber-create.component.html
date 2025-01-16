@@ -60,7 +60,7 @@
                 <div class="form-group">
                   <label for="aliasName" class="form-control-label">Alias Name</label>
                   <input type="text" placeholder="Alias Name" class="form-control form-control-sm"
-                    formControlName="aliasName" (keypress)="onAliasNameKeyPress($event)" maxlength="25" minlength="2" />
+                    formControlName="aliasName" (keypress)="onAliasNameKeyPress($event)" maxlength="50" minlength="2" />
                   <div class="invalid-feedback"
                     *ngIf="subscriberForm.get('aliasName').invalid && (subscriberForm.get('aliasName').dirty || subscriberForm.get('aliasName').touched)">
                   </div>
@@ -76,6 +76,7 @@
                     class="form-control form-control-sm"
                     formControlName="contact"
                     (input)="onContactChange($event)"
+                    minlength="10"
                     maxlength="14"
                   />
                   <div
@@ -98,7 +99,8 @@
                   <label for="secContact" class="form-control-label">Secondary Contact Number</label>
                   <input type="tel" placeholder="Contact Number" class="form-control form-control-sm"
                     formControlName="secContact" [value]="subscriberForm.get('secContact').value"
-                    (input)="onSecContactChange($event)" maxlength="14"/>
+                    (input)="onSecContactChange($event)" minlength="10"
+                    maxlength="14"/>
                   <div class="invalid-feedback"
                     *ngIf="subscriberForm.get('secContact').invalid && (subscriberForm.get('secContact').dirty || subscriberForm.get('secContact').touched)">
                     <!-- <div *ngIf="subscriberForm.get('secContact').errors.pattern">Contact Number should be exactly 10
@@ -144,7 +146,7 @@
                 <div class="form-group">
                   <label for="dob" class="form-control-label">Date of Birth</label>
                   <input type="date" placeholder="dd/mm/yyyy" class="form-control form-control-sm" formControlName="dob"
-                    (ngModelChange)="validateDate($event)" />
+                    />
                   <div class="invalid-feedback"
                     *ngIf="subscriberForm.get('dob').invalid && (subscriberForm.get('dob').dirty || subscriberForm.get('dob').touched)">
                     <div *ngIf="subscriberForm.get('dob').errors.required">Date of Birth is required.</div>
@@ -484,7 +486,7 @@
         </div>
       </div>
     </div>
-    <div class="col-lg-3" *ngIf="isSubscriberListVisible">
+    <div class="col-lg-3z" *ngIf="isSubscriberListVisible">
       <div class="card details  mb-3">
         <h5 class="text-center my-2">Referral</h5>
         <div class="search-bar align-self-center">

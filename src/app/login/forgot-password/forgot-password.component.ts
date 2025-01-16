@@ -54,12 +54,12 @@ export class ForgotPasswordComponent implements OnInit {
       this.employeeId = this.response.user.employeeId
       if (this.response.success === true) {
         this.userdata = response;
-        sessionStorage.setItem('profile', JSON.stringify(this.userdata.userProfile));
-        sessionStorage.setItem('name', JSON.stringify(this.userdata.userName));
+        localStorage.setItem('profile', JSON.stringify(this.userdata.userProfile));
+        localStorage.setItem('name', JSON.stringify(this.userdata.userName));
 
         this.mobileNumber = this.userdata.mobileNumber;
         this.role = this.userdata.role;
-        sessionStorage.setItem('userRole', JSON.stringify(this.role));
+        localStorage.setItem('userRole', JSON.stringify(this.role));
 
         // Check if the user has access before proceeding
 

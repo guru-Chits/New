@@ -218,15 +218,17 @@ export class AuctionComponent implements OnInit {
               viewDetails: "View Details"
             }));
           });
-          this.service.getAuctionCycleByGroupId(groupId).subscribe((data) => {
-            const lastAuction = data.latestChit.length-1
+          this.service.getTicketId(groupId).subscribe((data) => {
+            console.log(data.latestChit);
+            
+            const lastAuction = data.auctionCycle
             console.log(lastAuction);
 
-            if (lastAuction == 20  ) {
+            if (lastAuction == 19  ) {
               this.auctionForm.patchValue({
                 walletBalance: this.chitData.chitAmount
               })
-            } else if (lastAuction > 20 && !this.extraPayments ) {
+            } else if (lastAuction >= 20 && !this.extraPayments ) {
               this.auctionForm.patchValue({
                 walletBalance: 0
               })
@@ -448,52 +450,47 @@ export class AuctionComponent implements OnInit {
   getRouteNameValue() {
     const winningBid = this.auctionForm.get('winningBid').value;
     const groupId = this.auctionForm.get('groupId').value;
-
-    const prizedAmount = `${this.chitData.chitAmount - winningBid}`
-    this.auctionForm.get('prizedAmount').patchValue(prizedAmount)
-    this.service.getAuctionCycleByGroupId(groupId).subscribe((data) => {
-      const lastAuction = data.latestChit.length
-      console.log(lastAuction);
-      if (data) {
-        if (lastAuction >= 20 && this.regular) {
-          const prizedm = `${this.chitData.chitAmount - winningBid}`
-
-          const finalWallet = Number(this.chitData.chitAmount) - Number(prizedm)
-          this.auctionForm.get('walletBalance').patchValue(finalWallet)
-
-        } else {
-          const finalprizedAmount = this.auctionForm.get('prizedAmount').value;
-          const walletBalance = this.chitSubscriberTotal
-          if (this.regular || this.tknCompany) {
-            // const sumOfTwo = Number(finalprizedAmount) + Number(this.chitData.foremanCommission);
-            const finalWallet = Number(this.chitSubscriberTotal) + Number(winningBid) - Number(this.chitData.foremanCommission);
-            this.auctionForm.get('walletBalance').patchValue(finalWallet)
-
-          } else if (this.profitChit) {
-            const prizedAm = this.chitData.chitAmount - winningBid
-
-            const finalWallet = this.chitSubscriberTotal - prizedAm - Number(this.chitData.foremanCommission);
-            this.auctionForm.get('walletBalance').patchValue(finalWallet)
-          }
-        }
-      } else {
-        const finalprizedAmount = this.auctionForm.get('prizedAmount').value;
-        const walletBalance = this.chitSubscriberTotal
-        if (this.regular || this.tknCompany) {
-          // const sumOfTwo = Number(finalprizedAmount) + Number(this.chitData.foremanCommission);
-          const finalWallet = Number(this.chitSubscriberTotal) + Number(winningBid) - Number(this.chitData.foremanCommission);
-          this.auctionForm.get('walletBalance').patchValue(finalWallet)
-
-        } else if (this.profitChit) {
-          const prizedAm = this.chitData.chitAmount - winningBid
-
-          const finalWallet = this.chitSubscriberTotal - prizedAm - Number(this.chitData.foremanCommission);
-          this.auctionForm.get('walletBalance').patchValue(finalWallet)
-        }
+  
+    // Calculate prized amount
+    const prizedAmount = this.chitData.chitAmount - winningBid;
+    this.auctionForm.get('prizedAmount').patchValue(prizedAmount);
+  
+    // Fetch auction cycle by groupId
+    this.service.getTicketId(groupId).subscribe((data) => {
+      if (!data) {
+        this.updateWalletBalance(winningBid, prizedAmount, this.chitSubscriberTotal);
+        return;
       }
-    })
+      
+      const lastAuction = data.auctionCycle 
+      console.log(lastAuction);
+      
+      if (lastAuction >= 20 && (this.regular || this.profitChit || this.tknCompany)) {
+        const finalWallet = this.chitData.chitAmount - (prizedAmount + this.chitData.chitAmount/20);
+        console.log(finalWallet);
+        
+        this.auctionForm.get('walletBalance').patchValue(finalWallet);
+      } else {
+        this.updateWalletBalance(winningBid, prizedAmount, this.chitSubscriberTotal);
+      }
+    });
   }
-
+  
+  updateWalletBalance(winningBid: number, prizedAmount: number, chitSubscriberTotal: number) {
+    let finalWallet: number;
+    console.log(finalWallet);
+    
+    if (this.regular || this.tknCompany) {
+      finalWallet = chitSubscriberTotal +Number (winningBid) - this.chitData.foremanCommission;
+    } else if (this.profitChit) {
+      finalWallet = chitSubscriberTotal - prizedAmount - this.chitData.foremanCommission;
+    } else {
+      finalWallet = chitSubscriberTotal; // Default case, if no condition matches
+    }
+  
+    this.auctionForm.get('walletBalance').patchValue(finalWallet);
+  }
+  
   onAuctionTypeChange(event: any) {
     const selectedValue = event.target.value;
 

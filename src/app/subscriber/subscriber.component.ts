@@ -22,7 +22,7 @@ export class SubscriberComponent {
   chitGroup: any
   subscriberData: any
   data: any[] = [];
-  count: number = 0
+  // count: number = 0
   chitGroups: any
   selectedId: any
   subscriberDetail: any
@@ -73,16 +73,16 @@ export class SubscriberComponent {
         location: subscriberDetails?.place,
         profileImageUrl: subscriberDetails?.profileImageUrl,
         routeId: subscriberDetails?.routeId,
-        enroll: this.service.getChitGroupById(subscriberDetails?.subscriberId).subscribe(
-          response => {
-            this.chitGroups = response;
-            // Check if the chitGroup length is greater than 1
-            if (this.chitGroups.length > 1) {
-              // Increment the totalCount
-              this.count++;
-            }
-          }
-        )
+        // enroll: this.service.getChitGroupById(subscriberDetails?.subscriberId).subscribe(
+        //   response => {
+        //     this.chitGroups = response;
+        //     // Check if the chitGroup length is greater than 1
+        //     if (this.chitGroups.length > 1) {
+        //       // Increment the totalCount
+        //       this.count++;
+        //     }
+        //   }
+        // )
 
       }))
     })

@@ -15,7 +15,7 @@ loginUrl:string=environment.loginServiceUrl+'/login/'
     return this.http.get(`${this.loginUrl}getloginDetail/${empId}`)
   }
   isAuthenticated(): boolean {
-    return !!sessionStorage.getItem('userRole');
+    return !!localStorage.getItem('userRole');
   }
   markAsVerified() {
 

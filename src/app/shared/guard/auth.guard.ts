@@ -44,7 +44,7 @@ export class AuthGuard implements CanLoad, CanActivate {
     if (this.roleAccess) {
       return of(this.validateAccess(accKey, action));
     }
-    const role = sessionStorage.getItem('userRole')?.replace(/"/g, '');  
+    const role = localStorage.getItem('userRole')?.replace(/"/g, '');  
     if (!role) {
       this.router.navigate(['/login']);
       return of(false);

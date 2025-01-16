@@ -45,7 +45,7 @@ export class ChitComponent implements OnInit {
   itemsPerPage: number = 5;
   currentPage: number = 1;
   totalPages: number = 0;
-  count: number = 0
+  // count: number = 0
   auctions: any
 
   displayedAuctions: any
@@ -89,32 +89,68 @@ export class ChitComponent implements OnInit {
       }
     });
 
-    this.paymentService.getAllTransaction().subscribe((response => {
-      // Assuming response is the full response object
-      this.transactions = response;
-      this.transactions = this.transactions.AllTransaction
+    // this.paymentService.getAllTransaction().subscribe((response => {
+    //   // Assuming response is the full response object
+    //   this.transactions = response;
+    //   this.transactions = this.transactions.AllTransaction
 
-      // Sum all wallet balances
+    //   // Sum all wallet balances
+    //   this.totalWalletBalance = this.transactions.reduce((total, transaction) => {
+    //     return total + (transaction.walletBalance || 0); // Add walletBalance or 0 if undefined
+    //   }, 0);
+
+    // }));
+
+    this.paymentService.getAllTransaction().subscribe((response) => {
+  // Assuming response is the full response object
+  this.transactions = response;
+  this.transactions = this.transactions.AllTransaction;
+
+  // Process each transaction and adjust walletBalance based on auction cycle
+  this.transactions.forEach((transaction) => {
+    this.service.getTicketId(transaction.groupId).subscribe((data) => {
+      console.log(data.latestChit);
+      const lastAuction = data.auctionCycle;
+      const len=data.allData.length
+      const chitData = data.allData[len-1]
+      
+      console.log(lastAuction);
+
+      if (lastAuction === 19) {
+        // Assign full chit amount for last auction 19
+        transaction.walletBalance = chitData.foremanCommision*20;
+      } else 
+      if (lastAuction >= 20) {
+        // Assign wallet balance as 0 for auctions >= 20
+        transaction.walletBalance = 0;
+      } else {
+        // Retain wallet balance as-is for other auction cycles
+        transaction.walletBalance = transaction.walletBalance || 0;
+      }
+
+      // Recalculate total wallet balance after processing each transaction
       this.totalWalletBalance = this.transactions.reduce((total, transaction) => {
         return total + (transaction.walletBalance || 0); // Add walletBalance or 0 if undefined
       }, 0);
+    });
+  });
+});
 
-    }));
 
     this.subscriberService.getsubscriberAll().subscribe((data) => {
       this.subscriberData = data;
       this.data = this.subscriberData.AllSubscriber.map((subscriberDetails, index) => ({
 
-        enroll: this.subscriberService.getChitGroupById(subscriberDetails?.subscriberId).subscribe(
-          response => {
-            this.chitGroups = response;
-            // Check if the chitGroup length is greater than 1
-            if (this.chitGroups.length > 1) {
-              // Increment the totalCount
-              this.count++;
-            }
-          }
-        )
+        // enroll: this.subscriberService.getChitGroupById(subscriberDetails?.subscriberId).subscribe(
+        //   response => {
+        //     this.chitGroups = response;
+        //     // Check if the chitGroup length is greater than 1
+        //     if (this.chitGroups.length > 1) {
+        //       // Increment the totalCount
+        //       this.count++;
+        //     }
+        //   }
+        // )
 
       }))
     })
@@ -162,6 +198,7 @@ export class ChitComponent implements OnInit {
 
   handleChitGropDetails(id: string, index: number) {
     this.showChitDetails = true
+    this.chitSubscriberTotal=0
     this.selectedChit = index + 1
     this.getChitById(id)
   }
@@ -191,8 +228,8 @@ export class ChitComponent implements OnInit {
 
             }
           })
-          this.service.getAuctionCycleByGroupId(this.groupId).subscribe((data)=>{
-            const lastAuction=data.latestChit.length 
+          this.service.getTicketId(this.groupId).subscribe((data)=>{
+            const lastAuction=data.auctionCycle
             console.log(lastAuction);
             if (lastAuction<19) {
               this.paymentService.getTransactionById(this.groupId).subscribe((response) => {

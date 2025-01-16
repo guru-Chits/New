@@ -123,12 +123,12 @@ export class LoginComponent {
         } else {
           if (this.response.success === true && password === this.response.user.password && empId == this.employeeId) {
             this.userdata = response;
-            sessionStorage.setItem('profile', JSON.stringify(this.userdata.userProfile));
-            sessionStorage.setItem('name', JSON.stringify(this.userdata.userName));
+            localStorage.setItem('profile', JSON.stringify(this.userdata.userProfile));
+            localStorage.setItem('name', JSON.stringify(this.userdata.userName));
 
             this.mobileNumber = this.userdata.mobileNumber;
             this.role = this.userdata.role;
-            sessionStorage.setItem('userRole', JSON.stringify(this.role));
+            localStorage.setItem('userRole', JSON.stringify(this.role));
 
             // Check if the user has access before proceeding
             this.accessService.getAccessByRole(this.role).subscribe(roleResponse => {

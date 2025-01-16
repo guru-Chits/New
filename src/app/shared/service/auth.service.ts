@@ -16,15 +16,15 @@ export class AuthService {
 
   constructor(private accessPrivService: AccessService, private router: Router, private http: HttpClient) { }
   isLoggedIn(): boolean {
-    return !!sessionStorage.getItem('userRole');
+    return !!localStorage.getItem('userRole');
   }
 
   isVerified(): boolean {
-    return !!sessionStorage.getItem('isVerified');
+    return !!localStorage.getItem('isVerified');
   }
 
   checkAccess(accKey: string, action: string): Observable<boolean> {
-    let role = sessionStorage.getItem('userRole');
+    let role = localStorage.getItem('userRole');
     role = role ? role.replace(/"/g, '') : null;
 
     if (!role) {

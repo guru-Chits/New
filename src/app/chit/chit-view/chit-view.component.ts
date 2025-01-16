@@ -87,6 +87,10 @@ export class ChitViewComponent implements OnInit {
   colorCode: any
   tknAmount:number
   extraCount:number
+  groupSurplus:number
+  lastAucDate:any
+  payments:any
+  totalAmount:number
   constructor(private activatedRoute: ActivatedRoute, private router: Router, private service: ChitService, private paymentService: PaymentService, private authService: AuthService, private subservice: SubscriberService, private settings: ServiceService,private datePipe: DatePipe,) { }
 column: ITableColumn[] = [
   { field: 'sNo', label: 'Serial No' },
@@ -161,7 +165,9 @@ column: ITableColumn[] = [
             }));
             
              });
-      
+             console.log(this.groupId);
+    
+             this.getByGroupId(this.groupId,this.chitData.chitSubscribers,this.chitData.chitAmount)
           
           if (this.chitData.addChitSubscribers && this.chitData.addChitSubscribers.length > 0) {
             const lastSubscriber = this.chitData.addChitSubscribers[this.chitData.addChitSubscribers.length - 1];
@@ -169,8 +175,8 @@ column: ITableColumn[] = [
           } else {
           }
 
-          this.service.getAuctionCycleByGroupId(this.groupId).subscribe((data) => {
-            const lastAuction = data.latestChit.length
+          this.service.getTicketId(this.groupId).subscribe((data) => {
+            const lastAuction = data.auctionCycle
             if (lastAuction<19) {
               this.paymentService.getTransactionById(this.groupId).subscribe((response) => {
                 this.payment = response
@@ -227,10 +233,101 @@ column: ITableColumn[] = [
           this.addSubscribers = this.chitData.addChitSubscribers;
         });
       }
+      
     });
-
-
+  
   }
+
+  async getByGroupId(groupId: string, chitSubscribers: any[] ,chitAmount:number) {
+    const adjustedAmount = await this.calculateChitAmount(chitAmount, groupId);
+    this.totalAmount=adjustedAmount/20 *chitSubscribers.length
+    console.log(this.totalAmount);
+    
+    this.service.getTicketId(this.groupId).subscribe((data) => {
+      const allData=data.allData
+
+      console.log(allData);
+      this.lastAucDate=this.datePipe.transform(allData[allData.length-1].date,
+       'dd-MMMM-yyyy'
+     );
+     this.lastAucDate=this.incrementInstallmentMonth(this.lastAucDate)
+     console.log(this.lastAucDate);
+
+      this.paymentService.getTotalByGroupId(this.lastAucDate,this.groupId).subscribe(data => {
+        console.log(data);
+          this.groupSurplus=data.totalGroupAmount
+          console.log(this.groupSurplus);
+          
+      })
+    })
+  }
+
+  incrementInstallmentMonth(currentMonth: string): string {
+    const dateParts = currentMonth.split('-');
+    const day = dateParts[0]; // Keep the day
+    const monthName = dateParts[1]; // Extract the month name
+    const monthIndex = this.getMonthIndex(monthName); // Convert month name to index (0-11)
+
+    // Create a new Date object and increment the month
+    let nextMonthIndex = (monthIndex + 1) % 12; // Increment month, wrap to 0 after December
+
+    let year = parseInt(dateParts[2]);
+    if (monthIndex === 11) {
+      // If it's December, move to January and increment the year
+      year += 1;
+    }
+
+    const nextMonth = this.getMonthName(nextMonthIndex); // Convert back to month name
+
+    // Return the new date with the same day and the incremented month and year if needed
+    return `${day}-${nextMonth}-${year}`;
+  }
+  getMonthIndex(monthName: string): number {
+    const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+    return months.indexOf(monthName);
+  }
+
+  // Helper to get month name from index
+  getMonthName(monthIndex: number): string {
+    const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+    return months[monthIndex];
+  }
+
+
+  async calculateChitAmount(chitAmount: number, chitGroupId: string): Promise<number> {
+    try {
+      // Fetch auction cycle data for the group
+      const auctionCycleData = await this.service.getTicketId(chitGroupId).toPromise();
+      const latestChit = auctionCycleData?.allData || [];
+      const lastInstallmentDate = this.datePipe.transform(latestChit[latestChit.length - 1]?.date, 'dd-MMMM-yyyy');
+      const installmentMonth =this.datePipe.transform(latestChit[latestChit.length - 1]?.date, 'dd-MMMM-yyyy');
+
+      console.log(lastInstallmentDate,installmentMonth);
+      
+      console.log(auctionCycleData.auctionCycle >= 19 && lastInstallmentDate == installmentMonth);
+      
+      // Check condition: If auction cycle >= 19 and dates match
+      if (auctionCycleData.auctionCycle >= 19 && lastInstallmentDate === installmentMonth) {
+        // Fetch transactions for the group
+        const transactionData = await this.paymentService.getTransactionById(chitGroupId).toPromise();
+        this.payments=transactionData
+        const payments=this.payments?.payment || []
+        // Calculate wallet balance from payments
+        const walletBalance = payments.reduce((sum, payment) => sum + (payment.walletBalance || 0), 0);
+        console.log(walletBalance);
+        
+        // Calculate adjusted amount
+        return chitAmount - walletBalance;
+      }
+  
+      // Return the original chitAmount if condition does not apply
+      return chitAmount;
+    } catch (error) {
+      console.error('Error calculating chit amount:', error);
+      return chitAmount; // Fallback to the original chitAmount in case of error
+    }
+  }
+  
   convertDateToMonth(dateString: string): string {
     const date = new Date(dateString); // Parse the ISO date string into a Date object
     return date.toLocaleString('default', { month: 'long' }); // Extract the month name
@@ -648,26 +745,6 @@ column: ITableColumn[] = [
     return this.filteredSubscribers;
 
   }
-
-
-
-  // subscriberColumn: ITableColumn[] = [
-  //   {
-  //     label: 'profileImageUrl',
-  //     field: ' ',
-  //     filter: false,
-  //     cellRenderer: this.profileImageWithIdRenderer,
-  //     onCellClicked: (event: CellClickedEvent) => this.getChitById(event.data._id)
-  //   }, { label: 'Name', field: 'firstName', onCellClicked: (event: CellClickedEvent) => this.getChitById(event.data._id) },
-  //   { label: 'Alias Name', field: 'aliasName', onCellClicked: (event: CellClickedEvent) => this.getChitById(event.data._id) },
-  //   {label:'auction Status',field:'auctionStatus'},
-  //   { label: 'Passbook Number', field: 'passbookNo', onCellClicked: (event: CellClickedEvent) => this.getChitById(event.data._id) },
-  //   { label: 'Place', field: 'place', onCellClicked: (event: CellClickedEvent) => this.getChitById(event.data._id) },
-  //   { label: 'Occupation', field: 'occupation', onCellClicked: (event: CellClickedEvent) => this.getChitById(event.data._id) },
-  //   { label: 'Collection Type', field: 'collectionType', onCellClicked: (event: CellClickedEvent) => this.getChitById(event.data._id) },
-
-  // ];
-
 
   DummyData = [
     {

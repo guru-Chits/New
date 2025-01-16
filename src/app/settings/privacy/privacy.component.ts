@@ -105,7 +105,7 @@ ngOnInit(): void {
     }
   });
 
-  this.employeeId=sessionStorage.getItem('employeeId')
+  this.employeeId=localStorage.getItem('employeeId')
   this.employeeId=this.employeeId.replace(/"/g, '')
 
   console.log(this.employeeId);
@@ -142,7 +142,7 @@ toggleconfirmPasswordVisibility(): void {
 
 
 onSubmit(){
-  let employeeId=sessionStorage.getItem('employeeId')
+  let employeeId=localStorage.getItem('employeeId')
   employeeId=employeeId.replace(/"/g, '')
 
   console.log(employeeId);

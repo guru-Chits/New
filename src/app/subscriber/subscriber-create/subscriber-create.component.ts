@@ -68,18 +68,20 @@ uploaded:any
       subscriberId: [{ value: '', disabled: true }],
       firstName: ['', [Validators.required, Validators.pattern(/^[a-zA-Z ]*$/), Validators.maxLength(25), Validators.minLength(2)]],
       lastName: ['', [
-        this.conditionalValidator(() => !!this.subscriberForm?.get('lastName')?.value, Validators.pattern(/^[A-Z][a-z ]*$/)),
+        this.conditionalValidator(() => !!this.subscriberForm?.get('lastName')?.value, Validators.pattern(/^[a-zA-Z ]*$/)),
         this.conditionalValidator(() => !!this.subscriberForm?.get('lastName')?.value, Validators.maxLength(25)),
         this.conditionalValidator(() => !!this.subscriberForm?.get('lastName')?.value, Validators.minLength(1))
       ]],
       aliasName: ['', [
         this.conditionalValidator(() => !!this.subscriberForm?.get('aliasName')?.value, Validators.pattern(/^[A-Z][a-zA-Z\/\-()&.@,' ]*$/)),
-        this.conditionalValidator(() => !!this.subscriberForm?.get('aliasName')?.value, Validators.maxLength(25)),
+        this.conditionalValidator(() => !!this.subscriberForm?.get('aliasName')?.value, Validators.maxLength(50)),
         this.conditionalValidator(() => !!this.subscriberForm?.get('aliasName')?.value, Validators.minLength(2))
       ]],
-      contact: ["", [Validators.required, Validators.pattern(/^\+91\s?\d{10}$/)]],
+      contact: ["", [Validators.required]],
       secContact:["",
-         [        this.conditionalValidator(() => !!this.subscriberForm?.get('aliasName')?.value, Validators.pattern((/^\+91\s?\d{10}$/))),]],
+        //  [       
+        //    this.conditionalValidator(() => !!this.subscriberForm?.get('secContact')?.value, Validators.pattern((/^\d$/))),]
+          ],
       
       place: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(100), Validators.pattern(/^[a-zA-Z0-9\s,.'-]+$/)]],
       gender: ['', Validators.required],
@@ -178,18 +180,21 @@ uploaded:any
           const utcDob = this.convertDateFormat(this.subscriberData.Subscriber.dob);
           const utcnDob = this.convertDateFormat(this.subscriberData.Subscriber.nomineeDOB);
           let updatedSubscriber = { ...this.subscriberData.Subscriber };
-          if (utcDob) {
-            updatedSubscriber = { ...updatedSubscriber, dob: utcDob };
-          }
+          // if (utcDob) {
+          //   updatedSubscriber = { ...updatedSubscriber, dob: utcDob };
+          //   console.log(this.subscriberData.Subscriber.dob,utcDob);
 
-          if (utcnDob) {
-            updatedSubscriber = { ...updatedSubscriber, nomineeDOB: utcnDob };
-          }
+          // }
 
-          if (utcnDob && utcDob) {
-            updatedSubscriber = { ...updatedSubscriber, dob: utcDob, nomineeDOB: utcnDob };
-          }
+          // if (utcnDob) {
+          //   updatedSubscriber = { ...updatedSubscriber, nomineeDOB: utcnDob };
+          // }
+
+          // if (utcnDob && utcDob) {
+          //   updatedSubscriber = { ...updatedSubscriber, dob: utcDob, nomineeDOB: utcnDob };
+          // }
           this.subscriberForm.patchValue(updatedSubscriber);
+          
         })
       }
     })
@@ -321,18 +326,18 @@ uploaded:any
     let inputValue = event.target.value;
     let numbersOnly = inputValue.replace(/[^\d]/g, '');
     const allowedKeys = ['Backspace', 'Tab'];
-    if (
-      !allowedKeys.includes(event.key) &&
-      (event.key < '0' || event.key > '9')
-    ) {
-      event.preventDefault();
-    }
+    // if (
+    //   !allowedKeys.includes(event.key) &&
+    //   (event.key < '0' || event.key > '9')
+    // ) {
+    //   event.preventDefault();
+    // }
   
-    if (numbersOnly.startsWith('91')) {
-      numbersOnly = '+91 ' + numbersOnly.substring(2, 12); // Take only 10 digits after +91
-    } else {
-      numbersOnly = '+91 ';
-    }
+    // if (numbersOnly.startsWith('91')) {
+    //   numbersOnly = '+91 ' + numbersOnly.substring(2, 12); // Take only 10 digits after +91
+    // } else {
+    //   numbersOnly = '+91 ';
+    // }
     this.subscriberForm.patchValue({
       contact: numbersOnly
     });
@@ -340,11 +345,11 @@ uploaded:any
   onSecContactChange(event: any) {
     let inputValue = event.target.value;
     let numbersOnly = inputValue.replace(/[^\d]/g, '');
-    if (numbersOnly.startsWith('91')) {
-      numbersOnly = '+91 ' + numbersOnly.substring(2, 12); // Take only 10 digits after +91
-    } else {
-      numbersOnly = '+91 ';
-    }
+    // if (numbersOnly.startsWith('91')) {
+    //   numbersOnly = '+91 ' + numbersOnly.substring(2, 12); // Take only 10 digits after +91
+    // } else {
+    //   numbersOnly = '+91 ';
+    // }
     this.subscriberForm.patchValue({
       secContact: numbersOnly
     });

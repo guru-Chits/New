@@ -159,7 +159,7 @@
           <div class="enroll-card p-2 mb-3">
             <div class="text-center">
               <h6 class="text-danger fs-11">Total Amount Outstanding</h6>
-              <div class="text-danger fs-8">₹ 10000</div>
+              <div class="text-danger fs-8">₹ {{totalAmountOutstanding}}</div>
             </div>
           </div>
           <h6><strong>Enrollments</strong></h6>
@@ -219,29 +219,30 @@
               </div>
             </div>
           </div>
-          <div class="full-card m-4 p-2">
+          <div *ngFor="let group of chitGroup" class="full-card m-4 p-2">
             <div>
               <h6>Enrollment History</h6>
+
               <div class="text-slef-right">
               </div>
-              <h6 class="text-center chit-name">GCPL036 - Chit Group 10 - 2nd Aug 2023</h6>
+              <h6 class="text-center chit-name">{{group.chitGroupId}}</h6>
             </div>
             <div class="row align-center">
               <div class="col-md-3">
                 <h6 class=" mb-2">Prized Amount</h6>
-                <p>₹ 83000</p>
+                <p>₹ {{group.prizedAmount}}</p>
               </div>
               <div class="col-md-3">
                 <h6 class=" mb-2">Winning Bid</h6>
-                <p>₹ 5000</p>
+                <p>₹ {{group.winningBid}}</p>
               </div>
               <div class="col-md-3">
                 <h6 class=" mb-2">Collection Type</h6>
-                <p>Monthly</p>
+                <p>{{group.collectionType}}</p>
               </div>
               <div class="col-md-3 mb-2">
                 <p class="text-danger mb-2">Amount Outstanding</p>
-                <p class="text-danger">₹ 10000</p>
+                <p class="text-danger">{{group.balance}}</p>
               </div>
             </div>
           </div>

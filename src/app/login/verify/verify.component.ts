@@ -42,9 +42,9 @@ export class VerifyComponent implements OnInit {
           window.alert("Invalid OTP, please try again.");
           this.verifyForm.reset();  // Optionally reset the form
         } else if (verificationResponse.Status === 'Success') {
-          const role = sessionStorage.getItem('userRole')?.replace(/"/g, '');  // Clean up stored role string
+          const role = localStorage.getItem('userRole')?.replace(/"/g, '');  // Clean up stored role string
           this.service.markAsVerified();
-          sessionStorage.setItem('isVerified', "Verified");
+          localStorage.setItem('isVerified', "Verified");
 
           if (this.reset === true) {
             this.resetPage = true

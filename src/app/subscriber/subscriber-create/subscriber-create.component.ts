@@ -180,18 +180,21 @@ uploaded:any
           const utcDob = this.convertDateFormat(this.subscriberData.Subscriber.dob);
           const utcnDob = this.convertDateFormat(this.subscriberData.Subscriber.nomineeDOB);
           let updatedSubscriber = { ...this.subscriberData.Subscriber };
-          if (utcDob) {
-            updatedSubscriber = { ...updatedSubscriber, dob: utcDob };
-          }
+          // if (utcDob) {
+          //   updatedSubscriber = { ...updatedSubscriber, dob: utcDob };
+          //   console.log(this.subscriberData.Subscriber.dob,utcDob);
 
-          if (utcnDob) {
-            updatedSubscriber = { ...updatedSubscriber, nomineeDOB: utcnDob };
-          }
+          // }
 
-          if (utcnDob && utcDob) {
-            updatedSubscriber = { ...updatedSubscriber, dob: utcDob, nomineeDOB: utcnDob };
-          }
+          // if (utcnDob) {
+          //   updatedSubscriber = { ...updatedSubscriber, nomineeDOB: utcnDob };
+          // }
+
+          // if (utcnDob && utcDob) {
+          //   updatedSubscriber = { ...updatedSubscriber, dob: utcDob, nomineeDOB: utcnDob };
+          // }
           this.subscriberForm.patchValue(updatedSubscriber);
+          
         })
       }
     })

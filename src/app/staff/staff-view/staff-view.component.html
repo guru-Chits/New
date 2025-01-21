@@ -6,11 +6,15 @@
         <div class="card ps-5 pe-5 mb-2 details-card">
           <div class="profile-picture-container">
             <div class="profile-picture">
-              <img [src]="staffDetail.Staff.profileUrl" alt="Profile Picture" class="profile-img">
+              <img [src]="staffDetail.Staff.profileUrl" alt="Profile Picture" class="profile-img ms-2">
               <input type="file" (change)="onFileSelected($event)" hidden #fileInput>
+              <button class="upload-button" (click)="fileInput.click()">
+                <img src="assets/subscriber/Profile edit.svg " alt="Upload Icon">
+              </button>
             </div>
           </div>
-          <h5 class="text-center">Staff Details</h5>
+          <h5 class="text-center title mb-5">Staff Details</h5>
+ 
           <div class="row justify-content-around">
             <div class="col-lg-4">
               <h6>Employee ID</h6>

@@ -2,28 +2,21 @@
   border-top: 100px solid #3E3A97;
 }
 
-.profile-picture-container {
-  align-items: left;
-  margin-left: 20px;
-  margin-top: 2px;
-}
-
 .profile-picture {
   position: relative;
   display: inline-block;
   border-radius: 50%;
   border: none;
-  margin-top: -50px;
+  margin-top: -60px;
   margin-left: -40px;
-  width: 100px;
-  height: 100px;
+  padding-left: 20px;
 
-  background-color: #E8E8E8;
+  /* background-color: #E8E8E8; */
 }
 
 .profile-img {
-  width: 100px;
-  height: 100px;
+  width: 120px;
+  height: 120px;
   background: transparent;
   border-radius: 50%;
 }
@@ -37,8 +30,8 @@
 
 .upload-button {
   position: absolute;
-  bottom: 10px;
-  right: 10px;
+  bottom: 0px;
+  right: 6px;
   border: none;
   cursor: pointer;
   background: transparent;
@@ -46,8 +39,12 @@
 }
 
 .upload-button img {
-  width: 24px;
-  height: 24px;
+  width: 28px;
+  height: 28px;
+}
+
+.title{
+  margin-top: -50px;
 }
 
 .viewBtn {

@@ -41,50 +41,47 @@
         <div class="col-lg-4 d-flex mb-4">
         <div *ngIf="areaDetail">
           <div class="card ">
-            
-              <div class="card-body">
-                      <h4 class="text-center my-3"><strong>Route Details</strong></h4>
-                      <table class="table simple-text">
-                          <tbody>
-                              <tr>
-                                  <td><b>Route ID</b></td>
-                                  <td style="color:#50A1A5">{{areaDetail.Route.routeId}} </td>
-                              </tr>
-                              <tr>
-                                  <td><b>Region Name</b></td>
-                                  <td>{{areaDetail.Route.regionName}}</td>
-                              </tr>
-                              <tr>
-                                  <td><b>Route Name</b></td>
-                                  <td>{{areaDetail.Route.routeName}}</td>
-                              </tr>
-                              <tr>
-                                  <td><b>Route Description</b></td>
-                                  <td>{{areaDetail.Route.routeDesc}}</td>
-                              </tr>
-                              <tr>
-                                <td><b>Allocated Staff</b></td>
-                                <td>Thomas</td>
-                            </tr>
-                            <tr>
-                                <td><b>Subscriber Count</b></td>
-                                <td>12</td>
-                            </tr>
-                              <tr>
-                                  <td><b>Route Status</b></td>
-                                  <td style="color:#50A1A5">
-                                    {{ areaDetail.Route.status ? 'Active' : 'Inactive' }}</td>
-                              </tr>
-                          </tbody>
-                          
-                      </table>
-                  <div class="botton-div d-flex justify-content-center">
-                      <button type="button" *ngIf="canEdit"  (click)="edit(areaDetail.Route._id)" class="btn1 px-3 py-1" >Edit</button>
-                      <!-- <button class="btn2 px-3 py-1" *ngIf="canDelete">Delete</button> -->
-                  </div>
-               
+            <div class="card-body">
+                <h4 class="text-center my-3"><strong>Route Details</strong></h4>
+                <table class="table simple-text">
+                    <tbody>
+                        <tr>
+                            <td><b>Route ID</b></td>
+                            <td style="color:#50A1A5">{{areaDetail.Route.routeId}} </td>
+                        </tr>
+                        <tr>
+                            <td><b>Region Name</b></td>
+                            <td>{{areaDetail.Route.regionName}}</td>
+                        </tr>
+                        <tr>
+                            <td><b>Route Name</b></td>
+                            <td>{{areaDetail.Route.routeName}}</td>
+                        </tr>
+                        <tr>
+                            <td><b>Route Description</b></td>
+                            <td>{{areaDetail.Route.routeDesc}}</td>
+                        </tr>
+                        <tr>
+                          <td><b>Allocated Staff</b></td>
+                          <td>Thomas</td>
+                      </tr>
+                      <tr>
+                          <td><b>Subscriber Count</b></td>
+                          <td>12</td>
+                      </tr>
+                        <tr>
+                            <td><b>Route Status</b></td>
+                            <td style="color:#50A1A5">
+                              {{ areaDetail.Route.status ? 'Active' : 'Inactive' }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+              <div class="botton-div d-flex justify-content-center">
+                  <button type="button" *ngIf="canEdit"  (click)="edit(areaDetail.Route._id)" class="btn1 px-3 py-1" >Edit</button>
+                  <!-- <button class="btn2 px-3 py-1" *ngIf="canDelete">Delete</button> -->
               </div>
-             </div>
+            </div>
+            </div>
         </div>
         </div>
     </div>

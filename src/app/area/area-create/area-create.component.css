@@ -77,17 +77,14 @@
   }
   .click{
     cursor: pointer;
+    font-size: small;
   }
   .form-group .form-control:focus {
     outline: none;
     box-shadow: none;
   }
   .scroll-container {
-    max-height: 400px; /* Set the height limit */
+    max-height: 500px; /* Set the height limit */
     overflow-y: auto; /* Enable vertical scrolling */
   }
   
-  .table-card {
-    width: 100%;
-    table-layout: auto;
-  }

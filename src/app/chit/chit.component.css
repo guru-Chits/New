@@ -39,7 +39,7 @@
   background-color: #FEECEB;
   color: #F04438;
   flex: auto;
-  height: 100px;
+  height: 120px;
 }
 
 .search-bar {
@@ -57,7 +57,7 @@
 
 .table tbody tr td {
   vertical-align: middle;
-  white-space: nowrap;
+  /* white-space: nowrap; */
   /* padding-bottom: 20px; */
 }
 
@@ -65,9 +65,9 @@
   color: #50A1A5;
 }
 
-strong {
+/* strong {
   padding-left: 20px;
-}
+} */
 
 a {
   text-decoration: none;

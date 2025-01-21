@@ -1,15 +1,5 @@
 .details-card {
   border-top: 100px solid #3E3A97;
-  /* position: relative; */
-
-}
-
-.profile-picture-container {
-  border-radius: 50%;
-  align-items: left;
-  margin-left: 20px;
-  margin-top: -50px;
-  margin-left: -20px;
 }
 
 .profile-picture {
@@ -17,8 +7,14 @@
   display: inline-block;
   border-radius: 50%;
   border: none;
-  background-color: #E8E8E8;
+  margin-top: -60px;
+  margin-left: -40px;
+  padding-left: 20px;
 }
+
+.title{
+  margin-top: -50px;
+} 
 
 .pay-his {
   color: #50A1A5;
@@ -28,8 +24,8 @@
 }
 
 .profile-img {
-  width: 100px;
-  height: 100px;
+  width: 120px;
+  height: 120px;
   background: transparent;
   border-radius: 50%;
 }
@@ -121,7 +117,6 @@
   border: none;
   outline: none;
   background-color: #ECEBF5;
-  /* padding: 5px; */
   flex-grow: 1;
   width: 160px;
 

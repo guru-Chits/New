@@ -22,7 +22,7 @@
   .table-group {
     border-left: 4px solid #50a1a5;
     flex: auto;
-    height: 70px;
+    height: fit-content;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     background-color: white;
   }

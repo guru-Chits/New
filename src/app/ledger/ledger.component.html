@@ -1,4 +1,4 @@
-<div class="container-fluid d-flex flex-column">
+<div class="container-fluid d-flex flex-column" id="top">
   <div class="row mt-3">
     <div [ngClass]="{'col-md-8 col-lg-8': subShow, 'col-md-12 col-lg-12': !subShow}">
       <!-- <div class="col-md-8 col-lg-8"> -->
@@ -52,47 +52,46 @@
         <!-- Chit Group Listing -->
         <div *ngFor="let group of displayedChit | slice:(currentPage - 1) * itemsPerPage:(currentPage) * itemsPerPage; let i = index"
           class="mb-3">
-
-          <div class="table-group my-2 px-3 d-flex justify-content-between align-items-center rounded-end border">
+          <div class="table-group d-flex flex-column py-3 my-2">
+            <div class=" my-2 px-3 d-flex justify-content-between align-items-center rounded-end ">
             
-            <!-- Group Header -->
-            <div class="row">
-              <span class="fw-bold fs-5">{{ group.chitGroupId }}</span>
+              <!-- Group Header -->
+              <div class="row">
+                <span class="fw-bold fs-5">{{ group.chitGroupId }}</span>
+              </div>
+              <!-- Toggle Details Button -->
+              <div class="d-flex overlap-images" style="color:#50A1A5; cursor: pointer;"
+                (click)="getByGroupId(group.chitGroupId, i , group.chitSubscribers ,group.chitAmount)">
+                View Details
+                <img *ngIf="selectedIndex != i" class="ms-4" src="assets/subscriber/down arrow.svg">
+                <img *ngIf="selectedIndex === i " class="ms-4" src="assets/subscriber/right arrow.svg" alt="">
+              </div>
             </div>
-
-            <!-- Toggle Details Button -->
-            <div class="d-flex overlap-images" style="color:#50A1A5; cursor: pointer;"
-              (click)="getByGroupId(group.chitGroupId, i , group.chitSubscribers ,group.chitAmount)">
-              View Details
-              <img *ngIf="selectedIndex != i" class="ms-4" src="assets/subscriber/down arrow.svg">
-              <img *ngIf="selectedIndex === i " class="ms-4" src="assets/subscriber/right arrow.svg" alt="">
-
+            <div class="row d-flex" *ngIf="selectedIndex === i && groupPaymentData">
+              <div class="d-flex">
+                <div class="col-lg-3 col-md-3 ms-4 p-2  card">
+                  <div>Total Amount <span style="color: #50A1A5;">{{totalAmount}}</span></div>
+    
+                </div>  
+                <div class="col-md-3 ms-2 p-2 card">
+                  <div>Amount Collected <span style="color: #50A1A5;">{{collectedAmount}}</span></div>
+    
+                </div>
+                <div class="col-md-3 ms-2 p-2  card">
+                  <div>Outstanding <span style="color: #F04438;"
+                      *ngIf=" totalAmount - collectedAmount >= 0">{{totalAmount-collectedAmount}}</span> </div>
+                </div>
+                <div class="col-md-2 ms-2 p-2  card">
+                  <div>Surplus <span style="color: #50A1A5;">{{groupSurplus}}</span>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
 
           <!-- Group Details -->
           <div class="card p-2 ps-2" *ngIf="selectedIndex === i && groupPaymentData">
-            <!-- Summary Row -->
 
-            <div class="row mb-5">
-              <div class="col-md-3 ms-4 py-2  card">
-                <div>Total Amount <span style="color: #50A1A5;">{{totalAmount}}</span></div>
-  
-              </div>
-              <div class="col-md-3 ms-2 py-2 card">
-                <div>Amount Collected <span style="color: #50A1A5;">{{collectedAmount}}</span></div>
-  
-              </div>
-              <div class="col-md-3 ms-2 py-2  card">
-                <div>Outstanding <span style="color: #F04438;"
-                    *ngIf=" totalAmount - collectedAmount >= 0">{{totalAmount-collectedAmount}}</span> </div>
-              </div>
-              <div class="col-md-2 ms-2 py-2  card">
-                <div>Surplus <span style="color: #50A1A5;">{{groupSurplus}}</span>
-                </div>
-              </div>
-  
-            </div>
             <!-- Subscriber Details -->
             <div *ngFor="let payment of groupPaymentData align-items-center" class="border-bottom pb-3 mb-3">
               <div class="row mb-2 ms-3">
@@ -114,7 +113,7 @@
                   <p>{{ payment.place }}</p>
                 </div>
               </div>
-              <div class="row mb-3 ps-2">
+              <div class="row mb-3 ps-2 d-flex justify-content-around">
                 <div class="col-md-2 ms-4 py-2  card">
                   <div>Total Amount <span style="color: #50A1A5;">{{ adjustedAmount/20 }}</span></div>
 

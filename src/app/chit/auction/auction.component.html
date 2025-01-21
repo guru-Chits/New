@@ -1,4 +1,4 @@
-<div class="container-fluid mt-4">
+<div class="container-fluid">
   <app-breadcrumb [data]="breadcrumsData"></app-breadcrumb>
 
   <div class="row">
@@ -219,7 +219,7 @@
             <tbody>
               <tr *ngFor="let subscriber of subscribers ; let i = index"
                 [ngClass]="getRowClass(subscriber?.passbookNo)">
-                <td class="ms-3">{{i+1}} <img [src]="subscriber?.profileImageUrl" alt="Profile Image"
+                <td class=" d-flex">{{i+1}} <img [src]="subscriber?.profileImageUrl" alt="Profile Image"
                     class="profile-image ms-3">
                 </td>
                 <td>{{ subscriber?.aliasName }}</td>
@@ -246,49 +246,49 @@
 
         <div class="row">
           <div class="col-6 mb-3">
-            <div class="card p-3 text-center">
+            <div class="card p-2 text-center">
               <div>Last Winning Bid</div>
               <div> ₹ {{lastAuction?.winningBid}}</div>
             </div>
           </div>
           <div class="col-6 mb-3">
-            <div class="card p-3 text-center">
+            <div class="card p-2 text-center">
               <div>Last Prized Amount</div>
               <div>₹ {{lastAuction?.prizedAmount}}</div>
             </div>
           </div>
           <div class="col-6 mb-3">
-            <div class="card p-3 text-center">
+            <div class="card p-2 text-center">
               <div>No. of Prized Subscribers</div>
               <div>{{bidHistory?.length}}</div>
             </div>
           </div>
           <div class="col-6 mb-3">
-            <div class="card p-3 text-center">
+            <div class="card p-2 text-center">
               <div>Completed Auctions</div>
               <div>{{auctionCycle}}</div>
             </div>
           </div>
           <div class="col-6 mb-3">
-            <div class="card p-3 text-center">
+            <div class="card p-2 text-center">
               <div>Chit Commencement</div>
               <div>{{chitData?.auctionDate}}</div>
             </div>
           </div>
           <div class="col-6 mb-3">
-            <div class="card p-3 text-center">
+            <div class="card p-2 text-center">
               <div>Collection Per Person</div>
               <div>{{chitData?.chitAmount/20}}</div>
             </div>
           </div>
           <div class="col-6 mb-3">
-            <div class="card p-3 text-center">
+            <div class="card p-2 text-center">
               <div>Amount Outstanding</div>
               <div>{{amountOutstanding}}</div>
             </div>
           </div>
           <div class="col-6 mb-3">
-            <div class="card p-3 text-center">
+            <div class="card p-2 text-center">
               <div>Completed Profit Chits</div>
               <div>{{profitCount}}</div>
             </div>

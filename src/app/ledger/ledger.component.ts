@@ -389,6 +389,7 @@ private processPayments(payments: any[], chitSubscribers: any[]): any[] {
 }
 
 getSub(passbookNumber:string){
+window.scrollTo({ top: 0, behavior: 'smooth' });
 this.subShow=true
 this.paymentService.getVerifiedPaymentByPassbook(passbookNumber).subscribe(response => {
 console.log(response);

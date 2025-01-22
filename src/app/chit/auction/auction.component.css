@@ -4,6 +4,13 @@
   /* margin: 15px; */
 }
 
+/* .fixed-breadcrumb{
+  position: fixed;
+  background-color: #FFFFFF;
+  width: 100%;
+  z-index: 1000;
+} */
+
 .nav-item {
   color: black;
   /* Change color to black */

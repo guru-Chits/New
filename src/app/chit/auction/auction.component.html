@@ -1,6 +1,8 @@
 <div class="container-fluid">
   <app-breadcrumb [data]="breadcrumsData"></app-breadcrumb>
-
+  <!-- <div class="fixed-breadcrumb mb-5">
+    <app-breadcrumb [data]="breadcrumsData" class="mb-5"></app-breadcrumb>
+  </div> -->
   <div class="row">
     <div class="col-lg-9">
       <ul class="nav">
@@ -194,14 +196,14 @@
         <div class="items" *ngIf="activeTab === 'extra'">
           <app-extra [chitData]="chitData"></app-extra>
         </div>
-        <div class="my-5" *ngIf="activeTab === 'regular'">
+        <div class="my-3" *ngIf="activeTab === 'regular'">
           <h6 class="ps-3 pb-2">Bid History</h6>
           <app-ag-grid [columns]="column" [rowData]="bidHistory" [searchImg]="searchImg" [filterImg]="filterImg"
             width="100%" height="500px" [pageSize]="20" [search]="true" filter="true"></app-ag-grid>
 
         </div>
 
-        <div class="my-5" *ngIf="activeTab === 'regular' || 'tkn'">
+        <div class="my-1" *ngIf="activeTab === 'regular' || 'tkn'">
 
           <h6 class="ps-3 pb-2">Subscribers</h6>
           <!-- <app-ag-grid [columns]="subscriberColumn"    [gridOptions]="gridOptions" [rowData]="subscribers"  [searchImg]="searchImg" [filterImg]="filterImg"  width="100%" height="500px" [pageSize]="20" [search]="true" filter="true"></app-ag-grid> -->
@@ -219,13 +221,13 @@
             <tbody>
               <tr *ngFor="let subscriber of subscribers ; let i = index"
                 [ngClass]="getRowClass(subscriber?.passbookNo)">
-                <td class=" d-flex">{{i+1}} <img [src]="subscriber?.profileImageUrl" alt="Profile Image"
+                <td class=" d-flex justify-content-center align-items-center" style="height: 51px;">{{i+1}} <img [src]="subscriber?.profileImageUrl" alt="Profile Image"
                     class="profile-image ms-3">
                 </td>
                 <td>{{ subscriber?.aliasName }}</td>
                 <td>{{ subscriber?.firstName }}</td>
                 <td>{{ subscriber?.passbookNo }}</td>
-                <td>{{ subscriber?.place }}</td>
+                <td style="font-size: small;">{{ subscriber?.place }}</td>
                 <td>{{ subscriber?.occupation }}</td>
               </tr>
             </tbody>

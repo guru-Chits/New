@@ -4,8 +4,8 @@
     <div class="mb-3 sign-in-label">Change Password</div>
     <!-- <div class="mb-3 sign-in-text">Please Reset your New Password</div> -->
     
-      <div class="mb-3 form-group">
-        <label for="password" class="form-control-label" style="font-size:14px; font-weight: 700;">Current Password</label>
+      <div class=" form-group">
+        <label for="password" class="form-control-label my-3" style="font-size:14px; font-weight: 700;">Current Password</label>
         <div class=" input-fields  d-flex align-items-center"
       [ngClass]="{'is-invalid': currentPasswordControl.touched && currentPasswordControl.hasError('required') ||currentPasswordControl.hasError('pattern')||currentPasswordControl.hasError('maxlength')||currentPasswordControl.hasError('minlength')}">
           <input [type]=" isCurPasswordVisible ? 'text': 'password'" class="form-control" id="currentPassword"
@@ -21,7 +21,7 @@
       <div *ngIf="isPasswordMismatch" class="text-danger" style="font-size: 12px;">
         The current password is incorrect.
       </div>
-      <label for="password" class="form-control-label" style="font-size:14px; font-weight: 700;">New Password</label>
+      <label for="password" class="form-control-label my-3" style="font-size:14px; font-weight: 700;">New Password</label>
       <div class=" input-fields  d-flex align-items-center"
       [ngClass]="{'is-invalid': newPasswordControl.touched && newPasswordControl.hasError('required') || !passwordsMatch||newPasswordControl.hasError('pattern')||newPasswordControl.hasError('maxlength')||newPasswordControl.hasError('minlength')}">
           <input [type]=" isPasswordVisible ? 'text': 'password'" class="form-control" id="password"
@@ -34,7 +34,7 @@
             <img src="\assets\login\Invisible.svg" class="img-fluid mx-1"
             *ngIf="isPasswordVisible"(click)="toggleRePasswordVisibility()" height="20px" width="20px" >
       </div>
-      <div class="invalid-feedback  col-9">
+      <div class="invalid-feedback  col-9 my-2">
         <span  *ngIf="newPasswordControl.touched && newPasswordControl.hasError('required')" >
           New Password is required
         </span>
@@ -52,7 +52,7 @@
       </div>
 
       <!-- <div class="mb-3 form-group"> -->
-        <label for="confirmPassword" class="form-control-label" style="font-size:14px; font-weight: 700;">Confirm New Password</label>
+        <label for="confirmPassword" class="form-control-label my-3" style="font-size:14px; font-weight: 700;">Confirm New Password</label>
             <div class="input-fields  d-flex align-items-center"
             [ngClass]="{'is-invalid': confirmPasswordControl.touched && confirmPasswordControl.hasError('required')  || !passwordsMatch}">
                 <input [type]=" isConfirmPwdVisible ? 'text': 'password'" class="form-control form-control-sm" id="confirmPassword"
@@ -82,7 +82,7 @@
             </div>
 
       <!-- </div> -->
-      <div class="instructions">
+      <div class="instructions my-3">
         <!-- <h3>Instructions</h3> -->
         <ul>
           <li>Password must contain a combination of upper and lower case.</li>

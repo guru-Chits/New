@@ -78,7 +78,7 @@ uploaded:any
         this.conditionalValidator(() => !!this.subscriberForm?.get('aliasName')?.value, Validators.minLength(2))
       ]],
       contact: ["", [Validators.required]],
-      secContact:["",
+      SecContact:["",
         //  [       
         //    this.conditionalValidator(() => !!this.subscriberForm?.get('secContact')?.value, Validators.pattern((/^\d$/))),]
           ],
@@ -114,7 +114,7 @@ uploaded:any
       nomineeName: ['', [
         this.conditionalValidator(() => !!this.subscriberForm?.get('nomineeName')?.value, Validators.pattern(/^[A-Z][a-zA-Z]+$/))
       ]],
-      nomineeRelation: [''],
+      nomineeRelationship: [''],
       nomineeAddress: ['', [
         this.conditionalValidator(() => !!this.subscriberForm?.get('nomineeAddress')?.value, Validators.minLength(10)),
         Validators.maxLength(100),
@@ -149,7 +149,6 @@ uploaded:any
       this.routes = this.routeData.AllRoute.map((routeDetails, index) => ({
         routeId: routeDetails?.routeId,
       }))
-
     })
     this.activatedRoute.params.subscribe(paramData => {
       if (Object.keys(paramData).length) {
@@ -351,7 +350,7 @@ uploaded:any
     //   numbersOnly = '+91 ';
     // }
     this.subscriberForm.patchValue({
-      secContact: numbersOnly
+      SecContact: numbersOnly
     });
   }
   blockPrefix(event: any) {

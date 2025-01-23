@@ -18,13 +18,12 @@ export class SettingsComponent{
   trashActive:String ="assets/settings/trash1.svg"
   trash:string="assets/settings/trash.svg"
 
-
+  constructor(private router: Router){}
   ngOnInit(): void {
     // Set 'Privacy' as the default active item
     this.selectItem('Privacy');
     this.isActive('Privacy');
-    
-    
+    this.router.navigate(['/settings/privacy']);
   }
   isActive(item: string): boolean {
     return this.selectedItem === item;

@@ -96,13 +96,13 @@
 
               <div class="col-lg-4">
                 <div class="form-group">
-                  <label for="secContact" class="form-control-label">Secondary Contact Number</label>
+                  <label for="SecContact" class="form-control-label">Secondary Contact Number</label>
                   <input type="tel" placeholder="Contact Number" class="form-control form-control-sm"
-                    formControlName="secContact" [value]="subscriberForm.get('secContact').value"
+                    formControlName="SecContact" [value]="subscriberForm.get('SecContact').value"
                     (input)="onSecContactChange($event)" minlength="10"
                     maxlength="14"/>
                   <div class="invalid-feedback"
-                    *ngIf="subscriberForm.get('secContact').invalid && (subscriberForm.get('secContact').dirty || subscriberForm.get('secContact').touched)">
+                    *ngIf="subscriberForm.get('SecContact').invalid && (subscriberForm.get('SecContact').dirty || subscriberForm.get('SecContact').touched)">
                     <!-- <div *ngIf="subscriberForm.get('secContact').errors.pattern">Contact Number should be exactly 10
                       digits.</div> -->
                   </div>
@@ -178,7 +178,7 @@
                   <label for="routeId" class="form-control-label">Route Id</label><span class="required">*</span>
                   <select class="form-control form-control-sm form-select" formControlName="routeId">
                     <option value="" disabled selected>RouteId</option>
-                    <option *ngFor="let route of routes" [value]="route.routeId">{{route.routeId}}</option>
+                    <option *ngFor="let route of routes" [value]="route.routeId">{{ route.routeId }}</option>
                   </select>
                 </div>
               </div>
@@ -366,8 +366,8 @@
               <!-- Nominee Relation -->
               <div class="col-lg-4">
                 <div class="form-group">
-                  <label for="nomineeRelation" class="form-control-label">Nominee Relation</label>
-                  <select class="form-control form-control-sm form-select" formControlName="nomineeRelation">
+                  <label for="nomineeRelationship" class="form-control-label">Nominee Relation</label>
+                  <select class="form-control form-control-sm form-select" formControlName="nomineeRelationship">
                     <option value="">Select Relation</option>
                     <option value="Father">Father</option>
                     <option value="Mother">Mother </option>
@@ -477,7 +477,7 @@
               <div class="col-lg-12 d-flex justify-content-end mb-2">
                 <button class="btn nxt-btn btn-outline-secondary" routerLink="/subscriber">Cancel</button>
                 <button class="btn save-btn" type="submit" [disabled]="!subscriberForm.valid"
-                  (click)="onSubmit()">{{submit}}</button>
+                  (click)="onSubmit()">submit</button>
               </div>
             </div>
 
@@ -487,7 +487,7 @@
       </div>
     </div>
     <div class="col-lg-3" *ngIf="isSubscriberListVisible">
-      <div class="card details  mb-3">
+      <div class="card details text-center p-0">
         <h5 class="text-center my-2">Referral</h5>
         <div class="search-bar align-self-center">
           <span class="search-icon"><img src="assets/subscriber/search-icon.svg"></span>
@@ -495,16 +495,16 @@
             (input)="applyFilter($event.target.value)">
         </div>
 
-        <table class="subscriber-table my-3">
+        <table class="subscriber-table d-flex justify-content-center my-3">
           <tbody>
             <tr *ngFor="let subscriber of displayedSubscribers">
-              <div class="card view-all">
-                <div class="card-body align-self-center">
+              <div class="card view-all my-2">
+                <div class="card-body align-self-center p-3">
                   <div class="row">
                     <div class="col-lg-3 col-md-3">
                       <img class="profile-list-img" [src]="subscriber.subscriberProfile">
                     </div>
-                    <div class="col-lg-6 col-md-6 text">
+                    <div class="col-lg-6 col-md-6 text p-0 d-flex flex-column">
                       <strong>{{ subscriber.subscriberId }}</strong>
                       {{ subscriber.subscriberName }}
                     </div>
@@ -516,7 +516,7 @@
                   <!-- Subscriber details section -->
                   <div
                     *ngIf="selectedSubscriberId === subscriber.subscriberId && subscriberDetail.Subscriber.subscriberId">
-                    <div class="subscriber-details my-5 py-5">
+                    <div class="subscriber-details my-3 py-3">
                       <h5 class="title text-center">Subscriber Details</h5>
                       <div class="text-center">
                         <img [src]="subscriberDetail.Subscriber.profileImageUrl"

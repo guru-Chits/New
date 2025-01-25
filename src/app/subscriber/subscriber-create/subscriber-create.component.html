@@ -97,18 +97,15 @@
               <div class="col-lg-4">
                 <div class="form-group">
                   <label for="SecContact" class="form-control-label">Secondary Contact Number</label>
-                  <input type="tel" placeholder="Contact Number" class="form-control form-control-sm"
-                    formControlName="SecContact" [value]="subscriberForm.get('SecContact').value"
-                    (input)="onSecContactChange($event)" minlength="10"
-                    maxlength="14"/>
+                  <input type="tel" placeholder="Secondary Contact Number" class="form-control form-control-sm"
+                    formControlName="SecContact"/>
                   <div class="invalid-feedback"
                     *ngIf="subscriberForm.get('SecContact').invalid && (subscriberForm.get('SecContact').dirty || subscriberForm.get('SecContact').touched)">
-                    <!-- <div *ngIf="subscriberForm.get('secContact').errors.pattern">Contact Number should be exactly 10
-                      digits.</div> -->
+                
                   </div>
                 </div>
-            </div>
-
+            </div> 
+        
             </div>
 
             <!-- Gender, DOB, Occupation -->
@@ -328,6 +325,7 @@
                 <button class="removeBtn" (click)="removeFile('passbookUrl')">Remove File</button>
               </div>
             </div>
+            
             <div class="row">
               <div class="col-lg-4">
                 <div class="form-group">
@@ -477,7 +475,7 @@
               <div class="col-lg-12 d-flex justify-content-end mb-2">
                 <button class="btn nxt-btn btn-outline-secondary" routerLink="/subscriber">Cancel</button>
                 <button class="btn save-btn" type="submit" [disabled]="!subscriberForm.valid"
-                  (click)="onSubmit()">submit</button>
+                  (click)="onSubmit()">{{submit}}</button>
               </div>
             </div>
 
@@ -491,7 +489,7 @@
         <h5 class="text-center my-2">Referral</h5>
         <div class="search-bar align-self-center">
           <span class="search-icon"><img src="assets/subscriber/search-icon.svg"></span>
-          <input width="20" height="20" type="text" placeholder="Search Subscriber ID, Name, Email"
+          <input width="20" height="20" type="text" placeholder="Search Subscriber"
             (input)="applyFilter($event.target.value)">
         </div>
 

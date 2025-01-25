@@ -78,10 +78,7 @@ uploaded:any
         this.conditionalValidator(() => !!this.subscriberForm?.get('aliasName')?.value, Validators.minLength(2))
       ]],
       contact: ["", [Validators.required]],
-      SecContact:["",
-        //  [       
-        //    this.conditionalValidator(() => !!this.subscriberForm?.get('secContact')?.value, Validators.pattern((/^\d$/))),]
-          ],
+      SecContact:["",[Validators.minLength(8), Validators.maxLength(14)]],
       
       place: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(100), Validators.pattern(/^[a-zA-Z0-9\s,.'-]+$/)]],
       gender: ['', Validators.required],
@@ -168,6 +165,11 @@ uploaded:any
         this.submit = "Save Changes"
         this.service.getsubscriberById(paramData.id).subscribe((data) => {
           this.subscriberData = data;
+          
+          this.subscriberForm.patchValue({
+            SecContact: this.subscriberData.Subscriber.SecContact,
+            nomineeRelationship: this.subscriberData.Subscriber.nomineeRelationship
+          });
           this.subscriberId = this.subscriberData.Subscriber._id
           this.profileImageUrl = this.subscriberData.Subscriber.profileImageUrl
           this.panFile=this.subscriberData.Subscriber.panUrl

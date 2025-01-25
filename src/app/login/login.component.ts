@@ -137,13 +137,13 @@ export class LoginComponent {
                 const otpUrl = `https://2factor.in/API/V1/b1037ef1-2ed8-11ef-8b60-0200cd936042/SMS/${this.mobileNumber}/AUTOGEN/OTPTemplate`;
             this.router.navigate(['/subscriber']);  // Navigate after OTP success
  
-                // this.HttpClient.get(otpUrl).subscribe(
-                //   (otpResponse: any) => {
-                //     this.verified = true;
-                //   },
-                //   (error) => {
-                //   }
-                // );
+                this.HttpClient.get(otpUrl).subscribe(
+                  (otpResponse: any) => {
+                    this.verified = true;
+                  },
+                  (error) => {
+                  }
+                );
               } else {
                 alert('Access denied. Please contact admin.');
               }

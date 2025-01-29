@@ -157,6 +157,7 @@ h2 {
 .nxt-btn {
   border-color: #3E3A97;
   color: #3E3A97;
+  background-color: transparent !important;
 }
 
 .save-btn {

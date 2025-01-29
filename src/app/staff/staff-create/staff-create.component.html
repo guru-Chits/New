@@ -195,13 +195,9 @@
                 <div class="form-group">
                   <label for="panUrl" class="form-control-label">PAN Card <span class="required"
                       *ngIf="staffsForm.get('panUrl').hasError('required')">*</span></label>
-                  <input type="file" class="form-control form-control-sm file-upload"
+                  <input type="file" class="form-control form-control-sm file-upload m-0"
                     (change)="onFileSelected($event, 'panUrl')" formControlName="panUrl" />
-                    <span
-                    *ngIf="panFile"
-                    style="color: red;"
-                    > pancard uploaded </span
-                  >
+                    <small *ngIf="panFile"style="color: red;"> pancard uploaded </small>
                 </div>
               </div>
               <div class="col-lg-4 mt-4">
@@ -230,13 +226,9 @@
                 <div class="form-group">
                   <label for="aadharUrl" class="form-control-label">Aadhar Card <span class="required"
                       *ngIf="staffsForm.get('aadharUrl').hasError('required')">*</span></label>
-                  <input type="file" class="form-control form-control-sm file-upload" [value]="aadharUrl"
+                  <input type="file" class="form-control form-control-sm file-upload  m-0" [value]="aadharUrl"
                     (change)="onFileSelected($event, 'aadharUrl')" formControlName="aadharUrl" />
-                    <span
-                    *ngIf="aadharFile"
-                    style="color: red;"
-                    > Aadhaarcard uploaded</span
-                  >
+                    <small *ngIf="aadharFile" style="color: red;"> Aadhaarcard uploaded</small>
                 </div>
               </div>
               <div class="col-lg-4 mt-4">
@@ -257,13 +249,9 @@
                 <div class="form-group">
                   <label for="passbookUrl" class="form-control-label">Passbook <span class="required"
                       *ngIf="staffsForm.get('passbookUrl').hasError('required')">*</span></label>
-                  <input type="file" class="form-control form-control-sm file-upload"
+                  <input type="file" class="form-control form-control-sm file-upload m-0"
                     (change)="onFileSelected($event, 'passbookUrl')" formControlName="passbookUrl" />
-                    <span
-                    *ngIf="passbookFile"
-                    style="color: red;"
-                    > Passbook uploaded </span
-                  >
+                    <small *ngIf="passbookFile" style="color: red;"> Passbook uploaded </small>
                 </div>
               </div>
               <div class="col-lg-4 mt-4">
@@ -287,13 +275,9 @@
               <div class="col-lg-4">
                 <div class="form-group">
                   <label for="drivingLicenceUrl" class="form-control-label">Driving License</label>
-                  <input type="file" class="form-control form-control-sm file-upload"
+                  <input type="file" class="form-control form-control-sm file-upload m-0"
                     (change)="onFileSelected($event, 'drivingLicenceUrl')" formControlName="drivingLicenceUrl" />
-                    <span
-                    *ngIf="licenceFile"
-                    style="color: red;"
-                    >Driving licence uploaded </span
-                  >
+                    <small *ngIf="licenceFile" style="color: red;">Driving licence uploaded </small>
                 </div>
               </div>
               <div class="col-lg-4 mt-4">

@@ -154,21 +154,24 @@
       </div>
 
     </div>
+
     <div *ngIf="subShow" class="col-md-4 col-lg-4">
       <div class="card d-flex p-3">
         <h5 class="text-center my-2 fs-4 fw-bold">{{subPayment[0]?.subscriberName}}</h5>
         <p class="text-center" style="color: #50A1A5;">{{subPayment[0]?.subscriberId}}</p>
+    
         <div>
           <h6 class="fw-bold">Payment Details</h6>
           <div><span class="fw-bold">Passbook ID</span> <span class="ms-4">{{subPayment[0]?.passbooknumber}}</span></div>
         </div>
-        <table class="table-card mx-3">
+    
+        <table class="table-card mx-3" *ngIf="subPayment.length > 0; else noPaymentsTemplate">
           <tbody>
-            <tr *ngFor="let subcriberPayment of subPayment  let i = index">
+            <tr *ngFor="let subcriberPayment of subPayment; let i = index">
               <div class="view-all my-2">
                 <div class="align-items-center">
                   <div class="row">
-                    <div  class="col border d-flex flex-column justify-content-center align-items-center py-3 rounded-3 shadow-sm auction">
+                    <div class="col border d-flex flex-column justify-content-center align-items-center py-3 rounded-3 shadow-sm auction">
                       <h6><strong>{{ subcriberPayment.receiptNumber }}</strong></h6>
                       <div class="d-flex overlap-images" style="color:#50A1A5; cursor: pointer;"
                         (click)="getSubscriber(subcriberPayment._id,i)">
@@ -176,21 +179,20 @@
                         <img *ngIf="selectedSub != i" class="ms-4" src="assets/subscriber/down arrow.svg">
                         <img *ngIf="selectedSub === i" class="ms-4" src="assets/subscriber/right arrow.svg" alt="">
                       </div>
-                     
                     </div>
-                    <div class="card mt-2"  style="font-size:13px" *ngIf="selectedSub === i">
+    
+                    <div class="card mt-2" style="font-size:13px" *ngIf="selectedSub === i">
                       <div class="row">
-                        <div class="col-6" ><span class="fw-bold">Date</span> <span class="ms-4">{{subscriber.date}}</span></div>
-                        <div  class="col-6"><span class="fw-bold">Amount Paid</span> <span class="ms-4">{{subscriber.amount}}</span></div>  
+                        <div class="col-6"><span class="fw-bold">Date</span> <span class="ms-4">{{subscriber.date}}</span></div>
+                        <div class="col-6"><span class="fw-bold">Amount Paid</span> <span class="ms-4">{{subscriber.amount}}</span></div>
                       </div>
                       <div class="row">
                         <div class="col-6"><span class="fw-bold">Installment Month</span> <span class="ms-4">{{subscriber.installmentMonth}}</span></div>
                         <div class="col-6"><span class="fw-bold">Collected By</span> <span class="ms-4">{{subscriber.selectStaff}}</span></div>
-
                       </div>
                       <div><span class="fw-bold">Approved By</span> <span class="ms-4">{{subscriber.approvedBy}}</span></div>
                       <button class="btn align-self-center my-2" style="color:white ; background-color: #3E3A97;" data-bs-toggle="modal"
-                      data-bs-target="#paymentModal"  (click)="viewAll()">Generate Duplicate Bill</button>
+                        data-bs-target="#paymentModal" (click)="viewAll()">Generate Duplicate Bill</button>
                     </div>
                   </div>
                 </div>
@@ -198,12 +200,16 @@
             </tr>
           </tbody>
         </table>
-        <button class="btn align-self-center view-btn mt-3" *ngIf="!showGroups" (click)="viewAll()">View More
-          Chits</button>
+    
+        <ng-template #noPaymentsTemplate>
+          <p class="text-center text-muted my-3">No Payments till now</p>
+        </ng-template>
+    
+        <button class="btn align-self-center view-btn mt-3" *ngIf="!showGroups && subPayment.length > 0" (click)="viewAll()">View More Chits</button>
         <button class="btn align-self-center view-btn mt-3" *ngIf="showGroups" (click)="viewLess()">View Less</button>
-
       </div>
     </div>
+    
   </div>
 </div>
 

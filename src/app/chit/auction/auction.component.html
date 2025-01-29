@@ -26,7 +26,7 @@
                     (change)="onAuctionTypeChange($event)" formControlName="auctionType">
                     <option value="" disabled selected>Select Auction Type</option>
                     <option value="regularChit" *ngIf="!noReg && !tknMonth">Regular Chit</option>
-                    <option value="profitChit" *ngIf="!regularFirst && noReg && !tknMonth">Profit Chit</option>
+                    <option value="profitChit" *ngIf="!regularFirst && noReg && !tknMonth && !lastProfit">Profit Chit</option>
                     <option value="purchase" *ngIf="!regularFirst && noReg && !tknMonth">Purchase</option>
                     <option value="tknCompany" *ngIf="!regularFirst && !noReg && !tknMonth">TKN Company</option>
                     <option value="extraPayments" *ngIf="!regularFirst &&  !extraCount && !tknMonth">Extra Payments</option>

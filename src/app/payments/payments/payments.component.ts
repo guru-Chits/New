@@ -328,7 +328,8 @@ export class PaymentsComponent implements OnInit {
           this.receiptNo = paymentData // Increment receipt number
           console.log(this.receiptNo);
 
-          this.receiptNo = this.receiptNo ? this.receiptNo.receiptNo + 1 : 1; // Increment receipt number
+          let receiptNoo = this.receiptNo ? this.receiptNo.receiptNo + 1 : 1; // Increment receipt number
+          console.log("receiptNo",receiptNoo)
           let serialNumber = this.formatSerialNumber(this.serialNumberCounter);
           let balanceAmount = 0;
           let nextInstallmentMonth = date;
@@ -347,8 +348,9 @@ export class PaymentsComponent implements OnInit {
 
             const subscriberDetails = this.subDetail.subscriberDetails;
 
-            this.receiptNo = this.formatSerialNumber(this.receiptNo);
-            this.receiptNo = `${subscriberDetails.passbookNo}-${this.receiptNo}`;
+            let receiptNo = this.formatSerialNumber(receiptNoo);
+            this.receiptNo = `${subscriberDetails.passbookNo}-${receiptNo}`;
+            console.log("rrreeeeNo353",this.receiptNo)
 
             let receiptNumber2 = '';
             let secondInstallmentMonth = '';

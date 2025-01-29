@@ -337,6 +337,7 @@ export class CreatePaymentComponent {
   }
   changeTab(tab: string) {
     this.activeTab = tab;
+    this.getAllPayment()
   }
   closeModal(){
     this.popup = false

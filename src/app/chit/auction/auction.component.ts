@@ -74,6 +74,7 @@ export class AuctionComponent implements OnInit {
   amountOutstanding: any
   profitCount: any
   noReg: boolean = false
+  lastProfit:boolean=false
   purchaseId: string
   regularFirst: boolean = false
   colorCode: any
@@ -128,6 +129,7 @@ export class AuctionComponent implements OnInit {
       this.profitChit = false
       this.extraCount = false
       this.noReg = false
+      this.lastProfit=false
       this.regularFirst = false
       this.tknMonth = false
     } else {
@@ -186,9 +188,16 @@ export class AuctionComponent implements OnInit {
               this.noReg = true
             } else if (res?.lastChit?.type == "TKN Company") {
               this.tknMonth = true
-            } else {
+            }
+            else {
               this.noReg = false
               this.tknMonth = false
+             
+            }
+            if(res?.allData[res?.allData.length-1].type=="Profit Chit") {
+              this.lastProfit=true
+            }else{
+              this.lastProfit=false
             }
             if (this.regularFirst) {
               this.auctionForm.patchValue({
@@ -947,6 +956,7 @@ export class AuctionComponent implements OnInit {
         this.auctionStart = false
         this.regularFirst = false
         this.noReg = false
+        this.lastProfit=false
         this.tknMonth = false
         this.auctionForm.patchValue({
           auctionType: "",

@@ -63,9 +63,11 @@ export class SubscriberViewComponent implements OnInit {
                 const auctionData = acuData.allData
                 const fistAuc = this.datePipe.transform(auctionData[0].date, 'yyyy-MM')
                 const lastAuc = this.datePipe.transform(auctionData[auctionData.length - 1].date, 'yyyy-MM')
-                this.paymentService.getTotalByGroupId(fistAuc, group.chitGroupId, group.passbookNo, lastAuc).subscribe((PayData) => {
-                  let toPay = acuData.allData.length * group.chitAmount / 20
-                  let paid = PayData.totalPassbookNoAmount
+                console.log(group.passbookNo);
+                
+                this.paymentService.getTotalByGroupId(fistAuc, group.chitGroupId, group.passbookNo, lastAuc).subscribe((PayData) => {                  
+                  let toPay = (acuData.allData.length - acuData.profitCount) * group.chitAmount / 20                  
+                  let paid = PayData.totalSubPassbookNoAmount
                   let balance = toPay - paid
                   this.balance = balance
                   this.chitGroup[index] = {
@@ -135,7 +137,7 @@ export class SubscriberViewComponent implements OnInit {
       else {
         this.selectedIndex = index;
         this.isShowDiv = !this.isShowDiv;
-        this.paymentService.getVerifiedPaymentByPassbook(data.passbookno).subscribe(response => {
+        this.paymentService.getVerifiedPaymentByPassbook(passbookNo).subscribe(response => {
           this.paymentHistory = response;
 
           let installmentNo = 0; // Start from 1

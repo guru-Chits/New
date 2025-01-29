@@ -8,9 +8,9 @@
             <div class="profile-picture">
               <img [src]="staffDetail.Staff.profileUrl" alt="Profile Picture" class="profile-img ms-2">
               <input type="file" (change)="onFileSelected($event)" hidden #fileInput>
-              <button class="upload-button" (click)="fileInput.click()">
+              <!-- <button class="upload-button" (click)="fileInput.click()">
                 <img src="assets/subscriber/Profile edit.svg " alt="Upload Icon">
-              </button>
+              </button> -->
             </div>
           </div>
           <h5 class="text-center title mb-5">Staff Details</h5>
@@ -98,24 +98,31 @@
             </div>
           </div>
           <div class="row justify-content-around">
-            <div class="col-lg-4">
+            <div class="col-lg-4 d-flex flex-column">
               <h6>PAN Card</h6>
               <button class="viewBtn" (click)="viewFile(staffDetail.Staff.panUrl)">View File</button>
+              <small *ngIf = "!staffDetail.Staff.panUrl" style="color: red;">No file Present </small>
             </div>
-            <div class="col-lg-4">
+            <div class="col-lg-4 d-flex flex-column">
               <h6>Aadhaar Card</h6>
               <button class="viewBtn" (click)="viewFile(staffDetail.Staff.aadharUrl)">View File</button>
+              <small *ngIf = "!staffDetail.Staff.aadharUrl" style="color: red;">No file Present </small>
+
             </div>
-            <div class="col-lg-4">
+            <div class="col-lg-4 d-flex flex-column">
               <h6>Driving Lincense</h6>
               <button class="viewBtn" (click)="viewFile(staffDetail.Staff.drivingLicenceUrl)">View File</button>
+              <small *ngIf = "!staffDetail.Staff.drivingLicenceUrl" style="color: red;">No file Present </small>
+
             </div>
 
           </div>
           <div class="row justify-content-around mt-4">
-            <div class="col-lg-4">
+            <div class="col-lg-4  d-flex flex-column">
               <h6>Passbook</h6>
               <button class="viewBtn" (click)="viewFile(staffDetail.Staff.passbookUrl)">View File</button>
+              <small *ngIf = "!staffDetail.Staff.passbookUrl" style="color: red;">No file Present </small>
+
             </div>
 
             <div class="col-lg-4">

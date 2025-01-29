@@ -241,13 +241,9 @@
                 <div class="form-group">
                   <label for="panUrl" class="form-control-label">PAN Card<span class="required"
                       *ngIf="subscriberForm.get('panUrl').hasError('required')">*</span></label>
-                  <input type="file" (change)="onFileChange($event, 'panUrl')" class="form-control form-control-sm"
+                  <input type="file" (change)="onFileChange($event, 'panUrl')" class="form-control form-control-sm m-0"
                     formControlName="panUrl"  />
-                    <span
-                    *ngIf="panFile"
-                    style="color: red;"
-                    >Pancard uploaded </span
-                  >
+                    <small *ngIf="panFile" style="color: red;">Pancard uploaded </small>
                 </div>
               </div>
               <div class="col-lg-4 mt-4">
@@ -275,19 +271,15 @@
                 <div class="form-group">
                   <label for="aadharUrl" class="form-control-label">Aadhaar Card <span class="required"
                       *ngIf="subscriberForm.get('aadharUrl').hasError('required')">*</span></label>
-                  <input type="file" (change)="onFileChange($event, 'aadharUrl')" class="form-control form-control-sm"
+                  <input type="file" (change)="onFileChange($event, 'aadharUrl')" class="form-control form-control-sm m-0"
                     formControlName="aadharUrl" />
-                    <span
-                    *ngIf="aadharFile"
-                    style="color: red;"
-                    >Aadhaar Card uploaded</span
-                  >
+                    <small *ngIf="aadharFile" style="color: red;">Aadhaar Card uploaded</small>
                 </div>
               </div>
               <div class="col-lg-4 mt-4">
                 <button class="viewBtn" (click)="viewFile('aadharUrl')">View File</button>
                 <button class="removeBtn" (click)="removeFile('aadharUrl')">Remove File</button>
-              </div>
+                </div>
             </div>
             <!-- Bank Name, Referral Client -->
             <div class="row justify-content-around">
@@ -311,13 +303,9 @@
                 <div class="form-group">
                   <label for="passbookUrl" class="form-control-label">Passbook <span class="required"
                       *ngIf="subscriberForm.get('passbookUrl').hasError('required')">*</span></label>
-                  <input type="file" (change)="onFileChange($event, 'passbookUrl')" class="form-control form-control-sm"
+                  <input type="file" (change)="onFileChange($event, 'passbookUrl')" class="form-control form-control-sm m-0"
                     formControlName="passbookUrl" />
-                    <span
-                    *ngIf="passbookFile"
-                    style="color: red;"
-                    >Passbook uploaded</span
-                  >
+                    <small *ngIf="passbookFile" style="color: red;">Passbook uploaded</small>
                 </div>
               </div>
               <div class="col-lg-4 mt-4">

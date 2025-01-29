@@ -148,8 +148,8 @@ input[type="number"]::-webkit-inner-spin-button {
 
 .upload-button {
   position: absolute;
-  bottom: 10px;
-  right: 10px;
+  bottom: 1px;
+  right: 4px;
   border: none;
   cursor: pointer;
   background: transparent;
@@ -169,6 +169,7 @@ h2 {
 .nxt-btn {
   border-color: #3E3A97;
   color: #3E3A97;
+  background-color: transparent !important;
 }
 
 .save-btn {

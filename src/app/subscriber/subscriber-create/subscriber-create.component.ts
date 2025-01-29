@@ -56,6 +56,7 @@ uploaded:any
   showAllSubscribers = false;
   searchQuery = '';
   data: any[] = [];
+  aadharUrl: string = '';
   filteredSubscribers: any;
   displayedSubscribers: any[];
   selectedSubscriber: any;
@@ -181,19 +182,7 @@ uploaded:any
           const utcDob = this.convertDateFormat(this.subscriberData.Subscriber.dob);
           const utcnDob = this.convertDateFormat(this.subscriberData.Subscriber.nomineeDOB);
           let updatedSubscriber = { ...this.subscriberData.Subscriber };
-          // if (utcDob) {
-          //   updatedSubscriber = { ...updatedSubscriber, dob: utcDob };
-          //   console.log(this.subscriberData.Subscriber.dob,utcDob);
 
-          // }
-
-          // if (utcnDob) {
-          //   updatedSubscriber = { ...updatedSubscriber, nomineeDOB: utcnDob };
-          // }
-
-          // if (utcnDob && utcDob) {
-          //   updatedSubscriber = { ...updatedSubscriber, dob: utcDob, nomineeDOB: utcnDob };
-          // }
           this.subscriberForm.patchValue(updatedSubscriber);
           
         })
@@ -501,16 +490,39 @@ uploaded:any
     return { 'invalidDate': true };
   }
 
+  // ageValidator(minAge: number): ValidatorFn {
+  //   return (control: AbstractControl): { [key: string]: boolean } | null => {
+  //     const dateValue = new Date(control.value);
+  //     const age = new Date().getFullYear() - dateValue.getFullYear();
+  //     if (age >= minAge) {
+  //       return null;
+  //     }
+  //     return { 'ageBelowMinimum': true };
+  //   };
+  // }
   ageValidator(minAge: number): ValidatorFn {
     return (control: AbstractControl): { [key: string]: boolean } | null => {
-      const dateValue = new Date(control.value);
-      const age = new Date().getFullYear() - dateValue.getFullYear();
-      if (age >= minAge) {
-        return null;
+      if (!control.value) {
+        return null; // Allow empty value to be handled by 'required' validator
       }
-      return { 'ageBelowMinimum': true };
+  
+      const enteredDate = new Date(control.value);
+      const today = new Date();
+      
+      // Calculate the exact age difference
+      let age = today.getFullYear() - enteredDate.getFullYear();
+      const monthDiff = today.getMonth() - enteredDate.getMonth();
+      const dayDiff = today.getDate() - enteredDate.getDate();
+  
+      // Check if the birthday hasn't happened yet in the current year
+      if (monthDiff < 0 || (monthDiff === 0 && dayDiff < 0)) {
+        age--;
+      }
+  
+      return age >= minAge ? null : { ageBelowMinimum: true };
     };
   }
+  
   showAll(): void {
     this.showAllSubscribers = true;
   }
@@ -563,6 +575,35 @@ uploaded:any
       this.router.navigate(['/subscriber']);
     });
   }
+
+  // onSubmit(): void {
+  //   // Create an object to hold all the form data
+  //   const formValue = this.subscriberForm.getRawValue();
+  //   const subscriberData: any = { ...formValue };
+  
+  //   // Handle profile image separately
+  //   const profileImageFile = this.subscriberForm.get('profileImageUrl')?.value;
+  //   if (profileImageFile instanceof File) {
+  //     // If the file is present, upload it first and get the URL
+  //     this.service.uploadFile(profileImageFile).subscribe((uploadedUrl: string) => {
+  //       // After file upload, update the object with the uploaded URL
+  //       subscriberData.profileImageUrl = uploadedUrl;
+  
+  //       // Send the full object with the uploaded image URL
+  //       this.service.savesubscriberDetails(subscriberData, this.subscriberId).subscribe(() => {
+  //         this.router.navigate(['/subscriber']);
+  //       });
+  //     });
+  //   } else {
+  //     // If no file is provided, use default profile image
+  //     subscriberData.profileImageUrl = this.generateDefaultProfileImage(formValue.firstName);
+  
+  //     // Send the object without file upload
+  //     this.service.savesubscriberDetails(subscriberData, this.subscriberId).subscribe(() => {
+  //       this.router.navigate(['/subscriber']);
+  //     });
+  //   }
+  // }
 
   applyFilter(filterValue: string) {
     const filteredSubscribers = this.data.filter(subscriber => {

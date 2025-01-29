@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { environment } from '../../../../environments/environment';
-import { Observable } from 'rxjs';
+import { map, Observable } from 'rxjs';
 import { HttpClient, HttpParams } from '@angular/common/http';
 @Injectable({
   providedIn: 'root'
@@ -32,6 +32,15 @@ export class SubscriberService {
       savesubscribeUrl = `${savesubscribeUrl}/${id}`;
     }
     return this.http.post(savesubscribeUrl, body)
+  }
+
+  uploadFile(file: File): Observable<string> {
+    const formData = new FormData();
+    formData.append('file', file);
+  
+    return this.http.post<{ url: string }>('/api/upload', formData).pipe(
+      map(response => response.url)
+    );
   }
 
 

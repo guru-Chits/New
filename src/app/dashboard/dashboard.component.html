@@ -1,6 +1,86 @@
 <div class="container-fluid d-flex flex-column">
-    <div class="row mt-3">
-        <!-- <app-breadcrumb [data]="breadcrumsData"></app-breadcrumb> -->
-
+    
+    <div class="row">
+        <div class="col-8">
+            <div class="row">
+                <div class="col-4 mb-3">
+                    <div class="card p-3">
+                        <img class="icons" src="/assets/dashboard/subscriber.svg" alt="">
+                        <p class="my-3">No.of Subscribers</p>
+                        <h1>{{ subs_totalCount }}</h1>
+                    </div>
+                </div>
+                <div class="col-4">
+                    <div class="card p-3">
+                        <img class="icons" src="/assets/dashboard/staffs.svg" alt="">
+                        <p class="my-3">No.of Staffs</p>
+                        <h1>{{ staff_totalCount }}</h1>
+                    </div>
+                </div>
+                <div class="col-4">
+                    <div class="card p-3">
+                        <img class="icons" src="/assets/dashboard/auctions.svg" alt="">
+                        <p class="my-3">Auctions Completed</p>
+                        <h1></h1>
+                    </div>
+                </div>
+                <div class="col-4 mb-3">
+                    <div class="card p-3">
+                        <img class="icons" src="/assets/dashboard/upcoming_auctions.svg" alt="">
+                        <p class="my-3">Upcoming Auctions</p>
+                        <h1></h1>
+                    </div>
+                </div>
+                <div class="col-4">
+                    <div class="card p-3">
+                        <img class="icons" src="/assets/dashboard/transactions.svg" alt="">
+                        <p class="my-3">Overall Transactions</p>
+                        <h1></h1>
+                    </div>
+                </div>
+                <div class="col-4">
+                    <div class="card p-3">
+                        <img class="icons" src="/assets/dashboard/chit_group.svg" alt="">
+                        <p class="my-3">Total Chit Groups</p>
+                        <h1>{{ chit_total }}</h1>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <!-- <highcharts-chart [Highcharts]="Highcharts" [options]="chartOptions" style="width: 100%; height: 400px; display: block;"></highcharts-chart> -->
+            </div>
+            <app-ag-grid [columns]="column" [rowData]="data" width="100%" height="450px" [searchImg]="searchImg"
+            [filterImg]="filterImg" [search]="search" [filter]="filter"></app-ag-grid>
+        </div>
+        <div class="col-4">
+            <div class="card d-flex p-3">
+                <h5 class="text-center my-2 fs-4 fw-bold my-4">Auction for Today</h5>
+                <div class="search-bar  mb-3">
+                  <span class="search-icon"><img src="assets/table/black search.svg"></span>
+                  <input width="20" height="20" type="text" class="border-0" placeholder="Search"
+                    (input)="applyFilter($event.target.value)">
+                </div>
+                <table class="table-card mx-3">
+                  <tbody>
+                    <tr *ngFor="let auction of displayedAuctions">
+                      <div class="view-all my-2">
+                        <div class="align-items-center">
+                          <div class="row" (click)="nav(auction._id)">
+                            <div
+                              class="col border d-flex flex-column justify-content-center align-items-center py-3 rounded-3 shadow-sm auction">
+                              <h6><strong>{{ auction.chitGroupId }}</strong></h6>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </tr>
+                  </tbody>
+                </table>
+                <button class="btn align-self-center view-btn mt-3" *ngIf="!showGroups" (click)="viewAll()">View More Chits</button>
+                <button class="btn align-self-center view-btn mt-3" *ngIf="showGroups" (click)="viewLess()">View Less</button>
+              
+            </div>
+        </div>
+   
     </div>
 </div>  

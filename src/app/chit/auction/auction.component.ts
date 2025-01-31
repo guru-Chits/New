@@ -74,7 +74,7 @@ export class AuctionComponent implements OnInit {
   amountOutstanding: any
   profitCount: any
   noReg: boolean = false
-  lastProfit:boolean=false
+  lastProfit: boolean = false
   purchaseId: string
   regularFirst: boolean = false
   colorCode: any
@@ -129,7 +129,7 @@ export class AuctionComponent implements OnInit {
       this.profitChit = false
       this.extraCount = false
       this.noReg = false
-      this.lastProfit=false
+      this.lastProfit = false
       this.regularFirst = false
       this.tknMonth = false
     } else {
@@ -184,6 +184,8 @@ export class AuctionComponent implements OnInit {
             const firstAuction = this.bidHistory?.length || 0;
             this.regularFirst = firstAuction === 0;
             const date = this.chitData.auctionDate
+
+
             if (res?.lastChit?.passbookNumber && !res?.lastChit?.type) {
               this.noReg = true
             } else if (res?.lastChit?.type == "TKN Company") {
@@ -192,13 +194,8 @@ export class AuctionComponent implements OnInit {
             else {
               this.noReg = false
               this.tknMonth = false
-             
             }
-            if(res?.allData[res?.allData.length-1].type=="Profit Chit") {
-              this.lastProfit=true
-            }else{
-              this.lastProfit=false
-            }
+
             if (this.regularFirst) {
               this.auctionForm.patchValue({
                 date: this.convertDateFormat(this.chitData.auctionDate)
@@ -215,6 +212,12 @@ export class AuctionComponent implements OnInit {
                 date: this.convertDateFormat(this.datePipe.transform(date, 'dd-MM-yyyy'))
               })
             }
+            if (res?.allData[res?.allData.length - 1].type == "Profit Chit") {
+              this.lastProfit = true
+            } else {
+              this.lastProfit = false
+            }
+
             this.bidHistory = res.allData.map((history, index) => ({
               sNo: index + 1, // Use the index parameter and add 1 for serial number
               passbookNumber: history.passbookNumber,
@@ -228,16 +231,12 @@ export class AuctionComponent implements OnInit {
             }));
           });
           this.service.getTicketId(groupId).subscribe((data) => {
-            console.log(data.latestChit);
-            
             const lastAuction = data.auctionCycle
-            console.log(lastAuction);
-
-            if (lastAuction == 19  ) {
+            if (lastAuction == 19) {
               this.auctionForm.patchValue({
                 walletBalance: this.chitData.chitAmount
               })
-            } else if (lastAuction >= 20 && !this.extraPayments ) {
+            } else if (lastAuction >= 20 && !this.extraPayments) {
               this.auctionForm.patchValue({
                 walletBalance: 0
               })
@@ -459,47 +458,41 @@ export class AuctionComponent implements OnInit {
   getRouteNameValue() {
     const winningBid = this.auctionForm.get('winningBid').value;
     const groupId = this.auctionForm.get('groupId').value;
-  
+
     // Calculate prized amount
     const prizedAmount = this.chitData.chitAmount - winningBid;
     this.auctionForm.get('prizedAmount').patchValue(prizedAmount);
-  
+
     // Fetch auction cycle by groupId
     this.service.getTicketId(groupId).subscribe((data) => {
       if (!data) {
         this.updateWalletBalance(winningBid, prizedAmount, this.chitSubscriberTotal);
         return;
       }
-      
-      const lastAuction = data.auctionCycle 
-      console.log(lastAuction);
-      
+
+      const lastAuction = data.auctionCycle
       if (lastAuction >= 20 && (this.regular || this.profitChit || this.tknCompany)) {
-        const finalWallet = this.chitData.chitAmount - (prizedAmount + this.chitData.chitAmount/20);
-        console.log(finalWallet);
-        
+        const finalWallet = this.chitData.chitAmount - (prizedAmount + this.chitData.chitAmount / 20);
         this.auctionForm.get('walletBalance').patchValue(finalWallet);
       } else {
         this.updateWalletBalance(winningBid, prizedAmount, this.chitSubscriberTotal);
       }
     });
   }
-  
+
   updateWalletBalance(winningBid: number, prizedAmount: number, chitSubscriberTotal: number) {
     let finalWallet: number;
-    console.log(finalWallet);
-    
     if (this.regular || this.tknCompany) {
-      finalWallet = chitSubscriberTotal +Number (winningBid) - this.chitData.foremanCommission;
+      finalWallet = chitSubscriberTotal + Number(winningBid) - this.chitData.foremanCommission;
     } else if (this.profitChit) {
       finalWallet = chitSubscriberTotal - prizedAmount - this.chitData.foremanCommission;
     } else {
       finalWallet = chitSubscriberTotal; // Default case, if no condition matches
     }
-  
+
     this.auctionForm.get('walletBalance').patchValue(finalWallet);
   }
-  
+
   onAuctionTypeChange(event: any) {
     const selectedValue = event.target.value;
 
@@ -811,16 +804,11 @@ export class AuctionComponent implements OnInit {
         // }
 
         var nextWallet = Number(this.auctionForm.value.winningBid) - Number(this.auctionForm.value.foremanCommision)
-        console.log(Number(this.auctionForm.value.winningBid));
-
         this.paymentService.saveTransactionDetails(response.data.groupId, +nextWallet).subscribe(
           (response) => {
           })
       } else if (this.profitChit) {
         const profitPrized = Number(this.auctionForm.value.prizedAmount) + Number(this.auctionForm.value.foremanCommision)
-
-        console.log(profitPrized);
-
         this.paymentService.saveTransactionDetails(response.data.groupId, -profitPrized).subscribe(
           (response) => {
           })
@@ -956,7 +944,7 @@ export class AuctionComponent implements OnInit {
         this.auctionStart = false
         this.regularFirst = false
         this.noReg = false
-        this.lastProfit=false
+        this.lastProfit = false
         this.tknMonth = false
         this.auctionForm.patchValue({
           auctionType: "",
@@ -988,14 +976,9 @@ export class AuctionComponent implements OnInit {
         // Replace with actual API call logic
 
         this.updatedChanges()
-
-
         this.openModal()
-
-
         this.auctionForm.disable();
         this.auctionForm.get('auctionStart')?.enable();
-
       }
       )
     });

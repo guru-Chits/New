@@ -1,0 +1,33 @@
+image: atlassian/default-image:2
+
+pipelines:
+  branches:
+    main:
+      - step:
+          name: Build
+          image: node:16.14
+          script:
+            - echo "Starting npm install"
+            - npm install
+            - echo "Starting Build"
+            - npm run build
+            - echo "Copying built files"
+            - cp -r dist/chitfundui/* dist/
+            - echo "Build completed"
+          artifacts:
+            - dist/**
+      - step:
+          name: Deploying to EC2
+          deployment: dev
+          script:
+            - echo "Starting deployment to EC2 (dev)"
+            - chmod 400 Chit-Fund.pem
+            - echo "Cleaning previous deployment files"
+            - ssh -i "Chit-Fund.pem" -o StrictHostKeyChecking=no ubuntu@ec2-13-127-210-25.ap-south-1.compute.amazonaws.com 'rm -rf /home/ubuntu/dist'
+            - echo "Creating deployment directory"
+            - ssh -i "Chit-Fund.pem" -o StrictHostKeyChecking=no ubuntu@ec2-13-127-210-25.ap-south-1.compute.amazonaws.com 'mkdir -p /home/ubuntu/dist'
+            - echo "Copying build artifacts to EC2"
+            - scp -i "Chit-Fund.pem" -o StrictHostKeyChecking=no -r dist/* ubuntu@ec2-13-127-210-25.ap-south-1.compute.amazonaws.com:/home/ubuntu/dist/
+            - echo "Copying files to /var/www/html"
+            - ssh -i "Chit-Fund.pem" -o StrictHostKeyChecking=no ubuntu@ec2-13-127-210-25.ap-south-1.compute.amazonaws.com 'sudo cp -r /home/ubuntu/dist/chitfundui/browser/* /var/www/html/'
+            - echo "Build deployed successfully to EC2 (dev)"

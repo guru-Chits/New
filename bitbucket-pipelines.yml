@@ -8,7 +8,7 @@ pipelines:
           image: node:18.17
           script:
             - echo "Starting npm install"
-            - npm install
+            - npm install --force
             - echo "Starting Build"
             - npm run build
             - echo "Copying built files"

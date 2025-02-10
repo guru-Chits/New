@@ -1,13 +1,13 @@
 import { INavigationMenu } from '../interface/navigation-menus';
 
 export const NavigationMenus: INavigationMenu[] = [
-  // {
-  //   path: '',
-  //   title: 'Payments',
-  //   img: '/assets/sidebar/inactive/subscriber.svg',
-  //   activeImg:'/assets/sidebar/active/subscriber selected.svg',
-  //   class: ''
-  // },
+  {
+    path: '',
+    title: 'Dashboard',
+    img: '/assets/sidebar/inactive/home.svg',
+    activeImg:'/assets/sidebar/active/home selected.svg',
+    class: ''
+  },
   { path:'/subscriber',
     title: 'Subscriber Management',
     img: '/assets/sidebar/inactive/subscriber.svg',

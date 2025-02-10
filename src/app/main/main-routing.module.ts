@@ -13,12 +13,12 @@ const routes: Routes = [
     canActivate: [AuthGuard],
     data: {accKey: 'Payments'},
     children: [
-      // {
-      //   path: '',
-      //   component: DashboardComponent, // Default route
-      //   data: { accKey: 'Payments' },
-      //   canActivate: [AuthGuard],
-      // },
+      {
+        path: '',
+        component: DashboardComponent, // Default route
+        data: { accKey: 'Dashboard' },
+        canActivate: [AuthGuard],
+      },
       {
         path: 'subscriber',
         loadChildren: () => import('../../app/subscriber/subscriber.module').then(m => m.SubscriberModule),

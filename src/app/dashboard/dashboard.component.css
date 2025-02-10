@@ -1,0 +1,123 @@
+.icons{
+    height: 60px;
+    width: 60px;
+}
+.auction{
+    background-color: #eef6f6;
+    cursor: pointer;
+}
+.view-btn{
+    color: #3E3A97;
+    background-color: #FFFFFF;
+    border-color: #3E3A97;
+}
+/* 
+.search{
+    display: flex;
+    align-items: center;
+    background-color: #ECEBF5;
+    border: none;
+    padding: 5px;
+    width: 300px;
+} */
+.search-bar {
+    display: flex;
+    align-items: center;
+    background-color: #ECEBF5;
+    border: none;
+    padding: 5px;
+  }
+  
+  .search-bar input {
+    /* border: none;*/
+    outline: none;
+    background-color: #ECEBF5;
+    padding: 3px;
+    flex-grow: 1;
+    height: 20px;
+    width: 70%;
+  }
+
+  .dropdown-bar {
+    display: flex;
+    align-items: center;
+    background-color: #ECEBF5;
+    border: none;
+    padding: 5px;
+}
+
+.dropdown-bar select {
+    outline: none;
+    background-color: #ECEBF5;
+    padding: 3px;
+    flex-grow: 1;
+    height: 30px;
+    width: 100%;
+    border: none;
+    cursor: pointer;
+}
+
+
+  .next-btn {
+    background-color: #3E3A97;
+    color: #FFFFFF;
+  }
+
+  .transaction-container {
+    background: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    width: 100%;
+  }
+  
+  .title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 15px;
+  }
+  
+  .date-picker {
+    position: relative;
+    width: 180px;
+  }
+  
+  .date-picker input {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+  }
+  
+  .date-picker i {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: gray;
+  }
+
+  .transaction-table {
+    width: 100%;
+    /* border-collapse: collapse; */
+    background: white;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  
+  .transaction-table th,
+  .transaction-table td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+  }
+  
+  .transaction-table thead {
+    background: #eef6f6;
+  }
+  
+  .name-column {
+    display: flex;
+    align-items: center;
+  }
+  

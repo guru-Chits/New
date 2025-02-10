@@ -4,13 +4,13 @@ const staging ='https://staging.guruchits.com'
 const localUrl='http://localhost:8000'
 const prod='https://api.guruchits.com'
 export const environment = {
-    paymentServiceUrl: `${prod}/api`,
-    subscriberServiceUrl:`${prod}/api`,
-    chitServiceUrl:`${prod}/api`,
-    staffServiceUrl:`${prod}/api`,
-    areaServiceUrl:`${prod}/api`,
-    loginServiceUrl:`${prod}/api`,
-    accessServiceUrl:`${prod}/api`,
-    auctionServiceUrl:`${prod}/api`,
-    settingsServiceUrl:`${prod}/api/settings`
+    paymentServiceUrl: `${localUrl}/api`,
+    subscriberServiceUrl:`${localUrl}/api`,
+    chitServiceUrl:`${localUrl}/api`,
+    staffServiceUrl:`${localUrl}/api`,
+    areaServiceUrl:`${localUrl}/api`,
+    loginServiceUrl:`${localUrl}/api`,
+    accessServiceUrl:`${localUrl}/api`,
+    auctionServiceUrl:`${localUrl}/api`,
+    settingsServiceUrl:`${localUrl}/api/settings`
 }

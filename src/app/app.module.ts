@@ -5,7 +5,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { HttpClientModule } from '@angular/common/http';
 import { NgSelectModule } from '@ng-select/ng-select';
-
+import { HighchartsChartModule } from 'highcharts-angular';
 @NgModule({
   declarations: [
     AppComponent,
@@ -14,8 +14,8 @@ import { NgSelectModule } from '@ng-select/ng-select';
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
-    NgSelectModule
-
+    NgSelectModule,
+    HighchartsChartModule
   ],
   providers: [],
   bootstrap: [AppComponent]

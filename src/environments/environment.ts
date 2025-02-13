@@ -9,7 +9,7 @@ export const environment = {
     chitServiceUrl:`${localUrl}/api`,
     staffServiceUrl:`${localUrl}/api`,
     areaServiceUrl:`${localUrl}/api`,
-    loginServiceUrl:`${localUrl}/api`,
+    loginServiceUrl:`${staging}/api`,
     accessServiceUrl:`${localUrl}/api`,
     auctionServiceUrl:`${localUrl}/api`,
     settingsServiceUrl:`${localUrl}/api/settings`

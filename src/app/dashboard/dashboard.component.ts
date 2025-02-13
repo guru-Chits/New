@@ -42,6 +42,8 @@ export class DashboardComponent implements OnInit{
   routeId: any;
   transactiondata: any;
   transfilterData = [];
+  showGroups: boolean = false
+  displayedAuctions: any
 
   constructor(private fb: FormBuilder, private payment_service:PaymentService, private route_service: AreaService, private chit_service: ChitService, private router: Router, private sub_service:SubscriberService, private staff_service:StaffService, private cdr: ChangeDetectorRef) {
    }
@@ -59,6 +61,13 @@ export class DashboardComponent implements OnInit{
     this.filterForm.valueChanges.subscribe(() => {
       this.filterRecords();
     });
+
+    this.chit_service.getAuctionToday().subscribe((data => {
+      this.auctions = data
+      console.log("AUCTIONS", this.auctions)
+      this.auctions = this.auctions.todaysAuction
+      this.displayedAuctions = this.auctions.slice(0, 5)
+    }))
 
     this.payment_service.getPaymentByYear().subscribe((data) => {
 
@@ -164,6 +173,36 @@ export class DashboardComponent implements OnInit{
         <img src="${imageUrl}" alt="Profile Image" width="32" height="32" style="border-radius: 50%; ">
       </div>
     `;
+  }
+
+  applyFilter(filterValue: string) {
+    this.displayedAuctions = this.auctions;
+    if (!filterValue || !this.auctions) {
+      return;
+    }
+
+    this.displayedAuctions = this.auctions.filter(subscriber => {
+      const chitGroupId = subscriber.chitGroupId ? subscriber.chitGroupId.toString().toLowerCase() : '';
+      return chitGroupId.includes(filterValue.toLowerCase());
+    });
+  }
+  nav(id: string) {
+    this.router.navigate([`chit/auction/${id}`])
+  }
+
+  viewAll() {
+    if (!this.showGroups) {
+      this.displayedAuctions = this.auctions; // Show all subscribers
+      this.showGroups = true;
+    }
+
+  }
+  viewLess() {
+    if (this.showGroups) {
+      this.displayedAuctions = this.auctions.slice(0, 5);
+      this.showGroups = false;
+    }
+
   }
 
 }

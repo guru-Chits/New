@@ -14,7 +14,7 @@ const routes: Routes = [
     data: {accKey: 'Payments'},
     children: [
       {
-        path: '',
+        path: 'dashboard',
         component: DashboardComponent, // Default route
         data: { accKey: 'Dashboard' },
         canActivate: [AuthGuard],

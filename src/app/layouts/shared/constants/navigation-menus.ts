@@ -2,7 +2,7 @@ import { INavigationMenu } from '../interface/navigation-menus';
 
 export const NavigationMenus: INavigationMenu[] = [
   {
-    path: '',
+    path: '/dashboard',
     title: 'Dashboard',
     img: '/assets/sidebar/inactive/home.svg',
     activeImg:'/assets/sidebar/active/home selected.svg',

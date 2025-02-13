@@ -373,6 +373,7 @@ export class PaymentsComponent implements OnInit {
               chitAmount: this.subDetail.chitAmount,
               serialNumber: serialNumber,
               receiptNumber: this.receiptNo
+              
             });
             const groupId = this.paymentForm.get('groupId')?.value;
             const installmentMonth = this.paymentForm.get('installmentMonth')?.value;

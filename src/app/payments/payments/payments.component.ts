@@ -458,76 +458,128 @@ export class PaymentsComponent implements OnInit {
  
   
   handleAmountChange(amount: number, expectedInstallmentAmount: number, passbooknumber: any) {
+
+    // Fetch the last payment or set default values if no previous payment exists
     const lastPayment = this.payments?.[this.payments.length - 1] || null;
+    const previousAmountPaid = lastPayment ? lastPayment.amount || 0 : 0;
     const chitAmount = this.chitValue;
+
     const expectedAmountPerInstallment = chitAmount / 20; // Monthly installment calculation
 
     let balanceAmount = 0;
     let currentInstallmentMonth = this.datePipe.transform(this.subDetail.auctionDate, 'dd-MMMM-YYYY') || '';
-    let remainingAmount = amount;  
-    let nextInstallmentMonth = lastPayment ? lastPayment.installmentMonth : currentInstallmentMonth;
 
+    // Fetch total amount for the last payment's month to check underpayment
     this.service.getAmountByMonth(passbooknumber, lastPayment?.installmentMonth).subscribe((data) => {
-        const totalAmountPaidForMonth = data.totalAmount || 0;
+      const totalAmountPaidForMonth = data.totalAmount || 0;
 
-        //  Step 1: Reset and initialize correctly
-        this.installmentMonths = '';
+      // If there's no previous payment, set balanceAmount to 0
+      if (!lastPayment) {
+        balanceAmount = 0;  // No balance to carry forward for the first payment
+      }
+      else if (totalAmountPaidForMonth < expectedInstallmentAmount) {
+        // If there was a previous underpayment, calculate the pending balance
+        balanceAmount = expectedInstallmentAmount - totalAmountPaidForMonth;
+        currentInstallmentMonth = lastPayment.installmentMonth;  // Keep the same month
+        let balanceAm = amount - balanceAmount
 
-        //  Step 2: Always start with the initial month
-        if (lastPayment) {
-            nextInstallmentMonth = this.incrementInstallmentMonth(lastPayment.installmentMonth);
+        if (balanceAm > 0 && !this.lastPayment) {
+          this.amount = balanceAm
+          this.balance = true
+          this.balanceMonth = currentInstallmentMonth
+          this.balanceAmount = balanceAmount
+
+          const next = this.incrementInstallmentMonth(this.balanceMonth);
+
+          currentInstallmentMonth = this.incrementInstallmentMonth(lastPayment.installmentMonth);;
+          this.months = this.incrementInstallmentMonth(currentInstallmentMonth);
+          console.log(this.months);
+          
+
+        }
+      }
+
+      //   else if (totalAmountPaidForMonth < expectedInstallmentAmount) {
+      //     console.log(lastPayment.installmentMonth);
+
+      //     // If there was a previous underpayment, calculate the pending balance
+      //     balanceAmount = expectedInstallmentAmount - totalAmountPaidForMonth;
+      //     let balanceAm = amount - balanceAmount;
+
+      //     if (balanceAm > 0 && !this.lastPayment) {8
+      //         this.amount = balanceAm;
+      //         this.balance = true;
+      //         this.balanceAmount = balanceAmount;
+
+      //         // Increment to the next month instead of keeping the same month
+      //         this.balanceMonth =lastPayment.installmentMonth
+      //         currentInstallmentMonth =this.incrementInstallmentMonth(lastPayment.installmentMonth);;
+
+      //         // Increment further if necessary for subsequent months
+      //         this.months = this.incrementInstallmentMonth(currentInstallmentMonth);
+      //     }
+      // }
+
+
+      else {
+        // If the previous payment was enough, move to the next month
+        currentInstallmentMonth = this.incrementInstallmentMonth(lastPayment.installmentMonth);
+        this.months = currentInstallmentMonth
+
+      }
+      console.log(this.months);
+      let installmentMonths = currentInstallmentMonth;  // Start with the current month
+      let remainingAmount = amount;
+      let appliedAmountForMonth = 0;
+      let nextInstallmentMonth = '';
+
+      // Apply the amount first to the balance for the current month
+      if (remainingAmount > balanceAmount && !this.lastPayment) {
+        appliedAmountForMonth = balanceAmount;
+
+        remainingAmount -= balanceAmount;  // Subtract balance amount from the paid amount
+
+      } else {
+        // If the remaining amount is less than or equal to the balance
+
+        appliedAmountForMonth = remainingAmount;
+        remainingAmount = 0;  // No amount left to apply to future months
+      }
+
+      // Iterate and apply the remaining amount across multiple months
+      while (remainingAmount > 0 && !this.lastPayment) {
+
+        if (remainingAmount > expectedInstallmentAmount) {
+
+          remainingAmount -= expectedInstallmentAmount;
+          appliedAmountForMonth = expectedInstallmentAmount;
+          nextInstallmentMonth = this.incrementInstallmentMonth(currentInstallmentMonth);
+          installmentMonths += `, ${nextInstallmentMonth}`;
+
+          currentInstallmentMonth = nextInstallmentMonth;  // Update current month to next month
         } else {
-            nextInstallmentMonth = currentInstallmentMonth;
+          appliedAmountForMonth = remainingAmount;
+          remainingAmount = 0;  // No amount left to apply
         }
-        this.installmentMonths = nextInstallmentMonth;
-
-        //  Step 3: Check if any balance exists from the last month
-        if (lastPayment && totalAmountPaidForMonth < expectedInstallmentAmount) {
-            balanceAmount = expectedInstallmentAmount - totalAmountPaidForMonth;
-            this.balanceMonth = lastPayment.installmentMonth;
-        } else {
-            balanceAmount = 0;
-            this.balanceMonth = ''; // No balance, reset balance month
-        }
-
-        remainingAmount = amount;
-
-        //  Step 4: If there is a balance, allocate to the balance month first
-        if (balanceAmount > 0) {
-            if (remainingAmount >= balanceAmount) {
-                remainingAmount -= balanceAmount;
-                this.installmentMonths = this.balanceMonth;
-            } else {
-                this.installmentMonths = this.balanceMonth;
-                remainingAmount = 0;
-            }
-            nextInstallmentMonth = this.incrementInstallmentMonth(this.balanceMonth);
-        }
-
-        // Step 5: Apply the remaining amount starting from the initial month
-        while (remainingAmount > 0) {
-            if (!this.installmentMonths.includes(nextInstallmentMonth)) {
-                this.installmentMonths += `, ${nextInstallmentMonth}`;
-            }
-
-            if (remainingAmount >= expectedInstallmentAmount) {
-                remainingAmount -= expectedInstallmentAmount;
-                nextInstallmentMonth = this.incrementInstallmentMonth(nextInstallmentMonth);
-            } else {
-                remainingAmount = 0;
-            }
-        }
-
-        //  Step 6: Patch the correct values into the form
+      }
+      if (!this.balance && !this.lastPayment) {
+        this.months = installmentMonths
+      }
+      console.log(this.months);
+      if(this.balance){
         this.paymentForm.patchValue({
-            installmentMonth: this.installmentMonths,
+          installmentMonth: this.balanceMonth + "," + installmentMonths   // Patch all the months in which payments were applied
         });
-
-        console.log("Final installment months: ", this.installmentMonths);
+      }else{
+        this.paymentForm.patchValue({
+          installmentMonth:  installmentMonths,  // Patch all the months in which payments were applied
+        });
+      }
+      
     });
-}
 
 
+  }
 
 //   handleAmountChange(amount: number, expectedInstallmentAmount: number, passbooknumber: any) {   //important
 //     // Fetch the last payment or set default values if no previous payment exists
@@ -1028,10 +1080,10 @@ export class PaymentsComponent implements OnInit {
       this.installAmount = this.amount;
 
       const installmentMonths = this.installMonth.split(',').map((month) => month.trim());
+      installmentMonths.splice(0, 1);
       const chitAmount = this.chitValue;
       const baseAmount = Math.floor(chitAmount / 20);
       const remainingAmount = this.installAmount - baseAmount * (installmentMonths.length - 1);
-
       const adjustedMonths = [this.balanceMonth, ...installmentMonths];
       const sortedMonths = adjustedMonths.sort((a, b) => new Date(a).getTime() - new Date(b).getTime());
 

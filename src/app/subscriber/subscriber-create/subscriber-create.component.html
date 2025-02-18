@@ -54,12 +54,12 @@
                 </div>
               </div>
             </div>
-            <!-- Alias Name -->
+            <!-- Alias -->
             <div class="row justify-content-around">
               <div class="col-lg-4">
                 <div class="form-group">
-                  <label for="aliasName" class="form-control-label">Alias Name</label>
-                  <input type="text" placeholder="Alias Name" class="form-control form-control-sm"
+                  <label for="aliasName" class="form-control-label">Alias</label>
+                  <input type="text" placeholder="Alias" class="form-control form-control-sm"
                     formControlName="aliasName" (keypress)="onAliasNameKeyPress($event)" maxlength="50" minlength="2" />
                   <div class="invalid-feedback"
                     *ngIf="subscriberForm.get('aliasName').invalid && (subscriberForm.get('aliasName').dirty || subscriberForm.get('aliasName').touched)">
@@ -515,7 +515,7 @@
                             <td>{{ subscriberDetail.Subscriber.subscriberId }}</td>
                           </tr>
                           <tr>
-                            <td><strong>Alias Name</strong></td>
+                            <td><strong>Alias</strong></td>
                             <td>{{ subscriberDetail.Subscriber.aliasName }}</td>
                           </tr>
                           <tr>

@@ -36,6 +36,7 @@ export class SubscriberViewComponent implements OnInit {
   paymentHistoryToggled: boolean[] = [];
   canEdit = false
   aucData: any
+  // canView: boolean = true
   totalAmountOutstanding: number = 0
   balance: number = 0
   groups: any
@@ -256,4 +257,9 @@ export class SubscriberViewComponent implements OnInit {
 
     return `${day}${suffix(day)} ${month} ${year}`;
   }
+  navigate(id: any) {
+    console.log("iddddddddd",id)
+    this.router.navigate([`subscriber/view/${id}`]);
+  }
+  
 }

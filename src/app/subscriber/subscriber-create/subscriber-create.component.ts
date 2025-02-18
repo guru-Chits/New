@@ -61,6 +61,7 @@ uploaded:any
   displayedSubscribers: any[];
   selectedSubscriber: any;
   referralClient: string;
+  referralClientId: any;
   urls: any
   itemsPerPage = 10; // Subscribers per page
   showall = false; // To toggle "View More"
@@ -109,6 +110,7 @@ uploaded:any
       this.conditionalValidator(() => !!this.subscriberForm?.get('bankName')?.value, Validators.pattern(/^[a-zA-Z\s]+$/))
       ]],
       referralClient: [''],
+      referralClientId: [''],
       nomineeName: ['', [
         this.conditionalValidator(() => !!this.subscriberForm?.get('nomineeName')?.value, Validators.pattern(/^[A-Z][a-zA-Z]+$/))
       ]],
@@ -706,7 +708,10 @@ uploaded:any
 
   addReferral(): void {
     this.referralClient = this.subscriberDetail.Subscriber.firstName;
+    console.log("referral subscriber Details",this.subscriberDetail.Subscriber)
+    this.referralClientId = this.subscriberDetail.Subscriber._id
     this.subscriberForm.get('referralClient').setValue(this.referralClient)
+    this.subscriberForm.get('referralClientId').setValue(this.referralClientId)
     this.isSubscriberListVisible = false;
   }
 }

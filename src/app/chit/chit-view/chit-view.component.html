@@ -225,9 +225,9 @@
                             </tr>
                             
                             <tr>
-                                <td class="py-3"><strong>Alias Name</strong></td>
+                                <td class="py-3"><strong>Alias</strong></td>
                                 <td class="py-3">{{filteredSubscribers[0]?.aliasName ||
-                                    filteredAdditionalSubs[0]?.aliasName}}</td>
+                                    filteredAdditionalSubs[0].aliasName}}</td>
                             </tr>
                             <tr  *ngIf="aucData.prizedAmount">
                                 <td class="py-3"><strong>Prized Amount</strong></td>
@@ -348,7 +348,7 @@
                                                             {{subscriberDetail.Subscriber.subscriberId}}</td>
                                                     </tr>
                                                     <tr>
-                                                        <td><strong>Alias Name</strong></td>
+                                                        <td><strong>Alias</strong></td>
                                                         <td>{{subscriberDetail.Subscriber.aliasName}}</td>
                                                     </tr>
                                                     <tr>

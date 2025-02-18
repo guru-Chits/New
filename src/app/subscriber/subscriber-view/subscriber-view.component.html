@@ -43,7 +43,7 @@
           <div class="row justify-content-around">
 
             <div class="col-lg-4">
-              <h6>Alias Name</h6>
+              <h6>Alias</h6>
               <p>{{subscriberDetail?.Subscriber?.aliasName}}</p>
             </div>
             <div class="col-lg-4">
@@ -130,10 +130,18 @@
             </div>
           </div>
           <div class="row pt-4">
-            <div class="col-lg-4">
+            <!-- <div class="col-lg-4">
               <h6>Referral Client</h6>
               <p>{{subscriberDetail?.Subscriber?.referralClient}}</p>
+            </div> -->
+            <div class="col-lg-4">
+              <h6>Referral Client</h6>
+              <p (click)="navigate(subscriberDetail?.Subscriber?.referralClientId)" 
+                 style="color: #50A1A5; cursor: pointer; text-decoration: underline;">
+                {{ subscriberDetail?.Subscriber?.referralClient }}
+              </p>
             </div>
+            
           </div>
           <h5>Nominee Details</h5>
           <div class="row justify-content-around">

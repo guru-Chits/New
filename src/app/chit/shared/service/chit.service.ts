@@ -130,5 +130,9 @@ export class ChitService {
     return this.http.get(url)
   }
 
+  getAuctionCompleted(){
+    let url=`${this.auctionUrl}/chit_management/dashboardData`
+    return this.http.get(url)
+  }
 }
 

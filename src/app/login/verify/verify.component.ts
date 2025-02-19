@@ -59,7 +59,7 @@ export class VerifyComponent implements OnInit {
           } else {
             this.resetPage = false
 
-            this.router.navigate(['/subscriber']);  // Navigate after OTP success
+            this.router.navigate(['/dashboard']);  // Navigate after OTP success
           }
         }
       },

@@ -5,7 +5,7 @@ import { AuthGuard } from '../shared/guard/auth.guard';
 
 const routes: Routes = [
     {
-      path: '',
+      path: 'dashboard',
       component: DashboardComponent, 
       canActivate: [AuthGuard],
       data: { accKey: 'Payments', action: 'view' },

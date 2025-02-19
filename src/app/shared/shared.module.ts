@@ -15,7 +15,7 @@ BreadcrumbComponent,
   ],
   exports: [
     AgGridComponent,
-    BreadcrumbComponent
+    BreadcrumbComponent,
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })

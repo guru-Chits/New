@@ -16,8 +16,7 @@
               <h6>{{ field }}</h6>
             </span>
             <img src="assets/table/down-arrow.png" alt="toggle" class="toggle-btn mt-1 "
-              [class.rotated]="isFilterShown(field)">
-
+              [class.rotated]="isFilterShown(field)">        
           </div>
           <div class="filter-options ml-5" *ngIf="isFilterShown(field)">
             <div class="filter-item" *ngFor="let value of filterList[field]?.values">

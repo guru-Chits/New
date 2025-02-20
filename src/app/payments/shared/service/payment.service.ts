@@ -198,6 +198,31 @@ getAllTransaction(){
   return this.http.get(url)
 }
 
+getPaymentByDate(date?: Date, routeId?: string): Observable<any> {
+  // Ensure that date is properly formatted as a string (YYYY-MM-DD)
+  const formattedDate = date ? date.toISOString().split('T')[0] : '';
+  // Construct the URL with query parameters
+  let url = `${this.paymentUrl}/paymentByDate?date=${formattedDate}`;
+  
+  // Add the routeId if it is provided
+  if (routeId) {
+    url += `&routeId=${routeId}`;
+  }
+
+  return this.http.get<any>(url);
+}
+
+
+getPaymentByYear(){
+  let url:string = `${this.paymentUrl}/payment_year`
+  return this.http.get(url)
+}
+
+getPaymentByMonth(){
+  let url:string = `${this.paymentUrl}/total_trans `
+  return this.http.get(url)
+}
+
 }
 
 

@@ -54,6 +54,7 @@ export class PaymentsComponent implements OnInit {
   passbookNo: string
   chitValue: any
   lastMonth: String
+  installmentMonths: String
   lastAmount: any
   amountPayments: any
   lastPayment: boolean = false
@@ -286,6 +287,26 @@ export class PaymentsComponent implements OnInit {
         passbooknumber: 'PB-'
       });
     }
+  
+    this.paymentForm.get('passbooknumber').valueChanges.subscribe(passbooknumber => {
+      if (passbooknumber) {
+        this.getSubByPassbookNo(passbooknumber);
+        this.passbookNo = passbooknumber;
+      }  if (passbooknumber="PB-") {
+        this.paymentForm.patchValue({
+          groupId: this.subDetail.chitGroupId,
+          subscriberId: "",
+          subscriberName: "",
+          collectionType: "",
+          installmentMonth: "",
+          region: "",
+          chitAmount: "",
+          serialNumber: "",
+          receiptNumber: '',
+          amount: ""
+        });
+      }
+    });
   }
 
   blockPrefix(event: any) {
@@ -296,7 +317,7 @@ export class PaymentsComponent implements OnInit {
   }
 
   getSubByPassbookNo(passbooknumber: string): void {
-
+    this
     this.chitService.getByPassbooNo(passbooknumber).subscribe(data => {
       if (data) {
         this.subDetail = data;
@@ -373,7 +394,7 @@ export class PaymentsComponent implements OnInit {
               chitAmount: this.subDetail.chitAmount,
               serialNumber: serialNumber,
               receiptNumber: this.receiptNo
-              
+                        
             });
             const groupId = this.paymentForm.get('groupId')?.value;
             const installmentMonth = this.paymentForm.get('installmentMonth')?.value;
@@ -430,8 +451,9 @@ export class PaymentsComponent implements OnInit {
       console.error('Error fetching payment details', error);
     });
   }
-
-
+  
+ 
+  
   handleAmountChange(amount: number, expectedInstallmentAmount: number, passbooknumber: any) {
 
     // Fetch the last payment or set default values if no previous payment exists
@@ -468,6 +490,8 @@ export class PaymentsComponent implements OnInit {
 
           currentInstallmentMonth = this.incrementInstallmentMonth(lastPayment.installmentMonth);;
           this.months = this.incrementInstallmentMonth(currentInstallmentMonth);
+          console.log(this.months);
+          
 
         }
       }
@@ -539,13 +563,260 @@ export class PaymentsComponent implements OnInit {
         this.months = installmentMonths
       }
       console.log(this.months);
-      this.paymentForm.patchValue({
-        installmentMonth: installmentMonths,  // Patch all the months in which payments were applied
-      });
+      if(this.balance){
+        this.paymentForm.patchValue({
+          installmentMonth: this.balanceMonth + "," + installmentMonths   // Patch all the months in which payments were applied
+        });
+      }else{
+        this.paymentForm.patchValue({
+          installmentMonth:  installmentMonths,  // Patch all the months in which payments were applied
+        });
+      }
+      
     });
 
 
   }
+
+//   handleAmountChange(amount: number, expectedInstallmentAmount: number, passbooknumber: any) {   //important
+//     // Fetch the last payment or set default values if no previous payment exists
+//     const lastPayment = this.payments?.[this.payments.length - 1] || null;
+//     const chitAmount = this.chitValue;
+//     const expectedAmountPerInstallment = chitAmount / 20; // Monthly installment calculation
+
+//     let balanceAmount = 0;
+//     let currentInstallmentMonth = this.datePipe.transform(this.subDetail.auctionDate, 'dd-MMMM-YYYY') || '';
+//     let remainingAmount = amount; // Remaining amount to distribute
+//     let nextInstallmentMonth = lastPayment ? lastPayment.installmentMonth : currentInstallmentMonth;
+    
+//     this.service.getAmountByMonth(passbooknumber, lastPayment?.installmentMonth).subscribe((data) => {
+//         const totalAmountPaidForMonth = data.totalAmount || 0;
+//         this.installmentMonths = ''; // To store applied months
+
+//         // **Step 1: If there was underpayment in the last payment month, pay balance first**
+//         if (lastPayment && totalAmountPaidForMonth < expectedInstallmentAmount) {
+//             balanceAmount = expectedInstallmentAmount - totalAmountPaidForMonth;
+//             this.balanceMonth = lastPayment.installmentMonth; 
+//             // Keep balance in the last payment's month
+//         }
+
+//         //  **Correct Calculation of Remaining Amount**
+//         remainingAmount = amount;  
+
+//         //  **If there is a balance amount, pay it first**
+//         if (balanceAmount > 0) {
+//             if (remainingAmount >= balanceAmount) {
+//                 remainingAmount -= balanceAmount;
+//                 this.installmentMonths = this.balanceMonth;
+//                 nextInstallmentMonth = this.incrementInstallmentMonth(this.balanceMonth);
+//                 // Add balance month first
+//             } else {
+//                 // Partial payment for balance, no new month is included
+//                 this.installmentMonths = this.balanceMonth;
+//                 remainingAmount = 0;
+//                 nextInstallmentMonth = this.incrementInstallmentMonth(this.balanceMonth);
+
+//             }
+//         }
+
+//         //  **Move to the next month if balance was paid**
+
+//         // **If no last payment exists, start from the auction date**
+//         if (!lastPayment) {
+//             this.installmentMonths = currentInstallmentMonth;
+//             nextInstallmentMonth = this.incrementInstallmentMonth(currentInstallmentMonth);
+//         }
+
+//         //  **Apply the remaining amount to upcoming months**
+//         while (remainingAmount > 0) {
+//             if (this.installmentMonths) {
+//                 this.installmentMonths += `, ${nextInstallmentMonth}`;
+//             } else {
+//                 this.installmentMonths = nextInstallmentMonth;
+//             }
+
+//             if (remainingAmount >= expectedInstallmentAmount) {
+//                 remainingAmount -= expectedInstallmentAmount;
+//                 nextInstallmentMonth = this.incrementInstallmentMonth(nextInstallmentMonth); // Move to next month
+//             } else {
+//                 remainingAmount = 0;
+//             }
+//         }
+
+//         //  **Patch the correct values into the form**
+//         this.paymentForm.patchValue({
+//             installmentMonth: this.installmentMonths,
+//         });
+
+//         console.log("Final installment months: ", this.installmentMonths);
+//     });
+// }
+
+
+  // handleAmountChange(amount: number, expectedInstallmentAmount: number, passbooknumber: any) {
+
+  //   // Fetch the last payment or set default values if no previous payment exists
+  //   const lastPayment = this.payments?.[this.payments.length - 1] || null;
+  //   const previousAmountPaid = lastPayment ? lastPayment.amount || 0 : 0;
+  //   const chitAmount = this.chitValue;
+
+  //   const expectedAmountPerInstallment = chitAmount / 20; // Monthly installment calculation
+
+  //   let balanceAmount = 0;
+  //   let currentInstallmentMonth = this.datePipe.transform(this.subDetail.auctionDate, 'dd-MMMM-YYYY') || '';
+  //   let remainingAmount = amount; // Remaining amount to distribute
+  //   let nextInstallmentMonth = lastPayment ? lastPayment.installmentMonth : currentInstallmentMonth; 
+  //   // Fetch total amount for the last payment's month to check underpayment
+  //   this.service.getAmountByMonth(passbooknumber, lastPayment?.installmentMonth).subscribe((data) => {
+  //     const totalAmountPaidForMonth = data.totalAmount || 0;
+  //     this.installmentMonths = ''; // To store applied months
+  //    // Start from lastPayment month
+
+  //   if (lastPayment && totalAmountPaidForMonth < expectedInstallmentAmount) {
+  //     balanceAmount = expectedInstallmentAmount - totalAmountPaidForMonth;
+  //     this.balanceMonth = lastPayment.installmentMonth; // Keep balance in the last payment's month
+  //   }
+
+  //   //  **Correct Calculation of Remaining Amount**
+  //   remainingAmount = amount;  
+
+  //   //  **If there is a balance amount, pay it first**
+  //   if (balanceAmount > 0) {
+  //       if (remainingAmount >= balanceAmount) {
+  //           remainingAmount -= balanceAmount;
+  //           this.installmentMonths = this.balanceMonth; // Add balance month first
+  //       } else {
+  //           // Partial payment for balance, no new month is included
+  //           this.installmentMonths = this.balanceMonth;
+  //           remainingAmount = 0;
+  //       }
+  //   }
+
+  //   //  **Move to the next month if balance was paid**
+  //   nextInstallmentMonth = this.incrementInstallmentMonth(this.balanceMonth);
+
+  //   //  **Apply the remaining amount to upcoming months**
+  //   while (remainingAmount > 0) {
+  //       if (this.installmentMonths) {
+  //           this.installmentMonths += `, ${nextInstallmentMonth}`;
+  //       } else {
+  //           this.installmentMonths = nextInstallmentMonth;
+  //       }
+
+  //       if (remainingAmount >= expectedInstallmentAmount) {
+  //           remainingAmount -= expectedInstallmentAmount;
+  //           nextInstallmentMonth = this.incrementInstallmentMonth(nextInstallmentMonth); // Move to next month
+  //       } else {
+  //           remainingAmount = 0;
+  //       }
+  //   }
+
+  //   // **Patch the correct values into the form**
+  //   this.paymentForm.patchValue({
+  //       installmentMonth: this.installmentMonths,
+  //   });
+
+  //   console.log("Final installment months: ", this.installmentMonths);
+  //     console.log("Final installment months: ", this.installmentMonths);
+
+  //     // If there's no previous payment, set balanceAmount to 0
+  //   if (!lastPayment) {
+  //       balanceAmount = 0;  // No balance to carry forward for the first payment
+  //     }
+  //   else if (totalAmountPaidForMonth < expectedInstallmentAmount) {
+  //       // If there was a previous underpayment, calculate the pending balance
+  //       balanceAmount = expectedInstallmentAmount - totalAmountPaidForMonth;
+  //       currentInstallmentMonth = lastPayment.installmentMonth;  // Keep the same month
+  //       let balanceAm = amount - balanceAmount
+
+  //       if (balanceAm > 0 && !this.lastPayment) {
+  //         this.amount = balanceAm
+  //         this.balance = true
+  //         this.balanceMonth = currentInstallmentMonth
+  //         this.balanceAmount = balanceAmount
+
+  //         const next = this.incrementInstallmentMonth(this.balanceMonth);
+
+  //         currentInstallmentMonth = this.incrementInstallmentMonth(lastPayment.installmentMonth);;
+  //         this.months = this.incrementInstallmentMonth(currentInstallmentMonth);
+
+  //       }
+  //     }
+
+  //     //   else if (totalAmountPaidForMonth < expectedInstallmentAmount) {
+  //     //     console.log(lastPayment.installmentMonth);
+
+  //     //     // If there was a previous underpayment, calculate the pending balance
+  //     //     balanceAmount = expectedInstallmentAmount - totalAmountPaidForMonth;
+  //     //     let balanceAm = amount - balanceAmount;
+
+  //     //     if (balanceAm > 0 && !this.lastPayment) {8
+  //     //         this.amount = balanceAm;
+  //     //         this.balance = true;
+  //     //         this.balanceAmount = balanceAmount;
+
+  //     //         // Increment to the next month instead of keeping the same month
+  //     //         this.balanceMonth =lastPayment.installmentMonth
+  //     //         currentInstallmentMonth =this.incrementInstallmentMonth(lastPayment.installmentMonth);;
+
+  //     //         // Increment further if necessary for subsequent months
+  //     //         this.months = this.incrementInstallmentMonth(currentInstallmentMonth);
+  //     //     }
+  //     // }
+
+
+  //   else {
+  //       // If the previous payment was enough, move to the next month
+  //       currentInstallmentMonth = this.incrementInstallmentMonth(lastPayment.installmentMonth);
+  //       this.months = currentInstallmentMonth
+
+  //     }
+  //     console.log(this.months);
+  //     // let installmentMonths = currentInstallmentMonth;  // Start with the current month
+  //     // let remainingAmount = amount;
+  //     // let appliedAmountForMonth = 0;
+  //     // let nextInstallmentMonth = '';
+
+  //     // // Apply the amount first to the balance for the current month
+  //     // if (remainingAmount > balanceAmount && !this.lastPayment) {
+  //     //   appliedAmountForMonth = balanceAmount;
+
+  //     //   remainingAmount -= balanceAmount;  // Subtract balance amount from the paid amount
+
+  //     // } else {
+  //     //   // If the remaining amount is less than or equal to the balance
+
+  //     //   appliedAmountForMonth = remainingAmount;
+  //     //   remainingAmount = 0;  // No amount left to apply to future months
+  //     // }
+
+  //     // // Iterate and apply the remaining amount across multiple months
+  //     // while (remainingAmount > 0 && !this.lastPayment) {
+
+  //     //   if (remainingAmount > expectedInstallmentAmount) {
+
+  //     //     remainingAmount -= expectedInstallmentAmount;
+  //     //     appliedAmountForMonth = expectedInstallmentAmount;
+  //     //     nextInstallmentMonth = this.incrementInstallmentMonth(currentInstallmentMonth);
+  //     //     installmentMonths += `, ${nextInstallmentMonth}`;
+
+  //     //     currentInstallmentMonth = nextInstallmentMonth;  // Update current month to next month
+  //     //   } else {
+  //     //     appliedAmountForMonth = remainingAmount;
+  //     //     remainingAmount = 0;  // No amount left to apply
+  //     //   }
+  //     // }
+  //     // if (!this.balance && !this.lastPayment) {
+  //     //   this.months = installmentMonths
+  //     // }
+  //     // console.log(this.months);
+  //     // this.paymentForm.patchValue({
+  //     //   installmentMonth: installmentMonths,  // Patch all the months in which payments were applied
+  //     // });
+  //   });
+
+
+  // }
 
   incrementInstallmentMonth(currentMonth: string): string {
     const dateParts = currentMonth.split('-');
@@ -806,10 +1077,10 @@ export class PaymentsComponent implements OnInit {
       this.installAmount = this.amount;
 
       const installmentMonths = this.installMonth.split(',').map((month) => month.trim());
+      installmentMonths.splice(0, 1);
       const chitAmount = this.chitValue;
       const baseAmount = Math.floor(chitAmount / 20);
       const remainingAmount = this.installAmount - baseAmount * (installmentMonths.length - 1);
-
       const adjustedMonths = [this.balanceMonth, ...installmentMonths];
       const sortedMonths = adjustedMonths.sort((a, b) => new Date(a).getTime() - new Date(b).getTime());
 

@@ -523,7 +523,7 @@ column: ITableColumn[] = [
         const newSubscriber = {
           subscriberId: this.subData.Subscriber.subscriberId,
           profileImageUrl: this.subData.Subscriber.profileImageUrl,
-          aliasName: this.subData.Subscriber.lastName,
+          aliasName: this.subData.Subscriber.aliasName,
           firstName: this.subData.Subscriber.firstName,
           place: this.subData.Subscriber.routeId,
           occupation: this.subData.Subscriber.occupation,

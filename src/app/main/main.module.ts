@@ -5,7 +5,6 @@ import { LayoutsModule } from '../layouts/layouts.module';
 import { MainRoutingModule } from './main-routing.module';
 import { MainComponent } from './main.component';
 
-
 @NgModule({
   declarations: [
     MainComponent
@@ -13,8 +12,7 @@ import { MainComponent } from './main.component';
   imports: [
     CommonModule,
     MainRoutingModule,
-    LayoutsModule,
-
+    LayoutsModule
   ]
 })
 export class MainModule { }

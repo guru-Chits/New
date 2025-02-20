@@ -1,9 +1,9 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-
+import {AuthInterceptorService} from './shared/interceptor/auth-interceptor.service'
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { HttpClientModule } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { HighchartsChartModule } from 'highcharts-angular';
 @NgModule({
@@ -15,9 +15,12 @@ import { HighchartsChartModule } from 'highcharts-angular';
     AppRoutingModule,
     HttpClientModule,
     NgSelectModule,
+    HttpClientModule
+  ],
+  providers: [
+    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptorService, multi: true },
     HighchartsChartModule
   ],
-  providers: [],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

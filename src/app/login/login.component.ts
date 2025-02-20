@@ -97,6 +97,9 @@ export class LoginComponent {
 
     this.service.getLoginDetail(payload.employeeId).subscribe(response => {
       this.response = response
+      localStorage.setItem('accessToken', this.response.accessToken);
+      localStorage.setItem('refreshToken',this.response.refreshToken)
+      this.response=this.response.data      
       if (!this.response.success) {
         alert("User Not found")
       }
@@ -110,6 +113,7 @@ export class LoginComponent {
           this.mobileNumber = this.userdata.mobileNumber;
 
           const otpUrl = `https://2factor.in/API/V1/b1037ef1-2ed8-11ef-8b60-0200cd936042/SMS/${this.mobileNumber}/AUTOGEN/OTPTemplate`;
+      
           this.HttpClient.get(otpUrl).subscribe(
             (otpResponse: any) => {
               this.newStaff = true
@@ -122,6 +126,7 @@ export class LoginComponent {
         } else {
           if (this.response.success === true && password === this.response.user.password && empId == this.employeeId) {
             this.userdata = response;
+            this.userdata = this.userdata.data;
             localStorage.setItem('profile', JSON.stringify(this.userdata.userProfile));
             localStorage.setItem('name', JSON.stringify(this.userdata.userName));
 
@@ -141,6 +146,8 @@ export class LoginComponent {
                   (error) => {
                   }
                 );
+                // this.router.navigate(['/subscriber'])
+
               } else {
                 alert('Access denied. Please contact admin.');
               }

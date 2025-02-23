@@ -8,18 +8,25 @@ import { Router } from '@angular/router';
 
 export class AuthInterceptorService implements HttpInterceptor {
 
-  constructor(private router: Router) {}
+  constructor(private router: Router) { }
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    const accessToken = localStorage.getItem('accessToken'); 
 
-    if (accessToken) {
-      req = req.clone({
-        setHeaders: {
-          Authorization: `Bearer ${accessToken}`  // Attach token
-        }
-      });
+    const url = `https://2factor.in/API/V1/b1037ef1-2ed8-11ef-8b60-0200cd936042/SMS/`
+    if (req.url.startsWith(url)) {
+      return next.handle(req);  
+    } else {
+
+      const token = localStorage.getItem('accessToken');
+      if (token) {
+        const cloned = req.clone({
+          setHeaders: {
+            Authorization: `Bearer ${token}`
+          }
+        });
+        return next.handle(cloned);
+      }
+
+      return next.handle(req);
     }
-
-    return next.handle(req);
   }
 }

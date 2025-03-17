@@ -54,4 +54,7 @@ export class ViewallComponent implements OnInit {
       this.showAll = true;
     }
   }
+  getFirstLetter(name: string): string {
+    return name ? name.charAt(0).toUpperCase() : '';
+  }
 }

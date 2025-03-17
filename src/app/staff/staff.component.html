@@ -20,8 +20,23 @@
       <div *ngIf="staffDetail">
         <div class="card details">
           <div class="title align-self-center py-2">Staff Details</div>
-          <img src="{{staffDetail.Staff.profileUrl}}" class="rounded-circle  align-self-center mb-2" width="75"
-            height="75" alt="Staff Image">
+          <!-- <img src="{{staffDetail.Staff.profileUrl}}" class="rounded-circle  align-self-center mb-2" width="75"
+            height="75" alt="Staff Image"> -->
+            <div class="profile-container">
+              <img *ngIf="staffDetail?.Staff?.profileUrl; else noImage"
+                   [src]="staffDetail?.Staff?.profileUrl"
+                   class="rounded-circle align-self-center mb-2 profile-image"
+                   width="75" height="75"
+                   alt="Staff Image">
+            
+              <!-- Show First Letter If Image is Missing -->
+              <ng-template #noImage>
+                <div class="profile-placeholder">
+                  {{ staffDetail?.Staff?.firstName?.charAt(0) | uppercase }}
+                </div>
+              </ng-template>
+            </div>
+            
           <table class="table">
             <tbody>
               <tr>

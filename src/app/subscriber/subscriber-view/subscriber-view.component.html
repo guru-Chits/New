@@ -18,8 +18,21 @@
           </div> -->
           <div class="profile-picture-container">
             <div class="profile-picture">
-              <img [src]="subscriberDetail?.Subscriber?.profileImageUrl" alt="Profile Picture" class="profile-img ms-2">
-              <!-- <input type="file" (change)="onFileSelected($event)" hidden #fileInput> -->
+              <div class="profile-container">
+                <!-- If Profile Image Exists, Show Image -->
+                <img *ngIf="subscriberDetail?.Subscriber?.profileImageUrl" 
+                     [src]="subscriberDetail?.Subscriber?.profileImageUrl" 
+                     class="rounded-circle align-self-center mb-2" 
+                     width="75" height="75" 
+                     alt="Subscriber Image">
+              
+                <!-- If No Image, Show First Letter in a Circle -->
+                <div *ngIf="!subscriberDetail?.Subscriber?.profileImageUrl" 
+                     class="profile-initial">
+                  {{ getFirstLetter(subscriberDetail?.Subscriber?.firstName) }}
+                </div>
+              </div>
+                            <!-- <input type="file" (change)="onFileSelected($event)" hidden #fileInput> -->
               <!-- <button class="upload-button" (click)="fileInput.click()">
                 <img src="assets/subscriber/Profile edit.svg " alt="Upload Icon">
               </button> -->
@@ -293,8 +306,20 @@
                 <div class="align-self-center">
                   <div class="row click" (click)="getSub(subscriber.id)">
                     <div class="col-4 text-center">
-                      <img class="rounded-circle align-self-center mb-2" [src]="subscriber.subscriberProfile"
-                        height="40" width="40" />
+                      <div class="profile-container">
+                <!-- If Profile Image Exists, Show Image -->
+                <img *ngIf="subscriber.subscriberProfile" 
+                     [src]="subscriber.subscriberProfile" 
+                     class="rounded-circle align-self-center mb-2" 
+                     width="75" height="75" 
+                     alt="Subscriber Image">
+              
+                <!-- If No Image, Show First Letter in a Circle -->
+                <div *ngIf="!subscriber.subscriberProfile" 
+                     class="profile-initial">
+                  {{ getFirstLetter(subscriber.subscriberName) }}
+                </div>
+              </div>
                     </div>
                     <div class="col-8 text">
                       <h6 class="pe-auto">

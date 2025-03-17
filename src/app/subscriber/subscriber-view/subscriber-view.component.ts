@@ -261,5 +261,8 @@ export class SubscriberViewComponent implements OnInit {
     console.log("iddddddddd",id)
     this.router.navigate([`subscriber/view/${id}`]);
   }
+  getFirstLetter(name: string): string {
+    return name ? name.charAt(0).toUpperCase() : '';
+  }
   
 }

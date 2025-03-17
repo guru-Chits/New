@@ -100,9 +100,9 @@ column: ITableColumn[] = [
   { field: 'location', label:"Location" ,sortable: false, filter: false },
   { field: 'month', label: 'Month' },
   {field:'type', label:"Auction Type"},
+  { field: 'winningBid',  label:"WinningBid",sortable: false, filter: false },
   { field: 'walletBalance', label: 'Wallet Balance' },
   // { field: 'occupation', label:"Occupation" ,sortable: false, filter: false },
-  { field: 'winningBid',  label:"WinningBid",sortable: false, filter: false },
   { field: 'viewDetails',  label:"'View Details'",sortable: false, filter: false ,
     cellStyle: function (params: any) {
       return { color: '#50A1A5' ,cursor:'pointer'};
@@ -115,6 +115,7 @@ column: ITableColumn[] = [
   getAllChit() {
     this.service.getAllChit().subscribe((data) => {
       this.totalChitData = data;
+      console.log("groupdetails",this.totalChitData)
       this.totalChitData = this.totalChitData?.AllChitGroups
       this.displayedChit = this.totalChitData
       this.displayedChit = this.totalChitData.slice(0, 5);
@@ -123,6 +124,7 @@ column: ITableColumn[] = [
   }
 
   ngOnInit(): void {
+    
     this.getAllChit()
     this.getAllAuction()
 
@@ -140,6 +142,7 @@ column: ITableColumn[] = [
       if (Object.keys(paramData).length) {
         this.service.getChitById(paramData.id).subscribe((data) => {
           this.chitData = data;
+          console.log("chitdata",this.chitData)
           this.chitData = this.chitData.ChitsGroup;
           this.groupId = this.chitData.chitGroupId;
 
@@ -218,6 +221,7 @@ column: ITableColumn[] = [
             this.service.getTicketId(this.groupId).subscribe((res) => {
             this.colorCode = res
           });
+          console.log("subscriberssssssssssssssssssssss",this.subscribers)
           const updatedSubscribers = this.subscribers.map(async (subscriber) => {
             const result = await this.service.findTicketInGroup(this.groupId, subscriber.passbookNo).toPromise();
             
@@ -229,6 +233,7 @@ column: ITableColumn[] = [
           
           Promise.all(updatedSubscribers).then((finalSubscribers) => {
             this.subscribers = finalSubscribers;
+            console.log("subscriber dddddddddddddddddddddd",this.subscribers)
           });
           this.addSubscribers = this.chitData.addChitSubscribers;
         });
@@ -439,6 +444,7 @@ column: ITableColumn[] = [
 
       }))
       this.displayedSubscribers = this.data.slice(0, this.itemsPerPage);
+      console.log("displayedSubscribersssssdetails",this.displayedSubscribers)
     })
   }
 
@@ -457,6 +463,7 @@ column: ITableColumn[] = [
       this.subscriberDetail = null;
     } else {
       this.subscriberDetail = this.displayedSubscribers.find(sub => sub.id === id);
+      console.log("SSSSSSSSssssssssssssssssss",this.subscriberDetail)
     }
   }
 
@@ -464,6 +471,7 @@ column: ITableColumn[] = [
     this.subservice.getsubscriberById(id).subscribe(
       data => {
         this.subscriberDetail = data;
+        console.log("subscriberDetailssssssssssss",this.subscriberDetail)
         this.selectedSubscriberId = this.subscriberDetail.Subscriber.subscriberId;
       },
       error => {
@@ -522,11 +530,11 @@ column: ITableColumn[] = [
 
         const newSubscriber = {
           subscriberId: this.subData.Subscriber.subscriberId,
-          profileImageUrl: this.subData.Subscriber.profileImageUrl,
-          aliasName: this.subData.Subscriber.aliasName,
-          firstName: this.subData.Subscriber.firstName,
-          place: this.subData.Subscriber.routeId,
-          occupation: this.subData.Subscriber.occupation,
+          // profileImageUrl: this.subData.Subscriber.profileImageUrl,
+          // aliasName: this.subData.Subscriber.aliasName,
+          // firstName: this.subData.Subscriber.firstName,
+          // place: this.subData.Subscriber.routeId,
+          // occupation: this.subData.Subscriber.occupation,
           subId: this.subData.Subscriber._id,
           collectionType: this.collectionTypeForm.get('collectionType')?.value
         };
@@ -580,11 +588,11 @@ column: ITableColumn[] = [
         this.addSubData = res;
         const newSubscriber = {
           subscriberId: this.addSubData.Subscriber.subscriberId,
-          profileImageUrl: this.addSubData.Subscriber.profileImageUrl,
-          aliasName: this.addSubData.Subscriber.lastName,
-          firstName: this.addSubData.Subscriber.firstName,
-          place: this.addSubData.Subscriber.routeId,
-          occupation: this.addSubData.Subscriber.occupation,
+          // profileImageUrl: this.addSubData.Subscriber.profileImageUrl,
+          // aliasName: this.addSubData.Subscriber.lastName,
+          // firstName: this.addSubData.Subscriber.firstName,
+          // place: this.addSubData.Subscriber.routeId,
+          // occupation: this.addSubData.Subscriber.occupation,
         };
 
         // Check for duplicate subscriber ID in both addChitSubscribers and chitSubscribers
@@ -688,7 +696,11 @@ column: ITableColumn[] = [
 
   getChitById(id: string) {    
     this.showTicket = true;
+    console.log("subbbbbbbb",this.subscribers)
     this.filteredSubscribers = this.subscribers.filter(subscriber => subscriber._id === id);
+    console.log("filteredsubbbbbbbbbb",this.filteredSubscribers)
+    console.log("idddddddddValue",this.filteredSubscribers[0]?.subscriberDetails?.firstName )
+    console.log("aliasName",this.filteredSubscribers[0]?.subscriberDetails?.lastName)
     this.count=0
     // this.filteredAdditionalSubs = this.addSubscribers.filter(subscriber => subscriber._id === id);
     const subscriber = this.filteredSubscribers[0];

@@ -132,6 +132,7 @@ export class StaffCreateComponent implements OnInit {
         
         this.service.getstaffById(paramData.id).subscribe((data) => {
           this.staffData = data;
+          console.log("staffdataa",this.staffData)
           this.staffId = this.staffData.Staff._id
           this.profileUrl = this.staffData.Staff.profileUrl
           this.panFile=this.staffData.Staff.panUrl
@@ -594,7 +595,7 @@ export class StaffCreateComponent implements OnInit {
     const formValue = this.staffsForm.getRawValue();    
 
     if (!formValue.profileUrl) {
-      const defaultProfileImage = this.generateDefaultProfileImage(formValue.firstName);
+      const defaultProfileImage = "";
       formData.append('profileUrl', defaultProfileImage);
     } else {
       const profileImageFile = this.staffsForm.get('profileUrl')?.value;
@@ -632,6 +633,9 @@ export class StaffCreateComponent implements OnInit {
     });
 
 
+  } 
+  getFirstLetter(name: string): string {
+    return name ? name.charAt(0).toUpperCase() : '';
   }
 
 

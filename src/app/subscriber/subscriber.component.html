@@ -32,8 +32,21 @@
       <div *ngIf="subscriberDetail">
         <div class="card details">
           <div class="title align-self-center py-2">Subscriber Details</div>
-          <img src="{{subscriberDetail.Subscriber.profileImageUrl}}" class="rounded-circle  align-self-center mb-2"
-            width="75" height="75" alt="Subscriber Image">
+          <div class="profile-container">
+            <!-- If Profile Image Exists, Show Image -->
+            <img *ngIf="subscriberDetail?.Subscriber?.profileImageUrl" 
+                 [src]="subscriberDetail?.Subscriber?.profileImageUrl" 
+                 class="rounded-circle align-self-center mb-2" 
+                 width="75" height="75" 
+                 alt="Subscriber Image">
+          
+            <!-- If No Image, Show First Letter in a Circle -->
+            <div *ngIf="!subscriberDetail?.Subscriber?.profileImageUrl" 
+                 class="profile-initial">
+              {{ getFirstLetter(subscriberDetail?.Subscriber?.firstName) }}
+            </div>
+          </div>
+          
           <table class="table">
             <tbody>
               <tr>

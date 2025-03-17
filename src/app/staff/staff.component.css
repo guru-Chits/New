@@ -71,3 +71,37 @@
   border-radius: 5px;
   font-size: 13px;
 }
+
+/* Ensure the profile container is flex and centers its content */
+.profile-container {
+  display: flex;
+  justify-content: center;
+  align-self: center;
+  width: 75px; /* Match width of image */
+  height: 75px; /* Match height of image */
+}
+
+/* Profile Image Styles */
+.profile-image {
+  width: 75px;
+  height: 75px;
+  border-radius: 50%;
+  object-fit: cover;
+  display: block;
+  margin: auto; /* Centering inside div */
+}
+
+/* Profile Placeholder Styles */
+.profile-placeholder {
+  width: 75px;
+  height: 75px;
+  border-radius: 50%;
+  background-color: #007bff; /* Blue color */
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 28px;
+  font-weight: bold;
+  text-transform: uppercase;
+}

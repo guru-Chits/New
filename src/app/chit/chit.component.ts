@@ -313,5 +313,8 @@ export class ChitComponent implements OnInit {
       // maximumFractionDigits: 2
     }).format(amount);
   }
+  getFirstLetter(name: string): string {
+    return name ? name.charAt(0).toUpperCase() : '';
+  }
 }
 

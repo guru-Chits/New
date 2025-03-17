@@ -92,12 +92,43 @@ export class SubscriberComponent {
   }
   profileImageWithIdRenderer(params: any): string {
     const imageUrl = params.data.profileImageUrl;
+    const subscribeName = params.data.displayName
+    console.log("hjjjjhjhhjhjhjhj",subscribeName)
+    const firstLetter = subscribeName.charAt(0).toUpperCase(); // Get first letter
+    if (imageUrl) {
+      // If image exists, return the image tag
+      return `
+        <div style="display: flex; align-items: center;">
+          <img src="${imageUrl}" alt="Profile Image" width="32" height="32" 
+               style="border-radius: 50%; object-fit: cover;">
+        </div>
+      `;
+    } 
+    else {
+      // If no image, return first letter inside a styled div
+      return `
+        <div style="
+          width: 32px; height: 32px; 
+          border-radius: 50%; 
+          background-color: #007bff; 
+          color: white; 
+          display: flex; 
+          justify-content: center; 
+          align-items: center; 
+          font-size: 14px; 
+          font-weight: bold;
+        ">
+          ${firstLetter}
+        </div>
+      `;
+      }
+
     // const subscriberId = params.data.subscriberId;
-    return `
-      <div style="display: flex; align-items: center;">
-        <img src="${imageUrl}" alt="Profile Image" width="32" height="32" style="border-radius: 50%; ">
-      </div>
-    `;
+    // return `
+    //   <div style="display: flex; align-items: center;">
+    //     <img src="${imageUrl}" alt="Profile Image" width="32" height="32" style="border-radius: 50%; ">
+    //   </div>
+    // `;
   }
 
   column: ITableColumn[] = [
@@ -158,5 +189,8 @@ export class SubscriberComponent {
   navigate(id: any) {
     this.router.navigate([`subscriber/view/${id}`]);
   }
-
+  getFirstLetter(name: string): string {
+    return name ? name.charAt(0).toUpperCase() : '';
+  }
+  
 }

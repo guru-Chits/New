@@ -8,7 +8,28 @@
           <div class="align-items-center">
             <div class="row" (click)="getSub(staff.id)">
               <div class="col-4 text-center">
-                <img class="rounded-circle  align-self-center mb-2" width="40" height="40" src="{{staff.staffProfile}}">
+                <!-- <img class="rounded-circle  align-self-center mb-2" width="40" height="40" src="{{staff.staffProfile}}"> -->
+                <div class="profile-picture">
+                  <div class="profile-container">
+                    <!-- If Profile Image Exists, Show Image -->
+                    <img *ngIf="staff.staffProfile" 
+                         [src]="staff.staffProfile" 
+                         class="rounded-circle align-self-center mb-2" 
+                         width="75" height="75" 
+                         alt="Subscriber Image">
+                  
+                    <!-- If No Image, Show First Letter in a Circle -->
+                    <div *ngIf="!staff.staffProfile" 
+                         class="profile-initial">
+                      {{ getFirstLetter(staff.staffName) }}
+                    </div>
+                  </div>
+                  <!-- <img [src]="staffDetail.Staff.profileUrl" alt="Profile Picture" class="profile-img ms-2">
+                  <input type="file" (change)="onFileSelected($event)" hidden #fileInput> -->
+                  <!-- <button class="upload-button" (click)="fileInput.click()">
+                    <img src="assets/subscriber/Profile edit.svg " alt="Upload Icon">
+                  </button> -->
+                </div>
               </div>
               <div class="col-8 text">
                 <h6><strong>{{ staff.staffName}}</strong></h6>

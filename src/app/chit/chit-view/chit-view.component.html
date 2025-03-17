@@ -145,13 +145,30 @@
                             </thead>
                             <tbody>
                               <tr *ngFor="let subscriber of subscribers ; let i = index" [ngClass]="getRowClass(subscriber?.passbookNo)" (click)="getChitById(subscriber?._id)">
-                                <td class="ms-3">{{i+1}} <img [src]="subscriber?.profileImageUrl" alt="Profile Image"
+                                <!-- <td class="ms-3">{{i+1}} <img [src]="subscriber?.profileImageUrl" alt="Profile Image"
                                     class="profile-image ms-3">
-                                </td>
-                                <td>{{ subscriber?.firstName }}</td>
+                                </td> -->
+                                <td class="ms-3">
+                                    {{ i+1 }}
+                                    <div class="profile-container">
+                                      <img *ngIf="subscriber?.subscriberDetails?.profileImageUrl; else noImage"
+                                           [src]="subscriber?.subscriberDetails?.profileImageUrl"
+                                           alt="Profile Image"
+                                           class="profile-image">
+                                  
+                                      <!-- Show First Letter If Image is Missing -->
+                                      <ng-template #noImage>
+                                        <div class="profile-placeholder">
+                                          {{ subscriber?.subscriberDetails?.firstName?.charAt(0) | uppercase }}
+                                        </div>
+                                      </ng-template>
+                                    </div>
+                                  </td>
+                                  
+                                <td>{{ subscriber?.subscriberDetails?.firstName }}</td>
                                 <!-- <td>{{ subscriber?.aliasName }}</td> -->
                                 <td>{{ subscriber?.passbookNo }}</td>
-                                 <td>{{ subscriber?.place }}</td>
+                                 <td>{{ subscriber?.subscriberDetails?.place }}</td>
                                 <!--<td>{{ subscriber?.occupation }}</td> -->
                                 <!-- <td>{{ subscriber?.auctionStatus }}</td> -->
                                 <td>{{ subscriber?.collectionType }}</td>
@@ -209,25 +226,45 @@
               </div>
             <div class="chit-details" *ngIf="showTicket">
                 <div class="card d-flex px-3 py-4 mt-2">
-                    <h5 class="title text-center fw-bold fs-4 m-0 py-3">Subscriber 
+                    <h5 class="title text-center fw-bold fs-4 m-0 py-3">Subscriber  
                         Details</h5><!-- {{selectedChit}}-->
-                    <div class="text-center">
-                        <img src="{{filteredSubscribers[0]?.profileImageUrl || filteredAdditionalSubs[0]?.profileImageUrl}}"
-                            class="img-fluid rounded-circle"
-                            alt="Subscriber Image">
-                    </div>
+                        <div class="profile-container">
+                            <!-- If Profile Image Exists, Show Image -->
+                            <img *ngIf="filteredSubscribers[0]?.subscriberDetails?.profileImageUrl" 
+                                 [src]="filteredSubscribers[0]?.subscriberDetails?.profileImageUrl" 
+                                 class="rounded-circle align-self-center mb-2" 
+                                 width="75" height="75" 
+                                 alt="Subscriber Image">
+                          
+                            <!-- If No Image, Show First Letter in a Circle -->
+                            <div *ngIf="!filteredSubscribers[0]?.subscriberDetails?.profileImageUrl" 
+                                 class="profile-initial">
+                                 {{ filteredSubscribers[0]?.subscriberDetails?.firstName?.charAt(0) | uppercase }}
+                                </div>
+                          </div>
+                        <!-- <div class="text-center">
+                            <img *ngIf="filteredSubscribers[0]?.subscriberDetails?.profileImageUrl; else noImage"
+                                 [src]="filteredSubscribers[0]?.subscriberDetails?.profileImageUrl"
+                                 class="img-fluid rounded-circle"
+                                 alt="Subscriber Image">
+                          
+                            <ng-template #noImage>
+                              <div class="profile-placeholder">
+                                {{ filteredSubscribers[0]?.subscriberDetails?.firstName?.charAt(0) | uppercase }}
+                              </div>
+                            </ng-template>
+                          </div> -->
+                          
                     <table class="table mt-2">
                         <tbody>
                             <tr>
                                 <td class="py-3"><strong>Name</strong></td>
-                                <td class="py-3">{{filteredSubscribers[0]?.firstName ||
-                                    filteredAdditionalSubs[0].firstName}}</td><!--{{specificChitData?.chitGroupId}}-->
+                                <td class="py-3">{{filteredSubscribers[0]?.subscriberDetails?.firstName}}</td><!--{{specificChitData?.chitGroupId}}-->
                             </tr>
                             
                             <tr>
                                 <td class="py-3"><strong>Alias</strong></td>
-                                <td class="py-3">{{filteredSubscribers[0]?.aliasName ||
-                                    filteredAdditionalSubs[0].aliasName}}</td>
+                                <td class="py-3">{{filteredSubscribers[0]?.subscriberDetails?.aliasName}}</td>
                             </tr>
                             <tr  *ngIf="aucData.prizedAmount">
                                 <td class="py-3"><strong>Prized Amount</strong></td>
@@ -333,7 +370,9 @@
                                         </div>
 
                                         <!-- Subscriber Detail Section (Visible when selected) -->
-                                        <div *ngIf="selectedSubscriberId === subscriber?.subscriberId && subscriberDetail?.Subscriber?.subscriberId"
+                                        <!-- <div *ngIf="selectedSubscriberId === subscriber?.subscriberId && subscriberDetail?.Subscriber?.subscriberId" -->
+                                        <div *ngIf="selectedSubscriberId === subscriberDetail?.Subscriber?.subscriberId"
+
                                             class="subscriber-details">
                                             <h5 class="title text-center fw-bold fs-4 my-4">Subscriber Details</h5>
                                             <div class="text-center">

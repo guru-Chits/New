@@ -27,7 +27,7 @@ export class SubscriberCreateComponent implements OnInit {
   panFile:string
   aadharFile:string
   passbookFile:string
-uploaded:any
+  uploaded:any
   breadcrumsData: any = [
     {
       key: 'Subscriber Management',
@@ -557,7 +557,7 @@ uploaded:any
 
     // Handle profile image URL separately from the file input
     if (!formValue.profileImageUrl) {
-      const defaultProfileImage = this.generateDefaultProfileImage(formValue.firstName);
+      const defaultProfileImage = "";
       formData.append('profileImageUrl', defaultProfileImage); // Add to FormData directly
     } else {
       // Append the file if profileImageUrl contains a file

@@ -165,13 +165,45 @@ export class ChitCreateComponent {
   }
   profileImageWithIdRenderer(params: any): string {
     const imageUrl = params.data.profileImageUrl;
+    console.log("params_data",params.data)
 
-    return `
-      <div style="display: flex; align-items: center;">
-        <img src="${imageUrl}" alt="Profile Image" width="35" height="35" style="border-radius: 50%; margin-right: 10px;">
-        <span style="color: #50A1A5;"></span>
-      </div>
-    `;
+    // return `
+    //   <div style="display: flex; align-items: center;">
+    //     <img src="${imageUrl}" alt="Profile Image" width="35" height="35" style="border-radius: 50%; margin-right: 10px;">
+    //     <span style="color: #50A1A5;"></span>
+    //   </div>
+    // `;
+    const subscribeName = params.data.displayName
+    console.log("hjjjjjjjjjjjjjjjjjjjjj",subscribeName)
+    const firstLetter = subscribeName.charAt(0).toUpperCase(); // Get first letter
+    if (imageUrl) {
+      // If image exists, return the image tag
+      return `
+        <div style="display: flex; align-items: center;">
+          <img src="${imageUrl}" alt="Profile Image" width="32" height="32" 
+               style="border-radius: 50%; object-fit: cover;">
+        </div>
+      `;
+    } 
+    else 
+    {
+      // If no image, return first letter inside a styled div
+      return `
+        <div style="
+          width: 32px; height: 32px; 
+          border-radius: 50%; 
+          background-color: #007bff; 
+          color: white; 
+          display: flex; 
+          justify-content: center; 
+          align-items: center; 
+          font-size: 14px; 
+          font-weight: bold;
+        ">
+          ${firstLetter}
+        </div>
+      `;
+      }
   }
 
   getformanVal() {
@@ -270,14 +302,11 @@ export class ChitCreateComponent {
         this.subData = res;
         const newSubscriber = {
           subscriberId: this.subData.Subscriber.subscriberId,
-          profileImageUrl: this.subData.Subscriber.profileImageUrl,
-          aliasName: this.subData.Subscriber.lastName,
-          firstName: this.subData.Subscriber.firstName,
-          place: this.subData.Subscriber.routeId,
-          occupation: this.subData.Subscriber.occupation,
+          
           collectionType: this.collectionTypeForm.get('collectionType')?.value,
           subId: this.subData.Subscriber._id
         };
+        console.log("newsubscribers...",newSubscriber)
         if (
           chitSubscribers.some(
             (sub) => sub.subscriberId === newSubscriber.subscriberId
@@ -289,6 +318,7 @@ export class ChitCreateComponent {
           return;
         }
         chitSubscribers.push(newSubscriber);
+        console.log("chitsubbbbb",newSubscriber)
         this.chitGroupForm.patchValue({ chitSubscribers });
         this.chitSubscribersData = [...chitSubscribers];
         this.chitSubLength = this.chitSubscribersData.length;

@@ -891,6 +891,7 @@ export class AuctionComponent implements OnInit {
         walletBalance = response.data.TKNData.prizedAmount + response.data.TKNData.foremanCommision
         this.service.getTicketId(this.chitData.chitGroupId).subscribe((res) => {
           this.bidHistory = res.allData
+          console.log("bid history",res.allData)
           this.regularFirst = this.bidHistory?.length
 
           const firstAuction = this.bidHistory?.length || 0;

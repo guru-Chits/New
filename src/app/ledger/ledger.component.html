@@ -61,11 +61,16 @@
               </div>
               <!-- Toggle Details Button -->
               <div class="d-flex overlap-images" style="color:#50A1A5; cursor: pointer;"
-                (click)="getByGroupId(group.chitGroupId, i , group.chitSubscribers ,group.chitAmount)">
+                (click)="get_group_Details(group._id)">
+                Download
+              </div>
+              <div class="d-flex overlap-images" style="color:#50A1A5; cursor: pointer;"
+                (click)="getByGroupId(group.chitGroupId, i , group.chitSubscribers ,group.chitAmount,group._id)">
                 View Details
                 <img *ngIf="selectedIndex != i" class="ms-4" src="assets/subscriber/down arrow.svg">
                 <img *ngIf="selectedIndex === i " class="ms-4" src="assets/subscriber/right arrow.svg" alt="">
               </div>
+             
             </div>
             <div class="row d-flex" *ngIf="selectedIndex === i && groupPaymentData">
               <div class="d-flex">
@@ -97,7 +102,7 @@
               <div class="row mb-2 ms-3">
                 <div class="col-md-3 ">
                   <span class="fw-bold">Name</span>
-                  <p>{{ payment.firstName }}</p>
+                  <p>{{ payment?.subscriberDetails?.firstName }}</p>
                 </div>
 
                 <div class="col-md-3">
@@ -106,11 +111,11 @@
                 </div>
                 <div class="col-md-3">
                   <span class="fw-bold">Alias Name</span>
-                  <p>{{ payment.aliasName }}</p>
+                  <p>{{ payment?.subscriberDetails?.aliasName }}</p>
                 </div>
                 <div class="col-md-3">
                   <span class="fw-bold">Region</span>
-                  <p>{{ payment.place }}</p>
+                  <p>{{ payment?.subscriberDetails.place }}</p>
                 </div>
               </div>
               <div class="row mb-3 ps-2 d-flex justify-content-around">

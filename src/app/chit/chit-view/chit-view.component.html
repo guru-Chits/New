@@ -313,11 +313,21 @@
                     <div class="mb-2">
                         <!-- <button class="btn clear-btn"  (click)="addToGroup(subscriberDetail.Subscriber._id)">Add to Group</button> <td>{{subscriberDetail.Subscriber.aliasName}} </td> -->
                         <div class=" d-flex justify-content-center">
-                            <div class="me-1">
+                            <!-- <div class="me-1">
                                 <button type="button" class="btn view-btn-red"
                                     (click)="removeSubscriber(filteredSubscribers[0]?.subscriberId)" *ngIf="canCreate">Remove from
-                                    Group</button><!--(click)="navigate(specificChitData?._id)"-->
-                            </div>
+                                    Group</button>
+                            </div> -->
+                            <div class="me-1">
+                                <button type="button" class="btn view-btn-red"
+                                  (click)="removeSubscriber(filteredSubscribers[0]?.subscriberId)" 
+                                  *ngIf="canCreate && filteredSubscribers[0]?.subscriberId && filteredSubscribers[0]?.auctionStatus !== 'Prized'">
+                                  Remove from Group
+                                </button>
+                              </div>
+                              
+
+                              
                             <div class="ms-1">
                                 <button type="button" class="btn view-btn px-4"
                                     (click)="closeTicket('close')">Cancel</button>

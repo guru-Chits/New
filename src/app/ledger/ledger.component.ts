@@ -44,6 +44,7 @@ export class LedgerComponent implements OnInit {
   groupSurplus:number
   selectedSub:string | null = null;
   chitAmount:any
+  ledgerReport:any
   constructor(private fb:FormBuilder, private chitService:ChitService, private paymentService:PaymentService,    private datePipe: DatePipe,
   ){}
 ngOnInit(): void {
@@ -89,6 +90,7 @@ ngOnInit(): void {
     });
     const filteredGroups = await Promise.all(filteredPromises);
     this.displayedChit = filteredGroups.filter((group) => group !== null);
+    console.log("displayedChitttttttttt",this.displayedChit)
     
      this.totalPages = Math.ceil(this.displayedChit.length / this.itemsPerPage);
      this.calculateTotal().then(() => {
@@ -265,7 +267,53 @@ this.calculateTotal().then(() => {
 });
 }
 
+get_group_Details(chitgroup_id: any){
+    console.log("groupiddddd",chitgroup_id)
+    this.chitService.getChitById(chitgroup_id).subscribe(data =>{
+      console.log("dataaaa",data)
+      this.downloadCSV(data);
+    })
+
+  }
+
+  downloadCSV(data: any) {
+    // Extract the required fields
+    const selectedData = data.ChitsGroup.chitSubscribers.map((subscriber: any) => {
+      return {
+        chitGroupId: data.ChitsGroup.chitGroupId,
+        subscriberId: subscriber.subId,
+        subscriberName: subscriber.subscriberDetails.firstName,
+        phoneNo: subscriber.subscriberDetails.contact,
+        collectionType: subscriber.collectionType,
+        route: subscriber.subscriberDetails.routeId,
+        prizedType: subscriber.auctionStatus
+      };
+    });
+    
+
+    // Convert to CSV format
+    const csvHeader = "ChitGroupId,SubscriberId,SubscriberName,PhoneNo,CollectionType,Route,PrizedType \n";
+    const csvRows = selectedData.map(row =>
+      `${row.chitGroupId},${row.subscriberId},${row.subscriberName},${row.phoneNo},${row.collectionType},${row.route},${row.prizedType}`
+    ).join("\n");
+
+    
+    const csvContent = csvHeader + csvRows;
+    
+    // Create a Blob and trigger download
+    const blob = new Blob([csvContent], { type: "text/csv" });
+    const url = URL.createObjectURL(blob);
+    
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "chit_group_report.csv";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  }
+
   async getByGroupId(groupId: string, index: any, chitSubscribers: any[] ,chitAmount:number) {
+  
   this.adjustedAmount = await this.calculateChitAmount(chitAmount, groupId);
   this.totalAmount=this.adjustedAmount/20 *chitSubscribers.length
   

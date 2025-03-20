@@ -321,6 +321,7 @@ export class PaymentsComponent implements OnInit {
     this.chitService.getByPassbooNo(passbooknumber).subscribe(data => {
       if (data) {
         this.subDetail = data;
+       
         let chitAmount = this.subDetail.chitAmount;
 
         // if(this.chitAmount){
@@ -368,9 +369,10 @@ export class PaymentsComponent implements OnInit {
             }
 
             const subscriberDetails = this.subDetail.subscriberDetails;
+            console.log("patch subscriberDetails",subscriberDetails)
 
             let receiptNo = this.formatSerialNumber(receiptNoo);
-            this.receiptNo = `${subscriberDetails.passbookNo}-${receiptNo}`;
+            this.receiptNo = `${subscriberDetails.subscriberDetails.passbookNo}-${receiptNo}`;
             console.log("rrreeeeNo353",this.receiptNo)
 
             let receiptNumber2 = '';
@@ -386,11 +388,11 @@ export class PaymentsComponent implements OnInit {
             }
             this.paymentForm.patchValue({
               groupId: this.subDetail.chitGroupId,
-              subscriberId: subscriberDetails.subscriberId,
-              subscriberName: subscriberDetails.firstName,
-              collectionType: subscriberDetails.collectionType,
+              subscriberId: subscriberDetails.subscriberDetails.subscriberId,
+              subscriberName: subscriberDetails.fullDetails.firstName,
+              collectionType: subscriberDetails.subscriberDetails.collectionType,
               installmentMonth: nextInstallmentMonth,
-              region: subscriberDetails.place,
+              region: subscriberDetails.fullDetails.routeId,
               chitAmount: this.subDetail.chitAmount,
               serialNumber: serialNumber,
               receiptNumber: this.receiptNo

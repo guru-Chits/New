@@ -21,13 +21,13 @@ import { ChangeDetectorRef } from '@angular/core';
   styleUrl: './dashboard.component.css'
 })
 
-export class DashboardComponent implements OnInit{
+export class DashboardComponent implements OnInit {
   filterForm: FormGroup;
   filteredRecords = [];
   amounts: any;
-  Allamount : any[] = []
+  Allamount: any[] = []
   highcharts = Highcharts;
-  chartOptions: Highcharts.Options = {}; 
+  chartOptions: Highcharts.Options = {};
   auctions: any
   chitdata: any;
   subs_totalCount: number
@@ -36,7 +36,7 @@ export class DashboardComponent implements OnInit{
   staff_totalCount: number
   chit_total: number
   routeData: any
-  routeList : any[] = []
+  routeList: any[] = []
   auction_completed: any
   upcoming_auctions: any
   routeId: any;
@@ -45,13 +45,13 @@ export class DashboardComponent implements OnInit{
   showGroups: boolean = false
   displayedAuctions: any
 
-  constructor(private fb: FormBuilder, private payment_service:PaymentService, private route_service: AreaService, private chit_service: ChitService, private router: Router, private sub_service:SubscriberService, private staff_service:StaffService, private cdr: ChangeDetectorRef) {
-   }
+  constructor(private fb: FormBuilder, private payment_service: PaymentService, private route_service: AreaService, private chit_service: ChitService, private router: Router, private sub_service: SubscriberService, private staff_service: StaffService, private cdr: ChangeDetectorRef) {
+  }
   ngOnInit() {
-    
+
     this.filterForm = this.fb.group({
       date: [''],
-      route: [''], 
+      route: [''],
     });
     const yesterday = this.getYesterdayDate();
     this.filterForm.patchValue({ date: yesterday });
@@ -88,16 +88,16 @@ export class DashboardComponent implements OnInit{
         title: { text: 'Payments Done' },
         subtitle: { text: 'By Subscribers' },
         xAxis: { categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'] },
-        yAxis: { title: { text: 'Total Amount' }, min: 0},
+        yAxis: { title: { text: 'Total Amount' }, min: 0 },
         series: this.Allamount.map((item) => ({
           type: 'line',
           name: item.year.toString(),
           data: item.amount
         }))
       };
-        // Manually trigger the chart rendering
+      // Manually trigger the chart rendering
       Highcharts.chart('chartContainer', this.chartOptions);
-        // Trigger Angular change detection to update the UI
+      // Trigger Angular change detection to update the UI
       this.cdr.detectChanges();
     });
     this.sub_service.getsubscriberAll().subscribe((data) => {
@@ -114,11 +114,11 @@ export class DashboardComponent implements OnInit{
 
       this.chit_total = this.chitdata.length
     });
-    this.route_service.getrouteAll().subscribe((data)=>{
-      this.routeData=data;
+    this.route_service.getrouteAll().subscribe((data) => {
+      this.routeData = data;
       this.routeList = this.routeData.AllRoute.map((route: any) => ({
-        id: route._id, 
-        routeId: route.routeId 
+        id: route._id,
+        routeId: route.routeId
       }));
     });
     this.payment_service.getPaymentByMonth().subscribe((data) => {
@@ -129,12 +129,12 @@ export class DashboardComponent implements OnInit{
     });
     this.payment_service.getPaymentByDate().subscribe((data) => {
       this.transactiondata = data;
-      this.transfilterData =  this.transactiondata.map((transaction: any) => ({
+      this.transfilterData = this.transactiondata.map((transaction: any) => ({
         name: transaction.subscriberName,
         passbook: transaction.passbooknumber,
         groupId: transaction.groupId,
         amount: transaction.amount,
-        date:  new Date(transaction.createdAt).toISOString().split('T')[0],
+        date: new Date(transaction.createdAt).toISOString().split('T')[0],
         route: transaction.region
       }));
       this.filterRecords();
@@ -156,13 +156,13 @@ export class DashboardComponent implements OnInit{
 
   filterRecords(): void {
     const { date, route } = this.filterForm.value;
-  
+
     this.filteredRecords = this.transfilterData.filter((data) => {
       const matchesDate = date ? data.date === date : true;
       const matchesRoute = route ? data.route === route : true;
       return matchesDate && matchesRoute;
     });
-  
+
   }
 
   profileImageWithIdRenderer(params: any): string {

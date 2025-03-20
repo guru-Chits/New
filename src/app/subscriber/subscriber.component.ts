@@ -38,7 +38,7 @@ export class SubscriberComponent {
   constructor(
     private service: SubscriberService,
     private router: Router,
-    private authService: AuthService
+    private authService: AuthService,
   ) { }
 
   ngOnInit(): void {
@@ -86,7 +86,9 @@ export class SubscriberComponent {
 
       }))
     })
-
+    this.service.getAllChit().subscribe(data =>{
+      console.log("chit group details",data)
+    })
 
 
   }

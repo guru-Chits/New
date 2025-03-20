@@ -775,9 +775,11 @@ column: ITableColumn[] = [
   edit(passbookNo: string) {
     this.service.getByPassbooNo(passbookNo).subscribe((data: any) => {
       const editSubscriber = data;
+      console.log("editsubscriber",editSubscriber)
       editSubscriber.subscriberDetails.collectionType = this.collectionTypeForm.get('collectionType').value;
       this.service.updateSubscriber(editSubscriber.chitGroupId, passbookNo, editSubscriber.subscriberDetails).subscribe(
         (response: any) => {
+          console.log("response",response)
           this.showTicket = false;
           this.activatedRoute?.params.subscribe(paramData => {
             if (Object.keys(paramData).length) {

@@ -282,19 +282,19 @@ get_group_Details(chitgroup_id: any){
       return {
         chitGroupId: data.ChitsGroup.chitGroupId,
         subscriberId: subscriber.subId,
-        subscriberName: subscriber.subscriberDetails.firstName,
+        subscriberName: `${subscriber.subscriberDetails.firstName} ${subscriber.subscriberDetails.lastName} ${subscriber.subscriberDetails.aliasName}`,
         phoneNo: subscriber.subscriberDetails.contact,
         collectionType: subscriber.collectionType,
         route: subscriber.subscriberDetails.routeId,
-        prizedType: subscriber.auctionStatus
+        // prizedType: subscriber.auctionStatus
       };
     });
     
 
     // Convert to CSV format
-    const csvHeader = "ChitGroupId,SubscriberId,SubscriberName,PhoneNo,CollectionType,Route,PrizedType \n";
+    const csvHeader = "ChitGroupId,SubscriberId,SubscriberName,PhoneNo,CollectionType,Route \n";
     const csvRows = selectedData.map(row =>
-      `${row.chitGroupId},${row.subscriberId},${row.subscriberName},${row.phoneNo},${row.collectionType},${row.route},${row.prizedType}`
+      `${row.chitGroupId},${row.subscriberId},${row.subscriberName},${row.phoneNo},${row.collectionType},${row.route}`
     ).join("\n");
 
     

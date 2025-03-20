@@ -35,6 +35,7 @@ export class SubscriberViewComponent implements OnInit {
   showAll = false;
   paymentHistoryToggled: boolean[] = [];
   canEdit = false
+  canDelete = false
   aucData: any
   // canView: boolean = true
   totalAmountOutstanding: number = 0
@@ -50,6 +51,12 @@ export class SubscriberViewComponent implements OnInit {
         this.canEdit = true
       }
     });
+    this.authService.checkAccess('Subscriber Management', 'Delete').subscribe((hasAccess: boolean) => {
+      if (hasAccess) {
+        this.canDelete = true
+      }
+    });
+
     this.activatedRoute.params.subscribe(paramData => {
       if (Object.keys(paramData).length) {
         this.service.getsubscriberById(paramData.id).subscribe((data) => {
@@ -238,6 +245,12 @@ export class SubscriberViewComponent implements OnInit {
       this.router.navigate([`subscriber/edit/${id}`]);
     }
   }
+  delete(id: any){
+    if(this.canDelete){
+      console.log("deleted id",id)
+     this.router.navigate([`subscriber/view/${id}`])
+    }
+  }
 
   formatDate(dateString: string): string {
     const date = new Date(dateString);
@@ -261,6 +274,7 @@ export class SubscriberViewComponent implements OnInit {
     console.log("iddddddddd",id)
     this.router.navigate([`subscriber/view/${id}`]);
   }
+  
   getFirstLetter(name: string): string {
     return name ? name.charAt(0).toUpperCase() : '';
   }

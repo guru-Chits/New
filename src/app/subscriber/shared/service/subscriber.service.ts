@@ -24,7 +24,10 @@ export class SubscriberService {
     let url = `${environment.subscriberServiceUrl}/chitgroup/getBySubscriberId/${subscriberId}`;
     return this.http.get(url)
   }
-
+  getAllChit(){
+    let url = `${environment.subscriberServiceUrl}/chitgroup/getAllChitGroup`;
+    return this.http.get(url)
+  }
 
   savesubscriberDetails(body: any, id?: string): Observable<any>{
     let savesubscribeUrl: string = `${environment.subscriberServiceUrl}/subscriber/addSubscriber`

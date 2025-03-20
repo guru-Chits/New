@@ -286,18 +286,19 @@ export class AuctionComponent implements OnInit {
           })
 
           this.subscribers = this.chitData.chitSubscribers;
+          console.log("thissssssssss.subscribers",this.subscribers)
           this.subCount = this.subscribers.length
 
 
           // You can also store these values in separate arrays if needed
           this.subscribers = this.subscribers.map(subscriber => ({
-            aliasName: subscriber.aliasName,
-            firstName: subscriber.firstName,
+            aliasName: subscriber.subscriberDetails.aliasName,
+            firstName: subscriber.subscriberDetails.firstName,
             passbookNo: subscriber.passbookNo,
-            place: subscriber.place,
-            occupation: subscriber.occupation,
+            place: subscriber.subscriberDetails.place,
+            occupation: subscriber.subscriberDetails.occupation,
             subscriberId: subscriber.subscriberId,
-            profileImageUrl: subscriber.profileImageUrl
+            profileImageUrl: subscriber.subscriberDetails.profileImageUrl
           }));
 
 
@@ -569,9 +570,10 @@ export class AuctionComponent implements OnInit {
     if (passbookNumber && groupId) {
       this.service.getByPassbooNo(passbookNumber).subscribe((details: SubscriberDetails) => {
         this.subDetails = details
+        console.log("SUBDETAILS",this.subDetails)
 
         this.auctionForm.patchValue({
-          subscriberName: `${this.subDetails.subscriberDetails.firstName} ${this.subDetails.subscriberDetails.aliasName}`,
+          subscriberName: `${this.subDetails.subscriberDetails.fullDetails.firstName} ${this.subDetails.subscriberDetails.fullDetails.aliasName}`,
           // passbookNumber: this.subDetails.chitDetails.passbookNo,
         });
       });
@@ -688,16 +690,16 @@ export class AuctionComponent implements OnInit {
         date: this.auctionForm.value.date,
         type: "Regular Chit",
         // ticketId:this.auctionForm.value.ticketId,
-        location: this.subDetails.subscriberDetails.place,
+        location: this.subDetails.subscriberDetails.subscriberDetails.place,
         occupation: this.subDetails.subscriberDetails.occupation,
         subscriberName: this.auctionForm.value.subscriberName,
         passbookNumber: this.auctionForm.value.passbookNumber,
 
       }
       var payload = this.auctionForm.value
-      payload.occpation = this.subDetails.subscriberDetails.occupation
+      payload.occpation = this.subDetails.subscriberDetails.subscriberDetails.occupation
 
-      payload.location = this.subDetails.subscriberDetails.place
+      payload.location = this.subDetails.subscriberDetails.subscriberDetails.place
     } else if (this.profitChit) {
       payload = {
         groupId: this.auctionForm.value.groupId,
@@ -712,8 +714,8 @@ export class AuctionComponent implements OnInit {
           walletBalance: this.auctionForm.value.walletBalance,
           date: this.auctionForm.value.date,
           type: "Profit Chit",
-          occupation: this.subDetails.subscriberDetails.occupation,
-          location: this.subDetails.subscriberDetails.place,
+          occupation: this.subDetails.subscriberDetails.subscriberDetails.occupation,
+          location: this.subDetails.subscriberDetails.subscriberDetails.place,
           auctionCycle: this.auctionForm.value.auctionCycle,
           subscriberName: this.auctionForm.value.subscriberName,
           passbookNumber: this.auctionForm.value.passbookNumber,
@@ -730,8 +732,8 @@ export class AuctionComponent implements OnInit {
           winningBid: this.auctionForm.value.winningBid,
           prizedAmount: this.auctionForm.value.prizedAmount,
           type: "Purchase",
-          occupation: this.subDetails.subscriberDetails.occupation,
-          location: this.subDetails.subscriberDetails.place,
+          occupation: this.subDetails.subscriberDetails.subscriberDetails.occupation,
+          location: this.subDetails.subscriberDetails.subscriberDetails.place,
           auctionCycle: this.auctionForm.value.auctionCycle,
           walletBalance: this.auctionForm.value.walletBalance,
           date: this.auctionForm.value.date,
@@ -752,8 +754,8 @@ export class AuctionComponent implements OnInit {
           prizedAmount: this.auctionForm.value.prizedAmount,
           subscriberName: this.auctionForm.value.subscriberName,
           auctionCycle: this.auctionForm.value.auctionCycle,
-          occupation: this.subDetails.subscriberDetails.occupation,
-          location: this.subDetails.subscriberDetails.place,
+          occupation: this.subDetails.subscriberDetails.subscriberDetails.occupation,
+          location: this.subDetails.subscriberDetails.subscriberDetails.place,
           walletBalance: this.auctionForm.value.walletBalance,
           date: this.auctionForm.value.date,
           type: "Extra Payments",

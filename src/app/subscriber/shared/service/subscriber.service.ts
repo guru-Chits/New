@@ -6,7 +6,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
   providedIn: 'root'
 })
 export class SubscriberService {
-  delete:string=environment.subscriberServiceUrl+'/subscriber/deleteSubscriber/666fe548e419feb9c05e422d'
+  deleteSubUrl:string=environment.subscriberServiceUrl+'/subscriber/deleteSubscriber'
   subscriberUrl:string=environment.subscriberServiceUrl+"/subscriber/getSubscriberDetails"
  
   constructor(private http:HttpClient) { }
@@ -14,7 +14,10 @@ export class SubscriberService {
   getsubscriberAll(){
     return this.http.get(this.subscriberUrl)
   }
-
+  deleteSubscriber(id: string){
+    let url=`${this.deleteSubUrl}/${id}`
+    return this.http.delete(url)
+  }
   getsubscriberById(id: string){
     let url = `${environment.subscriberServiceUrl}/subscriber/getSubscriberById/${id}`;
     return this.http.get(url)

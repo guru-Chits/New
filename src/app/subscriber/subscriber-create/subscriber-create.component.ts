@@ -12,9 +12,10 @@ import { AreaService } from '../../area/shared/service/area.service';
 })
 export class SubscriberCreateComponent implements OnInit {
   subscriberForm: FormGroup;
-  subscriberData: any = {}
-  subscriberId: string
-  subscriber: any = true
+  subscriberData: any = {};
+  subscriberId: string;
+  defaultsubID: string;
+  subscriber: any = true;
   profileImageUrl: string | ArrayBuffer | null = null;
   defaultImageUrl = 'assets/subscriber/user.svg'; // Path to default profile image
   private subscriberIdPrefix: string = 'KNG-C';
@@ -68,6 +69,7 @@ export class SubscriberCreateComponent implements OnInit {
   ngOnInit(): void {
     this.subscriberForm = this.fb.group({
       subscriberId: [{ value: '', disabled: true }],
+      // subscriberId: [''],
       firstName: ['', [Validators.required, Validators.pattern(/^[a-zA-Z ]*$/), Validators.maxLength(25), Validators.minLength(2)]],
       lastName: ['', [
         this.conditionalValidator(() => !!this.subscriberForm?.get('lastName')?.value, Validators.pattern(/^[a-zA-Z ]*$/)),
@@ -193,9 +195,36 @@ export class SubscriberCreateComponent implements OnInit {
     this.service.getsubscriberAll().subscribe((data) => {
       this.subscriberData = data;
       if (!this.subscriberId) {
-        this.subscriberIdCounter = this.subscriberData.AllSubscriber.length + 10001
-        this.setSubscriberId(this.subscriberIdCounter);
-      }
+        if (this.subscriberData.AllSubscriber.length === 0) {
+          this.defaultsubID = "10001"; // If no subscribers exist, start from 10001
+        } else {
+            // Get the last subscriber from the array
+            const lastSubscriber = this.subscriberData.AllSubscriber[this.subscriberData.AllSubscriber.length - 1];
+    
+            if (lastSubscriber && lastSubscriber.subscriberId) {
+                // Extract numeric part from subscriberId (Assuming format: "KNG-C10047")
+                const idParts = lastSubscriber.subscriberId.split("C");
+                const lastNumber = parseInt(idParts[1], 10); // Convert "10047" to number
+                
+                // Increment the number
+                this.subscriberIdCounter = (lastNumber + 1).toString();
+                console.log("new subid",this.subscriberIdCounter)
+            } else {
+                this.subscriberIdCounter = "10001"; // Default value if ID format is invalid
+            }
+        }
+    
+        // Format the new subscriber ID with prefix
+        this.defaultsubID= this.subscriberIdCounter;
+        
+        // Set the new subscriber ID
+        this.setSubscriberId(this.defaultsubID);
+    }
+    
+      // if (!this.subscriberId) {
+      //   this.subscriberIdCounter = this.subscriberData.AllSubscriber.length + 10001
+      //   this.setSubscriberId(this.subscriberIdCounter);
+      // }
 
       this.subscriberForm.get('firstName')?.valueChanges.subscribe(value => {
         this.autoCorrectNames();

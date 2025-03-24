@@ -30,6 +30,12 @@ const routes: Routes = [
     component: SubscriberCreateComponent,
     canActivate: [AuthGuard],
     data: { accKey: 'Subscriber Management', action: 'edit' }
+  },
+  {
+    path: 'delete/:id',
+    component: SubscriberCreateComponent,
+    canActivate: [AuthGuard],
+    data: { accKey: 'Subscriber Management', action: 'delete' }
   }
 ];
 

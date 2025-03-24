@@ -41,6 +41,7 @@ export class SubscriberViewComponent implements OnInit {
   totalAmountOutstanding: number = 0
   balance: number = 0
   groups: any
+  showPopup: any
   constructor(private service: SubscriberService, private authService: AuthService, private activatedRoute: ActivatedRoute, private router: Router, private chitService: ChitService, private paymentService: PaymentService, private datePipe: DatePipe,
   ) { }
 
@@ -51,7 +52,7 @@ export class SubscriberViewComponent implements OnInit {
         this.canEdit = true
       }
     });
-    this.authService.checkAccess('Subscriber Management', 'Delete').subscribe((hasAccess: boolean) => {
+    this.authService.checkAccess('Subscriber Management', 'delete').subscribe((hasAccess: boolean) => {
       if (hasAccess) {
         this.canDelete = true
       }
@@ -245,12 +246,22 @@ export class SubscriberViewComponent implements OnInit {
       this.router.navigate([`subscriber/edit/${id}`]);
     }
   }
-  delete(id: any){
-    if(this.canDelete){
-      console.log("deleted id",id)
-     this.router.navigate([`subscriber/view/${id}`])
+  delete(id: any) {
+    console.log("Deleted ID:", id);
+    if (this.canDelete) {
+        console.log("Deleting ID:", id);
+        this.service.deleteSubscriber(id).subscribe({
+            next: (response: any) => {
+                window.alert(response.message);  // Show API message in a popup
+                this.router.navigate(['/subscriber']); // Redirect after deletion
+            },
+            error: (error: any) => {
+                window.alert(error.error.message); // Show error response in a popup
+            }
+        });
     }
-  }
+}
+
 
   formatDate(dateString: string): string {
     const date = new Date(dateString);

@@ -24,7 +24,7 @@ export class SubscriberComponent {
   data: any[] = [];
   // count: number = 0
   chitGroups: any
-  selectedId: any
+  selectedId: string
   subscriberDetail: any
   totalCount: number;
   searchImg: string = 'assets/table/search.svg'

@@ -154,6 +154,7 @@ column: ITableColumn[] = [
             this.bidHistory=res.allData
             this.auctionCycle=res.auctionCycle
             this.prizedSub=this.bidHistory?.length
+            console.log("bid history data",res.allData)
             this.bidHistory = res.allData.map((history, index) => ({
               sNo: index + 1, // Use the index parameter and add 1 for serial number
               passbookNumber: history.passbookNumber,

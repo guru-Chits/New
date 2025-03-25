@@ -690,16 +690,16 @@ export class AuctionComponent implements OnInit {
         date: this.auctionForm.value.date,
         type: "Regular Chit",
         // ticketId:this.auctionForm.value.ticketId,
-        location: this.subDetails.subscriberDetails.subscriberDetails.place,
+        location: this.subDetails.subscriberDetails.fullDetails.routeId,
         occupation: this.subDetails.subscriberDetails.occupation,
         subscriberName: this.auctionForm.value.subscriberName,
         passbookNumber: this.auctionForm.value.passbookNumber,
 
       }
       var payload = this.auctionForm.value
-      payload.occpation = this.subDetails.subscriberDetails.subscriberDetails.occupation
+      payload.occpation = this.subDetails.subscriberDetails.fullDetails.occupation
 
-      payload.location = this.subDetails.subscriberDetails.subscriberDetails.place
+      payload.location = this.subDetails.subscriberDetails.fullDetails.routeId
     } else if (this.profitChit) {
       payload = {
         groupId: this.auctionForm.value.groupId,
@@ -714,8 +714,8 @@ export class AuctionComponent implements OnInit {
           walletBalance: this.auctionForm.value.walletBalance,
           date: this.auctionForm.value.date,
           type: "Profit Chit",
-          occupation: this.subDetails.subscriberDetails.subscriberDetails.occupation,
-          location: this.subDetails.subscriberDetails.subscriberDetails.place,
+          occupation: this.subDetails.subscriberDetails.fullDetails.occupation,
+          location: this.subDetails.subscriberDetails.fullDetails.routeId,
           auctionCycle: this.auctionForm.value.auctionCycle,
           subscriberName: this.auctionForm.value.subscriberName,
           passbookNumber: this.auctionForm.value.passbookNumber,
@@ -732,8 +732,8 @@ export class AuctionComponent implements OnInit {
           winningBid: this.auctionForm.value.winningBid,
           prizedAmount: this.auctionForm.value.prizedAmount,
           type: "Purchase",
-          occupation: this.subDetails.subscriberDetails.subscriberDetails.occupation,
-          location: this.subDetails.subscriberDetails.subscriberDetails.place,
+          occupation: this.subDetails.subscriberDetails.fullDetails.occupation,
+          location: this.subDetails.subscriberDetails.fullDetails.routeId,
           auctionCycle: this.auctionForm.value.auctionCycle,
           walletBalance: this.auctionForm.value.walletBalance,
           date: this.auctionForm.value.date,
@@ -754,8 +754,8 @@ export class AuctionComponent implements OnInit {
           prizedAmount: this.auctionForm.value.prizedAmount,
           subscriberName: this.auctionForm.value.subscriberName,
           auctionCycle: this.auctionForm.value.auctionCycle,
-          occupation: this.subDetails.subscriberDetails.subscriberDetails.occupation,
-          location: this.subDetails.subscriberDetails.subscriberDetails.place,
+          occupation: this.subDetails.subscriberDetails.fullDetails.occupation,
+          location: this.subDetails.subscriberDetails.fullDetails.routeId,
           walletBalance: this.auctionForm.value.walletBalance,
           date: this.auctionForm.value.date,
           type: "Extra Payments",

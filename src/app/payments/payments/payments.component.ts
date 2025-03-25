@@ -71,6 +71,7 @@ export class PaymentsComponent implements OnInit {
     const currentDate = new Date();
     this.today = currentDate.toISOString().split('T')[0];
   }
+  installAmount1: number
   installAmount: number
   installMonth: string
   ngOnInit(): void {
@@ -1076,13 +1077,14 @@ export class PaymentsComponent implements OnInit {
     if (this.balance) {
       const payload = this.paymentForm.value;
       this.installMonth = this.paymentForm.get('installmentMonth')?.value;
-      this.installAmount = this.amount;
+      this.installAmount = this.paymentForm.get('amount')?.value;
+      this.installAmount1 = this.amount;
 
       const installmentMonths = this.installMonth.split(',').map((month) => month.trim());
       installmentMonths.splice(0, 1);
       const chitAmount = this.chitValue;
       const baseAmount = Math.floor(chitAmount / 20);
-      const remainingAmount = this.installAmount - baseAmount * (installmentMonths.length - 1);
+      const remainingAmount = this.installAmount1 - baseAmount * (installmentMonths.length - 1);
       const adjustedMonths = [this.balanceMonth, ...installmentMonths];
       const sortedMonths = adjustedMonths.sort((a, b) => new Date(a).getTime() - new Date(b).getTime());
 

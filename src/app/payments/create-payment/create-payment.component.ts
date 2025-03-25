@@ -86,6 +86,7 @@ export class CreatePaymentComponent {
       let cancelledSno = 1;
 
       if (this.paymentData.AllPayment) {
+
         this.paymentData.AllPayment.forEach((paymentDetail) => {
           const formattedPayment = {
             id: paymentDetail?._id,

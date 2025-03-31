@@ -809,4 +809,7 @@ column: ITableColumn[] = [
     this.router.navigate([`subscriber/view/${id}`]);
 
   }
+  getFirstLetter(name: string): string {
+    return name ? name.charAt(0).toUpperCase() : '';
+  }
 }

@@ -173,7 +173,7 @@ export class ChitCreateComponent {
     //     <span style="color: #50A1A5;"></span>
     //   </div>
     // `;
-    const subscribeName = params.data.displayName
+    const subscribeName = params.data.firstName
     console.log("hjjjjjjjjjjjjjjjjjjjjj",subscribeName)
     const firstLetter = subscribeName.charAt(0).toUpperCase(); // Get first letter
     if (imageUrl) {
@@ -280,6 +280,7 @@ export class ChitCreateComponent {
         })
       );
       this.displayedSubscribers = this.data;
+      console.log("displayedSubscribersssssssssssss",this.displayedSubscribers)
     });
   }
 
@@ -300,9 +301,14 @@ export class ChitCreateComponent {
     this.subService.getsubscriberById(id).subscribe(
       (res) => {
         this.subData = res;
+        console.log("subData detailssssssssssssssss",this.subData)
         const newSubscriber = {
           subscriberId: this.subData.Subscriber.subscriberId,
-          
+          profileImageUrl: this.subData.Subscriber.profileImageUrl,
+          aliasName: this.subData.Subscriber.lastName,
+          firstName: this.subData.Subscriber.firstName,
+          place: this.subData.Subscriber.routeId,
+          occupation: this.subData.Subscriber.occupation,
           collectionType: this.collectionTypeForm.get('collectionType')?.value,
           subId: this.subData.Subscriber._id
         };
@@ -435,5 +441,8 @@ export class ChitCreateComponent {
     return this.chitSubscribersData.some(
       (chitSubscriber) => chitSubscriber.subscriberId === subscriberId
     );
+  }
+  getFirstLetter(name: string): string {
+    return name ? name.charAt(0).toUpperCase() : '';
   }
 }

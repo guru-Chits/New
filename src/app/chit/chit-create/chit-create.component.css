@@ -153,3 +153,24 @@ span {
     background-color: rgba(0, 0, 0, 0.1);
     opacity: 0.6;
 }
+.profile-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .profile-initial {
+    width: 75px;
+    height: 75px;
+    border-radius: 50%;
+    background-color: #007bff; /* Blue background */
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 30px;
+    font-weight: bold;
+    text-transform: uppercase;
+    border: 2px solid #ccc;
+  }
+  

@@ -91,7 +91,21 @@
                   <div class="card-body p-3">
                     <div class="row">
                       <div class="col-lg-3 col-md-3 pe-0">
-                        <img class="profile-list-img" src="{{subscriber.subscriberProfile}}">
+                        <div class="profile-container">
+                          <!-- If Profile Image Exists, Show Image -->
+                          <img *ngIf="subscriber.subscriberProfile" 
+                               [src]="subscriber.subscriberProfile" 
+                               class="rounded-circle align-self-center mb-2" 
+                               width="75" height="75" 
+                               alt="Subscriber Image">
+                        
+                          <!-- If No Image, Show First Letter in a Circle -->
+                          <div *ngIf="!subscriber.subscriberProfile" 
+                               class="profile-initial">
+                            {{ getFirstLetter(subscriber.subscriberName) }}
+                          </div>
+                        </div>
+                        <!-- <img class="profile-list-img" src="{{subscriber.subscriberProfile}}"> -->
                       </div>
                       <div class="col-lg-5 col-md-5 p-0">
                         <p class="id fw-bold mb-1">{{ subscriber.subscriberName }}</p>
@@ -106,7 +120,21 @@
                       class="subscriber-details">
                       <h5 class="title text-center fw-bold fs-4 my-4">Subscriber Details</h5>
                       <div class="text-center">
-                        <img src="{{subscriberDetail.Subscriber.profileImageUrl}}" style="height: 10px; width: 10px;" class="img-fluid rounded-circle pb-4"  alt="Subscriber Image">
+                        <div class="profile-container">
+                          <!-- If Profile Image Exists, Show Image -->
+                          <img *ngIf="subscriberDetail.Subscriber.profileImageUrl" 
+                               [src]="subscriberDetail.Subscriber.profileImageUrl" 
+                               class="rounded-circle align-self-center mb-2" 
+                               width="75" height="75" 
+                               alt="Subscriber Image">
+                        
+                          <!-- If No Image, Show First Letter in a Circle -->
+                          <div *ngIf="!subscriberDetail.Subscriber.profileImageUrl" 
+                               class="profile-initial">
+                            {{ getFirstLetter(subscriberDetail.Subscriber.firstName) }}
+                          </div>
+                        </div>
+                        <!-- <img src="{{subscriberDetail.Subscriber.profileImageUrl}}" style="height: 10px; width: 10px;" class="img-fluid rounded-circle pb-4"  alt="Subscriber Image"> -->
                       </div>
                       <table class="table px-3">
                         <tbody>

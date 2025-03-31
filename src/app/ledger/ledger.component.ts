@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
+import { ActivatedRoute, ResolveStart, Router } from '@angular/router';
 import { ChitService } from '../chit/shared/service/chit.service';
 import { PaymentService } from '../payments/shared/service/payment.service';
+import { SubscriberService } from '../subscriber/shared/service/subscriber.service';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 import { DatePipe } from '@angular/common';
@@ -44,15 +46,91 @@ export class LedgerComponent implements OnInit {
   groupSurplus:number
   selectedSub:string | null = null;
   chitAmount:any
-  ledgerReport:any
-  constructor(private fb:FormBuilder, private chitService:ChitService, private paymentService:PaymentService,    private datePipe: DatePipe,
+  ledgerReport:any;
+  groups: any;
+  balance: number = 0;
+  totalAmountOutstanding: number = 0
+  subscriberDetail: any;
+  subscriberId: string;
+  chitGroup:any;
+  constructor(private fb:FormBuilder, private chitService:ChitService, private paymentService:PaymentService,    private datePipe: DatePipe, private service:SubscriberService, private activatedRoute: ActivatedRoute
   ){}
+
 ngOnInit(): void {
   this.ledgerForm=this.fb.group({
     date:[this.getCurrentMonth()]
   })
   this.chosenDate=this.getCurrentMonth()
   console.log(this.chosenDate);
+
+  this.activatedRoute.params.subscribe(paramData => {
+      if (Object.keys(paramData).length) {
+        this.service.getsubscriberById(paramData.id).subscribe((data) => {
+          this.subscriberDetail = data;
+          this.subscriberId = this.subscriberDetail.Subscriber._id
+          this.service.getChitGroupById(this.subscriberDetail.Subscriber.subscriberId).subscribe(data => {
+            this.chitGroup = data;  // Array of chit groups
+            this.groups = this.chitGroup
+            this.chitGroup.forEach((group, index) => {
+              this.groups = group
+              this.chitService.getTicketId(group.chitGroupId).subscribe((acuData) => {
+                const auctionData = acuData.allData
+                const fistAuc = this.datePipe.transform(auctionData[0].date, 'yyyy-MM')
+                const lastAuc = this.datePipe.transform(auctionData[auctionData.length - 1].date, 'yyyy-MM')
+                console.log(group.passbookNo);
+                
+                this.paymentService.getTotalByGroupId(fistAuc, group.chitGroupId, group.passbookNo, lastAuc).subscribe((PayData) => {                  
+                  let toPay = (acuData.allData.length - acuData.profitCount) * group.chitAmount / 20                  
+                  let paid = PayData.totalSubPassbookNoAmount
+                  let balance = toPay - paid
+                  this.balance = balance
+                  this.chitGroup[index] = {
+                    ...this.chitGroup[index],
+                    balance: balance,
+                    winningBid: auctionData[auctionData.length - 1].winningBid,
+                    prizedAmount: auctionData[auctionData.length - 1].prizedAmount,
+                  };
+                  if (balance > 0) {
+                    this.totalAmountOutstanding += balance;
+                    console.log("totalAmountOutstanding.......",this.totalAmountOutstanding)
+
+                  }
+                })
+              })
+              this.chitService.getSubAuction(group.passbookNo).subscribe(response => {
+                if (response.subscriberAuc.passbookNumber) {
+                  this.chitGroup[index].chitAuc = response.subscriberAuc;
+                }
+                else if (response.subscriberAuc.profitChitData) {
+                  this.chitGroup[index].chitAuc = response.subscriberAuc.profitChitData;
+                } else if (response.subscriberAuc.TKNData) {
+                  if (response.subscriberAuc?.TKNData?.passbookNumber) {
+                    this.chitGroup[index].chitAuc = response.subscriberAuc.TKNData;
+                  }
+                } else if (response.subscriberAuc.extraPaymentData) {
+                  this.chitGroup[index].chitAuc = response.subscriberAuc.extraPaymentData;
+                } else if (response.subscriberAuc.passbookNumber) {
+                  this.chitGroup[index].chitAuc = response.subscriberAuc;
+                }
+              });
+            });
+          });
+        })
+
+        this.breadcrumsData = [
+          {
+            key: 'Subscriber Management',
+            routerLink: '/subscriber',
+          },
+          {
+            key: 'Subscriber Details',
+            routerLink: `subscriber/view/${paramData.id}`,
+          },
+        ];
+      }
+    })
+ 
+
 
   this.chitService.getAllChit().subscribe(async (data) => {
     this.chitdata = data;
@@ -281,20 +359,22 @@ get_group_Details(chitgroup_id: any){
     const selectedData = data.ChitsGroup.chitSubscribers.map((subscriber: any) => {
       return {
         chitGroupId: data.ChitsGroup.chitGroupId,
-        subscriberId: subscriber.subId,
+        subscriberId: subscriber.subscriberDetails.subscriberId,
         subscriberName: `${subscriber.subscriberDetails.firstName} ${subscriber.subscriberDetails.lastName} ${subscriber.subscriberDetails.aliasName}`,
         phoneNo: subscriber.subscriberDetails.contact,
         collectionType: subscriber.collectionType,
         route: subscriber.subscriberDetails.routeId,
-        // prizedType: subscriber.auctionStatus
+        prizedType: subscriber.prizedStatus,
+        auctionCycle:subscriber.auctionCycle
+
       };
     });
     
 
     // Convert to CSV format
-    const csvHeader = "ChitGroupId,SubscriberId,SubscriberName,PhoneNo,CollectionType,Route \n";
+    const csvHeader = "ChitGroupId,SubscriberId,SubscriberName,PhoneNo,CollectionType,Route,PrizedType,AuctionCycle \n";
     const csvRows = selectedData.map(row =>
-      `${row.chitGroupId},${row.subscriberId},${row.subscriberName},${row.phoneNo},${row.collectionType},${row.route}`
+      `${row.chitGroupId},${row.subscriberId},${row.subscriberName},${row.phoneNo},${row.collectionType},${row.route},${row.prizedType},${row.auctionCycle}`
     ).join("\n");
 
     

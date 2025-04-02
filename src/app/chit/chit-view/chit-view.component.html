@@ -5,8 +5,9 @@
                 <div class="col-lg-12 d-flex justify-content-between py-3">
                     <app-breadcrumb [data]="breadcrumsData"></app-breadcrumb>
                     <button class="btn next-btn px-4 py-3 fw-bold"  (click)="auctionEntry(chitData?._id)"
-                        *ngIf="canCreate&&chitData.chitSubscribers.length >= 20">Auction Entry</button>
+                    *ngIf="canCreate && chitData?.chitSubscribers.length >= 20" >Auction Entry</button>
                 </div>
+                <!-- *ngIf="canCreate&&chitData.chitSubscribers.length >= 20" -->
             </div>
             <div class="card py-3  px-4">
                 <div class="row pb-5">

@@ -197,13 +197,18 @@ export class AuctionComponent implements OnInit {
             }
 
             if (this.regularFirst) {
+              console.log("chit dataaaaa",this.chitData.auctionDate)
               this.auctionForm.patchValue({
-                date: this.convertDateFormat(this.chitData.auctionDate)
+                date: this.convertDateFormat(this.datePipe.transform(this.chitData.auctionDate,'dd-MM-yyyy'))
               })
+              console.log("date",this.convertDateFormat(this.datePipe.transform(this.chitData.auctionDate,'dd-MM-yyyy'))
+            )
+              
             } else if (this.noReg && !this.regularFirst || this.tknMonth) {
               this.auctionForm.patchValue({
                 date: this.convertDateFormat(this.datePipe.transform(res.lastChit.date, 'dd-MM-yyyy'))
               })
+
             }
             else if (!this.noReg && !this.regularFirst || !this.tknMonth) {
               let date = res.regular[res.regular.length - 1].date
@@ -301,7 +306,7 @@ export class AuctionComponent implements OnInit {
             profileImageUrl: subscriber.subscriberDetails.profileImageUrl
           }));
 
-
+          console.log("updated subscribers",this.subscribers)
           this.autofillForm();
         });
       }

@@ -221,9 +221,25 @@
             <tbody>
               <tr *ngFor="let subscriber of subscribers ; let i = index"
                 [ngClass]="getRowClass(subscriber?.passbookNo)">
-                <td class=" d-flex justify-content-center align-items-center" style="height: 51px;">{{i+1}} <img [src]="subscriber?.profileImageUrl" alt="Profile Image"
-                    class="profile-image ms-3">
+                <td class="ms-3">
+                  {{ i+1 }}
+                  <div class="profile-container">
+                    <img *ngIf="subscriber?.profileImageUrl; else noImage"
+                         [src]="subscriber?.profileImageUrl"
+                         alt="Profile Image"
+                         class="profile-image">
+                
+                    <!-- Show First Letter If Image is Missing -->
+                    <ng-template #noImage>
+                      <div class="profile-placeholder">
+                        {{ subscriber?.firstName?.charAt(0) | uppercase }}
+                      </div>
+                    </ng-template>
+                  </div>
                 </td>
+                <!-- <td class=" d-flex justify-content-center align-items-center" style="height: 51px;">{{i+1}} <img [src]="subscriber?.profileImageUrl" alt="Profile Image"
+                    class="profile-image ms-3">
+                </td> -->
                 <td>{{ subscriber?.aliasName }}</td>
                 <td>{{ subscriber?.firstName }}</td>
                 <td>{{ subscriber?.passbookNo }}</td>

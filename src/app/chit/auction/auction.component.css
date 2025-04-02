@@ -262,3 +262,44 @@ input::placeholder {
 .form-control.ng-invalid.ng-touched {
   border-color: red;
 }
+.profile-image {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+/* Profile Placeholder Styles */
+.profile-placeholder {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background-color: #007bff; /* Blue color */
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 14px;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+.profile-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.profile-initial {
+  width: 75px;
+  height: 75px;
+  border-radius: 50%;
+  background-color: #007bff; /* Blue background */
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 30px;
+  font-weight: bold;
+  text-transform: uppercase;
+  border: 2px solid #ccc;
+}

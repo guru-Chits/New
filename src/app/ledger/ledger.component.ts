@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { ActivatedRoute, ResolveStart, Router } from '@angular/router';
+// import { ActivatedRoute, ResolveStart, Router } from '@angular/router';
 import { ChitService } from '../chit/shared/service/chit.service';
 import { PaymentService } from '../payments/shared/service/payment.service';
 import { SubscriberService } from '../subscriber/shared/service/subscriber.service';
@@ -53,7 +53,7 @@ export class LedgerComponent implements OnInit {
   subscriberDetail: any;
   subscriberId: string;
   chitGroup:any;
-  constructor(private fb:FormBuilder, private chitService:ChitService, private paymentService:PaymentService,    private datePipe: DatePipe, private service:SubscriberService, private activatedRoute: ActivatedRoute
+  constructor(private fb:FormBuilder, private chitService:ChitService, private paymentService:PaymentService,    private datePipe: DatePipe, private service:SubscriberService,
   ){}
 
 ngOnInit(): void {
@@ -62,74 +62,6 @@ ngOnInit(): void {
   })
   this.chosenDate=this.getCurrentMonth()
   console.log(this.chosenDate);
-
-  this.activatedRoute.params.subscribe(paramData => {
-      if (Object.keys(paramData).length) {
-        this.service.getsubscriberById(paramData.id).subscribe((data) => {
-          this.subscriberDetail = data;
-          this.subscriberId = this.subscriberDetail.Subscriber._id
-          this.service.getChitGroupById(this.subscriberDetail.Subscriber.subscriberId).subscribe(data => {
-            this.chitGroup = data;  // Array of chit groups
-            this.groups = this.chitGroup
-            this.chitGroup.forEach((group, index) => {
-              this.groups = group
-              this.chitService.getTicketId(group.chitGroupId).subscribe((acuData) => {
-                const auctionData = acuData.allData
-                const fistAuc = this.datePipe.transform(auctionData[0].date, 'yyyy-MM')
-                const lastAuc = this.datePipe.transform(auctionData[auctionData.length - 1].date, 'yyyy-MM')
-                console.log(group.passbookNo);
-                
-                this.paymentService.getTotalByGroupId(fistAuc, group.chitGroupId, group.passbookNo, lastAuc).subscribe((PayData) => {                  
-                  let toPay = (acuData.allData.length - acuData.profitCount) * group.chitAmount / 20                  
-                  let paid = PayData.totalSubPassbookNoAmount
-                  let balance = toPay - paid
-                  this.balance = balance
-                  this.chitGroup[index] = {
-                    ...this.chitGroup[index],
-                    balance: balance,
-                    winningBid: auctionData[auctionData.length - 1].winningBid,
-                    prizedAmount: auctionData[auctionData.length - 1].prizedAmount,
-                  };
-                  if (balance > 0) {
-                    this.totalAmountOutstanding += balance;
-                    console.log("totalAmountOutstanding.......",this.totalAmountOutstanding)
-
-                  }
-                })
-              })
-              this.chitService.getSubAuction(group.passbookNo).subscribe(response => {
-                if (response.subscriberAuc.passbookNumber) {
-                  this.chitGroup[index].chitAuc = response.subscriberAuc;
-                }
-                else if (response.subscriberAuc.profitChitData) {
-                  this.chitGroup[index].chitAuc = response.subscriberAuc.profitChitData;
-                } else if (response.subscriberAuc.TKNData) {
-                  if (response.subscriberAuc?.TKNData?.passbookNumber) {
-                    this.chitGroup[index].chitAuc = response.subscriberAuc.TKNData;
-                  }
-                } else if (response.subscriberAuc.extraPaymentData) {
-                  this.chitGroup[index].chitAuc = response.subscriberAuc.extraPaymentData;
-                } else if (response.subscriberAuc.passbookNumber) {
-                  this.chitGroup[index].chitAuc = response.subscriberAuc;
-                }
-              });
-            });
-          });
-        })
-
-        this.breadcrumsData = [
-          {
-            key: 'Subscriber Management',
-            routerLink: '/subscriber',
-          },
-          {
-            key: 'Subscriber Details',
-            routerLink: `subscriber/view/${paramData.id}`,
-          },
-        ];
-      }
-    })
- 
 
 
   this.chitService.getAllChit().subscribe(async (data) => {
@@ -345,8 +277,75 @@ this.calculateTotal().then(() => {
 });
 }
 
-get_group_Details(chitgroup_id: any){
+get_group_Details(chitgroup_id: any,chitGroupId:any,chitAmount:any){
     console.log("groupiddddd",chitgroup_id)
+    console.log("chitAmount",chitAmount)
+    // this.chitService.getTicketId(chitGroupId).subscribe((acuData) => {
+    //   const auctionData = acuData.allData
+    //   console.log("alllll details",auctionData);
+
+    //   const fistAuc = this.datePipe.transform(auctionData[0].date, 'yyyy-MM')
+    //   const lastAuc = this.datePipe.transform(auctionData[auctionData.length - 1].date, 'yyyy-MM')
+    //   console.log("alllll de",auctionData);
+      
+    //   this.paymentService.getTotalByGroupId(fistAuc, chitGroupId, passbookNo, lastAuc).subscribe((PayData) => {                  
+    //     let toPay = (acuData.allData.length - acuData.profitCount) * chitAmount / 20  
+    //     console.log("toPay",toPay)                
+    //     let paid = PayData.totalSubPassbookNoAmount
+    //     console.log("paid",paid)
+    //     let balance = toPay - paid
+    //     this.balance = balance
+    //     console.log("balance",this.balance)
+    //     // this.chitGroup[index] = {
+    //     //   ...this.chitGroup[index],
+    //     //   balance: balance,
+    //     //   winningBid: auctionData[auctionData.length - 1].winningBid,
+    //     //   prizedAmount: auctionData[auctionData.length - 1].prizedAmount,
+    //     // };
+    //     if (balance > 0) {
+    //       this.totalAmountOutstanding += balance;
+    //       console.log("totalAmountOutstanding.......",this.totalAmountOutstanding)
+
+    //     }
+    //   })
+    // })
+    this.chitService.getTicketId(chitGroupId).subscribe((acuData) => {
+      const auctionData = acuData.allData;
+      console.log("All auction details:", auctionData);
+    
+      const firstAuc = this.datePipe.transform(auctionData[0].date, 'yyyy-MM');
+      const lastAuc = this.datePipe.transform(auctionData[auctionData.length - 1].date, 'yyyy-MM');
+    
+      const passbookGroups = auctionData.reduce((acc, item) => {
+        if (!acc[item.passbookNumber]) acc[item.passbookNumber] = [];
+        acc[item.passbookNumber].push(item);
+        return acc;
+      }, {});
+    
+      console.log("Grouped by passbook:", passbookGroups);
+    
+      this.totalAmountOutstanding = 0; // Reset before calculation
+    
+      Object.keys(passbookGroups).forEach((passbookNumber) => {
+        const passbookData = passbookGroups[passbookNumber];
+        
+        // Calculate toPay for this passbook
+        let toPay = (passbookData.length - acuData.profitCount) * chitAmount / 20;
+        console.log("topay",toPay)
+        // Fetch total paid amount for this passbook
+        this.paymentService.getTotalByGroupId(firstAuc, chitGroupId, passbookNumber, lastAuc).subscribe((PayData) => {
+          let paid = PayData.totalSubPassbookNoAmount || 0;
+          let balance = toPay - paid;
+          console.log("balance",balance)
+          console.log(`Passbook No: ${passbookNumber}, To Pay: ${toPay}, Paid: ${paid}, Balance: ${balance}`);
+    
+          this.chitGroup = this.chitGroup.map((group) =>
+            group.passbookNo === passbookNumber ? { ...group, balance } : group
+          );
+        });
+      });
+    });
+    
     this.chitService.getChitById(chitgroup_id).subscribe(data =>{
       console.log("dataaaa",data)
       this.downloadCSV(data);

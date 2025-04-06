@@ -629,22 +629,25 @@ column: ITableColumn[] = [
 
   removeSubscriber(subId: string) {
     let chitgroupId = this.chitData.chitGroupId
+    let chit_Id = this.chitData._id
 
     this.service.deleteSubscriber(chitgroupId, subId).subscribe((res) => {
 
     })
+    this.router.navigate([`chit`]);
 
-    this.activatedRoute?.params.subscribe(paramData => {
-      if (Object.keys(paramData).length) {
-        this.service.getChitById(paramData.id).subscribe((data) => {
-          this.chitData = data;
-          this.chitData = this.chitData.ChitsGroup;
-          this.subscribers = this.chitData.chitSubscribers;
+    // this.activatedRoute?.params.subscribe(paramData => {
+    //   if (Object.keys(paramData).length) {
+    //     this.service.getChitById(paramData.id).subscribe((data) => {
+    //       this.chitData = data;
+    //       this.chitData = this.chitData.ChitsGroup;
+    //       this.subscribers = this.chitData.chitSubscribers;
 
-        })
-      }
+    //     })
+    //   }
 
-    })
+    // })
+
   }
 
   getAllAuction() {

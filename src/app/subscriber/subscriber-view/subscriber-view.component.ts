@@ -68,6 +68,7 @@ export class SubscriberViewComponent implements OnInit {
             this.groups = this.chitGroup
             this.chitGroup.forEach((group, index) => {
               this.groups = group
+              console.log("chitGroupID123",group.chitGroupId)
               this.chitService.getTicketId(group.chitGroupId).subscribe((acuData) => {
                 const auctionData = acuData.allData
                 const fistAuc = this.datePipe.transform(auctionData[0].date, 'yyyy-MM')

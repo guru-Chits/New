@@ -7,7 +7,7 @@ export const environment = {
     paymentServiceUrl: `${staging}/api`,
     subscriberServiceUrl:`${staging}/api`,
     chitServiceUrl:`${staging}/api`,
-    staffServiceUrl:`${stagingl}/api`,
+    staffServiceUrl:`${staging}/api`,
     areaServiceUrl:`${staging}/api`,
     loginServiceUrl:`${staging}/api`,
     accessServiceUrl:`${staging}/api`,

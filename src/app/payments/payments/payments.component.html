@@ -107,6 +107,13 @@
                 <div *ngIf="paymentForm.get('amount')?.hasError('amountExceeds')">
                     <small style="color: red;">Pay {{ chitValue/20 }} for Last Month</small>
                 </div>
+
+                <div *ngIf="paymentForm.get('amount')?.hasError('overPayment') && paymentForm.get('amount')?.touched" style="color: red;">
+                    Entered amount exceeds the pending payment.
+                  </div>
+                  <div *ngIf="paymentForm.get('amount')?.hasError('tooClose') && paymentForm.get('amount')?.touched" style="color: red;">
+                    Entered amount is too close to the pending payment.
+                  </div>
             </div>
         </div>
         <div class="col-lg-4">

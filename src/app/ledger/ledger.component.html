@@ -60,10 +60,10 @@
                 <span class="fw-bold fs-5">{{ group.chitGroupId }}</span>
               </div>
               <!-- Toggle Details Button -->
-              <div class="d-flex overlap-images" style="color:#50A1A5; cursor: pointer;"
+              <!-- <div class="d-flex overlap-images" style="color:#50A1A5; cursor: pointer;"
                 (click)="get_group_Details(group._id,group.chitGroupId,group.chitAmount)">
                 Download
-              </div>
+              </div> -->
               <div class="d-flex overlap-images" style="color:#50A1A5; cursor: pointer;"
                 (click)="getByGroupId(group.chitGroupId, i , group.chitSubscribers ,group.chitAmount,group._id)">
                 View Details
@@ -73,7 +73,19 @@
              
             </div>
             <div class="row d-flex" *ngIf="selectedIndex === i && groupPaymentData">
+              <div class="d-flex justify-content-end">
+                <button class="btn btn-outline-info m-2" 
+                        (click)="get_group_Details(group._id, group.chitGroupId, group.chitAmount)">
+                  Download
+                </button>
+              </div>
+          
+              <!-- <div class="d-flex overlap-images" style="color:#50A1A5; cursor: pointer;"
+              (click)="get_group_Details(group._id,group.chitGroupId,group.chitAmount)">
+              Download
+            </div> -->
               <div class="d-flex">
+               
                 <div class="col-lg-3 col-md-3 ms-4 p-2  card">
                   <div>Total Amount <span style="color: #50A1A5;">{{totalAmount}}</span></div>
     

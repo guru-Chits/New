@@ -19,6 +19,22 @@
       <div class="items">
         <div *ngIf="activeTab === 'regular'">
           <form [formGroup]="auctionForm">
+            <div class="row m-1 pt-4">
+               <div class="form-check form-switch">
+                  <input class="form-check-input" type="checkbox" formControlName="auctionStart" role="switch"
+                    id="flexSwitchCheckChecked" (change)="toggleFormControls()">
+                  <label class="form-check-label" *ngIf="auctionStart" for="flexSwitchCheckChecked">Auction
+                    Start</label>
+                  <label class="form-check-label" *ngIf="!auctionStart" for="flexSwitchCheckChecked">Auction End</label>
+
+                </div>
+                <h6 style="color: red;" class="mt-3" *ngIf="auctionStart">
+                  * Turn on to Start Auction
+                </h6>
+                <h6 style="color: red;" class="mt-3" *ngIf="!auctionStart">
+                  * Turn Off to End Auction
+                </h6>
+            </div>
             <div class="row">
               <div class="col-lg-12">
                 <div class="form-group">
@@ -132,7 +148,7 @@
             </div>
             <div class="row justify-content-around">
               <div class="col-lg-5">
-                <div class="form-check form-switch">
+                <!-- <div class="form-check form-switch">
                   <input class="form-check-input" type="checkbox" formControlName="auctionStart" role="switch"
                     id="flexSwitchCheckChecked" (change)="toggleFormControls()">
                   <label class="form-check-label" *ngIf="auctionStart" for="flexSwitchCheckChecked">Auction
@@ -145,7 +161,7 @@
                 </h6>
                 <h6 style="color: red;" class="mt-3" *ngIf="!auctionStart">
                   * Turn Off to End Auction
-                </h6>
+                </h6> -->
               </div>
               <div class="col-lg-3">
                 <button class="btn btn-primary px-2 py-2" *ngIf="regular || profitChit"

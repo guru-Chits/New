@@ -42,7 +42,6 @@ export class AuthService {
         return moduleAccess.accessType[action] === true;
       }),
       catchError(error => {
-        console.error('Error fetching role access:', error);
         return of(false);  
       })
     );

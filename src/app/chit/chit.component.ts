@@ -65,6 +65,11 @@ export class ChitComponent implements OnInit {
 
       this.total = this.chitdata.length
       this.displayedChit = this.chitdata;
+      this.displayedChit.forEach((group: any) => {
+        this.service.getTicketId(group.chitGroupId).subscribe((data) => {
+          group.auctionCycle = data.auctionCycle; // attach to each group
+        });
+      });
 
       this.totalPages = Math.ceil(this.displayedChit.length / this.itemsPerPage);
     })
@@ -156,7 +161,7 @@ export class ChitComponent implements OnInit {
     })
   }
 
-    fetchChitData(): void {
+  fetchChitData(): void {
     this.service.getAllChit().subscribe((data) => {
       this.chitdata = data;
       this.chitdata = this.chitdata?.AllChitGroups
@@ -171,7 +176,6 @@ export class ChitComponent implements OnInit {
       this.currentPage++;
     }
   }
-
   // Move to the previous page
   previousPage() {
     if (this.currentPage > 1) {

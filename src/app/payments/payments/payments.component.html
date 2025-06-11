@@ -104,13 +104,18 @@
                 <div *ngIf="paymentForm.get('amount').hasError('invalidNumber')" style="color: red;">
                     Amount must be a positive number.
                 </div>
+                <div *ngIf="paymentForm.get('amount')?.touched || paymentForm.get('amount')?.dirty">
+                <small *ngIf="paymentForm.get('amount')?.hasError('excessPayment')" style="color: red;">
+                    After 17th Month Pay Bulk Payment Not Allowed
+                </small>
+                <small *ngIf="paymentForm.get('amount')?.hasError('overPayment')" style="color: red;">
+                    Entered amount exceeds the pending payment.
+                </small>
+                </div>
+
                 <div *ngIf="paymentForm.get('amount')?.hasError('amountExceeds')">
                     <small style="color: red;">Pay {{ chitValue/20 }} for Last Month</small>
                 </div>
-
-                <div *ngIf="paymentForm.get('amount')?.hasError('overPayment') && paymentForm.get('amount')?.touched" style="color: red;">
-                    Entered amount exceeds the pending payment.
-                  </div>
                   <div *ngIf="paymentForm.get('amount')?.hasError('tooClose') && paymentForm.get('amount')?.touched" style="color: red;">
                     Entered amount is too close to the pending payment.
                   </div>

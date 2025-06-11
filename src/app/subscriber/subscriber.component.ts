@@ -86,16 +86,10 @@ export class SubscriberComponent {
 
       }))
     })
-    this.service.getAllChit().subscribe(data =>{
-      console.log("chit group details",data)
-    })
-
-
   }
   profileImageWithIdRenderer(params: any): string {
     const imageUrl = params.data.profileImageUrl;
     const subscribeName = params.data.displayName
-    console.log("hjjjjhjhhjhjhjhj",subscribeName)
     const firstLetter = subscribeName.charAt(0).toUpperCase(); // Get first letter
     if (imageUrl) {
       // If image exists, return the image tag

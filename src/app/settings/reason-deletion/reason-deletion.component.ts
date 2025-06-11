@@ -80,25 +80,20 @@ ngOnInit(): void {
   ]
   delete(id:any){
     this.service.deleteReason(id).subscribe((data)=>{
-      console.log(data);
     })
   }
   getById(id:string){
     this.id=id
     this.service.getreasonById(id).subscribe((data)=>{
-      console.log(data);
       this.colData=data
       this.reactiveForm.patchValue(this.colData.res)
     })
   }
   submit(){
     const payload=this.reactiveForm.value
-    console.log(payload);
-    console.log(this.id);
 
     this.service.reasonAdd(payload,this.id).subscribe((data)=>
   {
-    console.log(data);
     
   }) 
   }

@@ -321,14 +321,11 @@
                             </div> -->
                             <div class="me-1">
                                 <button type="button" class="btn view-btn-red"
-                                  (click)="removeSubscriber(filteredSubscribers[0]?.subscriberId)" 
+                                  (click)="openConfirmationModal(filteredSubscribers[0]?.subscriberId)" 
                                   *ngIf="canCreate && filteredSubscribers[0]?.subscriberId && filteredSubscribers[0]?.auctionStatus !== 'Prized'">
                                   Remove from Group
                                 </button>
-                              </div>
-                              
-
-                              
+                              </div> 
                             <div class="ms-1">
                                 <button type="button" class="btn view-btn px-4"
                                     (click)="closeTicket('close')">Cancel</button>
@@ -426,6 +423,10 @@
                                                         <td><strong>Contact No</strong></td>
                                                         <td>{{subscriberDetail.Subscriber.contact}}</td>
                                                     </tr>
+                                                     <tr>
+                                                        <td><strong>Route Id</strong></td>
+                                                        <td>{{subscriberDetail.Subscriber.routeId}}</td>
+                                                    </tr>
                                                     <tr>
                                                         <td><strong>Collection Type</strong></td>
                                                         <td>
@@ -520,3 +521,25 @@
     </div>
   
   </div>
+
+
+  <div class="modal fade show" tabindex="-1" role="dialog" [ngClass]="{'d-block': isConfirmationModalOpen}">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Are you Sure?</h5>
+        <!-- <button type="button" class="close" aria-label="Close" (click)="closeConfirmationModal()">
+          <span aria-hidden="true">&times;</span>
+        </button> -->
+      </div>
+      <div class="modal-body text-center" >
+        <p>Are you sure you want to delete<strong></strong>?</p>
+      </div>
+      <div class="modal-footer justify-content-center">
+        <button type="button" class="btn btn-primary" (click)="confirm()">Yes</button>
+        <button type="button" class="btn btn-primary" (click)="cancel()">No</button>
+
+      </div>
+    </div>
+  </div>
+</div>

@@ -32,7 +32,6 @@ export class StaffViewComponent implements OnInit {
   constructor(private service: StaffService, private activatedRoute: ActivatedRoute, private router: Router, private authService: AuthService) { }
 
   ngOnInit(): void {
-    console.log("staffDetailsssss",this.staffDetail)
     this.authService.checkAccess('Staffs', 'edit').subscribe((hasAccess: boolean) => {
       if (hasAccess) {
         this.canEdit = true
@@ -57,7 +56,6 @@ export class StaffViewComponent implements OnInit {
 
     this.service.getstaffAll().subscribe((data) => {
       this.staffData = data;
-      console.log("staffData",this.staffData)
       this.data = this.staffData.AllStaff.map((staffDetails, index) => ({
         id: staffDetails?._id,
         staffId: staffDetails?.employeeId,
@@ -65,7 +63,6 @@ export class StaffViewComponent implements OnInit {
         staffProfile: staffDetails?.profileImageUrl
       }))
       this.displayedStaffs = this.data;
-      console.log("displayedStaffs",this.displayedStaffs)
     })
 
   }

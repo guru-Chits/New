@@ -65,9 +65,6 @@ filter:false;
 
     this.service.getrouteAll().subscribe((data)=>{
     this.areaData=data;
-    console.log("kk",this.areaData)
-
-    
     this.totalCount=this.areaData.AllRoute.length
     this.data=this.areaData.AllRoute.map((areaDetails,index)=>({
       id:areaDetails?._id,
@@ -88,8 +85,6 @@ getrouteById(id: string): void {
   this.service.getrouteById(id).subscribe(
     data => {
       this.areaDetail = data;
-
-      console.log(this.areaDetail)
     },
     error => {
       console.error('Error fetching subscriber', error);
@@ -124,7 +119,6 @@ column: ITableColumn[] = [
 ];
 
 edit(id: any){
-  console.log(id);
   this.router.navigate([`area/routeedit/${id}`]);
   }
 

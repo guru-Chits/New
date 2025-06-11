@@ -195,7 +195,7 @@
           <div class="row justify-content-center">
             <div class="col-lg-10 d-flex justify-content-end mb-4">
               <button class="btn edit-btn m-2" *ngIf="canEdit" (click)="edit(subscriberDetail.Subscriber._id)">Edit</button>
-              <button class="btn edit-btn m-2" (click)="delete(subscriberDetail.Subscriber._id)">Delete</button>
+              <button class="btn edit-btn m-2" (click)="openConfirmationModal(subscriberDetail.Subscriber._id)">Delete</button>
 
             </div>
             
@@ -342,6 +342,26 @@
           </tbody>
         </table>
         <button *ngIf="!showAll" class="btn align-self-center view" (click)="viewMore()">View More</button>
+      </div>
+    </div>
+  </div>
+</div>
+  <div class="modal fade show" tabindex="-1" role="dialog" [ngClass]="{'d-block': isConfirmationModalOpen}">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Are you Sure?</h5>
+        <!-- <button type="button" class="close" aria-label="Close" (click)="closeConfirmationModal()">
+          <span aria-hidden="true">&times;</span>
+        </button> -->
+      </div>
+      <div class="modal-body text-center" >
+        <p>Are you sure you want to delete<strong></strong>?</p>
+      </div>
+      <div class="modal-footer justify-content-center">
+        <button type="button" class="btn btn-primary" (click)="confirm()">Yes</button>
+        <button type="button" class="btn btn-primary" (click)="cancel()">No</button>
+
       </div>
     </div>
   </div>

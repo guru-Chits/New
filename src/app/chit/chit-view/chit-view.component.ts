@@ -91,6 +91,8 @@ export class ChitViewComponent implements OnInit {
   lastAucDate:any
   payments:any
   totalAmount:number
+  isConfirmationModalOpen: boolean = false;
+  deleteSubId:string
   constructor(private activatedRoute: ActivatedRoute, private router: Router, private service: ChitService, private paymentService: PaymentService, private authService: AuthService, private subservice: SubscriberService, private settings: ServiceService,private datePipe: DatePipe,) { }
 column: ITableColumn[] = [
   { field: 'sNo', label: 'Serial No' },
@@ -573,6 +575,29 @@ column: ITableColumn[] = [
     );
 
   }
+  removeSubscriber(subId: string) {
+    let chitgroupId = this.chitData.chitGroupId
+    let chit_Id = this.chitData._id
+
+    this.service.deleteSubscriber(chitgroupId, subId).subscribe((res) => {
+
+    })
+    this.router.navigate([`chit`]);
+  }
+
+  openConfirmationModal(subId: string) {
+    this.deleteSubId=subId
+    this.isConfirmationModalOpen = true;
+  }
+
+  confirm(){
+  this.removeSubscriber(this.deleteSubId)
+  this.isConfirmationModalOpen = false;
+  }
+  cancel(){
+  this.isConfirmationModalOpen = false;
+  this.deleteSubId=""
+  }
 
   addAdditionalSubscriberById(id: string): void {
 
@@ -625,29 +650,6 @@ column: ITableColumn[] = [
   closeModal(): void {
     const modal = document.getElementById('duplicateModal');
     modal.style.display = 'none';
-  }
-
-  removeSubscriber(subId: string) {
-    let chitgroupId = this.chitData.chitGroupId
-    let chit_Id = this.chitData._id
-
-    this.service.deleteSubscriber(chitgroupId, subId).subscribe((res) => {
-
-    })
-    this.router.navigate([`chit`]);
-
-    // this.activatedRoute?.params.subscribe(paramData => {
-    //   if (Object.keys(paramData).length) {
-    //     this.service.getChitById(paramData.id).subscribe((data) => {
-    //       this.chitData = data;
-    //       this.chitData = this.chitData.ChitsGroup;
-    //       this.subscribers = this.chitData.chitSubscribers;
-
-    //     })
-    //   }
-
-    // })
-
   }
 
   getAllAuction() {

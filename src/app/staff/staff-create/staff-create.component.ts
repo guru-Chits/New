@@ -132,7 +132,6 @@ export class StaffCreateComponent implements OnInit {
         
         this.service.getstaffById(paramData.id).subscribe((data) => {
           this.staffData = data;
-          console.log("staffdataa",this.staffData)
           this.staffId = this.staffData.Staff._id
           this.profileUrl = this.staffData.Staff.profileUrl
           this.panFile=this.staffData.Staff.panUrl
@@ -142,9 +141,7 @@ export class StaffCreateComponent implements OnInit {
           this.urls = this.staffData.Staff
 
           const formData = new FormData();
-          formData.append('panUrl',  this.staffData.Staff.panUrl);
-          console.log(formData);
-          
+          formData.append('panUrl',  this.staffData.Staff.panUrl);          
           if (this.staffId) {    
             const existingPassword=this.staffData?.Staff?.password
             this.staffsForm.get('password')?.setValue(existingPassword)

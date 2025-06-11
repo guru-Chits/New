@@ -42,6 +42,8 @@ export class SubscriberViewComponent implements OnInit {
   balance: number = 0
   groups: any
   showPopup: any
+  isConfirmationModalOpen: boolean = false;
+  deleteSubId:string
   constructor(private service: SubscriberService, private authService: AuthService, private activatedRoute: ActivatedRoute, private router: Router, private chitService: ChitService, private paymentService: PaymentService, private datePipe: DatePipe,
   ) { }
 
@@ -68,13 +70,10 @@ export class SubscriberViewComponent implements OnInit {
             this.groups = this.chitGroup
             this.chitGroup.forEach((group, index) => {
               this.groups = group
-              console.log("chitGroupID123",group.chitGroupId)
               this.chitService.getTicketId(group.chitGroupId).subscribe((acuData) => {
                 const auctionData = acuData.allData
                 const fistAuc = this.datePipe.transform(auctionData[0].date, 'yyyy-MM')
-                const lastAuc = this.datePipe.transform(auctionData[auctionData.length - 1].date, 'yyyy-MM')
-                console.log(group.passbookNo);
-                
+                const lastAuc = this.datePipe.transform(auctionData[auctionData.length - 1].date, 'yyyy-MM')                
                 this.paymentService.getTotalByGroupId(fistAuc, group.chitGroupId, group.passbookNo, lastAuc).subscribe((PayData) => {                  
                   let toPay = (acuData.allData.length - acuData.profitCount) * group.chitAmount / 20                  
                   let paid = PayData.totalSubPassbookNoAmount
@@ -248,9 +247,7 @@ export class SubscriberViewComponent implements OnInit {
     }
   }
   delete(id: any) {
-    console.log("Deleted ID:", id);
     if (this.canDelete) {
-        console.log("Deleting ID:", id);
         this.service.deleteSubscriber(id).subscribe({
             next: (response: any) => {
                 window.alert(response.message);  // Show API message in a popup
@@ -262,7 +259,19 @@ export class SubscriberViewComponent implements OnInit {
         });
     }
 }
+  openConfirmationModal(subId: string) {
+    this.deleteSubId=subId
+    this.isConfirmationModalOpen = true;
+  }
 
+  confirm(){
+  this.delete(this.deleteSubId)
+  this.isConfirmationModalOpen = false;
+  }
+  cancel(){
+  this.isConfirmationModalOpen = false;
+  this.deleteSubId=""
+  }
 
   formatDate(dateString: string): string {
     const date = new Date(dateString);
@@ -283,7 +292,6 @@ export class SubscriberViewComponent implements OnInit {
     return `${day}${suffix(day)} ${month} ${year}`;
   }
   navigate(id: any) {
-    console.log("iddddddddd",id)
     this.router.navigate([`subscriber/view/${id}`]);
   }
   

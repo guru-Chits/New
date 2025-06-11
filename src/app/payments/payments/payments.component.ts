@@ -74,6 +74,7 @@ export class PaymentsComponent implements OnInit {
   installAmount1: number
   installAmount: number
   installMonth: string
+  groupDetails:any
   ngOnInit(): void {
 
     this.paymentForm = this.formBuilder.group({
@@ -117,14 +118,33 @@ export class PaymentsComponent implements OnInit {
     this.paymentForm.get('amount')?.valueChanges.subscribe((amount) => {
       const groupId = this.paymentForm.get('groupId')?.value;
       const installmentMonth = this.paymentForm.get('installmentMonth')?.value;
+      this.chitService.getByGroupId(groupId).subscribe(
+      (data) => {
+        this.groupDetails=data
+        const firstInstallmemnt=this.groupDetails.data.auctionDate
+        const formattedDate = new Date(firstInstallmemnt).toLocaleDateString('en-GB', {
+          day: '2-digit',
+          month: 'long',
+          year: 'numeric'
+        });
+
+        const difference = this.getMonthDifference(formattedDate, installmentMonth);
+        const chitAmount = this.groupDetails.data.chitAmount/20;
+        if (difference >= 17 && Number(amount) > Number(chitAmount)) {
+         this.paymentForm.get('amount')?.setErrors({  excessPayment: true });
+          this.paymentForm.get('amount')?.markAsTouched();
+        } else {
+          if (this.paymentForm.get('amount')?.hasError('excessPayment')) {
+            this.paymentForm.get('amount')?.setErrors(null);
+          }
+        }
       this.chitService.getTicketId(groupId).subscribe((data) => {
-
         if (data.auctionCycle > 1) {
-
+         
           const installMent = this.datePipe.transform(data?.allData[data?.allData.length - 1].date, 'dd-MMMM-yyyy')
           const installmentDate = new Date(installmentMonth);
           const lastInstallmentDate = new Date(installMent);
-
+          
           const auctionCycle = data.auctionCycle
           if (auctionCycle >= 20 && installmentDate.getTime() == lastInstallmentDate.getTime()) {
             this.lastPayment = true
@@ -200,6 +220,7 @@ export class PaymentsComponent implements OnInit {
           }
         }
       })
+     })
       if (!amount || amount.trim() === '') { // Check if amount is null, undefined, or an empty string
         this.receiptNo = ""
         this.amount = 0
@@ -228,6 +249,16 @@ export class PaymentsComponent implements OnInit {
       }))
     })
   }
+
+    getMonthDifference(startDateStr: string, endDateStr: string): number {
+      const startDate = new Date(startDateStr);
+      const endDate = new Date(endDateStr);
+
+      const yearsDiff = endDate.getFullYear() - startDate.getFullYear();
+      const monthsDiff = endDate.getMonth() - startDate.getMonth();
+
+      return yearsDiff * 12 + monthsDiff;
+    }
 
   amountLessThanOrEqualChitAmount(form: AbstractControl) {
     const amount = +form.get('amount')?.value;
@@ -441,7 +472,29 @@ export class PaymentsComponent implements OnInit {
 
 
   handleAmountChange(amount: number, expectedInstallmentAmount: number, passbooknumber: any) {
+     const groupId = this.paymentForm.get('groupId')?.value;
+      const installmentMonth = this.paymentForm.get('installmentMonth')?.value;
 
+     this.chitService.getByGroupId(groupId).subscribe(
+      (data) => {
+        this.groupDetails=data
+        const firstInstallmemnt=this.groupDetails.data.auctionDate
+        const formattedDate = new Date(firstInstallmemnt).toLocaleDateString('en-GB', {
+          day: '2-digit',
+          month: 'long',
+          year: 'numeric'
+        });
+
+        const difference = this.getMonthDifference(formattedDate, installmentMonth);
+        const perMonth = this.groupDetails.data.chitAmount/20;
+        if (difference >= 17 && Number(amount) > Number(perMonth)) {
+         this.paymentForm.get('amount')?.setErrors({  excessPayment: true });
+          this.paymentForm.get('amount')?.markAsTouched();
+        } else {
+          if (this.paymentForm.get('amount')?.hasError('excessPayment')) {
+            this.paymentForm.get('amount')?.setErrors(null);
+          }
+        }
     // Fetch the last payment or set default values if no previous payment exists
     const lastPayment = this.payments?.[this.payments.length - 1] || null;
     const previousAmountPaid = lastPayment ? lastPayment.amount || 0 : 0;
@@ -559,6 +612,8 @@ export class PaymentsComponent implements OnInit {
         });
       }
     });
+ })
+
   }
 
   setSpecificError(control: AbstractControl | null, errorKey: string) {

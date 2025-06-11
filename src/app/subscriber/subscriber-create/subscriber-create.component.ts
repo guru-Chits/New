@@ -208,7 +208,6 @@ export class SubscriberCreateComponent implements OnInit {
                 
                 // Increment the number
                 this.subscriberIdCounter = (lastNumber + 1).toString();
-                console.log("new subid",this.subscriberIdCounter)
             } else {
                 this.subscriberIdCounter = "10001"; // Default value if ID format is invalid
             }
@@ -737,7 +736,6 @@ export class SubscriberCreateComponent implements OnInit {
 
   addReferral(): void {
     this.referralClient = this.subscriberDetail.Subscriber.firstName;
-    console.log("referral subscriber Details",this.subscriberDetail.Subscriber)
     this.referralClientId = this.subscriberDetail.Subscriber._id
     this.subscriberForm.get('referralClient').setValue(this.referralClient)
     this.subscriberForm.get('referralClientId').setValue(this.referralClientId)

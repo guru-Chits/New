@@ -53,6 +53,8 @@ export class LedgerComponent implements OnInit {
   subscriberDetail: any;
   subscriberId: string;
   chitGroup:any;
+  totalPayment:any
+  totalAmounttoPay:number
   constructor(private fb:FormBuilder, private chitService:ChitService, private paymentService:PaymentService,    private datePipe: DatePipe, private service:SubscriberService,
   ){}
 
@@ -60,13 +62,20 @@ ngOnInit(): void {
   this.ledgerForm=this.fb.group({
     date:[this.getCurrentMonth()]
   })
-  this.chosenDate=this.getCurrentMonth()
-  console.log(this.chosenDate);
 
+this.paymentService.getPaymentAll().subscribe(data => {
+  this.totalPayment=data
+  this.totalAmountOutstanding = this.totalPayment.AllPayment.reduce((sum, payment) => {
+    return sum + Number(payment.amount);
+  }, 0);
+});
+
+  this.chosenDate=this.getCurrentMonth()
 
   this.chitService.getAllChit().subscribe(async (data) => {
     this.chitdata = data;
-    this.chitdata = this.chitdata?.AllChitGroups  
+    this.chitdata = this.chitdata?.AllChitGroups
+    
     const [chosenYear, chosenMonth] = this.chosenDate.split('-').map(Number);
     const chosenDateObj = new Date(chosenYear, chosenMonth ); // Months are 0-indexed
   
@@ -100,18 +109,36 @@ ngOnInit(): void {
     });
     const filteredGroups = await Promise.all(filteredPromises);
     this.displayedChit = filteredGroups.filter((group) => group !== null);
-    console.log("displayedChitttttttttt",this.displayedChit)
     
      this.totalPages = Math.ceil(this.displayedChit.length / this.itemsPerPage);
      this.calculateTotal().then(() => {
-      console.log('Total calculated:', this.total);
     });
-  })
+let totalAmountToPay = 0;
 
+for (const data of this.chitdata) {
+  const chitAmount = data.chitAmount;
+
+  try {
+    const auctionCycleData = await this.chitService.getTicketId(data.chitGroupId).toPromise();
+    const latestChit = auctionCycleData?.allData || [];
+
+    const firstAuction = latestChit[0]?.date;
+    const lastAuction = latestChit[latestChit.length - 1]?.date;
+
+    const totalAmountOutstanding = this.getMonthDifference(firstAuction, lastAuction);
+
+    const amountToPay = totalAmountOutstanding * chitAmount;
+    totalAmountToPay += amountToPay;
+    this.totalAmounttoPay=totalAmountToPay
+  } catch (error) {
+    console.error("Error fetching ticket ID for:", data.chitGroupId, error);
+  }
+}
+
+  })
   this.paymentService.getTotalByGroupId(this.chosenDate).subscribe(data => {
     this.totalCollected=data.totalOfMonth
     this.totalSurplus=data.totalFutureAmount
-    console.log(this.totalCollected);
   })
 }
 
@@ -219,7 +246,6 @@ previousPage() {
 }
 
   async onChange(event:any){
-console.log(event.target.value);
 this.chosenDate=event.target.value
 
 const [chosenYear, chosenMonth] = this.chosenDate.split('-').map(Number);
@@ -261,9 +287,7 @@ this.displayedChit = filteredGroups.filter((group) => group !== null);
 this.subShow=false
 this.selectedIndex=null
 this.paymentService.getTotalByGroupId(this.chosenDate).subscribe(data => {
-  if (this.chosenDate>=this.getCurrentMonth()) {
-    console.log(this.totalSurplus);
-    
+  if (this.chosenDate>=this.getCurrentMonth()) {    
     this.totalSurplus=data.totalFutureAmount 
   }else{
     this.totalSurplus=0
@@ -273,91 +297,23 @@ this.paymentService.getTotalByGroupId(this.chosenDate).subscribe(data => {
 
 
 this.calculateTotal().then(() => {
-  console.log('Total calculated:', this.total);
 });
 }
 
-// get_group_Details(chitgroup_id: any,chitGroupId:any,chitAmount:any){
-//     console.log("groupiddddd",chitgroup_id)
-//     console.log("chitAmount",chitAmount)
-//     // this.chitService.getTicketId(chitGroupId).subscribe((acuData) => {
-//     //   const auctionData = acuData.allData
-//     //   console.log("alllll details",auctionData);
 
-//     //   const fistAuc = this.datePipe.transform(auctionData[0].date, 'yyyy-MM')
-//     //   const lastAuc = this.datePipe.transform(auctionData[auctionData.length - 1].date, 'yyyy-MM')
-//     //   console.log("alllll de",auctionData);
-      
-//     //   this.paymentService.getTotalByGroupId(fistAuc, chitGroupId, passbookNo, lastAuc).subscribe((PayData) => {                  
-//     //     let toPay = (acuData.allData.length - acuData.profitCount) * chitAmount / 20  
-//     //     console.log("toPay",toPay)                
-//     //     let paid = PayData.totalSubPassbookNoAmount
-//     //     console.log("paid",paid)
-//     //     let balance = toPay - paid
-//     //     this.balance = balance
-//     //     console.log("balance",this.balance)
-//     //     // this.chitGroup[index] = {
-//     //     //   ...this.chitGroup[index],
-//     //     //   balance: balance,
-//     //     //   winningBid: auctionData[auctionData.length - 1].winningBid,
-//     //     //   prizedAmount: auctionData[auctionData.length - 1].prizedAmount,
-//     //     // };
-//     //     if (balance > 0) {
-//     //       this.totalAmountOutstanding += balance;
-//     //       console.log("totalAmountOutstanding.......",this.totalAmountOutstanding)
-
-//     //     }
-//     //   })
-//     // })
-//     this.chitService.getTicketId(chitGroupId).subscribe((acuData) => {
-//       const auctionData = acuData.allData;
-//       console.log("All auction details:", auctionData);
-    
-//       const firstAuc = this.datePipe.transform(auctionData[0].date, 'yyyy-MM');
-//       const lastAuc = this.datePipe.transform(auctionData[auctionData.length - 1].date, 'yyyy-MM');
-    
-//       const passbookGroups = auctionData.reduce((acc, item) => {
-//         if (!acc[item.passbookNumber]) acc[item.passbookNumber] = [];
-//         acc[item.passbookNumber].push(item);
-//         return acc;
-//       }, {});
-    
-//       console.log("Grouped by passbook:", passbookGroups);
-    
-//       this.totalAmountOutstanding = 0; // Reset before calculation
-    
-//       Object.keys(passbookGroups).forEach((passbookNumber) => {
-//         const passbookData = passbookGroups[passbookNumber];
-        
-//         // Calculate toPay for this passbook
-//         let toPay = (passbookData.length - acuData.profitCount) * chitAmount / 20;
-//         console.log("topay",toPay)
-//         // Fetch total paid amount for this passbook
-//         this.paymentService.getTotalByGroupId(firstAuc, chitGroupId, passbookNumber, lastAuc).subscribe((PayData) => {
-//           let paid = PayData.totalSubPassbookNoAmount || 0;
-//           let balance = toPay - paid;
-//           console.log("balance",balance)
-//           console.log(`Passbook No: ${passbookNumber}, To Pay: ${toPay}, Paid: ${paid}, Balance: ${balance}`);
-    
-//           this.chitGroup = this.chitGroup.map((group) =>
-//             group.passbookNo === passbookNumber ? { ...group, balance } : group
-//           );
-//         });
-//       });
-//     });
-    
-//     this.chitService.getChitById(chitgroup_id).subscribe(data =>{
-//       console.log("dataaaa",data)
-//       this.downloadCSV(data);
-//     })
-
-//   }
   get_group_Details(){
-    console.log("llllllll",this.groupPaymentData)
     this.downloadCSV(this.groupPaymentData);
-
-
   }
+
+    getMonthDifference(startDateStr: string, endDateStr: string): number {
+      const startDate = new Date(startDateStr);
+      const endDate = new Date(endDateStr);
+
+      const yearsDiff = endDate.getFullYear() - startDate.getFullYear();
+      const monthsDiff = endDate.getMonth() - startDate.getMonth();
+
+      return yearsDiff * 12 + monthsDiff+1;
+    }
 
   downloadCSV(data: any) {
     // Extract the required fields
@@ -420,7 +376,6 @@ this.calculateTotal().then(() => {
     this.selectedIndex = index;
 
     this.paymentService.getTotalByGroupId(this.chosenDate,groupId).subscribe(data => {
-      console.log(data);
       if (this.chosenDate>=this.getCurrentMonth()) {        
         this.groupSurplus=data.totalGroupAmount
       }else{
@@ -435,7 +390,6 @@ this.calculateTotal().then(() => {
       // Assign the processed data to groupPaymentData
       this.groupPaymentData = processedData;
       this.collectedAmount = this.calculateTotalAmount(processedData);
-      console.log(this.groupPaymentData);
       
     });
   }
@@ -533,7 +487,6 @@ getSub(passbookNumber:string){
 window.scrollTo({ top: 0, behavior: 'smooth' });
 this.subShow=true
 this.paymentService.getVerifiedPaymentByPassbook(passbookNumber).subscribe(response => {
-console.log(response);
 this.subPayment=response
 this.subPayment=this.subPayment.payments
 });
@@ -550,7 +503,6 @@ getSubscriber(id:string,index:any)
     this.subscriber=null
   }else{
     this.selectedSub=index
-    console.log(id);
     this.paymentService.getPaymentById(id).subscribe(response=>{
     this.subscriber=response
     this.subscriber=this.subscriber.payment

@@ -57,7 +57,6 @@ ngOnInit(): void {
   }
   const groupId=this.chitData?.chitGroupId
   this.groupId=groupId
-  console.log(groupId);
   const chitDetails = {
     groupId: this.chitData?.chitGroupId,
     foremanCommision: this.chitData?.foremanCommission,

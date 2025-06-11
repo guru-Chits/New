@@ -108,17 +108,11 @@ export class AreaCreateComponent implements OnInit{
  
     // get regionID list
     this.service.getregionAll().subscribe((data:any) => {
-      console.log(data);
-      // this.regionIdList = data.AllRegion;
       this.regionIdList = data.AllRegion.filter((region: any) => region.status === true);
-
-      console.log("regionlist",this.regionIdList)
     })
     
 
     this.activatedRoute.params.subscribe(paramData => {
-      console.log("ObjectKeys =>",Object.keys(paramData))
-      console.log("ParamData =>", paramData)
       if (Object.keys(paramData).length) {
         this.breadcrumsData  = [
           {

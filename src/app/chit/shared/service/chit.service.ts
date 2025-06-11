@@ -30,6 +30,15 @@ export class ChitService {
     return this.http.get(url)
   }
 
+   getChitByGroupId(id: string){
+    let url = `${environment.chitServiceUrl}/chitgroup/getchit/${id}`;
+    return this.http.get(url)
+  }
+   getByGroupId(id: string){
+    let url = `${environment.chitServiceUrl}/chitgroup/getByGroupId/${id}`;
+    return this.http.get(url)
+  }
+
   getAuctionToday(){
     let url = `${environment.chitServiceUrl}/chitgroup/getByAucDate`;
     return this.http.get(url)

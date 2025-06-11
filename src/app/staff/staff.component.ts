@@ -79,7 +79,6 @@ export class StaffComponent implements OnInit {
   profileImageWithIdRenderer(params: any): string {
     const imageUrl = params.data.profileUrl;
     const staffName = params.data.firstName
-    console.log("hjjjjhjhhjhjhjhj",staffName)
     const firstLetter = staffName.charAt(0).toUpperCase(); // Get first letter
     if (imageUrl) {
       // If image exists, return the image tag

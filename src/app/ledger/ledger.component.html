@@ -41,6 +41,12 @@
             <p class="m-0 fw-bold fs-4">{{totalSurplus}}</p>
           </div>
         </div>
+        <div class="col-4 ">
+          <div class="line d-flex flex-column justify-content-center align-items-center rounded-end">
+            <h6>Total Amount Outstanding</h6>
+            <p class="m-0 fw-bold fs-4">{{totalAmounttoPay-totalAmountOutstanding}}</p>
+          </div>
+        </div>
       </div>
       <div class="container p-0 mt-3" *ngIf="chitdata">
         <!-- Search Bar -->

@@ -33,11 +33,8 @@ export class AccessManagementComponent implements OnInit {
     }));
 
     this.total = this.data.length;
-    console.log(this.data.length);
     
     this.columns = this.generateColumns();
-    console.log(this.data);
-    console.log(this.columns);
   }
 
   getModuleNames(): string[] {

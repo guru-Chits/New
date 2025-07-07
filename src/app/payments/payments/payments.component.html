@@ -99,14 +99,18 @@
                     placeholder="Amount" (input)="onContactChange($event)"
                     [ngClass]="{'is-invalid': paymentForm.get('amount')?.invalid && paymentForm.get('amount')?.touched}" />
                 <div *ngIf="paymentForm.errors?.amountExceedsChitAmount" style="color: red;">
-                    Amount cannot be greater than Chit Amount.
+                     Bulk Payment Not Allowed For 17 Months
                 </div>
+
                 <div *ngIf="paymentForm.get('amount').hasError('invalidNumber')" style="color: red;">
                     Amount must be a positive number.
                 </div>
                 <div *ngIf="paymentForm.get('amount')?.touched || paymentForm.get('amount')?.dirty">
                 <small *ngIf="paymentForm.get('amount')?.hasError('excessPayment')" style="color: red;">
                     After 17th Month Pay Bulk Payment Not Allowed
+                </small>
+                 <small *ngIf="paymentForm.get('amount')?.hasError('seventeenthPayment')" style="color: red;">
+                     After 17th Month Pay Bulk Payment Not Allowed
                 </small>
                 <small *ngIf="paymentForm.get('amount')?.hasError('overPayment')" style="color: red;">
                     Entered amount exceeds the pending payment.

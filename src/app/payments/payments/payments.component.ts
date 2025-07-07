@@ -59,6 +59,7 @@ export class PaymentsComponent implements OnInit {
   amountPayments: any
   lastPayment: boolean = false
   submitted: boolean = false
+  subscriberAmount: any
   passbookInstallmentData: any = {};
   constructor(private router: Router,
     private formBuilder: FormBuilder,
@@ -74,7 +75,7 @@ export class PaymentsComponent implements OnInit {
   installAmount1: number
   installAmount: number
   installMonth: string
-  groupDetails:any
+  groupDetails: any
   ngOnInit(): void {
 
     this.paymentForm = this.formBuilder.group({
@@ -119,108 +120,124 @@ export class PaymentsComponent implements OnInit {
       const groupId = this.paymentForm.get('groupId')?.value;
       const installmentMonth = this.paymentForm.get('installmentMonth')?.value;
       this.chitService.getByGroupId(groupId).subscribe(
-      (data) => {
-        this.groupDetails=data
-        const firstInstallmemnt=this.groupDetails.data.auctionDate
-        const formattedDate = new Date(firstInstallmemnt).toLocaleDateString('en-GB', {
-          day: '2-digit',
-          month: 'long',
-          year: 'numeric'
-        });
+        (data) => {
+          this.groupDetails = data
+          const chitAmount = this.groupDetails.data.chitAmount / 20;
+          const firstInstallmemnt = this.groupDetails.data.auctionDate
+          const formattedDate = new Date(firstInstallmemnt).toLocaleDateString('en-GB', {
+            day: '2-digit',
+            month: 'long',
+            year: 'numeric'
+          });
+          this.service.getPaymentByPassbook(this.passbookNo).subscribe((data) => {
+            this.subscriberAmount = data
+            const totalAmount = this.subscriberAmount.payments.reduce((sum, payment) => {
+              return sum + parseFloat(payment.amount);
+            }, 0);
+            const paymentAmount = (chitAmount / 20) * 17
+            const difference = this.getMonthDifference(formattedDate, installmentMonth);
 
-        const difference = this.getMonthDifference(formattedDate, installmentMonth);
-        const chitAmount = this.groupDetails.data.chitAmount/20;
-        if (difference >= 17 && Number(amount) > Number(chitAmount)) {
-         this.paymentForm.get('amount')?.setErrors({  excessPayment: true });
-          this.paymentForm.get('amount')?.markAsTouched();
-        } else {
-          if (this.paymentForm.get('amount')?.hasError('excessPayment')) {
-            this.paymentForm.get('amount')?.setErrors(null);
+           if (difference <= 17 && totalAmount > paymentAmount) {
+             this.paymentForm.get('amount')?.setErrors({ seventeenthPayment: true });
+            this.paymentForm.get('amount')?.markAsTouched();
+          } else {
+            if (this.paymentForm.get('amount')?.hasError('seventeenthPayment')) {
+              this.paymentForm.get('amount')?.setErrors(null);
+            }
           }
-        }
-      this.chitService.getTicketId(groupId).subscribe((data) => {
-        if (data.auctionCycle > 1) {
-         
-          const installMent = this.datePipe.transform(data?.allData[data?.allData.length - 1].date, 'dd-MMMM-yyyy')
-          const installmentDate = new Date(installmentMonth);
-          const lastInstallmentDate = new Date(installMent);
-          
-          const auctionCycle = data.auctionCycle
-          if (auctionCycle >= 20 && installmentDate.getTime() == lastInstallmentDate.getTime()) {
-            this.lastPayment = true
-            this.service.getTransactionById(groupId).subscribe((response) => {
-              this.chitAmount = response
-              this.chitAmount = this.chitAmount.payment
-              this.chitAmount.forEach(Amount => {
-                const chitAmount = this.paymentForm.get('chitAmount')?.value - Amount.walletBalance
+
+            if (difference >= 17 && Number(amount) > Number(chitAmount)) {
+              this.paymentForm.get('amount')?.setErrors({ excessPayment: true });
+              this.paymentForm.get('amount')?.markAsTouched();
+            } else {
+              if (this.paymentForm.get('amount')?.hasError('excessPayment')) {
+                this.paymentForm.get('amount')?.setErrors(null);
+              }
+            }
+          });
+          this.chitService.getTicketId(groupId).subscribe((data) => {
+            if (data.auctionCycle > 1) {
+
+              const installMent = this.datePipe.transform(data?.allData[data?.allData.length - 1].date, 'dd-MMMM-yyyy')
+              const installmentDate = new Date(installmentMonth);
+              const lastInstallmentDate = new Date(installMent);
+
+              const auctionCycle = data.auctionCycle
+              if (auctionCycle >= 20 && installmentDate.getTime() == lastInstallmentDate.getTime()) {
+                this.lastPayment = true
+                this.service.getTransactionById(groupId).subscribe((response) => {
+                  this.chitAmount = response
+                  this.chitAmount = this.chitAmount.payment
+                  this.chitAmount.forEach(Amount => {
+                    const chitAmount = this.paymentForm.get('chitAmount')?.value - Amount.walletBalance
+                    this.chitValue = chitAmount
+                    if (chitAmount && amount > 0) {
+                      const expectedInstallmentAmount = chitAmount / 20;  // Monthly installment calculation
+                      this.amount = amount
+
+                      const amountControl = this.paymentForm.get('amount');
+
+                      if (this.paymentForm.get('amount')?.value > expectedInstallmentAmount) {
+                        // Set a custom error on the form control
+
+                        this.paymentForm.get('amount')?.setErrors({ amountExceeds: true });
+                        this.clearSpecificError(amountControl, 'overPayment');
+
+                      }
+                      else {
+                        // Clear any existing errors if the condition is satisfied
+                        amountControl?.setErrors(null);
+                      }
+
+                      this.handleAmountChange(amount, expectedInstallmentAmount, this.passbookNo);
+                    }
+                  });
+                })
+              }
+              else if (installmentDate.getTime() < lastInstallmentDate.getTime()) {
+                const chitAmount = this.paymentForm.get('chitAmount')?.value;
+                this.chitValue = chitAmount
+                if (chitAmount && amount > 0) {
+                  const expectedInstallmentAmount = chitAmount / 20;  // Monthly installment calculation
+
+                  this.amount = amount
+                  this.handleAmountChange(amount, expectedInstallmentAmount, this.passbookNo);
+                }
+              }
+              else if (installmentDate.getTime() > lastInstallmentDate.getTime() && auctionCycle >= 20) {
+
+                // this.chitValue=0
+                window.alert("Paid all Months")
+                setTimeout(() => {
+                  this.isLoading = false
+                  // window.location.reload();
+                  this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
+                    this.router.navigate(['/payment']);
+                  });
+                }, 1000);
+                // this.handleAmountChange(amount, 1, passbooknumber);
+              }
+              else {
+                const chitAmount = this.paymentForm.get('chitAmount')?.value;
                 this.chitValue = chitAmount
                 if (chitAmount && amount > 0) {
                   const expectedInstallmentAmount = chitAmount / 20;  // Monthly installment calculation
                   this.amount = amount
-
-                  const amountControl = this.paymentForm.get('amount');
-
-                  if (this.paymentForm.get('amount')?.value > expectedInstallmentAmount) {
-                    // Set a custom error on the form control
-
-                    this.paymentForm.get('amount')?.setErrors({ amountExceeds: true });
-                    this.clearSpecificError(amountControl, 'overPayment');
-
-                  }
-                  else {
-                    // Clear any existing errors if the condition is satisfied
-                    amountControl?.setErrors(null);
-                  }
-
                   this.handleAmountChange(amount, expectedInstallmentAmount, this.passbookNo);
                 }
-              });
-            })
-          }
-          else if (installmentDate.getTime() < lastInstallmentDate.getTime()) {
-            const chitAmount = this.paymentForm.get('chitAmount')?.value;
-            this.chitValue = chitAmount
-            if (chitAmount && amount > 0) {
-              const expectedInstallmentAmount = chitAmount / 20;  // Monthly installment calculation
+              }
 
-              this.amount = amount
-              this.handleAmountChange(amount, expectedInstallmentAmount, this.passbookNo);
+            } else {
+              const chitAmount = this.paymentForm.get('chitAmount')?.value;
+              this.chitValue = chitAmount
+              if (chitAmount && amount > 0) {
+                const expectedInstallmentAmount = chitAmount / 20;  // Monthly installment calculation
+                this.amount = amount
+                this.handleAmountChange(amount, expectedInstallmentAmount, this.passbookNo);
+              }
             }
-          }
-          else if (installmentDate.getTime() > lastInstallmentDate.getTime() && auctionCycle >= 20) {
-
-            // this.chitValue=0
-            window.alert("Paid all Months")
-            setTimeout(() => {
-              this.isLoading = false
-              // window.location.reload();
-              this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
-                this.router.navigate(['/payment']);
-              });
-            }, 1000);
-            // this.handleAmountChange(amount, 1, passbooknumber);
-          }
-          else {
-            const chitAmount = this.paymentForm.get('chitAmount')?.value;
-            this.chitValue = chitAmount
-            if (chitAmount && amount > 0) {
-              const expectedInstallmentAmount = chitAmount / 20;  // Monthly installment calculation
-              this.amount = amount
-              this.handleAmountChange(amount, expectedInstallmentAmount, this.passbookNo);
-            }
-          }
-
-        } else {
-          const chitAmount = this.paymentForm.get('chitAmount')?.value;
-          this.chitValue = chitAmount
-          if (chitAmount && amount > 0) {
-            const expectedInstallmentAmount = chitAmount / 20;  // Monthly installment calculation
-            this.amount = amount
-            this.handleAmountChange(amount, expectedInstallmentAmount, this.passbookNo);
-          }
-        }
-      })
-     })
+          })
+        })
       if (!amount || amount.trim() === '') { // Check if amount is null, undefined, or an empty string
         this.receiptNo = ""
         this.amount = 0
@@ -250,20 +267,25 @@ export class PaymentsComponent implements OnInit {
     })
   }
 
-    getMonthDifference(startDateStr: string, endDateStr: string): number {
-      const startDate = new Date(startDateStr);
-      const endDate = new Date(endDateStr);
-
-      const yearsDiff = endDate.getFullYear() - startDate.getFullYear();
-      const monthsDiff = endDate.getMonth() - startDate.getMonth();
-
-      return yearsDiff * 12 + monthsDiff;
+  getMonthDifference(startDateStr: string, endDateStr: string): number {
+    if (!startDateStr || !endDateStr) {
+      return 0;
     }
+    const startDate = new Date(startDateStr);
+    const endDate = new Date(endDateStr);
+    if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
+      return 0;
+    }
+
+    const yearsDiff = endDate.getFullYear() - startDate.getFullYear();
+    const monthsDiff = endDate.getMonth() - startDate.getMonth();
+
+    return yearsDiff * 12 + monthsDiff;
+  }
 
   amountLessThanOrEqualChitAmount(form: AbstractControl) {
     const amount = +form.get('amount')?.value;
-    const chitAmount = +form.get('chitAmount')?.value;
-
+    const chitAmount = ((+form.get('chitAmount')?.value) / 20) * 17;
     if (amount && chitAmount) {
       if (amount <= 0) {
         return { invalidAmount: true }; // Validation error for zero or negative amount
@@ -472,147 +494,167 @@ export class PaymentsComponent implements OnInit {
 
 
   handleAmountChange(amount: number, expectedInstallmentAmount: number, passbooknumber: any) {
-     const groupId = this.paymentForm.get('groupId')?.value;
-      const installmentMonth = this.paymentForm.get('installmentMonth')?.value;
+    const groupId = this.paymentForm.get('groupId')?.value;
+    const installmentMonth = this.paymentForm.get('installmentMonth')?.value;
 
-     this.chitService.getByGroupId(groupId).subscribe(
+    this.chitService.getByGroupId(groupId).subscribe(
       (data) => {
-        this.groupDetails=data
-        const firstInstallmemnt=this.groupDetails.data.auctionDate
+        this.groupDetails = data
+        const firstInstallmemnt = this.groupDetails.data.auctionDate
         const formattedDate = new Date(firstInstallmemnt).toLocaleDateString('en-GB', {
           day: '2-digit',
           month: 'long',
           year: 'numeric'
         });
 
-        const difference = this.getMonthDifference(formattedDate, installmentMonth);
-        const perMonth = this.groupDetails.data.chitAmount/20;
-        if (difference >= 17 && Number(amount) > Number(perMonth)) {
-         this.paymentForm.get('amount')?.setErrors({  excessPayment: true });
-          this.paymentForm.get('amount')?.markAsTouched();
-        } else {
-          if (this.paymentForm.get('amount')?.hasError('excessPayment')) {
-            this.paymentForm.get('amount')?.setErrors(null);
-          }
-        }
-    // Fetch the last payment or set default values if no previous payment exists
-    const lastPayment = this.payments?.[this.payments.length - 1] || null;
-    const previousAmountPaid = lastPayment ? lastPayment.amount || 0 : 0;
-    const chitAmount = this.chitValue;
-
-    const expectedAmountPerInstallment = chitAmount / 20; // Monthly installment calculation
-
-    let balanceAmount = 0;
-    let currentInstallmentMonth = this.datePipe.transform(this.subDetail.auctionDate, 'dd-MMMM-YYYY') || '';
-
-    // Fetch total amount for the last payment's month to check underpayment
-    this.service.getAmountByMonth(passbooknumber, lastPayment?.installmentMonth).subscribe((data) => {
-      const totalAmountPaidForMonth = data.totalAmount || 0;
-      this.service.getVerifiedPaymentByPassbook(passbooknumber).subscribe((PayData: any) => {
-        const payments = PayData.payments; // assuming this is the array
-        const groupId = this.paymentForm.get('groupId')?.value;
-
-        this.chitService.getTicketId(groupId).subscribe((data) => {
-          const allData = data.allData || [];
-
-          const profitChitCount = allData.filter((item: any) => item.type === 'Profit Chit').length;
-
-          const totalAmount = payments.reduce((total: number, payment: any) => {
-            return total + Number(payment.amount);
+        this.service.getPaymentByPassbook(this.passbookNo).subscribe((data) => {
+          this.subscriberAmount = data
+          let totalAmount = this.subscriberAmount.payments.reduce((sum, payment) => {
+            return sum + parseFloat(payment.amount);
           }, 0);
-          const amountControl = this.paymentForm.get('amount');
-          const value = totalAmount + Number(amount);
-          const chitTotal = this.paymentForm.get('chitAmount')?.value;
-          const wholeAmount = ((chitTotal / 20) * (20 - profitChitCount))
-          const maxAllowed = wholeAmount - chitTotal / 20;
-          if (value < wholeAmount && value > maxAllowed) {
-            this.clearSpecificError(amountControl, 'overPayment');
+          const paymentAmount = (this.groupDetails.data.chitAmount / 20) * 17
+          const difference = this.getMonthDifference(formattedDate, installmentMonth);
+
+          totalAmount = Number(totalAmount) + Number(amount)
+
+          if (difference <= 17 && totalAmount > paymentAmount) {
+             this.paymentForm.get('amount')?.setErrors({ seventeenthPayment: true });
+            this.paymentForm.get('amount')?.markAsTouched();
+          } else {
+            if (this.paymentForm.get('amount')?.hasError('seventeenthPayment')) {
+              this.paymentForm.get('amount')?.setErrors(null);
+            }
           }
-          else if (value > maxAllowed) {
-            this.setSpecificError(amountControl, 'overPayment');
-          } 
-          else if (value > wholeAmount && value > maxAllowed) {
-            this.setSpecificError(amountControl, 'overPayment');
+
+          const perMonth = this.groupDetails.data.chitAmount / 20;
+          if (difference >= 17 && Number(amount) > Number(perMonth)) {
+            this.paymentForm.get('amount')?.setErrors({ excessPayment: true });
+            this.paymentForm.get('amount')?.markAsTouched();
+          } else {
+            if (this.paymentForm.get('amount')?.hasError('excessPayment')) {
+              this.paymentForm.get('amount')?.setErrors(null);
+            }
           }
-          else if (value > wholeAmount) {
-            this.setSpecificError(amountControl, 'overPayment');
+
+        })
+        // Fetch the last payment or set default values if no previous payment exists
+        const lastPayment = this.payments?.[this.payments.length - 1] || null;
+        const previousAmountPaid = lastPayment ? lastPayment.amount || 0 : 0;
+        const chitAmount = this.chitValue;
+
+        const expectedAmountPerInstallment = chitAmount / 20; // Monthly installment calculation
+
+        let balanceAmount = 0;
+        let currentInstallmentMonth = this.datePipe.transform(this.subDetail.auctionDate, 'dd-MMMM-YYYY') || '';
+
+        // Fetch total amount for the last payment's month to check underpayment
+        this.service.getAmountByMonth(passbooknumber, lastPayment?.installmentMonth).subscribe((data) => {
+          const totalAmountPaidForMonth = data.totalAmount || 0;
+          this.service.getVerifiedPaymentByPassbook(passbooknumber).subscribe((PayData: any) => {
+            const payments = PayData.payments; // assuming this is the array
+            const groupId = this.paymentForm.get('groupId')?.value;
+
+            this.chitService.getTicketId(groupId).subscribe((data) => {
+              const allData = data.allData || [];
+
+              const profitChitCount = allData.filter((item: any) => item.type === 'Profit Chit').length;
+
+              const totalAmount = payments.reduce((total: number, payment: any) => {
+                return total + Number(payment.amount);
+              }, 0);
+              const amountControl = this.paymentForm.get('amount');
+              const value = totalAmount + Number(amount);
+              const chitTotal = this.paymentForm.get('chitAmount')?.value;
+              const wholeAmount = ((chitTotal / 20) * (20 - profitChitCount))
+              const maxAllowed = wholeAmount - chitTotal / 20;
+              if (value < wholeAmount && value > maxAllowed) {
+                this.clearSpecificError(amountControl, 'overPayment');
+              }
+              else if (value > maxAllowed) {
+                this.setSpecificError(amountControl, 'overPayment');
+              }
+              else if (value > wholeAmount && value > maxAllowed) {
+                this.setSpecificError(amountControl, 'overPayment');
+              }
+              else if (value > wholeAmount) {
+                this.setSpecificError(amountControl, 'overPayment');
+              }
+              else {
+                this.clearSpecificError(amountControl, 'overPayment');
+              }
+            });
+          });
+
+          // If there's no previous payment, set balanceAmount to 0
+          if (!lastPayment) {
+            balanceAmount = 0;  // No balance to carry forward for the first payment
           }
+          else if (totalAmountPaidForMonth < expectedInstallmentAmount) {
+            // If there was a previous underpayment, calculate the pending balance
+            balanceAmount = expectedInstallmentAmount - totalAmountPaidForMonth;
+            currentInstallmentMonth = lastPayment.installmentMonth;  // Keep the same month
+            let balanceAm = amount - balanceAmount
+
+            if (balanceAm > 0 && !this.lastPayment) {
+              this.amount = balanceAm
+              this.balance = true
+              this.balanceMonth = currentInstallmentMonth
+              this.balanceAmount = balanceAmount
+
+              const next = this.incrementInstallmentMonth(this.balanceMonth);
+
+              currentInstallmentMonth = this.incrementInstallmentMonth(lastPayment.installmentMonth);;
+              this.months = this.incrementInstallmentMonth(currentInstallmentMonth);
+            }
+          }
+
           else {
-            this.clearSpecificError(amountControl, 'overPayment');
+            currentInstallmentMonth = this.incrementInstallmentMonth(lastPayment.installmentMonth);
+            this.months = currentInstallmentMonth
+          }
+          let installmentMonths = currentInstallmentMonth;  // Start with the current month
+          let remainingAmount = amount;
+          let appliedAmountForMonth = 0;
+          let nextInstallmentMonth = '';
+          if (remainingAmount > balanceAmount && !this.lastPayment) {
+            appliedAmountForMonth = balanceAmount;
+
+            remainingAmount -= balanceAmount;  // Subtract balance amount from the paid amount
+
+          } else {
+            appliedAmountForMonth = remainingAmount;
+            remainingAmount = 0;  // No amount left to apply to future months
+          }
+          while (remainingAmount > 0 && !this.lastPayment) {
+
+            if (remainingAmount > expectedInstallmentAmount) {
+
+              remainingAmount -= expectedInstallmentAmount;
+              appliedAmountForMonth = expectedInstallmentAmount;
+              nextInstallmentMonth = this.incrementInstallmentMonth(currentInstallmentMonth);
+              installmentMonths += `, ${nextInstallmentMonth}`;
+
+              currentInstallmentMonth = nextInstallmentMonth;  // Update current month to next month
+            } else {
+              appliedAmountForMonth = remainingAmount;
+              remainingAmount = 0;  // No amount left to apply
+            }
+          }
+          if (!this.balance && !this.lastPayment) {
+            this.months = installmentMonths
+          }
+
+          if (this.balance) {
+            this.paymentForm.patchValue({
+              installmentMonth: this.balanceMonth + "," + installmentMonths   // Patch all the months in which payments were applied
+            });
+          } else {
+            this.paymentForm.patchValue({
+              installmentMonth: installmentMonths,  // Patch all the months in which payments were applied
+            });
           }
         });
-      });
-
-      // If there's no previous payment, set balanceAmount to 0
-      if (!lastPayment) {
-        balanceAmount = 0;  // No balance to carry forward for the first payment
-      }
-      else if (totalAmountPaidForMonth < expectedInstallmentAmount) {
-        // If there was a previous underpayment, calculate the pending balance
-        balanceAmount = expectedInstallmentAmount - totalAmountPaidForMonth;
-        currentInstallmentMonth = lastPayment.installmentMonth;  // Keep the same month
-        let balanceAm = amount - balanceAmount
-
-        if (balanceAm > 0 && !this.lastPayment) {
-          this.amount = balanceAm
-          this.balance = true
-          this.balanceMonth = currentInstallmentMonth
-          this.balanceAmount = balanceAmount
-
-          const next = this.incrementInstallmentMonth(this.balanceMonth);
-
-          currentInstallmentMonth = this.incrementInstallmentMonth(lastPayment.installmentMonth);;
-          this.months = this.incrementInstallmentMonth(currentInstallmentMonth);
-        }
-      }
-
-      else {
-        currentInstallmentMonth = this.incrementInstallmentMonth(lastPayment.installmentMonth);
-        this.months = currentInstallmentMonth
-      }
-      let installmentMonths = currentInstallmentMonth;  // Start with the current month
-      let remainingAmount = amount;
-      let appliedAmountForMonth = 0;
-      let nextInstallmentMonth = '';
-      if (remainingAmount > balanceAmount && !this.lastPayment) {
-        appliedAmountForMonth = balanceAmount;
-
-        remainingAmount -= balanceAmount;  // Subtract balance amount from the paid amount
-
-      } else {
-        appliedAmountForMonth = remainingAmount;
-        remainingAmount = 0;  // No amount left to apply to future months
-      }
-      while (remainingAmount > 0 && !this.lastPayment) {
-
-        if (remainingAmount > expectedInstallmentAmount) {
-
-          remainingAmount -= expectedInstallmentAmount;
-          appliedAmountForMonth = expectedInstallmentAmount;
-          nextInstallmentMonth = this.incrementInstallmentMonth(currentInstallmentMonth);
-          installmentMonths += `, ${nextInstallmentMonth}`;
-
-          currentInstallmentMonth = nextInstallmentMonth;  // Update current month to next month
-        } else {
-          appliedAmountForMonth = remainingAmount;
-          remainingAmount = 0;  // No amount left to apply
-        }
-      }
-      if (!this.balance && !this.lastPayment) {
-        this.months = installmentMonths
-      }
-
-      if (this.balance) {
-        this.paymentForm.patchValue({
-          installmentMonth: this.balanceMonth + "," + installmentMonths   // Patch all the months in which payments were applied
-        });
-      } else {
-        this.paymentForm.patchValue({
-          installmentMonth: installmentMonths,  // Patch all the months in which payments were applied
-        });
-      }
-    });
- })
+      })
 
   }
 

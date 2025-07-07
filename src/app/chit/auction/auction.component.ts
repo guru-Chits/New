@@ -685,6 +685,8 @@ export class AuctionComponent implements OnInit {
   onSubmit() {
 
     if (this.regular) {
+
+      console.log("reg")
       payload = {
         groupId: this.auctionForm.value.groupId,
         walletBalance: this.auctionForm.value.walletBalance,
@@ -792,89 +794,88 @@ export class AuctionComponent implements OnInit {
       payload = ""
     }
     this.service.saveAuctionDetails(payload).subscribe((response: any) => {
-      this.auctionData = response.data;
+      this.auctionData = response.newChitManagement;
       this.isSubmitted = true;
       if (this.purchase == true) {
         this.service.deleteAuction(this.purchaseId).subscribe((res) => {
         })
       }
 
-      const nextMonth = this.getNextMonthSameDate(response.data.date)
+      // const nextMonth = this.getNextMonthSameDate(response.newChitManagement.date)
       if (this.regular || this.tknCompany) {
-        // if (response.data.auctionCycle == 19) {
-        //   nextWallet = this.chitData.chitAmount - response.data.walletBalance
-        // } else if (response.data.auctionCycle >= 20) {
+        // if (response.newChitManagement.auctionCycle == 19) {
+        //   nextWallet = this.chitData.chitAmount - response.newChitManagement.walletBalance
+        // } else if (response.newChitManagement.auctionCycle >= 20) {
         //   nextWallet = 0
         // }
         // else {
         //   nextWallet = this.chitData.chitAmount
         // }
-
         var nextWallet = Number(this.auctionForm.value.winningBid) - Number(this.auctionForm.value.foremanCommision)
-        this.paymentService.saveTransactionDetails(response.data.groupId, +nextWallet).subscribe(
+        this.paymentService.saveTransactionDetails(response.newChitManagement.groupId, +nextWallet).subscribe(
           (response) => {
           })
       } else if (this.profitChit) {
         const profitPrized = Number(this.auctionForm.value.prizedAmount) + Number(this.auctionForm.value.foremanCommision)
-        this.paymentService.saveTransactionDetails(response.data.groupId, -profitPrized).subscribe(
+        this.paymentService.saveTransactionDetails(response.newChitManagement.groupId, -profitPrized).subscribe(
           (response) => {
           })
       }
       // this.ticketId=this.auctionData.ticketId
-      const createdAtDate = new Date(response.data.createdAt);
+      const createdAtDate = new Date(response.newChitManagement.createdAt);
       this.date = createdAtDate.toISOString().split('T')[0]; // Formats the date
       this.time = createdAtDate.toLocaleTimeString();  // Formats the time
       this.month = createdAtDate.toLocaleString('default', { month: 'long' });  // Full month name
       this.year = createdAtDate.getFullYear();  // Year
       var walletBalance = 0
       if (this.regular) {
-        walletBalance = response.data.prizedAmount + response.data.foremanCommision
+        walletBalance = response.newChitManagement.prizedAmount + response.newChitManagement.foremanCommision
         this.receipt = {
           time: this.time,
-          date: this.datePipe.transform(response.data.date, 'dd-MM-yyyy') || '',
+          date: this.datePipe.transform(response.newChitManagement.date, 'dd-MM-yyyy') || '',
           type: "Regular Chit",
-          prizedAmount: response.data.prizedAmount,
-          subscriberName: response.data.subscriberName,
-          occupation: response.data.occupation,
-          location: response.data.location,
-          groupId: response.data.groupId,
-          passbookNo: response.data.passbookNumber,
-          foremanCommision: response.data.foremanCommision,
-          walletBalance: response.data.walletBalance,
-          auctionCycle: response.data.auctionCycle,
-          winningBid: response.data.winningBid
+          prizedAmount: response.newChitManagement.prizedAmount,
+          subscriberName: response.newChitManagement.subscriberName,
+          occupation: response.newChitManagement.occupation,
+          location: response.newChitManagement.location,
+          groupId: response.newChitManagement.groupId,
+          passbookNo: response.newChitManagement.passbookNumber,
+          foremanCommision: response.newChitManagement.foremanCommision,
+          walletBalance: response.newChitManagement.walletBalance,
+          auctionCycle: response.newChitManagement.auctionCycle,
+          winningBid: response.newChitManagement.winningBid
         }
       } else if (this.profitChit) {
-        walletBalance = response.data.profitChitData.prizedAmount + response.data.profitChitData.foremanCommision
+        walletBalance = response.newChitManagement.profitChitData.prizedAmount + response.newChitManagement.profitChitData.foremanCommision
         this.receipt = {
           time: this.time,
           type: "Profit Chit",
-          prizedAmount: response.data.profitChitData.prizedAmount,
-          subscriberName: response.data.profitChitData.subscriberName,
-          groupId: response.data.groupId,
-          date: this.datePipe.transform(response.data.profitChitData.date, 'dd-MM-yyyy') || '',
-          occupation: response.data.profitChitData.occupation,
-          location: response.data.profitChitData.location,
-          passbookNo: response.data.profitChitData.passbookNumber,
-          winningBid: response.data.profitChitData.winningBid,
-          auctionCycle: response.data.profitChitData.auctionCycle,
-          foremanCommision: response.data.profitChitData.foremanCommision,
+          prizedAmount: response.newChitManagement.profitChitData.prizedAmount,
+          subscriberName: response.newChitManagement.profitChitData.subscriberName,
+          groupId: response.newChitManagement.groupId,
+          date: this.datePipe.transform(response.newChitManagement.profitChitData.date, 'dd-MM-yyyy') || '',
+          occupation: response.newChitManagement.profitChitData.occupation,
+          location: response.newChitManagement.profitChitData.location,
+          passbookNo: response.newChitManagement.profitChitData.passbookNumber,
+          winningBid: response.newChitManagement.profitChitData.winningBid,
+          auctionCycle: response.newChitManagement.profitChitData.auctionCycle,
+          foremanCommision: response.newChitManagement.profitChitData.foremanCommision,
         }
       } else if (this.purchaseChit) {
         walletBalance = 0
         this.receipt = {
           time: this.time,
-          date: this.datePipe.transform(response.data.purchaseChitData.date, 'dd-MM-yyyy') || '',
+          date: this.datePipe.transform(response.newChitManagement.purchaseChitData.date, 'dd-MM-yyyy') || '',
           type: "Purchase",
-          prizedAmount: response.data.purchaseChitData.prizedAmount,
-          subscriberName: response.data.purchaseChitData.subscriberName,
-          groupId: response.data.groupId,
-          occupation: response.data.purchaseChitData.occupation,
-          location: response.data.purchaseChitData.location,
-          passbookNo: response.data.purchaseChitData.passbookNumber,
-          winningBid: response.data.purchaseChitData.winningBid,
-          auctionCycle: response.data.purchaseChitData.auctionCycle,
-          foremanCommision: response.data.purchaseChitData.foremanCommision,
+          prizedAmount: response.newChitManagement.purchaseChitData.prizedAmount,
+          subscriberName: response.newChitManagement.purchaseChitData.subscriberName,
+          groupId: response.newChitManagement.groupId,
+          occupation: response.newChitManagement.purchaseChitData.occupation,
+          location: response.newChitManagement.purchaseChitData.location,
+          passbookNo: response.newChitManagement.purchaseChitData.passbookNumber,
+          winningBid: response.newChitManagement.purchaseChitData.winningBid,
+          auctionCycle: response.newChitManagement.purchaseChitData.auctionCycle,
+          foremanCommision: response.newChitManagement.purchaseChitData.foremanCommision,
 
         }
       } else if (this.extraPayments) {
@@ -882,20 +883,20 @@ export class AuctionComponent implements OnInit {
         this.receipt = {
           time: this.time,
           type: "Extra Payments",
-          date: this.datePipe.transform(response.data.extraPaymentData.date, 'dd-MM-yyyy') || '',
-          prizedAmount: response.data.extraPaymentData.prizedAmount,
-          subscriberName: response.data.extraPaymentData.subscriberName,
-          groupId: response.data.groupId,
-          occupation: response.data.extraPaymentData.occupation,
-          location: response.data.extraPaymentData.location,
-          passbookNo: response.data.extraPaymentData.passbookNumber,
-          winningBid: response.data.extraPaymentData.winningBid,
-          auctionCycle: response.data.extraPaymentData.auctionCycle,
-          foremanCommision: response.data.extraPaymentData.foremanCommision,
+          date: this.datePipe.transform(response.newChitManagement.extraPaymentData.date, 'dd-MM-yyyy') || '',
+          prizedAmount: response.newChitManagement.extraPaymentData.prizedAmount,
+          subscriberName: response.newChitManagement.extraPaymentData.subscriberName,
+          groupId: response.newChitManagement.groupId,
+          occupation: response.newChitManagement.extraPaymentData.occupation,
+          location: response.newChitManagement.extraPaymentData.location,
+          passbookNo: response.newChitManagement.extraPaymentData.passbookNumber,
+          winningBid: response.newChitManagement.extraPaymentData.winningBid,
+          auctionCycle: response.newChitManagement.extraPaymentData.auctionCycle,
+          foremanCommision: response.newChitManagement.extraPaymentData.foremanCommision,
 
         }
       } else if (this.tknCompany) {
-        walletBalance = response.data.TKNData.prizedAmount + response.data.TKNData.foremanCommision
+        walletBalance = response.newChitManagement.TKNData.prizedAmount + response.newChitManagement.TKNData.foremanCommision
         this.service.getTicketId(this.chitData.chitGroupId).subscribe((res) => {
           this.bidHistory = res.allData
           console.log("bid history",res.allData)
@@ -921,14 +922,14 @@ export class AuctionComponent implements OnInit {
         this.receipt = {
           time: this.time,
           type: "Tkn Company",
-          prizedAmount: response.data.TKNData.prizedAmount,
-          // subscriberName:response.data.TKNData.subscriberName,
-          groupId: response.data.groupId,
-          date: this.datePipe.transform(response.data.TKNData.date, 'dd-MM-yyyy') || '',
-          // passbookNo:response.data.TKNData.passbookNumber,
-          winningBid: response.data.TKNData.winningBid,
-          auctionCycle: response.data.TKNData.auctionCycle,
-          foremanCommision: response.data.TKNData.foremanCommision,
+          prizedAmount: response.newChitManagement.TKNData.prizedAmount,
+          // subscriberName:response.newChitManagement.TKNData.subscriberName,
+          groupId: response.newChitManagement.groupId,
+          date: this.datePipe.transform(response.newChitManagement.TKNData.date, 'dd-MM-yyyy') || '',
+          // passbookNo:response.newChitManagement.TKNData.passbookNumber,
+          winningBid: response.newChitManagement.TKNData.winningBid,
+          auctionCycle: response.newChitManagement.TKNData.auctionCycle,
+          foremanCommision: response.newChitManagement.TKNData.foremanCommision,
         }
       } else {
         this.receipt = ""
@@ -1091,6 +1092,8 @@ export class AuctionComponent implements OnInit {
 
   openModal() {
     this.isModalOpen = true;
+
+    console.log("open")
   }
 
   // Function to close the modal

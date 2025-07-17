@@ -136,8 +136,8 @@ export class PaymentsComponent implements OnInit {
             }, 0);
             const paymentAmount = (chitAmount / 20) * 17
             const difference = this.getMonthDifference(formattedDate, installmentMonth);
-
-           if (difference <= 17 && totalAmount > paymentAmount) {
+            console.log(difference)
+           if (difference < 16 && totalAmount > paymentAmount) {
              this.paymentForm.get('amount')?.setErrors({ seventeenthPayment: true });
             this.paymentForm.get('amount')?.markAsTouched();
           } else {
@@ -146,7 +146,7 @@ export class PaymentsComponent implements OnInit {
             }
           }
 
-            if (difference >= 17 && Number(amount) > Number(chitAmount)) {
+            if (difference >= 16 && Number(amount) > Number(chitAmount)) {
               this.paymentForm.get('amount')?.setErrors({ excessPayment: true });
               this.paymentForm.get('amount')?.markAsTouched();
             } else {
@@ -517,7 +517,7 @@ export class PaymentsComponent implements OnInit {
 
           totalAmount = Number(totalAmount) + Number(amount)
 
-          if (difference <= 17 && totalAmount > paymentAmount) {
+          if (difference <= 16 && totalAmount > paymentAmount) {
              this.paymentForm.get('amount')?.setErrors({ seventeenthPayment: true });
             this.paymentForm.get('amount')?.markAsTouched();
           } else {
@@ -527,7 +527,7 @@ export class PaymentsComponent implements OnInit {
           }
 
           const perMonth = this.groupDetails.data.chitAmount / 20;
-          if (difference >= 17 && Number(amount) > Number(perMonth)) {
+          if (difference >= 16 && Number(amount) > Number(perMonth)) {
             this.paymentForm.get('amount')?.setErrors({ excessPayment: true });
             this.paymentForm.get('amount')?.markAsTouched();
           } else {

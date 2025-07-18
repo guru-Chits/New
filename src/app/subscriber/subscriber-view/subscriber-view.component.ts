@@ -43,7 +43,7 @@ export class SubscriberViewComponent implements OnInit {
   groups: any
   showPopup: any
   isConfirmationModalOpen: boolean = false;
-  deleteSubId:string
+  deleteSubId: string
   constructor(private service: SubscriberService, private authService: AuthService, private activatedRoute: ActivatedRoute, private router: Router, private chitService: ChitService, private paymentService: PaymentService, private datePipe: DatePipe,
   ) { }
 
@@ -73,21 +73,44 @@ export class SubscriberViewComponent implements OnInit {
               this.chitService.getTicketId(group.chitGroupId).subscribe((acuData) => {
                 const auctionData = acuData.allData
                 const fistAuc = this.datePipe.transform(auctionData[0].date, 'yyyy-MM')
-                const lastAuc = this.datePipe.transform(auctionData[auctionData.length - 1].date, 'yyyy-MM')                
-                this.paymentService.getTotalByGroupId(fistAuc, group.chitGroupId, group.passbookNo, lastAuc).subscribe((PayData) => {                  
-                  let toPay = (acuData.allData.length - acuData.profitCount) * group.chitAmount / 20                  
-                  let paid = PayData.totalSubPassbookNoAmount
-                  let balance = toPay - paid
-                  this.balance = balance
-                  this.chitGroup[index] = {
-                    ...this.chitGroup[index],
-                    balance: balance,
-                    winningBid: auctionData[auctionData.length - 1].winningBid,
-                    prizedAmount: auctionData[auctionData.length - 1].prizedAmount,
-                  };
-                  if (balance > 0) {
-                    this.totalAmountOutstanding += balance;
+                const lastAuc = this.datePipe.transform(auctionData[auctionData.length - 1].date, 'yyyy-MM')
+                const difference = this.getMonthDifference(fistAuc, lastAuc)
+                this.paymentService.getTotalByGroupId(fistAuc, group.chitGroupId, group.passbookNo, lastAuc).subscribe((PayData) => {
+                  if (acuData.allData.length == 20) {
+                    this.paymentService.getTransactionById(group.chitGroupId).subscribe((response: any) => {
+                      const wallet = (group.chitAmount - response.payment[0].walletBalance) / 20
+                      const toPay = ((acuData.allData.length - acuData.profitCount - 1) * group.chitAmount / 20) + wallet
+                      let paid = PayData.totalSubPassbookNoAmount
+                      let balance = toPay - paid
+                      this.balance = balance
+                      this.chitGroup[index] = {
+                        ...this.chitGroup[index],
+                        balance: balance,
+                        winningBid: auctionData[auctionData.length - 1].winningBid,
+                        prizedAmount: auctionData[auctionData.length - 1].prizedAmount,
+                      };
+                      if (balance > 0) {
+                        this.totalAmountOutstanding += balance;
+                      }
+                    })
+
+                  } else {
+                    const toPay = (acuData.allData.length - acuData.profitCount) * group.chitAmount / 20
+                    let paid = PayData.totalSubPassbookNoAmount
+                    let balance = toPay - paid
+                    this.balance = balance
+                    this.chitGroup[index] = {
+                      ...this.chitGroup[index],
+                      balance: balance,
+                      winningBid: auctionData[auctionData.length - 1].winningBid,
+                      prizedAmount: auctionData[auctionData.length - 1].prizedAmount,
+                    };
+                    if (balance > 0) {
+                      this.totalAmountOutstanding += balance;
+                    }
+
                   }
+
                 })
               })
               this.chitService.getSubAuction(group.passbookNo).subscribe(response => {
@@ -133,6 +156,16 @@ export class SubscriberViewComponent implements OnInit {
       this.displayedSubscribers = this.data.slice(0, this.itemsPerPage);
     })
   }
+  getMonthDifference(startDateStr: string, endDateStr: string): number {
+    const startDate = new Date(startDateStr);
+    const endDate = new Date(endDateStr);
+
+    const yearsDiff = endDate.getFullYear() - startDate.getFullYear();
+    const monthsDiff = endDate.getMonth() - startDate.getMonth();
+
+    return yearsDiff * 12 + monthsDiff + 1;
+  }
+
   getByPassbook(passbookNo: string, index: any) {
     this.paymentHistoryToggled[index] = !this.paymentHistoryToggled[index];
     this.paymentService.verifyPassbookNo(passbookNo).subscribe(data => {
@@ -248,29 +281,29 @@ export class SubscriberViewComponent implements OnInit {
   }
   delete(id: any) {
     if (this.canDelete) {
-        this.service.deleteSubscriber(id).subscribe({
-            next: (response: any) => {
-                window.alert(response.message);  // Show API message in a popup
-                this.router.navigate(['/subscriber']); // Redirect after deletion
-            },
-            error: (error: any) => {
-                window.alert(error.error.message); // Show error response in a popup
-            }
-        });
+      this.service.deleteSubscriber(id).subscribe({
+        next: (response: any) => {
+          window.alert(response.message);  // Show API message in a popup
+          this.router.navigate(['/subscriber']); // Redirect after deletion
+        },
+        error: (error: any) => {
+          window.alert(error.error.message); // Show error response in a popup
+        }
+      });
     }
-}
+  }
   openConfirmationModal(subId: string) {
-    this.deleteSubId=subId
+    this.deleteSubId = subId
     this.isConfirmationModalOpen = true;
   }
 
-  confirm(){
-  this.delete(this.deleteSubId)
-  this.isConfirmationModalOpen = false;
+  confirm() {
+    this.delete(this.deleteSubId)
+    this.isConfirmationModalOpen = false;
   }
-  cancel(){
-  this.isConfirmationModalOpen = false;
-  this.deleteSubId=""
+  cancel() {
+    this.isConfirmationModalOpen = false;
+    this.deleteSubId = ""
   }
 
   formatDate(dateString: string): string {
@@ -294,9 +327,9 @@ export class SubscriberViewComponent implements OnInit {
   navigate(id: any) {
     this.router.navigate([`subscriber/view/${id}`]);
   }
-  
+
   getFirstLetter(name: string): string {
     return name ? name.charAt(0).toUpperCase() : '';
   }
-  
+
 }

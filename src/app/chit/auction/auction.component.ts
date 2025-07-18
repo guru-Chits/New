@@ -197,13 +197,10 @@ export class AuctionComponent implements OnInit {
             }
 
             if (this.regularFirst) {
-              console.log("chit dataaaaa",this.chitData.auctionDate)
               this.auctionForm.patchValue({
                 date: this.convertDateFormat(this.datePipe.transform(this.chitData.auctionDate,'dd-MM-yyyy'))
               })
-              console.log("date",this.convertDateFormat(this.datePipe.transform(this.chitData.auctionDate,'dd-MM-yyyy'))
-            )
-              
+
             } else if (this.noReg && !this.regularFirst || this.tknMonth) {
               this.auctionForm.patchValue({
                 date: this.convertDateFormat(this.datePipe.transform(res.lastChit.date, 'dd-MM-yyyy'))
@@ -291,7 +288,6 @@ export class AuctionComponent implements OnInit {
           })
 
           this.subscribers = this.chitData.chitSubscribers;
-          console.log("thissssssssss.subscribers",this.subscribers)
           this.subCount = this.subscribers.length
 
 
@@ -306,7 +302,6 @@ export class AuctionComponent implements OnInit {
             profileImageUrl: subscriber.subscriberDetails.profileImageUrl
           }));
 
-          console.log("updated subscribers",this.subscribers)
           this.autofillForm();
         });
       }
@@ -575,8 +570,6 @@ export class AuctionComponent implements OnInit {
     if (passbookNumber && groupId) {
       this.service.getByPassbooNo(passbookNumber).subscribe((details: SubscriberDetails) => {
         this.subDetails = details
-        console.log("SUBDETAILS",this.subDetails)
-
         this.auctionForm.patchValue({
           subscriberName: `${this.subDetails.subscriberDetails.fullDetails.firstName} ${this.subDetails.subscriberDetails.fullDetails.aliasName}`,
           // passbookNumber: this.subDetails.chitDetails.passbookNo,
@@ -685,8 +678,6 @@ export class AuctionComponent implements OnInit {
   onSubmit() {
 
     if (this.regular) {
-
-      console.log("reg")
       payload = {
         groupId: this.auctionForm.value.groupId,
         walletBalance: this.auctionForm.value.walletBalance,
@@ -899,7 +890,6 @@ export class AuctionComponent implements OnInit {
         walletBalance = response.newChitManagement.TKNData.prizedAmount + response.newChitManagement.TKNData.foremanCommision
         this.service.getTicketId(this.chitData.chitGroupId).subscribe((res) => {
           this.bidHistory = res.allData
-          console.log("bid history",res.allData)
           this.regularFirst = this.bidHistory?.length
 
           const firstAuction = this.bidHistory?.length || 0;
@@ -1092,8 +1082,6 @@ export class AuctionComponent implements OnInit {
 
   openModal() {
     this.isModalOpen = true;
-
-    console.log("open")
   }
 
   // Function to close the modal

@@ -136,7 +136,6 @@ export class PaymentsComponent implements OnInit {
             }, 0);
             const paymentAmount = (chitAmount / 20) * 17
             const difference = this.getMonthDifference(formattedDate, installmentMonth);
-            console.log(difference)
            if (difference < 16 && totalAmount > paymentAmount) {
              this.paymentForm.get('amount')?.setErrors({ seventeenthPayment: true });
             this.paymentForm.get('amount')?.markAsTouched();

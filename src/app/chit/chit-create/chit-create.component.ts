@@ -165,7 +165,6 @@ export class ChitCreateComponent {
   }
   profileImageWithIdRenderer(params: any): string {
     const imageUrl = params.data.profileImageUrl;
-    console.log("params_data",params.data)
 
     // return `
     //   <div style="display: flex; align-items: center;">
@@ -174,7 +173,6 @@ export class ChitCreateComponent {
     //   </div>
     // `;
     const subscribeName = params.data.firstName
-    console.log("hjjjjjjjjjjjjjjjjjjjjj",subscribeName)
     const firstLetter = subscribeName.charAt(0).toUpperCase(); // Get first letter
     if (imageUrl) {
       // If image exists, return the image tag
@@ -280,7 +278,6 @@ export class ChitCreateComponent {
         })
       );
       this.displayedSubscribers = this.data;
-      console.log("displayedSubscribersssssssssssss",this.displayedSubscribers)
     });
   }
 
@@ -301,7 +298,6 @@ export class ChitCreateComponent {
     this.subService.getsubscriberById(id).subscribe(
       (res) => {
         this.subData = res;
-        console.log("subData detailssssssssssssssss",this.subData)
         const newSubscriber = {
           subscriberId: this.subData.Subscriber.subscriberId,
           profileImageUrl: this.subData.Subscriber.profileImageUrl,
@@ -312,7 +308,6 @@ export class ChitCreateComponent {
           collectionType: this.collectionTypeForm.get('collectionType')?.value,
           subId: this.subData.Subscriber._id
         };
-        console.log("newsubscribers...",newSubscriber)
         if (
           chitSubscribers.some(
             (sub) => sub.subscriberId === newSubscriber.subscriberId
@@ -324,7 +319,6 @@ export class ChitCreateComponent {
           return;
         }
         chitSubscribers.push(newSubscriber);
-        console.log("chitsubbbbb",newSubscriber)
         this.chitGroupForm.patchValue({ chitSubscribers });
         this.chitSubscribersData = [...chitSubscribers];
         this.chitSubLength = this.chitSubscribersData.length;
@@ -382,28 +376,6 @@ export class ChitCreateComponent {
       const groupId = data.newChitGroup.chitGroupId;
       this.walletBalance = data.newChitGroup.chitAmount;
       this.futureDate = data.newChitGroup.auctionDate;
-
-      // Debug logs
-      console.log('groupId:', groupId);
-      console.log('walletBalance:', this.walletBalance);
-      console.log('auctionDateString:', this.futureDate);
-
-      // if (this.walletBalance !== null) {
-      //   this.paymentService
-      //     .saveTransactionDetails(groupId, this.walletBalance, this.futureDate)
-      //     .subscribe(
-      //       (response) => {
-      //         console.log('Transaction response:', response);
-      //         // alert(response.message);
-      //       },
-      //       (error) => {
-      //         console.error('Error:', error);
-      //         // alert('Failed to schedule or process the transaction');
-      //       }
-      //     );
-      // } else {
-      //   // alert('Please provide the necessary details.');
-      // }
     });
 
     if (this.chitGroupForm.valid) {

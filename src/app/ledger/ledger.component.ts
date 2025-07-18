@@ -302,8 +302,9 @@ export class LedgerComponent implements OnInit {
   }
 
 
-  get_group_Details(groupId: string) {
-    this.downloadCSV(this.groupPaymentData, groupId);
+  get_group_Details(groupId: string,chitAmount:number) {
+    
+    this.downloadCSV(this.groupPaymentData, groupId,chitAmount);
   }
 
   getMonthDifference(startDateStr: string, endDateStr: string): number {
@@ -317,25 +318,38 @@ export class LedgerComponent implements OnInit {
   }
 
 
-  getOutstandingBalance(groupId: string, passbookNo: string): Promise<number> {
+  getOutstandingBalance(groupId: string, passbookNo: string,chitAmount:number): Promise<number> {
     return new Promise((resolve) => {
       this.chitService.getTicketId(groupId).subscribe((acuData) => {
         const auctionData = acuData.allData;
         const firstAuc = this.datePipe.transform(auctionData[0].date, 'yyyy-MM');
         const lastAuc = this.datePipe.transform(this.chosenDate, 'yyyy-MM');
-        
+        const difference=this.getMonthDifference(firstAuc,lastAuc)
+     
         this.paymentService.getTotalByGroupId(firstAuc, groupId, passbookNo, lastAuc).subscribe((PayData) => {
-          const toPay = (auctionData.length - acuData.profitCount) * this.adjustedAmount / 20;
-          const paid = PayData.totalSubPassbookNoAmount;
-          const balance = toPay - paid;
-          resolve(balance);
+
+          if((difference+acuData.profitCount)==20){
+             this.paymentService.getTransactionById(groupId).subscribe((response:any) => {
+             const wallet=(chitAmount-response.payment[0].walletBalance)/20
+             const toPay = (difference - 1)*chitAmount/ 20 + wallet
+            const paid = PayData.totalSubPassbookNoAmount;
+            const balance = toPay - paid;
+            resolve(balance);
+
+             })
+          } else{
+            const toPay = (difference)*chitAmount/ 20; 
+            const paid = PayData.totalSubPassbookNoAmount;
+            const balance = toPay - paid;
+            resolve(balance);
+
+          }
         });
       });
     });
   }
-  async downloadCSV(data: any, groupId: string) {
+  async downloadCSV(data: any, groupId: string,chitAmount:number) {
     // Extract the required fields4
-    console.log(data, "data")
     // const balance = await this.getOutstandingBalance(groupId, data.passbookNo);
     const selectedData = await Promise.all(data.map(async (subscriber: any) => {
       return {
@@ -346,7 +360,7 @@ export class LedgerComponent implements OnInit {
         collectionType: subscriber.collectionType,
         route: subscriber.subscriberDetails.routeId,
         prizedType: subscriber.prizedStatus || "Non-Prized",
-        OutStandingBalance:  await this.getOutstandingBalance(groupId, subscriber.passbookNo)
+        OutStandingBalance:  await this.getOutstandingBalance(groupId, subscriber.passbookNo,chitAmount)
       };
     }));
     // Convert to CSV format

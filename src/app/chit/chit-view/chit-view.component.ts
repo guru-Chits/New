@@ -117,7 +117,6 @@ column: ITableColumn[] = [
   getAllChit() {
     this.service.getAllChit().subscribe((data) => {
       this.totalChitData = data;
-      console.log("groupdetails",this.totalChitData)
       this.totalChitData = this.totalChitData?.AllChitGroups
       this.displayedChit = this.totalChitData
       this.displayedChit = this.totalChitData.slice(0, 5);
@@ -144,7 +143,6 @@ column: ITableColumn[] = [
       if (Object.keys(paramData).length) {
         this.service.getChitById(paramData.id).subscribe((data) => {
           this.chitData = data;
-          console.log("chitdata",this.chitData)
           this.chitData = this.chitData.ChitsGroup;
           this.groupId = this.chitData.chitGroupId;
 
@@ -156,7 +154,6 @@ column: ITableColumn[] = [
             this.bidHistory=res.allData
             this.auctionCycle=res.auctionCycle
             this.prizedSub=this.bidHistory?.length
-            console.log("bid history data",res.allData)
             this.bidHistory = res.allData.map((history, index) => ({
               sNo: index + 1, // Use the index parameter and add 1 for serial number
               passbookNumber: history.passbookNumber,
@@ -171,8 +168,6 @@ column: ITableColumn[] = [
             }));
             
              });
-             console.log(this.groupId);
-    
              this.getByGroupId(this.groupId,this.chitData.chitSubscribers,this.chitData.chitAmount)
           
           if (this.chitData.addChitSubscribers && this.chitData.addChitSubscribers.length > 0) {
@@ -224,7 +219,6 @@ column: ITableColumn[] = [
             this.service.getTicketId(this.groupId).subscribe((res) => {
             this.colorCode = res
           });
-          console.log("subscriberssssssssssssssssssssss",this.subscribers)
           const updatedSubscribers = this.subscribers.map(async (subscriber) => {
             const result = await this.service.findTicketInGroup(this.groupId, subscriber.passbookNo).toPromise();
             
@@ -236,7 +230,6 @@ column: ITableColumn[] = [
           
           Promise.all(updatedSubscribers).then((finalSubscribers) => {
             this.subscribers = finalSubscribers;
-            console.log("subscriber dddddddddddddddddddddd",this.subscribers)
           });
           this.addSubscribers = this.chitData.addChitSubscribers;
         });
@@ -249,23 +242,17 @@ column: ITableColumn[] = [
   async getByGroupId(groupId: string, chitSubscribers: any[] ,chitAmount:number) {
     const adjustedAmount = await this.calculateChitAmount(chitAmount, groupId);
     this.totalAmount=adjustedAmount/20 *chitSubscribers.length
-    console.log(this.totalAmount);
     
     this.service.getTicketId(this.groupId).subscribe((data) => {
       const allData=data.allData
 
-      console.log(allData);
       this.lastAucDate=this.datePipe.transform(allData[allData.length-1].date,
        'dd-MMMM-yyyy'
      );
      this.lastAucDate=this.incrementInstallmentMonth(this.lastAucDate)
-     console.log(this.lastAucDate);
 
       this.paymentService.getTotalByGroupId(this.lastAucDate,this.groupId).subscribe(data => {
-        console.log(data);
-          this.groupSurplus=data.totalGroupAmount
-          console.log(this.groupSurplus);
-          
+          this.groupSurplus=data.totalGroupAmount          
       })
     })
   }
@@ -309,10 +296,6 @@ column: ITableColumn[] = [
       const latestChit = auctionCycleData?.allData || [];
       const lastInstallmentDate = this.datePipe.transform(latestChit[latestChit.length - 1]?.date, 'dd-MMMM-yyyy');
       const installmentMonth =this.datePipe.transform(latestChit[latestChit.length - 1]?.date, 'dd-MMMM-yyyy');
-
-      console.log(lastInstallmentDate,installmentMonth);
-      
-      console.log(auctionCycleData.auctionCycle >= 19 && lastInstallmentDate == installmentMonth);
       
       // Check condition: If auction cycle >= 19 and dates match
       if (auctionCycleData.auctionCycle >= 19 && lastInstallmentDate === installmentMonth) {
@@ -322,7 +305,6 @@ column: ITableColumn[] = [
         const payments=this.payments?.payment || []
         // Calculate wallet balance from payments
         const walletBalance = payments.reduce((sum, payment) => sum + (payment.walletBalance || 0), 0);
-        console.log(walletBalance);
         
         // Calculate adjusted amount
         return chitAmount - walletBalance;
@@ -447,7 +429,6 @@ column: ITableColumn[] = [
 
       }))
       this.displayedSubscribers = this.data.slice(0, this.itemsPerPage);
-      console.log("displayedSubscribersssssdetails",this.displayedSubscribers)
     })
   }
 
@@ -466,7 +447,6 @@ column: ITableColumn[] = [
       this.subscriberDetail = null;
     } else {
       this.subscriberDetail = this.displayedSubscribers.find(sub => sub.id === id);
-      console.log("SSSSSSSSssssssssssssssssss",this.subscriberDetail)
     }
   }
 
@@ -474,7 +454,6 @@ column: ITableColumn[] = [
     this.subservice.getsubscriberById(id).subscribe(
       data => {
         this.subscriberDetail = data;
-        console.log("subscriberDetailssssssssssss",this.subscriberDetail)
         this.selectedSubscriberId = this.subscriberDetail.Subscriber.subscriberId;
       },
       error => {
@@ -702,11 +681,7 @@ column: ITableColumn[] = [
 
   getChitById(id: string) {    
     this.showTicket = true;
-    console.log("subbbbbbbb",this.subscribers)
     this.filteredSubscribers = this.subscribers.filter(subscriber => subscriber._id === id);
-    console.log("filteredsubbbbbbbbbb",this.filteredSubscribers)
-    console.log("idddddddddValue",this.filteredSubscribers[0]?.subscriberDetails?.firstName )
-    console.log("aliasName",this.filteredSubscribers[0]?.subscriberDetails?.lastName)
     this.count=0
     // this.filteredAdditionalSubs = this.addSubscribers.filter(subscriber => subscriber._id === id);
     const subscriber = this.filteredSubscribers[0];
@@ -781,11 +756,9 @@ column: ITableColumn[] = [
   edit(passbookNo: string) {
     this.service.getByPassbooNo(passbookNo).subscribe((data: any) => {
       const editSubscriber = data;
-      console.log("editsubscriber",editSubscriber)
       editSubscriber.subscriberDetails.collectionType = this.collectionTypeForm.get('collectionType').value;
       this.service.updateSubscriber(editSubscriber.chitGroupId, passbookNo, editSubscriber.subscriberDetails).subscribe(
         (response: any) => {
-          console.log("response",response)
           this.showTicket = false;
           this.activatedRoute?.params.subscribe(paramData => {
             if (Object.keys(paramData).length) {

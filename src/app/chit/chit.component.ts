@@ -114,13 +114,10 @@ export class ChitComponent implements OnInit {
   // Process each transaction and adjust walletBalance based on auction cycle
   this.transactions.forEach((transaction) => {
     this.service.getTicketId(transaction.groupId).subscribe((data) => {
-      console.log(data.latestChit);
       const lastAuction = data.auctionCycle;
       const len=data.allData.length
       const chitData = data.allData[len-1]
       
-      console.log(lastAuction);
-
       if (lastAuction === 19) {
         // Assign full chit amount for last auction 19
         transaction.walletBalance = chitData.foremanCommision*20;
@@ -234,7 +231,6 @@ export class ChitComponent implements OnInit {
           })
           this.service.getTicketId(this.groupId).subscribe((data)=>{
             const lastAuction=data.auctionCycle
-            console.log(lastAuction);
             if (lastAuction<19) {
               this.paymentService.getTransactionById(this.groupId).subscribe((response) => {
                 this.payment = response

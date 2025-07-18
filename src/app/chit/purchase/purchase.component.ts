@@ -53,10 +53,6 @@ constructor(private paymentService:PaymentService, private fb: FormBuilder,priva
     validator: this.amountLessThanOrEqualChitAmount('ticketId') // Add custom validator here
   }
 );
-
-  console.log(this.subscriber);
-  console.log(this.chitData);
-
   // const isActive=this.purchaseForm.get('isActive')?.value;
   // console.log(isActive);
   
@@ -67,16 +63,13 @@ constructor(private paymentService:PaymentService, private fb: FormBuilder,priva
   //   this.purchaseForm.disable();
   //   this.purchaseForm.get('isActive')?.enable();
   // }
-  console.log("chitdata",this.chitData);
   this.groupId=this.chitData?.chitGroupId
 
   this.paymentService.getTransactionById(this.groupId).subscribe((response)=>{
-    console.log(response);
     this.walletBalance=response
     this.walletBalance=this.walletBalance.payment
     this.walletBalance.forEach(amount => {
       this.subscriber=amount.walletBalance
-      console.log(this.subscriber,"red");
       this.purchaseForm.patchValue({
         walletBalance:this.subscriber,
         groupId: this.groupId,
@@ -96,11 +89,8 @@ constructor(private paymentService:PaymentService, private fb: FormBuilder,priva
   this.purchaseForm.get('ticketId')?.valueChanges.subscribe(() => {
     const ticketId = this.purchaseForm.get('ticketId')?.value;
     this.service.findTicketInGroup(this.groupId,ticketId).subscribe((res)=>{
-      console.log("res tickeer id",res.purchase);
       if (res.purchase===true) {
-        // Set a validation error if the ticket already exists
-        console.log('error');
-        
+        // Set a validation error if the ticket already exists        
         this.purchaseForm.get('ticketId')?.setErrors({ ticketExists: true });
       } else if (res.result === true) {
         // Set a validation error if the ticket already exists
@@ -114,10 +104,7 @@ constructor(private paymentService:PaymentService, private fb: FormBuilder,priva
       // You can call this after validation to handle other logic
       if (ticketId && this.groupId) {
         this.service.getSubscriberByTicketId(ticketId, this.groupId).subscribe((details) => {
-          console.log(details);
-          this.subDetails=details
-          console.log(this.subDetails);
-          
+          this.subDetails=details          
           this.purchaseForm.patchValue({
             subscriberName: `${this.subDetails.chitDetails.firstName} ${this.subDetails.chitDetails.aliasName}`,
             passbookNumber: this.subDetails.chitDetails.passbookNo,
@@ -144,13 +131,10 @@ this.purchaseForm.get('winningBid')?.valueChanges.subscribe(()=>{
 
  incrementAuctionCycle(): void{
   // debugger
-  const groupId=this.chitData?.chitGroupId;
-  console.log(groupId);
-  
+  const groupId=this.chitData?.chitGroupId;  
   if(groupId){
     this.service.getAuctionCycleByGroupId(groupId).subscribe((data) => {
       const cycle = data
-      console.log('increased cycle', cycle)
       this.purchaseForm.patchValue({
         auctionCycle: `${cycle?.auctionCycle}`
       })
@@ -186,7 +170,6 @@ showModal(): void {
 }
 
 getDataById(id:any){
-  console.log(id)
   this.service.getAuctionById(id).subscribe(
     data => {
       this.chitDetail = data.data;
@@ -196,7 +179,6 @@ getDataById(id:any){
 
     this.recDate =createdAtDate.toISOString().split('T')[0]; // Formats the date
     this.recTime = createdAtDate.toLocaleTimeString();  // Formats the time
-      console.log(this.chitDetail)
     },
     error => {
       console.error('Error fetching subscriber', error);
@@ -244,21 +226,16 @@ getDataById(id:any){
     },
 }
   this.service.saveAuctionDetails(payload).subscribe((response:any) => {
-    console.log(response.data.purchaseChitData);
     this.ticketId=response.data.purchaseChitData.ticketId
     this.ticketIdChange.emit(this.ticketId);
-    console.log(response.data.createdAt);
-    console.log(response.data.createdAt);
     const createdAtDate = new Date(response.data.createdAt);
     this.incrementAuctionCycle()
 
     this.paymentService.getTransactionById(this.groupId).subscribe((response)=>{
-      console.log(response);
       this.walletBalance=response
       this.walletBalance=this.walletBalance.payment
       this.walletBalance.forEach(amount => {
         this.subscriber=amount.walletBalance
-        console.log(this.subscriber,"red");
         this.purchaseForm.patchValue({
           walletBalance:this.subscriber,
         })
@@ -332,9 +309,7 @@ getDataById(id:any){
 }
 print() {
   const printContent = document.getElementById('print-section').innerHTML;
-  const originalContent = document.body.innerHTML;
-  console.log(originalContent);
-  
+  const originalContent = document.body.innerHTML;  
   // Replace body content with modal content
   document.body.innerHTML = printContent;
 

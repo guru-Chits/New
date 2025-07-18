@@ -93,9 +93,7 @@ export class LoginComponent {
     const payload = this.loginForm.value;
 
     this.service.getLoginDetail(payload.employeeId).subscribe(response => {
-      this.response = response
-      console.log(this.response.accessToken);
-      
+      this.response = response      
       localStorage.setItem('accessToken',this.response.accessToken)
 
       if (!this.response.success) {

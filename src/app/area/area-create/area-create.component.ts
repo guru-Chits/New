@@ -127,11 +127,8 @@ export class AreaCreateComponent implements OnInit{
         this.buttonTxt="Save Changes"
         this.service.getrouteById(paramData.id).subscribe((data) => {
           this.editData = data;
-          console.log(this.editData);
           
-          this.id=this.editData.Route._id
-          console.log(this.id);
-          
+          this.id=this.editData.Route._id          
            const updatedRoute = { ...this.editData.Route};
             this.routeForm.patchValue(updatedRoute);
     
@@ -143,13 +140,9 @@ export class AreaCreateComponent implements OnInit{
     })
       
   }
-  getrouteAll(): void{
-      console.log("region data");
-      
+  getrouteAll(): void{      
       this.service.getrouteAll().subscribe((data)=>{
-    this.routeData=data;
-    console.log("kk",this.routeData)
-  
+    this.routeData=data;  
   
     this.totalCount=this.routeData.AllRoute.length
     this.data=this.routeData.AllRoute.map((routeDetails,index)=>({
@@ -165,7 +158,6 @@ export class AreaCreateComponent implements OnInit{
       }));
        // Initially display only the first 'itemsToShow' records
        this.displayedRoute = this.data.slice(0, this.itemsToShow);
-       console.log("Initial displayed data", this.displayedRoute);
       // this.displayedRoute = this.data;
       // console.log(this.displayedRoute);
       
@@ -178,28 +170,23 @@ export class AreaCreateComponent implements OnInit{
     
         // Update the displayedRegion with the newly added data
         this.displayedRoute = this.data.slice(0, this.itemsToShow);
-        console.log("Loaded more data", this.displayedRoute);
     }
     
   
   edit(id: any){
-    console.log(id);
     this.router.navigate([`area/routeedit/${id}`]);
     }
 
   
     // patch module name to the form
     onModuleChange(){
-      console.log("selected regionId", this.selectedRegionId);
       const region = this.regionIdList.find((module) => module._id === this.selectedRegionId);
       if(region){
         this.selectedRegionName = region.regionName
         // this.routeForm.get('routeName').patchValue("");
         this.routeForm.get('routeId').patchValue("");
         this.getRouteNameValue()
-      }
-      console.log("route form", this.routeForm);
-      
+      }      
     }
     getRouteNameValue() {
       const region = this.regionIdList.find((module) => module._id === this.selectedRegionId);
@@ -208,14 +195,8 @@ export class AreaCreateComponent implements OnInit{
       }
       const routeNameValue = this.routeForm.get('routeName').value;
       const regionId = this.routeForm.get('regionId').value;
-      console.log('form region id:', regionId);
-
-      
-      console.log('Route Name:', routeNameValue);
       this.selectedRouteName = routeNameValue
       this.generatedRouteID= `${this.selectedRegionName}-${this.selectedRouteName}`;
-      console.log("generatedID",this.generatedRouteID)
-
       this.routeForm.get('routeId').patchValue(this.generatedRouteID);
       // return routeNameValue;
     }
@@ -232,9 +213,7 @@ export class AreaCreateComponent implements OnInit{
         routeDesc: formValues.routeDesc,
         status: formValues.status,
       };
-      this.service.saverouteDetails(payload, this.id).subscribe((data) => {
-        console.log(data);
-  
+      this.service.saverouteDetails(payload, this.id).subscribe((data) => {  
         this.getrouteAll()
   
         // this.router.navigate(["/route"]);
@@ -247,9 +226,7 @@ export class AreaCreateComponent implements OnInit{
       this.service.getrouteById(id).subscribe(
         data => {
           this.routeDetail = data;
-    
-          console.log("region",this.routeDetail)
-        },
+            },
         error => {
           console.error('Error fetching subscriber', error);
         }

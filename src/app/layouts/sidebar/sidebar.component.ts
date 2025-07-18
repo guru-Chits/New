@@ -42,13 +42,9 @@ export class SidebarComponent implements OnInit {
       this.roleAccess = response;
       this.roleDetail = this.roleAccess?.roleAccess?.roleDetails;
 
-      if (this.roleDetail) {
-        console.log(NavigationMenus);
-        
+      if (this.roleDetail) {        
         this.menuItems = NavigationMenus.filter(menuItem => {
-          const moduleAccess = this.roleDetail.find(rd => rd.moduleName === menuItem.title);
-          console.log(moduleAccess);
-          
+          const moduleAccess = this.roleDetail.find(rd => rd.moduleName === menuItem.title);          
           return moduleAccess && moduleAccess.accessType.view; // Show only menus with 'view' access
         });
       }

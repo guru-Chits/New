@@ -98,8 +98,6 @@ export class RegionCreateComponent implements OnInit{
     });
 
     this.activatedRoute.params.subscribe(paramData => {
-      console.log("ObjectKeys =>",Object.keys(paramData))
-      console.log("ParamData =>", paramData)
       if (Object.keys(paramData).length) {
         this.breadcrumsData  = [
           {
@@ -116,7 +114,6 @@ export class RegionCreateComponent implements OnInit{
         this.service.getregionById(paramData.id).subscribe((data) => {
           this.editData = data;
           this.id=this.editData.Region._id
-          console.log(this.id);
           
           const updatedRegion = { ...this.editData.Region};
             this.regionForm.patchValue(updatedRegion);
@@ -126,11 +123,9 @@ export class RegionCreateComponent implements OnInit{
   })
   }
   getAllRegion(): void {
-    console.log("region data");
 
     this.service.getregionAll().subscribe((data) => {
       this.regionData = data;
-      console.log("Full region data", this.regionData);
       
       this.totalCount = this.regionData.AllRegion.length;
       
@@ -145,7 +140,6 @@ export class RegionCreateComponent implements OnInit{
 
       // Initially display only the first 'itemsToShow' records
       this.displayedRegion = this.data.slice(0, this.itemsToShow);
-      console.log("Initial displayed data", this.displayedRegion);
     });
   }
 
@@ -156,7 +150,6 @@ export class RegionCreateComponent implements OnInit{
 
     // Update the displayedRegion with the newly added data
     this.displayedRegion = this.data.slice(0, this.itemsToShow);
-    console.log("Loaded more data", this.displayedRegion);
   }
 
   
@@ -189,7 +182,6 @@ export class RegionCreateComponent implements OnInit{
     const payload = this.regionForm.value
     
     this.service.saveregionDetails(payload, this.id).subscribe((data) => {
-      console.log(data);
     });
 
 
@@ -218,8 +210,6 @@ export class RegionCreateComponent implements OnInit{
     this.service.getregionById(id).subscribe(
       data => {
         this.regionDetail = data;
-  
-        console.log("region",this.regionDetail)
       },
       error => {
         console.error('Error fetching subscriber', error);
@@ -227,7 +217,6 @@ export class RegionCreateComponent implements OnInit{
     );
   }
   edit(id: any){
-    console.log(id);
     this.router.navigate([`area/regionedit/${id}`]);
     this.editing=true
     }

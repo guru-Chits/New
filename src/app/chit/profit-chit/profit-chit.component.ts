@@ -64,12 +64,10 @@ ngOnInit(): void {
   this.incrementAuctionCycle()
   this.profitForm.patchValue(chitDetails);
   this.paymentService.getTransactionById(this.groupId).subscribe((response)=>{
-    console.log(response);
     this.walletBalance=response
     this.walletBalance=this.walletBalance.payment
     this.walletBalance.forEach(amount => {
       this.chitSubscriberTotal=amount.walletBalance
-      console.log(this.chitSubscriberTotal,"red");
       this.profitForm.patchValue({
         walletBalance:this.chitSubscriberTotal
       })  
@@ -83,10 +81,8 @@ ngOnInit(): void {
   this.profitForm.get('ticketId')?.valueChanges.subscribe(() => {
     const ticketId = this.profitForm.get('ticketId')?.value;
     this.service.findTicketInGroup(this.groupId,ticketId).subscribe((res)=>{
-      console.log("res tickeer id",res.extra);
       if (res.extra===true) {
         // Set a validation error if the ticket already exists
-        console.log('error');
         this.purchase=false
 
         this.profitForm.get('ticketId')?.setErrors({ ticketExists: true });
@@ -110,9 +106,7 @@ ngOnInit(): void {
       // You can call this after validation to handle other logic
       if (ticketId && this.groupId) {
         this.service.getSubscriberByTicketId(ticketId, this.groupId).subscribe((details) => {
-          console.log(details);
           this.subDetails=details
-          console.log(this.subDetails);
           
           this.profitForm.patchValue({
             subscriberName: `${this.subDetails.chitDetails.firstName} ${this.subDetails.chitDetails.aliasName}`,
@@ -132,9 +126,7 @@ winningBidChange(){
     const finalprizedAmount = this.profitForm.get('prizedAmount').value;
   const walletBalance = this.chitSubscriberTotal
   const sumOfTwo =prizedAmount+this.chitData.foremanCommission
-  console.log('sum of Two', sumOfTwo)
   const finalWallet = this.chitSubscriberTotal - sumOfTwo
-  console.log('final value', finalWallet)
 
   this.profitForm.patchValue({
       prizedAmount:prizedAmount,
@@ -161,13 +153,10 @@ amountLessThanOrEqualChitAmount(ticketIdControl: string) {
 
 incrementAuctionCycle(): void{
   // debugger
-  const groupId=this.chitData?.chitGroupId;
-  console.log(groupId);
-  
+  const groupId=this.chitData?.chitGroupId;  
   if(groupId){
     this.service.getAuctionCycleByGroupId(groupId).subscribe((data) => {
       const cycle = data
-      console.log('increased cycle', cycle)
       this.profitForm.patchValue({
         auctionCycle: `${cycle?.auctionCycle}`
       })
@@ -205,7 +194,6 @@ onSubmit(){
     },
 }
   this.service.saveAuctionDetails(payload).subscribe((response:any) => {
-    console.log(response);
     this.data=response.data
     this.profitForm.reset()
       const createdAtDate = new Date(response.data.createdAt);
@@ -216,15 +204,12 @@ onSubmit(){
       const walletBalance=response.data.profitChitData.prizedAmount+response.data.profitChitData.foremanCommision
       this.paymentService.saveTransactionDetails(response.data.groupId,-walletBalance ).subscribe(
         (response)=>{
-          console.log(response);
           this.incrementAuctionCycle()
           this.paymentService.getTransactionById(this.groupId).subscribe((response)=>{
-            console.log(response);
             this.walletBalance=response
             this.walletBalance=this.walletBalance.payment
             this.walletBalance.forEach(amount => {
               this.chitSubscriberTotal=amount.walletBalance
-              console.log(this.chitSubscriberTotal,"red");
               this.profitForm.patchValue({
                 walletBalance:this.chitSubscriberTotal
               })  
@@ -253,7 +238,6 @@ onSubmit(){
         passbookNo:response.data.profitChitData.passbookNumber,
         winningBid:response.data.profitChitData.winningBid
       }
-      console.log(this.receipt,"receipt");
       });
       this.purchase=false
 }
@@ -295,7 +279,6 @@ downloadAsPDF() {
 print() {
   const printContent = document.getElementById('print-section').innerHTML;
   const originalContent = document.body.innerHTML;
-  console.log(originalContent);
   
   // Replace body content with modal content
   document.body.innerHTML = printContent;

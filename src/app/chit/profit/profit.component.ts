@@ -62,7 +62,6 @@ export class ProfitComponent {
     this.profitForm.get('auctionStart')?.enable();
   }
   const groupId=this.chitData?.chitGroupId
-  console.log(groupId);
   const chitDetails = {
     groupId: this.chitData?.chitGroupId,
     foremanCommision: this.chitData?.foremanCommission,
@@ -70,12 +69,10 @@ export class ProfitComponent {
   this.incrementAuctionCycle()
   this.profitForm.patchValue(chitDetails);
   this.paymentService.getTransactionById(this.groupId).subscribe((response)=>{
-    console.log(response);
     this.walletBalance=response
     this.walletBalance=this.walletBalance.payment
     this.walletBalance.forEach(amount => {
       this.chitSubscriberTotal=amount.walletBalance
-      console.log(this.chitSubscriberTotal,"red");
       this.profitForm.patchValue({
         walletBalance:this.chitSubscriberTotal
       })  
@@ -89,10 +86,8 @@ export class ProfitComponent {
   this.profitForm.get('ticketId')?.valueChanges.subscribe(() => {
     const ticketId = this.profitForm.get('ticketId')?.value;
     this.service.findTicketInGroup(this.groupId,ticketId).subscribe((res)=>{
-      console.log("res tickeer id",res.purchase);
       if (res.extra===true) {
         // Set a validation error if the ticket already exists
-        console.log('error');
         
         this.profitForm.get('ticketId')?.setErrors({ ticketExists: true });
       } else if (res.result === true) {
@@ -107,9 +102,7 @@ export class ProfitComponent {
       // You can call this after validation to handle other logic
       if (ticketId && this.groupId) {
         this.service.getSubscriberByTicketId(ticketId, this.groupId).subscribe((details) => {
-          console.log(details);
           this.subDetails=details
-          console.log(this.subDetails);
           
           this.profitForm.patchValue({
             subscriberName: `${this.subDetails.chitDetails.firstName} ${this.subDetails.chitDetails.aliasName}`,
@@ -128,9 +121,7 @@ this.profitForm.get('winningBid')?.valueChanges.subscribe(()=>{
   const finalprizedAmount = this.profitForm.get('prizedAmount').value;
 const walletBalance = this.chitSubscriberTotal
 const sumOfTwo =prizedAmount+this.chitData.foremanCommission
-console.log('sum of Two', sumOfTwo)
 const finalWallet = this.chitSubscriberTotal - sumOfTwo
-console.log('final value', finalWallet)
 
 this.profitForm.patchValue({
     prizedAmount:prizedAmount,
@@ -173,12 +164,10 @@ this.profitForm.patchValue({
   incrementAuctionCycle(): void{
     // debugger
     const groupId=this.chitData?.chitGroupId;
-    console.log(groupId);
     
     if(groupId){
       this.service.getAuctionCycleByGroupId(groupId).subscribe((data) => {
         const cycle = data
-        console.log('increased cycle', cycle)
         this.profitForm.patchValue({
           auctionCycle: `${cycle?.auctionCycle}`
         })
@@ -202,7 +191,6 @@ this.profitForm.patchValue({
       },
   }
     this.service.saveAuctionDetails(payload).subscribe((response:any) => {
-      console.log(response);
       this.data=response.data
      
         const createdAtDate = new Date(response.data.createdAt);
@@ -213,16 +201,13 @@ this.profitForm.patchValue({
         const walletBalance=response.data.profitChitData.prizedAmount+response.data.profitChitData.foremanCommision
         this.paymentService.saveTransactionDetails(response.data.groupId,-walletBalance ).subscribe(
           (response)=>{
-            console.log(response);
             this.incrementAuctionCycle()
 
             this.paymentService.getTransactionById(this.groupId).subscribe((response)=>{
-              console.log(response);
               this.walletBalance=response
               this.walletBalance=this.walletBalance.payment
               this.walletBalance.forEach(amount => {
                 this.chitSubscriberTotal=amount.walletBalance
-                console.log(this.chitSubscriberTotal,"red");
                 this.profitForm.patchValue({
                   walletBalance:this.chitSubscriberTotal
                 })  
@@ -251,7 +236,6 @@ this.profitForm.patchValue({
           passbookNo:response.data.profitChitData.passbookNumber,
           winningBid:response.data.profitChitData.winningBid
         }
-        console.log(this.receipt,"receipt");
         });
    }
    downloadAsPDF() {
@@ -291,7 +275,6 @@ this.profitForm.patchValue({
   print() {
     const printContent = document.getElementById('print-section').innerHTML;
     const originalContent = document.body.innerHTML;
-    console.log(originalContent);
     
     // Replace body content with modal content
     document.body.innerHTML = printContent;

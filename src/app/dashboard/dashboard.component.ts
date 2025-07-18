@@ -64,7 +64,6 @@ export class DashboardComponent implements OnInit {
 
     this.chit_service.getAuctionToday().subscribe((data => {
       this.auctions = data
-      console.log("AUCTIONS", this.auctions)
       this.auctions = this.auctions.todaysAuction
       this.displayedAuctions = this.auctions.slice(0, 5)
     }))
@@ -80,8 +79,6 @@ export class DashboardComponent implements OnInit {
         year: item.year,
         amount: Array.isArray(item.amount) ? item.amount : new Array(12).fill(0)
       }));
-
-      console.log("Formatted Response Data:", this.Allamount);
 
       this.chartOptions = {
         chart: { type: 'line' },

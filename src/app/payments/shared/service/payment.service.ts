@@ -32,7 +32,6 @@ getTransactionAll(){
 getPaymentById(id: string){
   let url = `${this.paymentUrl}/getPaymentById/${id}`;
   return this.http.get(url)
-  console.log(url);
 }
 
 getAmountByRouteId(routeId:string){
@@ -166,8 +165,6 @@ saveTransactionDetails( groupId: string,
   ): Observable<any>{
 
     const body: any = { groupId,walletBalance ,futureDate};
-
-    console.log(body);
     
   let savetransactionUrl: string = `${this.paymentUrl}/addTransaction`
 
@@ -179,8 +176,6 @@ addWallet( groupId: string,
   ): Observable<any>{
 
     const body: any = { groupId,addWalletBalance };
-
-    console.log(body);
     
   let savetransactionUrl: string = `${this.paymentUrl}/addWallet`
 

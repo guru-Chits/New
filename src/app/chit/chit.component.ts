@@ -78,7 +78,7 @@ export class ChitComponent implements OnInit {
         this.fetchChitData();
       }
     });
-    
+
     this.service.getAuctionToday().subscribe((data => {
       this.auctions = data
       this.auctions = this.auctions.todaysAuction
@@ -107,36 +107,36 @@ export class ChitComponent implements OnInit {
     // }));
 
     this.paymentService.getAllTransaction().subscribe((response) => {
-  // Assuming response is the full response object
-  this.transactions = response;
-  this.transactions = this.transactions.AllTransaction;
+      // Assuming response is the full response object
+      this.transactions = response;
+      this.transactions = this.transactions.AllTransaction;
 
-  // Process each transaction and adjust walletBalance based on auction cycle
-  this.transactions.forEach((transaction) => {
-    this.service.getTicketId(transaction.groupId).subscribe((data) => {
-      const lastAuction = data.auctionCycle;
-      const len=data.allData.length
-      const chitData = data.allData[len-1]
-      
-      if (lastAuction === 19) {
-        // Assign full chit amount for last auction 19
-        transaction.walletBalance = chitData.foremanCommision*20;
-      } else 
-      if (lastAuction >= 20) {
-        // Assign wallet balance as 0 for auctions >= 20
-        transaction.walletBalance = 0;
-      } else {
-        // Retain wallet balance as-is for other auction cycles
-        transaction.walletBalance = transaction.walletBalance || 0;
-      }
+      // Process each transaction and adjust walletBalance based on auction cycle
+      this.transactions.forEach((transaction) => {
+        this.service.getTicketId(transaction.groupId).subscribe((data) => {
+          const lastAuction = data.auctionCycle;
+          const len = data.allData.length
+          const chitData = data.allData[len - 1]
 
-      // Recalculate total wallet balance after processing each transaction
-      this.totalWalletBalance = this.transactions.reduce((total, transaction) => {
-        return total + (transaction.walletBalance || 0); // Add walletBalance or 0 if undefined
-      }, 0);
+          if (lastAuction === 19) {
+            // Assign full chit amount for last auction 19
+            transaction.walletBalance = chitData.foremanCommision * 20;
+          } else
+            if (lastAuction >= 20) {
+              // Assign wallet balance as 0 for auctions >= 20
+              transaction.walletBalance = 0;
+            } else {
+              // Retain wallet balance as-is for other auction cycles
+              transaction.walletBalance = transaction.walletBalance || 0;
+            }
+
+          // Recalculate total wallet balance after processing each transaction
+          this.totalWalletBalance = this.transactions.reduce((total, transaction) => {
+            return total + (transaction.walletBalance || 0); // Add walletBalance or 0 if undefined
+          }, 0);
+        });
+      });
     });
-  });
-});
 
 
     this.subscriberService.getsubscriberAll().subscribe((data) => {
@@ -199,7 +199,7 @@ export class ChitComponent implements OnInit {
 
   handleChitGropDetails(id: string, index: number) {
     this.showChitDetails = true
-    this.chitSubscriberTotal=0
+    this.chitSubscriberTotal = 0
     this.selectedChit = index + 1
     this.getChitById(id)
   }
@@ -229,9 +229,9 @@ export class ChitComponent implements OnInit {
 
             }
           })
-          this.service.getTicketId(this.groupId).subscribe((data)=>{
-            const lastAuction=data.auctionCycle
-            if (lastAuction<19) {
+          this.service.getTicketId(this.groupId).subscribe((data) => {
+            const lastAuction = data.auctionCycle
+            if (lastAuction < 19) {
               this.paymentService.getTransactionById(this.groupId).subscribe((response) => {
                 this.payment = response
                 this.payment = this.payment.payment
@@ -239,12 +239,12 @@ export class ChitComponent implements OnInit {
                   this.chitSubscriberTotal = amount.walletBalance
                 });
               })
-            }else if(lastAuction == 19) {
-              this.chitSubscriberTotal =  this.specificChitData.chitAmount
-            }else if (lastAuction >=20) {
-              this.chitSubscriberTotal =  0
-            }else{
-              this.chitSubscriberTotal =  0
+            } else if (lastAuction == 19) {
+              this.chitSubscriberTotal = this.specificChitData.chitAmount
+            } else if (lastAuction >= 20) {
+              this.chitSubscriberTotal = 0
+            } else {
+              this.chitSubscriberTotal = 0
 
             }
           })

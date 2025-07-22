@@ -8,6 +8,7 @@ import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 import { DatePipe } from '@angular/common';
 import { group } from '@angular/animations';
+import { firstValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-ledger',
@@ -348,10 +349,33 @@ export class LedgerComponent implements OnInit {
       });
     });
   }
+
+async getPrizedType(passbookNo: string, groupId: any): Promise<string> {
+  const acuData = await firstValueFrom(this.chitService.getTicketId(groupId));
+
+  const regIds = Object.values(acuData.regId || {});
+  const profitTids = Object.values(acuData.profitTid || {});
+  const extraTids = Object.values(acuData.extraTid || {});
+  const purchaseIds = Object.values(acuData.purId || {});
+
+  if (acuData.regId.includes(passbookNo)) {
+    return 'Regular';
+  } else if (acuData.profitTid.includes(passbookNo)) {
+    return 'Profit';
+  } else if (acuData.extraTid.includes(passbookNo)) {
+    return 'Extra';
+  } else if (acuData.purId.includes(passbookNo)) {
+    return 'Purchase';
+  } else {
+    return 'Non-Prized';
+  }
+}
+
   async downloadCSV(data: any, groupId: string,chitAmount:number) {
     // Extract the required fields4
     // const balance = await this.getOutstandingBalance(groupId, data.passbookNo);
-    const selectedData = await Promise.all(data.map(async (subscriber: any) => {
+      const selectedData = await Promise.all(data.map(async (subscriber: any) => {
+      const prizedType = await this.getPrizedType(subscriber.passbookNo, groupId);
       return {
         chitGroupId: groupId,
         subscriberId: subscriber.subscriberDetails.subscriberId,
@@ -359,10 +383,12 @@ export class LedgerComponent implements OnInit {
         phoneNo: subscriber.subscriberDetails.contact,
         collectionType: subscriber.collectionType,
         route: subscriber.subscriberDetails.routeId,
-        prizedType: subscriber.prizedStatus || "Non-Prized",
+        prizedType:prizedType,
         OutStandingBalance:  await this.getOutstandingBalance(groupId, subscriber.passbookNo,chitAmount)
       };
+      
     }));
+
     // Convert to CSV format
     const csvHeader = "ChitGroupId,SubscriberId,SubscriberName,PhoneNo,CollectionType,Route,PrizedType,OutstandingBalance \n";
     const csvRows = selectedData.map(row =>
@@ -483,9 +509,9 @@ export class LedgerComponent implements OnInit {
     });
 
     // Match with chitSubscribers and set missing passbook amounts to 0
+  
     const result = chitSubscribers.map(subscriber => {
       const matchingPayment = paymentMap.get(subscriber.passbookNo);
-
       if (matchingPayment) {
         // Use the matching payment and sum amounts if already consolidated
         return {

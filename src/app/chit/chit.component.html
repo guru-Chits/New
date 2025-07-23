@@ -36,49 +36,89 @@
         </div>
       </div> -->
       <div class="container p-0 mt-3" *ngIf="chitdata">
-        <div class="search-bar align-self-center mb-3">
-          <span class="search-icon"><img src="assets/table/search.svg"></span>
-          <input width="20" height="20" type="text" class="border-0" placeholder="Search"
-            (input)="applyFilter($event.target.value)">
-        </div>
-        <div
-          *ngFor="let group of displayedChit | slice:(currentPage - 1) * itemsPerPage:(currentPage) * itemsPerPage; let i = index"
-          class="mb-1">
-          <div
-            class="table-group my-2 px-3 d-flex justify-content-between align-items-center rounded-end"
-           [ngClass]="{ 'highlight-red': group.auctionCycle >= 20 }"
+  <div class="search-bar align-self-center mb-3">
+    <span class="search-icon"><img src="assets/table/search.svg" /></span>
+    <input
+      width="20"
+      height="20"
+      type="text"
+      class="border-0"
+      placeholder="Search"
+      (input)="applyFilter($event.target.value)"
+    />
+  </div>
 
-            (click)="handleChitGropDetails(group._id, i)">
-            
-            <div>
-              <span class="fw-bold fs-5">{{ group.chitGroupId }}</span>
-            </div>
+<div
+  *ngFor="let group of displayedChit | slice: (currentPage - 1) * itemsPerPage : (currentPage) * itemsPerPage; let i = index"
+  class="mb-1"
+>
+  <div
+    class="table-group my-2 px-3 d-flex justify-content-between align-items-center rounded-end"
+    [ngClass]="{
+      'highlight-red': group.auctionCycle >= 20,
+      'blur-green': highlightedGroups.has(group.chitGroupId)
+    }"
+    [attr.title]="
+      highlightedGroups.has(group.chitGroupId)
+        ? 'All payments and auctions completed'
+        : group.auctionCycle >= 20
+        ? 'All auctions completed'
+        : null
+    "
+    (click)="handleChitGropDetails(group._id, i)"
+  >
+    <!-- Group ID -->
+    <div>
+      <span class="fw-bold fs-5">{{ group.chitGroupId }}</span>
+    </div>
 
-            <div *ngIf="group?.chitSubscribers?.length < 20" style="color: red;">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                class="bi bi-exclamation-circle" viewBox="0 0 16 16">
-                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
-                <path
-                  d="M7.002 11a1 1 0 1 1 2 0 1 1 0 0 1-2 0M7.1 4.995a.905.905 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0z" />
-              </svg>
-            </div>
+    <!-- Warning Icon for < 20 Subscribers -->
+    <div
+      *ngIf="group?.chitSubscribers?.length < 20"
+      style="color: red;"
+      title="Add 20 subscribers"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="16"
+        height="16"
+        fill="currentColor"
+        class="bi bi-exclamation-circle"
+        viewBox="0 0 16 16"
+      >
+        <path
+          d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"
+        />
+        <path
+          d="M7.002 11a1 1 0 1 1 2 0 1 1 0 0 1-2 0M7.1 4.995a.905.905 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0z"
+        />
+      </svg>
+    </div>
 
-            <div class="d-flex overlap-images">
-              <div *ngFor="let subscriber of group.addChitSubscribers">
-                <img [src]="subscriber.profileImageUrl" class="rounded-circle" [alt]="subscriber.initials" width="50"
-                  height="50">
-              </div>
-              <div class="fw-bold ms-2">+{{ group.chitSubscribers.length }}</div>
-            </div>
-          </div>
-        </div>
-        <!-- Pagination Controls -->
-        <div class="d-flex justify-content-center align-items-center mt-3">
-          <button class="btn next-btn " (click)="previousPage()" [disabled]="currentPage === 1">Previous</button>
-          <span class="px-4">Page {{ currentPage }} of {{ totalPages }}</span>
-          <button class="btn next-btn " (click)="nextPage()" [disabled]="currentPage === totalPages">Next</button>
-        </div>
+    <!-- Subscriber Images -->
+    <div class="d-flex overlap-images">
+      <div *ngFor="let subscriber of group.addChitSubscribers">
+        <img
+          [src]="subscriber.profileImageUrl"
+          class="rounded-circle"
+          [alt]="subscriber.initials"
+          width="50"
+          height="50"
+        />
       </div>
+      <div class="fw-bold ms-2">+{{ group.chitSubscribers.length }}</div>
+    </div>
+  </div>
+</div>
+
+  <!-- Pagination Controls -->
+  <div class="d-flex justify-content-center align-items-center mt-3">
+    <button class="btn next-btn" (click)="previousPage()" [disabled]="currentPage === 1">Previous</button>
+    <span class="px-4">Page {{ currentPage }} of {{ totalPages }}</span>
+    <button class="btn next-btn" (click)="nextPage()" [disabled]="currentPage === totalPages">Next</button>
+  </div>
+</div>
+
 
     </div>
     <div class="col-lg-4">

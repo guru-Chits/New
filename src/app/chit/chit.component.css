@@ -9,7 +9,16 @@
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   background-color: white;
 }
-
+.blur-green {
+  filter: blur(1px);
+  background-color: #fffcfc !important;
+  color: #dc3545!important;          
+            
+  transition: all 0.3s ease-in-out;
+}
+.highlight-red {
+  color: #dc3545;
+}
 .create {
   background-color: #3E3A97;
   border: none;
@@ -153,6 +162,4 @@ a {
   border: 2px solid #ccc;
 }
 
-.highlight-red {
-  color: #dc3545;
-}
+

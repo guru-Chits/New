@@ -5,10 +5,13 @@ import { LoginComponent } from '../login/login.component';
 import { AuthService } from '../shared/service/auth.service';
 import { PaymentService } from '../payments/shared/service/payment.service';
 import { SubscriberService } from '../subscriber/shared/service/subscriber.service';
+import { DatePipe } from '@angular/common';
+import { firstValueFrom } from 'rxjs';
 @Component({
   selector: 'app-chit',
   templateUrl: './chit.component.html',
-  styleUrl: './chit.component.css'
+  styleUrl: './chit.component.css',
+  providers: [DatePipe]
 })
 
 export class ChitComponent implements OnInit {
@@ -47,11 +50,15 @@ export class ChitComponent implements OnInit {
   totalPages: number = 0;
   // count: number = 0
   auctions: any
-
+  totalAmountOutstanding: number = 0
+  totalAmounttoPay: number
+  totalPayment:any
   displayedAuctions: any
   chitGroups: any
   showGroups: boolean = false
-  constructor(private router: Router, private service: ChitService, private authService: AuthService, private subscriberService: SubscriberService, private paymentService: PaymentService) { }
+  highlightedGroups: Set<string> = new Set();
+  walletBalance:any
+  constructor(private router: Router, private service: ChitService, private datePipe: DatePipe, private authService: AuthService, private subscriberService: SubscriberService, private paymentService: PaymentService) { }
 
   ngOnInit(): void {
     this.authService.checkAccess('Chit Management', 'create').subscribe((hasAccess: boolean) => {
@@ -62,11 +69,11 @@ export class ChitComponent implements OnInit {
     this.service.getAllChit().subscribe((data) => {
       this.chitdata = data;
       this.chitdata = this.chitdata?.AllChitGroups
-
+      this.totalCaluation(this.chitdata)
       this.total = this.chitdata.length
       this.displayedChit = this.chitdata;
       this.displayedChit.forEach((group: any) => {
-        this.service.getTicketId(group.chitGroupId).subscribe((data) => {
+      this.service.getTicketId(group.chitGroupId).subscribe((data) => {
           group.auctionCycle = data.auctionCycle; // attach to each group
         });
       });
@@ -156,6 +163,106 @@ export class ChitComponent implements OnInit {
 
       }))
     })
+  }
+
+
+shouldHighlight: boolean = false;
+
+async totalCaluation(chitdata: any) {
+  let totalAmountToPay = 0;
+
+  // Get all payment data first
+  const allPayments = await this.paymentService.getPaymentAll().toPromise();
+  this.totalPayment = allPayments;
+  this.totalAmountOutstanding = this.totalPayment.AllPayment.reduce((sum, payment) => {
+    return sum + Number(payment.amount);
+  }, 0);
+
+  for (const data of chitdata) {
+    const groupId = data.chitGroupId;
+    const chitAmount = data.chitAmount;
+
+    try {
+      const auctionCycleData = await this.service.getTicketId(groupId).toPromise();
+      const latestChit = auctionCycleData?.allData || [];
+      const firstAuction = latestChit[0]?.date;
+
+      if (!firstAuction) continue;
+
+      const auctionLength = auctionCycleData?.allData.length || 0;
+      const lastAuction =
+        auctionLength === 20
+          ? latestChit[auctionLength - 2]?.date
+          : latestChit[auctionLength - 1]?.date;
+
+      const monthDiff = this.getMonthDifference(firstAuction, lastAuction);
+
+      const response = await this.paymentService.getTransactionById(groupId).toPromise();
+      this.walletBalance=response
+      const wallet = chitAmount - this.walletBalance.payment[0].walletBalance;
+
+      const baseAmount = monthDiff * (chitAmount / 20 * data.chitSubscribers.length);
+      const walletAdjustment =
+        auctionLength === 20 ? (wallet / 20) * data.chitSubscribers.length : 0;
+
+      const groupAmountToPay = baseAmount + walletAdjustment;
+      totalAmountToPay += groupAmountToPay;
+
+      const groupOutstanding = groupAmountToPay; // Adjust if you have actual outstanding per group
+
+      // ✅ Highlight only if this group's outstanding ≈ toPay
+      if (Math.abs(groupOutstanding - groupAmountToPay) < 1) {
+        this.highlightedGroups.add(groupId);
+      }
+
+    } catch (error) {
+      console.error('Error in group:', groupId, error);
+    }
+  }
+
+  this.totalAmounttoPay = totalAmountToPay;
+}
+
+
+  getMonthDifference(startDateStr: string, endDateStr: string): number {
+    const startDate = new Date(startDateStr);
+    const endDate = new Date(endDateStr);
+
+    const yearsDiff = endDate.getFullYear() - startDate.getFullYear();
+    const monthsDiff = endDate.getMonth() - startDate.getMonth();
+
+    return yearsDiff * 12 + monthsDiff + 1;
+  }
+
+  getOutstandingBalance(groupId: string, passbookNo: string, chitAmount: number): Promise<number> {
+    return new Promise((resolve) => {
+      this.service.getTicketId(groupId).subscribe((acuData) => {
+        const auctionData = acuData.allData;
+        const firstAuc = this.datePipe.transform(auctionData[0].date, 'yyyy-MM');
+        const lastAuc = this.datePipe.transform(auctionData[auctionData.length - 1].date, 'yyyy-MM')
+        const difference = this.getMonthDifference(firstAuc, lastAuc)
+
+        this.paymentService.getTotalByGroupId(firstAuc, groupId, passbookNo, lastAuc).subscribe((PayData) => {
+
+          if ((difference + acuData.profitCount) == 20) {
+            this.paymentService.getTransactionById(groupId).subscribe((response: any) => {
+              const wallet = (chitAmount - response.payment[0].walletBalance) / 20
+              const toPay = (difference - 1) * chitAmount / 20 + wallet
+              const paid = PayData.totalSubPassbookNoAmount;
+              const balance = toPay - paid;
+              resolve(balance);
+
+            })
+          } else {
+            const toPay = (difference) * chitAmount / 20;
+            const paid = PayData.totalSubPassbookNoAmount;
+            const balance = toPay - paid;
+            resolve(balance);
+
+          }
+        });
+      });
+    });
   }
 
   fetchChitData(): void {

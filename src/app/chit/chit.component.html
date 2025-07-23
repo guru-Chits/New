@@ -59,7 +59,7 @@
       'blur-green':showBlur && highlightedGroups.has(group.chitGroupId)
     }"
     [attr.title]="
-      highlightedGroups.has(group.chitGroupId)
+     showBlur && highlightedGroups.has(group.chitGroupId)
         ? 'All payments and auctions completed'
         : group.auctionCycle >= 20
         ? 'All auctions completed'

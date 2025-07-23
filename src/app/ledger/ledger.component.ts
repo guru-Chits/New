@@ -56,7 +56,7 @@ export class LedgerComponent implements OnInit {
   subscriberId: string;
   chitGroup: any;
   totalPayment: any
-  totalAmounttoPay: number =0
+  totalAmounttoPay: number = 0
   constructor(private fb: FormBuilder, private chitService: ChitService, private paymentService: PaymentService, private datePipe: DatePipe, private service: SubscriberService,
   ) { }
 
@@ -115,48 +115,51 @@ export class LedgerComponent implements OnInit {
       this.totalPages = Math.ceil(this.displayedChit.length / this.itemsPerPage);
       this.calculateTotal().then(() => {
       });
-     let totalAmountToPay = 0;
+      let totalAmountToPay = 0;
 
-for (const data of this.chitdata) {
-  const chitAmount = Number(data.chitAmount || 0);
-  const numSubscribers = Number(data.chitSubscribers?.length || 0);
+      for (const data of this.chitdata) {
+        const chitAmount = Number(data.chitAmount || 0);
+        const numSubscribers = Number(data.chitSubscribers?.length || 0);
 
-  try {
-    const auctionCycleData = await this.chitService.getTicketId(data.chitGroupId).toPromise();
-    const latestChit = auctionCycleData?.allData || [];
+        try {
+          const auctionCycleData = await this.chitService.getTicketId(data.chitGroupId).toPromise();
+          const latestChit = auctionCycleData?.allData || [];
 
-    if (!latestChit.length) continue;
+          if (!latestChit.length) continue;
 
-    const firstAuction = latestChit[0]?.date;
+          const firstAuction = latestChit[0]?.date;
 
-    if (auctionCycleData?.allData.length === 20) {
-      const lastAuction = latestChit[latestChit.length - 2]?.date;
-      const totalAmountOutstanding = this.getMonthDifference(firstAuction, lastAuction);
+          if (auctionCycleData?.allData.length === 20) {
+            const lastAuction = latestChit[latestChit.length - 2]?.date;
+            const totalAmountOutstanding = this.getMonthDifference(firstAuction, lastAuction);
 
-      const response: any = await this.paymentService.getTransactionById(data.chitGroupId).toPromise();
-      const walletBalance = Number(response?.payment?.[0]?.walletBalance || 0);
-      const wallet = chitAmount - walletBalance;
+            const response: any = await this.paymentService.getTransactionById(data.chitGroupId).toPromise();
+            const walletBalance = Number(response?.payment?.[0]?.walletBalance || 0);
+            const wallet = chitAmount - walletBalance;
 
-      const amountToPay =
-        totalAmountOutstanding * (chitAmount / 20 * numSubscribers) +
-        (wallet / 20) * numSubscribers;
+            const amountToPay =
+              totalAmountOutstanding * (chitAmount / 20 * numSubscribers) +
+              (wallet / 20) * numSubscribers;
 
-      totalAmountToPay += amountToPay;
+            totalAmountToPay += amountToPay;
 
-    } else {
-      const lastAuction = latestChit[latestChit.length - 1]?.date;
-      const totalAmountOutstanding = this.getMonthDifference(firstAuction, lastAuction);
+          } else if (auctionCycleData?.allData.length < 20) {
+            const lastAuction = latestChit[latestChit.length - 1]?.date;
+            const totalAmountOutstanding = this.getMonthDifference(firstAuction, lastAuction);
 
-      const amountToPay = totalAmountOutstanding * (chitAmount / 20 * numSubscribers);
-      totalAmountToPay += amountToPay;
-    }
+            const amountToPay = totalAmountOutstanding * (chitAmount / 20 * numSubscribers);
+            totalAmountToPay += amountToPay;
+          }
+          else {
+            totalAmountToPay = 0
+          }
 
-  } catch (error) {
-    console.error("Error fetching ticket ID or transaction for:", data.chitGroupId, error);
-  }
-}
+        } catch (error) {
+          console.error("Error fetching ticket ID or transaction for:", data.chitGroupId, error);
+        }
+      }
 
-this.totalAmounttoPay = totalAmountToPay;
+      this.totalAmounttoPay = totalAmountToPay;
 
 
     })
@@ -345,40 +348,40 @@ this.totalAmounttoPay = totalAmountToPay;
     return new Promise((resolve) => {
       this.chitService.getTicketId(groupId).subscribe((acuData) => {
         const auctionData = acuData.allData;
-        const firstAuc = this.datePipe.transform(auctionData[0].date, 'yyyy-MM');
+        const firstAuc = this.datePipe.transform(auctionData[0]?.date, 'yyyy-MM');
         const lastAuc = this.datePipe.transform(this.chosenDate, 'yyyy-MM');
         const difference = this.getMonthDifference(firstAuc, lastAuc)
+        console.log(acuData.allData.length)
+        if (acuData.allData.length>0) {
+          this.paymentService.getTotalByGroupId(firstAuc, groupId, passbookNo, lastAuc).subscribe((PayData) => {
 
-        this.paymentService.getTotalByGroupId(firstAuc, groupId, passbookNo, lastAuc).subscribe((PayData) => {
-
-          if ((difference + acuData.profitCount) == 20) {
-            this.paymentService.getTransactionById(groupId).subscribe((response: any) => {
-              const wallet = (chitAmount - response.payment[0].walletBalance) / 20
-              const toPay = (difference - 1) * chitAmount / 20 + wallet
+            if ((difference + acuData.profitCount) == 20) {
+              this.paymentService.getTransactionById(groupId).subscribe((response: any) => {
+                const wallet = (chitAmount - response.payment[0].walletBalance) / 20
+                const toPay = (difference - 1) * chitAmount / 20 + wallet
+                const paid = PayData.totalSubPassbookNoAmount;
+                const balance = toPay - paid;
+                resolve(balance);
+              })
+            } else {
+              const toPay = (difference) * chitAmount / 20;
               const paid = PayData.totalSubPassbookNoAmount;
               const balance = toPay - paid;
               resolve(balance);
+            }
+          });
+        }
+        else {
+          const balance = 0
+          resolve(balance);
+        }
 
-            })
-          } else {
-            const toPay = (difference) * chitAmount / 20;
-            const paid = PayData.totalSubPassbookNoAmount;
-            const balance = toPay - paid;
-            resolve(balance);
-
-          }
-        });
       });
     });
   }
 
   async getPrizedType(passbookNo: string, groupId: any): Promise<string> {
     const acuData = await firstValueFrom(this.chitService.getTicketId(groupId));
-
-    const regIds = Object.values(acuData.regId || {});
-    const profitTids = Object.values(acuData.profitTid || {});
-    const extraTids = Object.values(acuData.extraTid || {});
-    const purchaseIds = Object.values(acuData.purId || {});
 
     if (acuData.regId.includes(passbookNo)) {
       return 'Regular';
@@ -425,7 +428,7 @@ this.totalAmounttoPay = totalAmountToPay;
 
     const a = document.createElement("a");
     a.href = url;
-    a.download = "chit_group_report.csv";
+    a.download =`${groupId}_${this.chosenDate}_report.csv`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);

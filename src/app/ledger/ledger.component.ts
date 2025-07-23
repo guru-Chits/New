@@ -56,7 +56,7 @@ export class LedgerComponent implements OnInit {
   subscriberId: string;
   chitGroup: any;
   totalPayment: any
-  totalAmounttoPay: number
+  totalAmounttoPay: number =0
   constructor(private fb: FormBuilder, private chitService: ChitService, private paymentService: PaymentService, private datePipe: DatePipe, private service: SubscriberService,
   ) { }
 
@@ -115,37 +115,49 @@ export class LedgerComponent implements OnInit {
       this.totalPages = Math.ceil(this.displayedChit.length / this.itemsPerPage);
       this.calculateTotal().then(() => {
       });
-      let totalAmountToPay = 0;
+     let totalAmountToPay = 0;
 
-      for (const data of this.chitdata) {
-        const chitAmount = data.chitAmount;
-        try {
-          const auctionCycleData = await this.chitService.getTicketId(data.chitGroupId).toPromise();
-          const latestChit = auctionCycleData?.allData || [];
-          const firstAuction = latestChit[0]?.date;
+for (const data of this.chitdata) {
+  const chitAmount = Number(data.chitAmount || 0);
+  const numSubscribers = Number(data.chitSubscribers?.length || 0);
 
-          if (auctionCycleData?.allData.length == 20) {
-            const lastAuction = latestChit[latestChit.length - 2]?.date;
-            const totalAmountOutstanding = this.getMonthDifference(firstAuction, lastAuction);
-             this.paymentService.getTransactionById(data.chitGroupId).subscribe((response: any) => {
-              const wallet = (chitAmount - response.payment[0].walletBalance)
-              const amountToPay = (totalAmountOutstanding *( chitAmount/20 * data.chitSubscribers.length)) + (wallet)/20 *  (data.chitSubscribers.length);
-              totalAmountToPay += amountToPay;
-              this.totalAmounttoPay = totalAmountToPay
-            })
+  try {
+    const auctionCycleData = await this.chitService.getTicketId(data.chitGroupId).toPromise();
+    const latestChit = auctionCycleData?.allData || [];
 
-          } else {
-            const lastAuction = latestChit[latestChit.length - 1]?.date;
-            const totalAmountOutstanding = this.getMonthDifference(firstAuction, lastAuction);
+    if (!latestChit.length) continue;
 
-            const amountToPay = totalAmountOutstanding * ( chitAmount/20 * data.chitSubscribers.length);
-            totalAmountToPay += amountToPay;
-            this.totalAmounttoPay = totalAmountToPay
-          }
-        } catch (error) {
-          console.error("Error fetching ticket ID for:", data.chitGroupId, error);
-        }
-      }
+    const firstAuction = latestChit[0]?.date;
+
+    if (auctionCycleData?.allData.length === 20) {
+      const lastAuction = latestChit[latestChit.length - 2]?.date;
+      const totalAmountOutstanding = this.getMonthDifference(firstAuction, lastAuction);
+
+      const response: any = await this.paymentService.getTransactionById(data.chitGroupId).toPromise();
+      const walletBalance = Number(response?.payment?.[0]?.walletBalance || 0);
+      const wallet = chitAmount - walletBalance;
+
+      const amountToPay =
+        totalAmountOutstanding * (chitAmount / 20 * numSubscribers) +
+        (wallet / 20) * numSubscribers;
+
+      totalAmountToPay += amountToPay;
+
+    } else {
+      const lastAuction = latestChit[latestChit.length - 1]?.date;
+      const totalAmountOutstanding = this.getMonthDifference(firstAuction, lastAuction);
+
+      const amountToPay = totalAmountOutstanding * (chitAmount / 20 * numSubscribers);
+      totalAmountToPay += amountToPay;
+    }
+
+  } catch (error) {
+    console.error("Error fetching ticket ID or transaction for:", data.chitGroupId, error);
+  }
+}
+
+this.totalAmounttoPay = totalAmountToPay;
+
 
     })
     this.paymentService.getTotalByGroupId(this.chosenDate).subscribe(data => {

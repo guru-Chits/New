@@ -52,6 +52,7 @@ export class ChitComponent implements OnInit {
   auctions: any
   totalAmountOutstanding: number = 0
   totalAmounttoPay: number
+  showBlur:boolean=false
   totalPayment:any
   displayedAuctions: any
   chitGroups: any
@@ -171,56 +172,63 @@ shouldHighlight: boolean = false;
 async totalCaluation(chitdata: any) {
   let totalAmountToPay = 0;
 
-  // Get all payment data first
+  // ✅ 1. Get all payments
   const allPayments = await this.paymentService.getPaymentAll().toPromise();
   this.totalPayment = allPayments;
-  this.totalAmountOutstanding = this.totalPayment.AllPayment.reduce((sum, payment) => {
-    return sum + Number(payment.amount);
+  this.totalAmountOutstanding = this.totalPayment?.AllPayment?.reduce((sum, payment) => {
+    return sum + Number(payment.amount || 0);
   }, 0);
 
+  // ✅ 2. Loop each chit group
   for (const data of chitdata) {
     const groupId = data.chitGroupId;
-    const chitAmount = data.chitAmount;
+    const chitAmount = Number(data.chitAmount || 0);
+    const numSubscribers = Number(data.chitSubscribers?.length || 0);
 
     try {
       const auctionCycleData = await this.service.getTicketId(groupId).toPromise();
       const latestChit = auctionCycleData?.allData || [];
+
+      if (!latestChit.length) continue;
+
       const firstAuction = latestChit[0]?.date;
+      const auctionLength = latestChit.length;
 
-      if (!firstAuction) continue;
-
-      const auctionLength = auctionCycleData?.allData.length || 0;
       const lastAuction =
         auctionLength === 20
           ? latestChit[auctionLength - 2]?.date
           : latestChit[auctionLength - 1]?.date;
 
+      if (!firstAuction || !lastAuction) continue;
+
       const monthDiff = this.getMonthDifference(firstAuction, lastAuction);
 
       const response = await this.paymentService.getTransactionById(groupId).toPromise();
       this.walletBalance=response
-      const wallet = chitAmount - this.walletBalance.payment[0].walletBalance;
+      const walletBalance = Number(this.walletBalance?.payment?.[0]?.walletBalance || 0);
 
-      const baseAmount = monthDiff * (chitAmount / 20 * data.chitSubscribers.length);
+      const wallet = chitAmount - walletBalance;
+
+      const baseAmount = monthDiff * (chitAmount / 20) * numSubscribers;
       const walletAdjustment =
-        auctionLength === 20 ? (wallet / 20) * data.chitSubscribers.length : 0;
+        auctionLength === 20 ? (wallet / 20) * numSubscribers : 0;
 
       const groupAmountToPay = baseAmount + walletAdjustment;
       totalAmountToPay += groupAmountToPay;
 
-      const groupOutstanding = groupAmountToPay; // Adjust if you have actual outstanding per group
-
-      // ✅ Highlight only if this group's outstanding ≈ toPay
-      if (Math.abs(groupOutstanding - groupAmountToPay) < 1) {
+      // ✅ Add to highlighted set if amount matches expected
+      if (Math.abs(groupAmountToPay - (baseAmount + walletAdjustment)) < 1) {
         this.highlightedGroups.add(groupId);
       }
 
     } catch (error) {
-      console.error('Error in group:', groupId, error);
+      console.error("Error in group:", groupId, error);
     }
   }
 
   this.totalAmounttoPay = totalAmountToPay;
+  const difference = this.totalAmountOutstanding - this.totalAmounttoPay;
+this.showBlur = Math.abs(difference) < 1; 
 }
 
 

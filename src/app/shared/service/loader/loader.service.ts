@@ -11,7 +11,7 @@ export class LoaderService {
     this.loader.next(true);
   }
 
-  hide() {
-    this.loader.next(false);
+ hide(delay: number = 300) {
+    setTimeout(() => this.loader.next(false), delay); // 👈 delay before hiding
   }
 }

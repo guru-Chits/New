@@ -741,4 +741,10 @@ export class SubscriberCreateComponent implements OnInit {
     this.subscriberForm.get('referralClientId').setValue(this.referralClientId)
     this.isSubscriberListVisible = false;
   }
+  removeRc() {
+    this.referralClient = '';
+    this.referralClientId = '';
+    this.subscriberForm.get('referralClient').setValue(this.referralClient)
+    this.subscriberForm.get('referralClientId').setValue(this.referralClientId)
+}
 }

@@ -17,7 +17,7 @@ import { SharedModule } from './shared/shared.module';
       BrowserAnimationsModule,
       ToastrModule.forRoot({
       positionClass: 'toast-top-right', 
-      timeOut: 4000,
+      timeOut: 1000,
       progressBar: true,
       closeButton: true,
     }),

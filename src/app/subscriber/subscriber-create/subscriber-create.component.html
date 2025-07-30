@@ -317,13 +317,27 @@
             <div class="row">
               <div class="col-lg-4">
                 <div class="form-group">
-                  <label for="referralClient" class="form-control-label">Referral Client <span class="required"
-                      *ngIf="subscriberForm.get('referralClient').hasError('required')">*</span></label>
+                  <label for="referralClient" class="form-control-label">
+                    Referral Client
+                    <span class="required" *ngIf="subscriberForm.get('referralClient')?.hasError('required')">*</span>
+                  </label>
+
                   <div class="input-group">
                     <input type="text" [value]="referralClient" readonly placeholder="Referral Client"
                       class="form-control form-control-sm" formControlName="referralClient" />
+
                     <div class="input-group-append">
-                      <button class="addBtn px-2 py-1" (click)="showSubscriberList()">Add</button>
+                      <!-- Show "Add" button only when there's no referralClient value -->
+                      <button class="addBtn px-2 py-1" *ngIf="!subscriberForm.get('referralClient')?.value"
+                        (click)="showSubscriberList()">
+                        Add
+                      </button>
+
+                      <!-- Show "Remove" button only when there's referralClient value -->
+                      <button class="remove px-2 py-1" *ngIf="subscriberForm.get('referralClient')?.value"
+                        (click)="removeRc()">
+                        Remove
+                      </button>
                     </div>
                   </div>
                 </div>

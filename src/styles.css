@@ -17,3 +17,8 @@
     background-color: #3E3A97;
     color: #FFFFFF;
 }
+
+.toast-top-right {
+  top: 80px !important;
+  right: 50px !important;           
+}

@@ -351,7 +351,6 @@ export class LedgerComponent implements OnInit {
         const firstAuc = this.datePipe.transform(auctionData[0]?.date, 'yyyy-MM');
         const lastAuc = this.datePipe.transform(this.chosenDate, 'yyyy-MM');
         const difference = this.getMonthDifference(firstAuc, lastAuc)
-        console.log(acuData.allData.length)
         if (acuData.allData.length>0) {
           this.paymentService.getTotalByGroupId(firstAuc, groupId, passbookNo, lastAuc).subscribe((PayData) => {
 

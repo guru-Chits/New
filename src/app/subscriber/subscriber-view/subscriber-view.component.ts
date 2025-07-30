@@ -58,7 +58,7 @@ export class SubscriberViewComponent implements OnInit {
       if (hasAccess) {
         this.canDelete = true
       }
-    });
+     });
 
     this.activatedRoute.params.subscribe(paramData => {
       if (Object.keys(paramData).length) {

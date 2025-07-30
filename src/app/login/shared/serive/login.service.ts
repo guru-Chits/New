@@ -12,7 +12,7 @@ export class LoginService {
   
 loginUrl:string=environment.loginServiceUrl+'/login/'
   getLoginDetail(empId:string){
-    return this.http.get(`${this.loginUrl}getloginDetail/${empId}`)
+    return this.http.get(`${this.loginUrl}forgotpassword/${empId}`)
   }
   isAuthenticated(): boolean {
     return !!localStorage.getItem('userRole');
@@ -22,6 +22,7 @@ loginUrl:string=environment.loginServiceUrl+'/login/'
    return this.isVerified = true;
 
   }
+  
 
   // Check if the user is verified
   checkVerified(): boolean {    
@@ -31,4 +32,12 @@ loginUrl:string=environment.loginServiceUrl+'/login/'
     const payload = { employeeId, password };
     return this.http.post(`${this.loginUrl}passwordReset`, payload);
   }
+  login(payload: { employeeId: string, password: string }) {
+  return this.http.post(`${this.loginUrl}getloginDetail/${payload.employeeId}`, payload);
+}
+
+sendPassword(payload:any){
+  return this.http.get(`${this.loginUrl}/sendPassword`,payload)
+}
+
 }

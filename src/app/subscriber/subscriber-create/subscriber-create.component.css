@@ -74,7 +74,12 @@
   background-color: #E8E8E8;
   border-radius: 5px;
 }
-
+.remove{
+  background-color:red;
+   border: none;
+  color: white;
+  margin-left: 2px;
+} 
 .removeBtn {
   height: 25px;
   width: 90px;

@@ -39,19 +39,10 @@ export class ForgotPasswordComponent implements OnInit {
   onSubmit() {
 
     const payload = this.forgotPasswordForm.value
-    // this.service.getLoginDetail(payload.employeeId).subscribe(response => {
-    //   this.response=response
-    //   if (this.response.success===true) {
-    //     this.empId=  this.response.employeeId;
-    //     this.router.navigate([ "login/verify"]);
 
-    //   }else{
-
-    //   }
-    // })
     this.service.getLoginDetail(payload.employeeId).subscribe(response => {
       this.response = response
-      this.employeeId = this.response.user.employeeId
+      this.employeeId = this.response.employeeId
       if (this.response.success === true) {
         this.userdata = response;
         localStorage.setItem('profile', JSON.stringify(this.userdata.userProfile));
@@ -60,9 +51,6 @@ export class ForgotPasswordComponent implements OnInit {
         this.mobileNumber = this.userdata.mobileNumber;
         this.role = this.userdata.role;
         localStorage.setItem('userRole', JSON.stringify(this.role));
-
-        // Check if the user has access before proceeding
-
 
         const otpUrl = `https://2factor.in/API/V1/b1037ef1-2ed8-11ef-8b60-0200cd936042/SMS/${this.mobileNumber}/AUTOGEN/OTPTemplate`;
 

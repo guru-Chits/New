@@ -8,6 +8,10 @@ import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 import { CellClickedEvent, ICellRendererParams } from 'ag-grid-community';
 import { DatePipe } from '@angular/common';
+import { of } from 'rxjs';
+import { _isDeleteKey } from 'ag-grid-community/dist/types/core/utils/keyboard';
+import { ToastrService } from 'ngx-toastr';
+declare var bootstrap: any; 
 
 interface SubscriberDetails {
   firstName: string;
@@ -24,6 +28,7 @@ interface SubscriberDetails {
 })
 export class AuctionComponent implements OnInit {
   activeTab: string = 'regular'; // Default active tab
+   deleteData: any; 
   auctionForm: FormGroup;
   invoiceGen: boolean = false
   auctionData: any = {};
@@ -92,6 +97,7 @@ export class AuctionComponent implements OnInit {
     private paymentService: PaymentService,
     private router: Router,
     private datePipe: DatePipe,
+    private toaser: ToastrService
   ) { }
 
   ngOnInit(): void {
@@ -198,7 +204,7 @@ export class AuctionComponent implements OnInit {
 
             if (this.regularFirst) {
               this.auctionForm.patchValue({
-                date: this.convertDateFormat(this.datePipe.transform(this.chitData.auctionDate,'dd-MM-yyyy'))
+                date: this.convertDateFormat(this.datePipe.transform(this.chitData.auctionDate, 'dd-MM-yyyy'))
               })
 
             } else if (this.noReg && !this.regularFirst || this.tknMonth) {
@@ -219,17 +225,20 @@ export class AuctionComponent implements OnInit {
             } else {
               this.lastProfit = false
             }
-
             this.bidHistory = res.allData.map((history, index) => ({
+              id: history._id,
+              type: history.type || 'Regular Chit', // Default to 'Regular Chit' if type is undefined
               sNo: index + 1, // Use the index parameter and add 1 for serial number
               passbookNumber: history.passbookNumber,
               subscriberName: history.subscriberName,
               location: history.location,
               walletBalance: history.walletBalance,
+              foremanCommision: history.foremanCommision,
               month: this.convertDateToMonth(history.date), // Convert the date to the month
               winningBid: history.winningBid,
               prizedAmount: history.prizedAmount,
-              viewDetails: "View Details"
+              viewDetails: "View Details",
+              action: 'Delete'
             }));
           });
           this.service.getTicketId(groupId).subscribe((data) => {
@@ -897,15 +906,19 @@ export class AuctionComponent implements OnInit {
 
 
           this.bidHistory = res.allData.map((history, index) => ({
+            id: history._id,
             sNo: index + 1, // Use the index parameter and add 1 for serial number
+            type: history.type || 'Regular Chit', // Default to 'Regular Chit' if type is undefined
             passbookNumber: history.passbookNumber,
             subscriberName: history.subscriberName,
             location: history.location,
             walletBalance: history.walletBalance,
             month: this.convertDateToMonth(history.date), // Convert the date to the month
             winningBid: history.winningBid,
+            foremanCommision: history.foremanCommision,
             prizedAmount: history.prizedAmount,
-            viewDetails: "View Details"
+            viewDetails: "View Details",
+            action: 'Delete'
           }));
 
         });
@@ -1172,9 +1185,35 @@ export class AuctionComponent implements OnInit {
 
         this.getDataById(event.data.passbookNumber)
     },
+    {
+      field: 'action', label: "'Delete'", sortable: false, filter: false,
+      cellStyle: function (params: any) {
+        return { color: 'red', cursor: 'pointer' };
+      },
+      onCellClicked: (event: CellClickedEvent) =>
+
+        this.openDeleteModal(event.data)
+    },
 
   ];
 
+ openDeleteModal(data: any) {
+    this.deleteData = data;
+    const modalEl = document.getElementById('deleteConfirmModal');
+    const modal = new bootstrap.Modal(modalEl);
+    modal.show();
+  }
+
+  // when user confirms deletion
+  confirmDelete() {
+    if (this.deleteData) {
+      this.deleteAuctionData(this.deleteData);
+    }
+
+    const modalEl = document.getElementById('deleteConfirmModal');
+    const modal = bootstrap.Modal.getInstance(modalEl);
+    modal.hide();
+  }
 
   printDetails() {
     const printContent = document.getElementById('download-section').innerHTML;
@@ -1223,4 +1262,39 @@ export class AuctionComponent implements OnInit {
       element.style.width = '';
     });
   }
+
+
+  // delete 
+  deleteAuctionData(auctionData: any) {
+    let rollbackAmount = 0;
+
+    if (auctionData.type == "Regular Chit" || auctionData.type == "TKN Company") {
+      rollbackAmount = -(Number(auctionData.winningBid) - Number(auctionData.foremanCommision));
+    } else if (auctionData.type == "Profit Chit") {
+      rollbackAmount = Number(auctionData.prizedAmount) + Number(auctionData.foremanCommision);
+    }
+    const rollback$ = rollbackAmount !== 0
+      ? this.paymentService.saveTransactionDetails(this.groupId, rollbackAmount)
+      : of(null);
+
+    rollback$.subscribe({
+      next: () => {
+
+        this.service.deleteAuction(auctionData.id).subscribe({
+          next: () => {
+            this.toaser.success("Auction deleted successfully and wallet rolled back.");
+            this.updatedChanges();
+          },
+          error: (err) => {
+            this.toaser.error("Error deleting auction.");
+          }
+        });
+      },
+      error: (err) => {
+        this.toaser.error("Error rolling back wallet transaction.");
+      }
+    });
+  }
+
+
 }

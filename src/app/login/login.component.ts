@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { LoginService } from './shared/serive/login.service';
 import { HttpClient } from '@angular/common/http';
 import { AccessService } from '../access/service/access.service';
+import { ToastrService } from 'ngx-toastr';
 interface ILogin {
   employeeId: FormControl<string | null>
   password: FormControl<string | null>
@@ -60,7 +61,7 @@ export class LoginComponent {
   mobileNumber: any
   passwordPattern: RegExp = /^(?=.*[!@#$%^&*(),.?":{}|<>])(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$/;
 
-  constructor(private router: Router, private fb: FormBuilder, private service: LoginService, private HttpClient: HttpClient, private accessService: AccessService) { }
+  constructor(private router: Router, private fb: FormBuilder, private service: LoginService, private HttpClient: HttpClient, private accessService: AccessService,private toastr: ToastrService) { }
 
   get passwordControl() { return this.loginForm.get('password'); };
 
@@ -89,72 +90,92 @@ export class LoginComponent {
   toggleconfirmPasswordVisibility(): void {
     this.isConfirmPwdVisible = !this.isConfirmPwdVisible;
   }
-  onSubmit() {
-    const payload = this.loginForm.value;
 
-    this.service.getLoginDetail(payload.employeeId).subscribe(response => {
-      this.response = response      
-      localStorage.setItem('accessToken',this.response.accessToken)
+onSubmit(): void {
+  const payload = this.loginForm.value;
+  const empId = payload.employeeId;
+  const password = payload.password;
 
-      if (!this.response.success) {
-        alert("User Not found")
+  this.service.login( { employeeId: payload.employeeId, password: payload.password }).subscribe({
+    next: (response:any) => {
+      this.response = response;
+
+      if (!response.success) {  
+        this.toastr.warning("User not found")
+
+        return;
       }
-      else {
-        this.employeeId = this.response.user.employeeId
-        let password = this.loginForm.get('password').value
-        let empId = this.loginForm.get('employeeId').value
-        
-        if (password === "Staff@578" && this.response.user.password==="Staff@578") {
-          this.userdata = response;
-          this.mobileNumber = this.userdata.mobileNumber;
+      
+      localStorage.setItem('accessToken', response.accessToken);
+      this.employeeId = response.user.employeeId;
 
-          const otpUrl = `https://2factor.in/API/V1/b1037ef1-2ed8-11ef-8b60-0200cd936042/SMS/${this.mobileNumber}/AUTOGEN/OTPTemplate`;
-          this.HttpClient.get(otpUrl).subscribe(
-            (otpResponse: any) => {
-              this.newStaff = true
-              this.reset = true
-            },
-            (error) => {
-            }
-          );
+      // Case 1: New staff with default password
+      if (password === "Staff@578" && response.success) {
+        this.userdata = response;
+        this.mobileNumber = response.mobileNumber;
 
-        } else {
-          if (this.response.success === true && password === this.response.user.password && empId == this.employeeId) {
-            this.userdata = response;
-            localStorage.setItem('profile', JSON.stringify(this.userdata.userProfile));
-            localStorage.setItem('name', JSON.stringify(this.userdata.userName));
+        const otpUrl = `https://2factor.in/API/V1/b1037ef1-2ed8-11ef-8b60-0200cd936042/SMS/${this.mobileNumber}/AUTOGEN/OTPTemplate`;
 
-            this.mobileNumber = this.userdata.mobileNumber;
-            localStorage.setItem('userRole', JSON.stringify(  this.mobileNumber));
-
-            this.role = this.userdata.role;
-            localStorage.setItem('userRole', JSON.stringify(this.role));
-
-            // Check if the user has access before proceeding
-            this.accessService.getAccessByRole(this.role).subscribe(roleResponse => {
-              this.roleAccess = roleResponse
-              if (this.roleAccess && this.roleAccess.roleAccess.roleDetails) {
-                const otpUrl = `https://2factor.in/API/V1/b1037ef1-2ed8-11ef-8b60-0200cd936042/SMS/${this.mobileNumber}/AUTOGEN/OTPTemplate`;
-                this.HttpClient.get(otpUrl).subscribe(
-                  (otpResponse: any) => {
-                    this.verified = true;
-                  },
-                  (error) => {
-                  }
-                );
-              } else {
-                alert('Access denied. Please contact admin.');
-              }
-            }, error => {
-            });
-          } else {
-            alert("No user details found.");
+        this.HttpClient.get(otpUrl).subscribe({
+          next: (otpResponse: any) => {
+            this.newStaff = true;
+            this.reset = true;
+            this.toastr.success("OTP Send Successfully!")
+          },
+          error: (err) => {
+            this.toastr.warning("Failed to send OTP")
           }
-        }
+        });
+
+        return;
       }
-    }, error => {
-    });
-  }
+
+      // Case 2: Existing user with correct credentials
+      if (response.success) {
+        this.userdata = response;
+        this.mobileNumber = response.mobileNumber;
+        this.role = response.role;
+
+        localStorage.setItem('profile', JSON.stringify(response.user.userProfile));
+        localStorage.setItem('name', JSON.stringify(response.user.userName));
+        localStorage.setItem('userRole', JSON.stringify(this.role));
+
+        // Check access based on role
+        this.accessService.getAccessByRole(this.role).subscribe({
+          next: (roleResponse) => {
+            this.roleAccess = roleResponse;
+
+            if (this.roleAccess?.roleAccess?.roleDetails) {
+              const otpUrl = `https://2factor.in/API/V1/b1037ef1-2ed8-11ef-8b60-0200cd936042/SMS/${this.mobileNumber}/AUTOGEN/OTPTemplate`;
+
+              this.HttpClient.get(otpUrl).subscribe({
+                next: (otpResponse: any) => {
+                  this.verified = true;
+                  this.toastr.success("OTP Send Successfully!")
+                },
+                error: (err) => {
+                  this.toastr.warning("OTP failed for existing user")
+                }
+              });
+            } else {
+              alert('Access denied. Please contact admin.');
+            }
+          },
+          error: (err) => {
+           this.toastr.error("Wrong credentials.")
+          }
+        });
+      } else {
+      this.toastr.error("Wrong credentials.")
+      }
+    },
+    error: (err) => {
+      this.toastr.error("Wrong credentials.")
+    }
+  });
+}
+
+
 
 }
 

@@ -7,6 +7,7 @@ import { ITableColumn } from '../../shared/interface/list-table';
 import { CellClickedEvent } from 'ag-grid-community';
 import { AuthService } from '../../shared/service/auth.service';
 import { ChitService } from '../../chit/shared/service/chit.service';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-collections',
@@ -46,7 +47,8 @@ export class CollectionsComponent implements OnInit {
     private routeService: AreaService,
     private service: PaymentService,
     private authService: AuthService,
-    private chitService: ChitService
+    private chitService: ChitService,
+    private toaster: ToastrService
   ) { }
   ngOnInit(): void {
 
@@ -284,7 +286,7 @@ export class CollectionsComponent implements OnInit {
         selectStaff: payment.selectStaff,
         serialNumber: payment.serialNumber,
         collectionType: payment.collectionType,
-        approvedBy:this.collectionForm.get('verifiedBy')?.value
+        approvedBy: this.collectionForm.get('verifiedBy')?.value
       };
 
       this.service.savePaymentDetails(this.paymentBody, payment.id).subscribe(
@@ -319,10 +321,16 @@ export class CollectionsComponent implements OnInit {
     //          this.collectionForm.disable();
     //    return; 
     //  }
-    this.service.saveCollectionDetails(payload).subscribe((response: any) => {
-      this.collectionForm.reset()
+    this.service.saveCollectionDetails(payload).subscribe({
+      next: (response: any) => {
+        this.toaster.success("Successfully Collected!");
+        this.collectionForm.reset();
+      },
+      error: (err) => {
+        this.toaster.error("Something went wrong!");
+      }
+    });
 
-    })
     this.avlData = [];
     this.canData = [];
   }

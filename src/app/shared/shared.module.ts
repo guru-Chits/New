@@ -5,10 +5,12 @@ import { AgGridComponent } from './table/ag-grid/ag-grid.component';
 import { BreadcrumbComponent } from './table/breadcrumb/breadcrumb.component';
 import { AuthInterceptorService } from './interceptor/auth-interceptor.service'
 import { HttpClientModule } from '@angular/common/http';
+import { LoaderComponent } from './loader/loader/loader.component';
 @NgModule({
   declarations: [
 AgGridComponent,
 BreadcrumbComponent,
+LoaderComponent,
 
   ],
   imports: [
@@ -18,7 +20,8 @@ BreadcrumbComponent,
   exports: [
     AgGridComponent,
     BreadcrumbComponent,
-    HttpClientModule
+    HttpClientModule,
+    LoaderComponent
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   providers: [AuthInterceptorService]

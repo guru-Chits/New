@@ -6,6 +6,8 @@ import { AreaService } from '../../area/shared/service/area.service';
 import { NgSelectModule, NgLabelTemplateDirective, NgOptionTemplateDirective } from '@ng-select/ng-select';
 import { HttpClient } from '@angular/common/http';
 import { DatePipe } from '@angular/common';
+import { ToastrService } from 'ngx-toastr';
+import { LoginService } from '../../login/shared/serive/login.service';
 @Component({
   selector: 'app-staff-create',
   templateUrl: './staff-create.component.html',
@@ -21,19 +23,21 @@ export class StaffCreateComponent implements OnInit {
   defaultImageUrl = 'assets/subscriber/user.svg';
   get employeeIdControl() { return this.staffsForm.get('employeeId'); };
   routeData: any
-  panFile:string
-  licenceFile:string
-  aadharFile:string
-  passbookFile:string
-  uploaded:any
+  panFile: string
+  licenceFile: string
+  aadharFile: string
+  passbookFile: string
+  uploaded: any
   routes: Array<{ routeId: string }> = [];
   constructor(private fb: FormBuilder,
     private activatedRoute: ActivatedRoute,
     private service: StaffService,
+    private loginService:LoginService,
     private router: Router,
     private routeService: AreaService,
     private HttpClient: HttpClient,
-    private datePipe: DatePipe
+    private datePipe: DatePipe,
+    private toaster: ToastrService
 
   ) { }
   routeId: []
@@ -113,8 +117,8 @@ export class StaffCreateComponent implements OnInit {
       profileUrl: [""],
       password: [""]
     });
-      
-    
+
+
     this.activatedRoute.params.subscribe(paramData => {
       if (Object.keys(paramData).length) {
         this.breadcrumsData = [
@@ -129,21 +133,21 @@ export class StaffCreateComponent implements OnInit {
 
         this.heading = "Edit Staff Details"
         this.submit = "Save Changes"
-        
+
         this.service.getstaffById(paramData.id).subscribe((data) => {
           this.staffData = data;
           this.staffId = this.staffData.Staff._id
           this.profileUrl = this.staffData.Staff.profileUrl
-          this.panFile=this.staffData.Staff.panUrl
-          this.licenceFile=this.staffData.Staff.drivingLicenceUrl
-          this.aadharFile=this.staffData.Staff.aadharUrl
-          this.passbookFile=this.staffData.Staff.passbookUrl
+          this.panFile = this.staffData.Staff.panUrl
+          this.licenceFile = this.staffData.Staff.drivingLicenceUrl
+          this.aadharFile = this.staffData.Staff.aadharUrl
+          this.passbookFile = this.staffData.Staff.passbookUrl
           this.urls = this.staffData.Staff
 
           const formData = new FormData();
-          formData.append('panUrl',  this.staffData.Staff.panUrl);          
-          if (this.staffId) {    
-            const existingPassword=this.staffData?.Staff?.password
+          formData.append('panUrl', this.staffData.Staff.panUrl);
+          if (this.staffId) {
+            const existingPassword = this.staffData?.Staff?.password
             this.staffsForm.get('password')?.setValue(existingPassword)
           }
           this.aadharUrl = this.staffData.Staff.aadharUrl
@@ -160,10 +164,10 @@ export class StaffCreateComponent implements OnInit {
           const updatedStaff = { ...this.staffData.Staff, dob: utcDob };
           this.staffsForm.patchValue(updatedStaff);
         })
-      }else{
-        const tempPassword="Staff@578"
+      } else {
+        const tempPassword = "Staff@578"
         this.staffsForm.get('password')?.setValue(tempPassword)
-  
+
       }
     })
     this.service.getstaffAll().subscribe((data) => {
@@ -210,7 +214,7 @@ export class StaffCreateComponent implements OnInit {
     this.allowValidInput(event, /^[a-zA-Z ]*$/); // Only letters allowed
   }   // Only letters allowed
   onLastNameKeyPress(event: KeyboardEvent): void {
-    this.allowValidInput(event,/^[a-zA-Z ]*$/); // Only letters allowed
+    this.allowValidInput(event, /^[a-zA-Z ]*$/); // Only letters allowed
   }   // Only letters allowed
 
   onAccNoKeyPress(event: KeyboardEvent): void {
@@ -263,15 +267,15 @@ export class StaffCreateComponent implements OnInit {
   onPanCardInput(event: Event): void {
     const inputElement = event.target as HTMLInputElement;
     let input = inputElement.value;
-  
+
     if (input.length > 0) {
       // Ensure the last character is uppercase
       const updatedInput =
         input.slice(0, input.length - 1) + input.charAt(input.length - 1).toUpperCase();
-  
+
       // Update the input value
       inputElement.value = updatedInput;
-  
+
       // Update the form control value explicitly
       const control = this.staffsForm.get('panCardNumber');
       if (control) {
@@ -279,7 +283,7 @@ export class StaffCreateComponent implements OnInit {
       }
     }
   }
-  
+
   onDrivingLicenseKeyPress(event: KeyboardEvent): void {
     const inputElement = event.target as HTMLInputElement;
     const input = inputElement.value;
@@ -336,7 +340,7 @@ export class StaffCreateComponent implements OnInit {
   }
 
 
-  
+
   formatAadharNumber(): void {
     let aadhar = this.staffsForm.get('aadharNumber')?.value.replace(/\D/g, ''); // Remove non-numeric characters
     if (aadhar.length > 4) {
@@ -436,8 +440,8 @@ export class StaffCreateComponent implements OnInit {
     if (file) {
       const reader = new FileReader();
       reader.onload = (e: any) => {
-          this.uploaded = e.target.result; // Set the preview URL
-        
+        this.uploaded = e.target.result; // Set the preview URL
+
       };
       reader.readAsDataURL(file);
 
@@ -465,26 +469,26 @@ export class StaffCreateComponent implements OnInit {
   }
   viewFile(fileType: string): void {
     this.url = fileType
-    let file=this.filesInfo[fileType]
+    let file = this.filesInfo[fileType]
     if (file) {
       const fileURL = URL.createObjectURL(file);
       window.open(fileURL, '_blank');
-    }else{
-    if (this.url === "panUrl") { file = this.urls.panUrl }
-    else if (this.url === "aadharUrl") { file = this.urls.aadharUrl }
-    else if (this.url == 'passbookUrl') { file = this.urls.passbookUrl }
-    else if (this.url == 'drivingLicenceUrl') { file = this.urls.drivingLicenceUrl }
-
-    if (file) {
-      if (typeof file === 'string') {
-        window.open(file, '_blank');
-      } else if (file instanceof File) {
-        const fileURL = URL.createObjectURL(file);
-        window.open(fileURL, '_blank');
-      }
     } else {
+      if (this.url === "panUrl") { file = this.urls.panUrl }
+      else if (this.url === "aadharUrl") { file = this.urls.aadharUrl }
+      else if (this.url == 'passbookUrl') { file = this.urls.passbookUrl }
+      else if (this.url == 'drivingLicenceUrl') { file = this.urls.drivingLicenceUrl }
+
+      if (file) {
+        if (typeof file === 'string') {
+          window.open(file, '_blank');
+        } else if (file instanceof File) {
+          const fileURL = URL.createObjectURL(file);
+          window.open(fileURL, '_blank');
+        }
+      } else {
+      }
     }
-  }
   }
 
   // viewFile(fileType: string): void {
@@ -589,7 +593,7 @@ export class StaffCreateComponent implements OnInit {
   onSubmit(): void {
     const formData = new FormData();
 
-    const formValue = this.staffsForm.getRawValue();    
+    const formValue = this.staffsForm.getRawValue();
 
     if (!formValue.profileUrl) {
       const defaultProfileImage = "";
@@ -616,21 +620,29 @@ export class StaffCreateComponent implements OnInit {
         const loginLink = 'app.guruchits.com';
         const empId = this.staffsForm.get('employeeId')?.value
 
-        const otpUrl = `https://2factor.in/API/R1/?module=TRANS_SMS&apikey=b1037ef1-2ed8-11ef-8b60-0200cd936042&to=${mobile}&from=KNGCPL&templatename=Onboarding&var1=${loginLink}&var2=${empId}&var3=${password}`;
+        const params = {
+          mobile: this.staffsForm.get('contact')?.value,
+          loginLink: 'app.guruchits.com',
+          empId: empId,
+          password: "Staff@578"
+        };
 
-        this.HttpClient.get(otpUrl).subscribe(
-          (otpResponse: any) => {
+        this.loginService.sendPassword(params).subscribe({
+          next: (otpResponse: any) => {
+              this.toaster.success("OTP Send Successfully!")
           },
-          (error) => {
+          error: (err) => {
+              this.toaster.warning("Failed to send OTP")
+
           }
-        );
+        });
       }
 
       this.router.navigate(['/staff']);
     });
 
 
-  } 
+  }
   getFirstLetter(name: string): string {
     return name ? name.charAt(0).toUpperCase() : '';
   }

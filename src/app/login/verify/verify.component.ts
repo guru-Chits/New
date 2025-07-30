@@ -30,45 +30,45 @@ export class VerifyComponent implements OnInit {
     this.mob = this.mobileNumber.slice(-3);
   }
 
-  onSubmit() {
-    const payload = this.verifyForm.value;
-    // Prepare the URL with the mobile number and verifyCode
-    const verificationUrl = `https://2factor.in/API/V1/b1037ef1-2ed8-11ef-8b60-0200cd936042/SMS/VERIFY3/${this.mobileNumber}/${payload.verifyCode}`;
+onSubmit() {
+  const payload = this.verifyForm.value;
 
-    // Send the request to verify the OTP
-    this.httpClient.get(verificationUrl).subscribe(
-      (verificationResponse: any) => {
-        if (verificationResponse.Status === 'Error') {
-          window.alert("Invalid OTP, please try again.");
-          this.verifyForm.reset();  // Optionally reset the form
-        } else if (verificationResponse.Status === 'Success') {
-          const role = localStorage.getItem('userRole')?.replace(/"/g, '');  // Clean up stored role string
-          this.service.markAsVerified();
-          localStorage.setItem('isVerified', "Verified");
+  // Construct the verification URL
+  const verificationUrl = `https://2factor.in/API/V1/b1037ef1-2ed8-11ef-8b60-0200cd936042/SMS/VERIFY3/${this.mobileNumber}/${payload.verifyCode}`;
 
-          if (this.reset === true) {
-            this.resetPage = true
-            // this.router.navigate(['/login/reset-password']);
+  // Send GET request to verify OTP
+  this.httpClient.get(verificationUrl).subscribe(
+    (verificationResponse: any) => {
+      if (verificationResponse.Status === 'Error') {
+        window.alert("Invalid OTP, please try again.");
+        this.verifyForm.reset();
+      } else if (verificationResponse.Status === 'Success') {
+        const role = localStorage.getItem('userRole')?.replace(/"/g, '').toLowerCase(); // Normalized
 
-          }
+        this.service.markAsVerified();
+        localStorage.setItem('isVerified', "Verified");
 
-          else if (role === "Collection Staff") {
-            this.resetPage = false
-
-            this.router.navigate(['/payment']);
-          } else {
-            this.resetPage = false
-
-            this.router.navigate(['/dashboard']);  // Navigate after OTP success
-          }
+        if (this.reset === true) {
+          this.resetPage = true;
+          this.router.navigate(['/login/reset-password']); // ✅ navigate on reset
+        } else if (role === "collection staff") {
+          this.resetPage = false;
+          this.router.navigate(['/payment']);
+        } else if (role === "office staff") {
+          this.resetPage = false;
+          this.router.navigate(['/subscriber']);
+        } else {
+          this.resetPage = false;
+          this.router.navigate(['/dashboard']);
         }
-      },
-      (error) => {
-        window.alert("Error verifying OTP, please try again later.");
       }
-    );
+    },
+    (error) => {
+      window.alert("Error verifying OTP, please try again later.");
+    }
+  );
+}
 
-  }
   resetOtp() {
     const otpUrl = `https://2factor.in/API/V1/b1037ef1-2ed8-11ef-8b60-0200cd936042/SMS/${this.mobileNumber}/AUTOGEN/OTPTemplate`;
 

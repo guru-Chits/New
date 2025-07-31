@@ -195,7 +195,7 @@
           <div class="row justify-content-center">
             <div class="col-lg-10 d-flex justify-content-end mb-4">
               <button class="btn edit-btn m-2" *ngIf="canEdit" (click)="edit(subscriberDetail.Subscriber._id)">Edit</button>
-              <button class="btn edit-btn m-2" (click)="openConfirmationModal(subscriberDetail.Subscriber._id)">Delete</button>
+              <button class="btn edit-btn m-2"  *ngIf="canDelete"  (click)="openConfirmationModal(subscriberDetail.Subscriber._id)">Delete</button>
 
             </div>
             

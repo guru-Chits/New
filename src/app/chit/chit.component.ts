@@ -59,6 +59,7 @@ export class ChitComponent implements OnInit {
   showGroups: boolean = false
   highlightedGroups: Set<string> = new Set();
   walletBalance:any
+  amountPaid:any
   constructor(private router: Router, private service: ChitService, private datePipe: DatePipe, private authService: AuthService, private subscriberService: SubscriberService, private paymentService: PaymentService) { }
 
   ngOnInit(): void {
@@ -204,20 +205,23 @@ async totalCaluation(chitdata: any) {
       const monthDiff = this.getMonthDifference(firstAuction, lastAuction);
 
       const response = await this.paymentService.getTransactionById(groupId).toPromise();
-      this.walletBalance=response
+       this.walletBalance=response
       const walletBalance = Number(this.walletBalance?.payment?.[0]?.walletBalance || 0);
-
       const wallet = chitAmount - walletBalance;
 
       const baseAmount = monthDiff * (chitAmount / 20) * numSubscribers;
-      const walletAdjustment =
-        auctionLength === 20 ? (wallet / 20) * numSubscribers : 0;
+      const walletAdjustment = auctionLength === 20 ? (wallet / 20) * numSubscribers : 0;
 
       const groupAmountToPay = baseAmount + walletAdjustment;
       totalAmountToPay += groupAmountToPay;
 
-      // ✅ Add to highlighted set if amount matches expected
-      if (Math.abs(groupAmountToPay - (baseAmount + walletAdjustment)) < 1) {
+      // ✅ Fetch amount paid by this group's subscribers
+      const payData = await this.paymentService.getByGroupId(groupId).toPromise();
+      this.amountPaid = payData
+      const totalPaid = Number(this.amountPaid.totalAmount || 0);
+
+      // ✅ Check if expected and paid amounts match
+      if (Math.abs(totalPaid - groupAmountToPay) < 1) {
         this.highlightedGroups.add(groupId);
       }
 
@@ -228,8 +232,9 @@ async totalCaluation(chitdata: any) {
 
   this.totalAmounttoPay = totalAmountToPay;
   const difference = this.totalAmountOutstanding - this.totalAmounttoPay;
-this.showBlur = Math.abs(difference) < 1; 
+  this.showBlur = Math.abs(difference) < 1; // optional global check
 }
+
 
 
   getMonthDifference(startDateStr: string, endDateStr: string): number {

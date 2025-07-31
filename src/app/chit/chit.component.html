@@ -56,15 +56,16 @@
     class="table-group my-2 px-3 d-flex justify-content-between align-items-center rounded-end"
     [ngClass]="{
       'highlight-red': group.auctionCycle >= 20,
-      'blur-green':showBlur && highlightedGroups.has(group.chitGroupId)
+      'blur-green': highlightedGroups.has(group.chitGroupId)
     }"
     [attr.title]="
-     showBlur && highlightedGroups.has(group.chitGroupId)
+      highlightedGroups.has(group.chitGroupId)
         ? 'All payments and auctions completed'
         : group.auctionCycle >= 20
         ? 'All auctions completed'
         : null
     "
+
     (click)="handleChitGropDetails(group._id, i)"
   >
     <!-- Group ID -->

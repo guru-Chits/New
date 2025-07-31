@@ -17,6 +17,11 @@ getPaymentAll(){
   return this.http.get(`${this.paymentUrl}/getPaymentDetails`)
 }
 
+getByGroupId(groupId: string){
+  let url = `${this.paymentUrl}/getByGroupId/${groupId}`; 
+  return this.http.get(url);
+}
+
 getCollectionAll(){
   return this.http.get(`${this.paymentUrl}/getCollectionDetails`)
 }

@@ -151,7 +151,7 @@ export class SubscriberViewComponent implements OnInit {
         id: subscriberDetails?._id,
         subscriberId: subscriberDetails?.subscriberId,
         subscriberName: `${subscriberDetails?.firstName} ${subscriberDetails?.lastName}`,
-        subscriberProfile: subscriberDetails?.profileImageUrl
+        subscriberProfile:""
       }))
       this.displayedSubscribers = this.data.slice(0, this.itemsPerPage);
     })

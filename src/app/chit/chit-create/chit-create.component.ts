@@ -174,19 +174,7 @@ export class ChitCreateComponent {
     // `;
     const subscribeName = params.data.firstName
     const firstLetter = subscribeName.charAt(0).toUpperCase(); // Get first letter
-    if (imageUrl) {
-      // If image exists, return the image tag
-      return `
-        <div style="display: flex; align-items: center;">
-          <img src="${imageUrl}" alt="Profile Image" width="32" height="32" 
-               style="border-radius: 50%; object-fit: cover;">
-        </div>
-      `;
-    } 
-    else 
-    {
-      // If no image, return first letter inside a styled div
-      return `
+ return `
         <div style="
           width: 32px; height: 32px; 
           border-radius: 50%; 
@@ -201,7 +189,6 @@ export class ChitCreateComponent {
           ${firstLetter}
         </div>
       `;
-      }
   }
 
   getformanVal() {

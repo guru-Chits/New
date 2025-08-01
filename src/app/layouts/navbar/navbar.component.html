@@ -12,7 +12,21 @@
       <span class="sidebar-menu-text">Logout</span>
     </div>
     <div class="navbar-user">
-      <img [src]="profile" alt="User" class="profile-image">
+      <!-- <img [src]="profile" alt="User" class="profile-image"> -->
+        <div style="
+          width:40px; height: 40px; 
+          border-radius: 50%; 
+          background-color: #007bff; 
+          color: white; 
+          display: flex; 
+          justify-content: center; 
+          align-items: center; 
+          font-size: 14px; 
+          font-weight: bold;
+          margin-right: 10px;
+        ">
+        {{profile}}
+        </div>
       <div class="user-info">
         <h5 class="navbar-username">{{users}}</h5>
         <h6 class="navbar-role">{{role}}</h6>

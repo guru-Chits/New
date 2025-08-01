@@ -52,10 +52,12 @@ export class NavbarComponent implements OnInit {
     this.sidebarToggle.emit();
   }
   getUserInfo() {
-    this.profile = localStorage.getItem('profile');
-    this.profile = this.profile.replace(/"/g, '')
+    // this.profile = localStorage.getItem('profile');
+    // this.profile = this.profile.replace(/"/g, '')
     this.users = localStorage.getItem('name')
     this.users = this.users.replace(/"/g, '');
+    this.profile = this.users.charAt(0).toUpperCase();
+
     this.role = localStorage.getItem('userRole')
     this.role = this.role.replace(/"/g, '')
     return this.users;
@@ -64,4 +66,5 @@ export class NavbarComponent implements OnInit {
     localStorage.clear();
     this.router.navigate(['/login']);
   }
+
 }

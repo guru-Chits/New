@@ -1,17 +1,17 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from '../../../../environments/environment';
-import { Observable } from 'rxjs';
+import { Observable, tap } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class LoginService {
   private isVerified = false;
-  constructor(private http:HttpClient) { }
-  
-loginUrl:string=environment.loginServiceUrl+'/login/'
-  getLoginDetail(empId:string){
+  constructor(private http: HttpClient) { }
+
+  loginUrl: string = environment.loginServiceUrl + '/login/'
+  getLoginDetail(empId: string) {
     return this.http.get(`${this.loginUrl}forgotpassword/${empId}`)
   }
   isAuthenticated(): boolean {
@@ -19,13 +19,13 @@ loginUrl:string=environment.loginServiceUrl+'/login/'
   }
   markAsVerified() {
 
-   return this.isVerified = true;
+    return this.isVerified = true;
 
   }
-  
+
 
   // Check if the user is verified
-  checkVerified(): boolean {    
+  checkVerified(): boolean {
     return this.isVerified;
   }
   passwordReset(employeeId: string, password: string): Observable<any> {
@@ -33,11 +33,12 @@ loginUrl:string=environment.loginServiceUrl+'/login/'
     return this.http.post(`${this.loginUrl}passwordReset`, payload);
   }
   login(payload: { employeeId: string, password: string }) {
-  return this.http.post(`${this.loginUrl}getloginDetail/${payload.employeeId}`, payload);
-}
+    return this.http.post(`${this.loginUrl}getloginDetail/${payload.employeeId}`, payload);
+  }
 
-sendPassword(payload:any){
-  return this.http.get(`${this.loginUrl}/sendPassword`,payload)
-}
+
+  sendPassword(payload: any) {
+    return this.http.get(`${this.loginUrl}/sendPassword`, payload)
+  }
 
 }

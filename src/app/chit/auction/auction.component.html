@@ -20,20 +20,20 @@
         <div *ngIf="activeTab === 'regular'">
           <form [formGroup]="auctionForm">
             <div class="row m-1 pt-4">
-               <div class="form-check form-switch">
-                  <input class="form-check-input" type="checkbox" formControlName="auctionStart" role="switch"
-                    id="flexSwitchCheckChecked" (change)="toggleFormControls()">
-                  <label class="form-check-label" *ngIf="auctionStart" for="flexSwitchCheckChecked">Auction
-                    Start</label>
-                  <label class="form-check-label" *ngIf="!auctionStart" for="flexSwitchCheckChecked">Auction End</label>
+              <div class="form-check form-switch">
+                <input class="form-check-input" type="checkbox" formControlName="auctionStart" role="switch"
+                  id="flexSwitchCheckChecked" (change)="toggleFormControls()">
+                <label class="form-check-label" *ngIf="auctionStart" for="flexSwitchCheckChecked">Auction
+                  Start</label>
+                <label class="form-check-label" *ngIf="!auctionStart" for="flexSwitchCheckChecked">Auction End</label>
 
-                </div>
-                <h6 style="color: red;" class="mt-3" *ngIf="auctionStart">
-                  * Turn on to Start Auction
-                </h6>
-                <h6 style="color: red;" class="mt-3" *ngIf="!auctionStart">
-                  * Turn Off to End Auction
-                </h6>
+              </div>
+              <h6 style="color: red;" class="mt-3" *ngIf="auctionStart">
+                * Turn on to Start Auction
+              </h6>
+              <h6 style="color: red;" class="mt-3" *ngIf="!auctionStart">
+                * Turn Off to End Auction
+              </h6>
             </div>
             <div class="row">
               <div class="col-lg-12">
@@ -43,14 +43,32 @@
                   <select id="auctionType" class="form-control form-control-sm form-select man"
                     (change)="onAuctionTypeChange($event)" formControlName="auctionType">
                     <option value="" disabled selected>Select Auction Type</option>
-                    <option value="regularChit" *ngIf="!noReg && !tknMonth">Regular Chit</option>
-                    <option value="profitChit" *ngIf="!regularFirst && noReg && !tknMonth && !lastProfit">Profit Chit</option>
-                    <option value="purchase" *ngIf="!regularFirst && noReg && !tknMonth">Purchase</option>
-                    <option value="tknCompany" *ngIf="!regularFirst && !noReg && !tknMonth">TKN Company</option>
-                    <option value="extraPayments" *ngIf="!regularFirst &&  !extraCount && !tknMonth">Extra Payments</option>
-                  </select>
-                </div>
 
+                    <option value="regularChit" [disabled]="noReg || tknMonth">
+                      Regular Chit
+                    </option>
+
+                    <option value="profitChit" [disabled]="regularFirst || !noReg || tknMonth || lastProfit">
+                      Profit Chit
+                    </option>
+
+                    <option value="purchase" [disabled]="regularFirst || noReg || tknMonth">
+                      Purchase
+                    </option>
+
+                    <option value="tknCompany" [disabled]="regularFirst || noReg || tknMonth">
+                      TKN Company
+                    </option>
+
+                    <option value="extraPayments" [disabled]="regularFirst || extraCount || tknMonth">
+                      Extra Payments
+                    </option>
+
+                  </select>
+                   <div *ngIf="auctionForm.get('auctionType')?.touched && auctionForm.get('auctionType')?.invalid" class="text-danger">
+                  Auction Type is required
+                </div>
+                </div>
               </div>
             </div>
             <div>
@@ -61,7 +79,7 @@
                 <div class="form-group">
                   <label for="date" class="form-control-label ">Auction Date <span class="required">*</span></label>
                   <input type="Date" class="form-control p-2 form-control-sm mt-2 man" id="date" formControlName="date"
-                    placeholder="Date" readonly/>
+                    placeholder="Date" readonly />
                 </div>
               </div>
               <div class="col-lg-4">
@@ -164,9 +182,9 @@
                 </h6> -->
               </div>
               <div class="col-lg-3">
-                <button class="btn btn-primary px-2 py-2" *ngIf="regular || profitChit"
-                  [disabled]="!purchase || !auctionStart || !auctionForm.valid || isSubmitted" (click)="onSubmit()"
-                  data-bs-toggle="modal" data-bs-target="#auctionModal">
+                <button class="btn btn-primary px-2 py-2" *ngIf="regular || profitChit || extraPayments"
+                  [disabled]="!purchase || !auctionStart || !auctionForm.valid || isSubmitted || !extraPayments"
+                  (click)="onSubmit()" data-bs-toggle="modal" data-bs-target="#auctionModal">
                   Redeem TKN A/C
                 </button>
               </div>
@@ -240,11 +258,9 @@
                 <td class="ms-3">
                   {{ i+1 }}
                   <div class="profile-container">
-                    <img *ngIf="subscriber?.profileImageUrl; else noImage"
-                         [src]="subscriber?.profileImageUrl"
-                         alt="Profile Image"
-                         class="profile-image">
-                
+                    <img *ngIf="subscriber?.profileImageUrl; else noImage" [src]="subscriber?.profileImageUrl"
+                      alt="Profile Image" class="profile-image">
+
                     <!-- Show First Letter If Image is Missing -->
                     <ng-template #noImage>
                       <div class="profile-placeholder">
@@ -329,7 +345,7 @@
           </div>
         </div>
       </div>
-      <div class="card my-3" *ngIf="activeTab === 'regular'">
+      <div class="card my-3">
         <h5 class="card-title text-center mt-2">Colour Classification</h5>
         <div class="card-body">
           <p class="card-text">Prized Subscribers - <span class="dot"

@@ -107,6 +107,8 @@ onSubmit(): void {
       }
       
       localStorage.setItem('accessToken', response.accessToken);
+      localStorage.setItem('refreshToken', response.refreshToken);
+
       this.employeeId = response.user.employeeId;
 
       // Case 1: New staff with default password

@@ -13,7 +13,7 @@ import { SharedModule } from './shared/shared.module';
   declarations: [
     AppComponent,
   ],
-  imports: [
+  imports: [ 
       BrowserAnimationsModule,
       ToastrModule.forRoot({
       positionClass: 'toast-top-right', 

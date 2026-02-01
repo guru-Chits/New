@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { AccessService } from '../../access/service/access.service';
-import { BehaviorSubject, catchError, map, Observable, of } from 'rxjs';
+import { BehaviorSubject, catchError, map, Observable, of, tap } from 'rxjs';
 import { Route, Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
@@ -23,6 +23,25 @@ export class AuthService {
     return !!localStorage.getItem('isVerified');
   }
 
+
+  accessToken: string = localStorage.getItem('accessToken') || '';
+  getAccessToken() { return this.accessToken; }
+
+  refresh() {
+    const refreshToken = localStorage.getItem('refreshToken'); // or omit if using HttpOnly cookie
+    return this.http.post<any>(`${environment.loginServiceUrl}/login/token`, { refreshToken })
+      .pipe(tap(res => {
+        this.accessToken = res.accessToken;
+        localStorage.setItem('refreshToken', res.refreshToken);
+      }));
+  }
+  logout() {
+    const refreshToken = localStorage.getItem('refreshToken');
+    return this.http.post(`${environment.loginServiceUrl}/login/logout`, { refreshToken }).pipe(tap(() => {
+      this.accessToken = null;
+      localStorage.removeItem('refreshToken');
+    }));
+  }
   checkAccess(accKey: string, action: string): Observable<boolean> {
     let role = localStorage.getItem('userRole');
     role = role ? role.replace(/"/g, '') : null;
@@ -37,12 +56,12 @@ export class AuthService {
         this.roleDetail = this.roleAccess.roleAccess.roleDetails;
         const moduleAccess = this.roleDetail.find((module: any) => module.moduleName === accKey);
         if (!moduleAccess) {
-          return false;  
+          return false;
         }
         return moduleAccess.accessType[action] === true;
       }),
       catchError(error => {
-        return of(false);  
+        return of(false);
       })
     );
   }

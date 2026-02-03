@@ -38,7 +38,7 @@ export class LoginService {
 
 
   sendPassword(payload: any) {
-    return this.http.get(`${this.loginUrl}/sendPassword`, payload)
+    return this.http.get(`${this.loginUrl}sendPassword`, {params: payload})
   }
 
 }

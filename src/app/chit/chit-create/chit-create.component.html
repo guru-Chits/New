@@ -7,13 +7,8 @@
           <div class="col-lg-4">
             <div class="form-group">
               <label for="auctionDate" class="form-control-label">First Auction Date</label>
-              <input
-                type="date"
-                class="form-control p-2 form-control-sm mt-2"
-                id="auctionDate"
-                formControlName="auctionDate"
-                placeholder="auctionDate"
-              />
+              <input type="date" class="form-control p-2 form-control-sm mt-2" id="auctionDate"
+                formControlName="auctionDate" placeholder="auctionDate" />
               <!-- (change)="validateDate($event)"
               [min]="minDate"
              [max]="maxDate"  -->
@@ -93,17 +88,14 @@
                       <div class="col-lg-3 col-md-3 pe-0">
                         <div class="profile-container">
                           <!-- If Profile Image Exists, Show Image -->
-                          <img *ngIf="subscriber.subscriberProfile" 
-                               [src]="subscriber.subscriberProfile" 
-                               class="rounded-circle align-self-center mb-2" 
-                               width="75" height="75" 
-                               alt="Subscriber Image">
-                        
+                          <img *ngIf="subscriber.subscriberProfile" [src]="subscriber.subscriberProfile"
+                            class="rounded-circle align-self-center mb-2" width="75" height="75" alt="Subscriber Image">
+
                           <!-- If No Image, Show First Letter in a Circle -->
-                          <div *ngIf="!subscriber.subscriberProfile" 
-                               class="profile-initial">
+                          <div *ngIf="!subscriber.subscriberProfile" class="profile">
                             {{ getFirstLetter(subscriber.subscriberName) }}
                           </div>
+
                         </div>
                         <!-- <img class="profile-list-img" src="{{subscriber.subscriberProfile}}"> -->
                       </div>
@@ -122,15 +114,12 @@
                       <div class="text-center">
                         <div class="profile-container">
                           <!-- If Profile Image Exists, Show Image -->
-                          <img *ngIf="subscriberDetail.Subscriber.profileImageUrl" 
-                               [src]="subscriberDetail.Subscriber.profileImageUrl" 
-                               class="rounded-circle align-self-center mb-2" 
-                               width="75" height="75" 
-                               alt="Subscriber Image">
-                        
+                          <img *ngIf="subscriberDetail.Subscriber.profileImageUrl"
+                            [src]="subscriberDetail.Subscriber.profileImageUrl"
+                            class="rounded-circle align-self-center mb-2" width="75" height="75" alt="Subscriber Image">
+
                           <!-- If No Image, Show First Letter in a Circle -->
-                          <div *ngIf="!subscriberDetail.Subscriber.profileImageUrl" 
-                               class="profile-initial">
+                          <div *ngIf="!subscriberDetail.Subscriber.profileImageUrl" class="profile-initial">
                             {{ getFirstLetter(subscriberDetail.Subscriber.firstName) }}
                           </div>
                         </div>
@@ -199,7 +188,7 @@
       </div>
     </div>
   </div>
-  
+
   <div id="duplicateModal" class="modal" tabindex="-1" role="dialog">
     <div class="modal-dialog" role="document">
       <div class="modal-content">

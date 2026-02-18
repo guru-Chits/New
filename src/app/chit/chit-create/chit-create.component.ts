@@ -129,6 +129,8 @@ export class ChitCreateComponent {
         this.addSubscriberById(subscriber);
       }
     }
+      this.collectionTypeForm.reset();
+
     // this.closeSubscriberList();
     this.subscriberDetail = null;
   }
@@ -166,7 +168,7 @@ export class ChitCreateComponent {
   profileImageWithIdRenderer(params: any): string {
     const imageUrl = params.data.profileImageUrl;
 
-    // return `
+    // return ` 
     //   <div style="display: flex; align-items: center;">
     //     <img src="${imageUrl}" alt="Profile Image" width="35" height="35" style="border-radius: 50%; margin-right: 10px;">
     //     <span style="color: #50A1A5;"></span>

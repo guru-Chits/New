@@ -22,3 +22,16 @@
   top: 80px !important;
   right: 50px !important;           
 }
+
+.profile{
+          width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        background-color: #007bff;
+        color: white;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 14px;
+        font-weight: bold;
+}

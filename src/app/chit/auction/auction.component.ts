@@ -115,7 +115,7 @@ export class AuctionComponent implements OnInit {
       auctionStart: [],
       amountOutstanding: ['']
     },);
-
+    
     this.updatedChanges()
   }
   updatedChanges() {

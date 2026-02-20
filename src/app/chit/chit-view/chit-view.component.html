@@ -4,8 +4,8 @@
             <div class="row">
                 <div class="col-lg-12 d-flex justify-content-between py-3">
                     <app-breadcrumb [data]="breadcrumsData"></app-breadcrumb>
-                    <button class="btn next-btn px-4 py-3 fw-bold"  (click)="auctionEntry(chitData?._id)"
-                    *ngIf="canCreate && chitData?.chitSubscribers.length >= 20" >Auction Entry</button>
+                    <button class="btn next-btn px-4 py-3 fw-bold" (click)="auctionEntry(chitData?._id)"
+                        *ngIf="canCreate && chitData?.chitSubscribers.length >= 20">Auction Entry</button>
                 </div>
                 <!-- *ngIf="canCreate&&chitData.chitSubscribers.length >= 20" -->
             </div>
@@ -54,7 +54,7 @@
                             <p class="">{{extraCount}}</p>
                         </div>
                     </div>
-                    
+
                 </div>
                 <div class="row py-3">
                     <div class="col-4 ">
@@ -76,11 +76,11 @@
                         </div>
                     </div>
                 </div>
-                <div class="row py-3" >
+                <div class="row py-3">
                     <div class="col-4 ">
                         <div class=" d-flex flex-column ">
                             <h6><strong>Chit Commencement</strong></h6>
-                            <p class="">{{chitData?.auctionDate  | date: 'dd/MM/yyyy' }}</p>
+                            <p class="">{{chitData?.auctionDate | date: 'dd/MM/yyyy' }}</p>
                         </div>
                     </div>
                     <!-- <div class="col-4">
@@ -105,7 +105,9 @@
                     </div>
                 </button>
                 <div *ngIf="showBidHistory" class="border rounded shadow-sm">
-                    <app-ag-grid [columns]="column"   [rowData]="bidHistory"  [searchImg]="searchImg" [filterImg]="filterImg"  width="100%" height="500px" [pageSize]="20" [search]="true" filter="true"></app-ag-grid>
+                    <app-ag-grid [columns]="column" [rowData]="bidHistory" [searchImg]="searchImg"
+                        [filterImg]="filterImg" width="100%" height="500px" [pageSize]="20" [search]="true"
+                        filter="true"></app-ag-grid>
 
                     <!-- <table class="table rounded m-0">
                         <thead class="rounded">
@@ -130,57 +132,61 @@
                     <p class="fw-bold fs-4 mt-4">Subscribers</p>
                     <!-- <app-ag-grid [columns]="subscriberColumn" [rowData]="subscribers" class="p-0" width="100%"
                         [pageSize]="20"></app-ag-grid> -->
-                        
-                        <table class="subscriber-table">
-                            <thead>
-                              <tr>
+
+                    <table class="subscriber-table">
+                        <thead>
+                            <tr>
                                 <th>S.No</th>
                                 <th>Name</th>
                                 <!-- <th>Alias Name</th> -->
                                 <th>Passbook Number</th>
-                                 <th>Location</th>
+                                <th>Location</th>
                                 <!-- <th>Occupation</th> -->
                                 <!-- <th>auctionStatus</th> -->
                                 <th>Collection Type</th>
-                              </tr>
-                            </thead>
-                            <tbody>
-                              <tr *ngFor="let subscriber of subscribers ; let i = index" [ngClass]="getRowClass(subscriber?.passbookNo)" (click)="getChitById(subscriber?._id)">
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let subscriber of subscribers ; let i = index"
+                                [ngClass]="getRowClass(subscriber?.passbookNo)" (click)="getChitById(subscriber?._id)">
                                 <!-- <td class="ms-3">{{i+1}} <img [src]="subscriber?.profileImageUrl" alt="Profile Image"
                                     class="profile-image ms-3">
                                 </td> -->
                                 <td class="ms-3">
                                     {{ i+1 }}
                                     <div class="profile-container">
-                                      <img *ngIf="subscriber?.subscriberDetails?.profileImageUrl; else noImage"
-                                           [src]="subscriber?.subscriberDetails?.profileImageUrl"
-                                           alt="Profile Image"
-                                           class="profile-image">
-                                  
-                                      <!-- Show First Letter If Image is Missing -->
-                                      <ng-template #noImage>
-                                        <div class="profile-placeholder">
-                                          {{ subscriber?.subscriberDetails?.firstName?.charAt(0) | uppercase }}
-                                        </div>
-                                      </ng-template>
+                                        <img *ngIf="subscriber?.subscriberDetails?.profileImageUrl; else noImage"
+                                            [src]="subscriber?.subscriberDetails?.profileImageUrl" alt="Profile Image"
+                                            class="profile-image">
+
+                                        <!-- Show First Letter If Image is Missing -->
+                                        <ng-template #noImage>
+                                            <div class="profile-placeholder">
+                                                {{ subscriber?.subscriberDetails?.firstName?.charAt(0) | uppercase }}
+                                            </div>
+                                        </ng-template>
                                     </div>
-                                  </td>
-                                  
+                                </td>
+
                                 <td>{{ subscriber?.subscriberDetails?.firstName }}</td>
                                 <!-- <td>{{ subscriber?.aliasName }}</td> -->
                                 <td>{{ subscriber?.passbookNo }}</td>
-                                 <td>{{ subscriber?.subscriberDetails?.place }}</td>
+                                <td>{{ subscriber?.subscriberDetails?.place }}</td>
                                 <!--<td>{{ subscriber?.occupation }}</td> -->
                                 <!-- <td>{{ subscriber?.auctionStatus }}</td> -->
                                 <td>{{ subscriber?.collectionType }}</td>
 
-                              </tr>
-                            </tbody>
-                          </table>
+                            </tr>
+                        </tbody>
+                    </table>
                     <div class="col-lg-12 d-flex justify-content-end py-3 px-4">
-                        <button type="button" class="btn next-btn px-4 py-3 fw-bold" *ngIf="canCreate" (click)="showSubscriberList()">Add
+                        <button type="button" class="btn next-btn px-4 py-3 fw-bold" *ngIf="canCreate"
+                            [disabled]="subscribers.length >= 25" (click)="showSubscriberList()">Add
                             Subscribers</button>
                     </div>
+                        <div *ngIf="subscribers.length >= 25" class="text-danger col-lg-12 d-flex justify-content-end">
+                           Reached the maximum limit of 25 subscribers. Can't add more subscribers.
+                        </div>
                     <div>
                     </div>
                 </div>
@@ -217,33 +223,33 @@
                     <button type="button" class="btn view-btn px-4" (click)="viewless1()">Viewless</button>
                 </div>
             </div>
-            <div class="card my-3" >
+            <div class="card my-3">
                 <h5 class="card-title text-center mt-2">Colour Classification</h5>
                 <div class="card-body">
-                  <p class="card-text">Prized Subscribers - <span class="dot" style="background-color: rgb(54, 183, 54);"></span> </p>
-                  <p class="card-text">Purchase - <span class="dot" style="background-color: red;"></span> </p>
-                  <p class="card-text">Extra Payments - <span class="dot" style="background-color: orange;"></span> </p>
+                    <p class="card-text">Prized Subscribers - <span class="dot"
+                            style="background-color: rgb(54, 183, 54);"></span> </p>
+                    <p class="card-text">Purchase - <span class="dot" style="background-color: red;"></span> </p>
+                    <p class="card-text">Extra Payments - <span class="dot" style="background-color: orange;"></span>
+                    </p>
                 </div>
-              </div>
+            </div>
             <div class="chit-details" *ngIf="showTicket">
                 <div class="card d-flex px-3 py-4 mt-2">
-                    <h5 class="title text-center fw-bold fs-4 m-0 py-3">Subscriber  
+                    <h5 class="title text-center fw-bold fs-4 m-0 py-3">Subscriber
                         Details</h5><!-- {{selectedChit}}-->
-                        <div class="profile-container">
-                            <!-- If Profile Image Exists, Show Image -->
-                            <img *ngIf="filteredSubscribers[0]?.subscriberDetails?.profileImageUrl" 
-                                 [src]="filteredSubscribers[0]?.subscriberDetails?.profileImageUrl" 
-                                 class="rounded-circle align-self-center mb-2" 
-                                 width="75" height="75" 
-                                 alt="Subscriber Image">
-                          
-                            <!-- If No Image, Show First Letter in a Circle -->
-                            <div *ngIf="!filteredSubscribers[0]?.subscriberDetails?.profileImageUrl" 
-                                 class="profile-initial">
-                                 {{ filteredSubscribers[0]?.subscriberDetails?.firstName?.charAt(0) | uppercase }}
-                                </div>
-                          </div>
-                        <!-- <div class="text-center">
+                    <div class="profile-container">
+                        <!-- If Profile Image Exists, Show Image -->
+                        <img *ngIf="filteredSubscribers[0]?.subscriberDetails?.profileImageUrl"
+                            [src]="filteredSubscribers[0]?.subscriberDetails?.profileImageUrl"
+                            class="rounded-circle align-self-center mb-2" width="75" height="75" alt="Subscriber Image">
+
+                        <!-- If No Image, Show First Letter in a Circle -->
+                        <div *ngIf="!filteredSubscribers[0]?.subscriberDetails?.profileImageUrl"
+                            class="profile-initial">
+                            {{ filteredSubscribers[0]?.subscriberDetails?.firstName?.charAt(0) | uppercase }}
+                        </div>
+                    </div>
+                    <!-- <div class="text-center">
                             <img *ngIf="filteredSubscribers[0]?.subscriberDetails?.profileImageUrl; else noImage"
                                  [src]="filteredSubscribers[0]?.subscriberDetails?.profileImageUrl"
                                  class="img-fluid rounded-circle"
@@ -255,24 +261,25 @@
                               </div>
                             </ng-template>
                           </div> -->
-                          
+
                     <table class="table mt-2">
                         <tbody>
                             <tr>
                                 <td class="py-3"><strong>Name</strong></td>
-                                <td class="py-3">{{filteredSubscribers[0]?.subscriberDetails?.firstName}}</td><!--{{specificChitData?.chitGroupId}}-->
+                                <td class="py-3">{{filteredSubscribers[0]?.subscriberDetails?.firstName}}</td>
+                                <!--{{specificChitData?.chitGroupId}}-->
                             </tr>
-                            
+
                             <tr>
                                 <td class="py-3"><strong>Alias</strong></td>
                                 <td class="py-3">{{filteredSubscribers[0]?.subscriberDetails?.aliasName}}</td>
                             </tr>
-                            <tr  *ngIf="aucData.prizedAmount">
+                            <tr *ngIf="aucData.prizedAmount">
                                 <td class="py-3"><strong>Prized Amount</strong></td>
                                 <td class="py-3">{{aucData.prizedAmount}}</td>
                             </tr>
                             <tr *ngIf="aucData.winningBid">
-                                <td class="py-3" ><strong>Winning Bid</strong></td>
+                                <td class="py-3"><strong>Winning Bid</strong></td>
                                 <td class="py-3">{{aucData.winningBid}}</td>
                             </tr>
                             <tr>
@@ -306,7 +313,7 @@
                                         </div>
                                     </form>
                                     <button type="button" class="btn view-btn my-3"
-                                        (click)="edit(filteredSubscribers[0]?.passbookNo)" >Save changes</button>
+                                        (click)="edit(filteredSubscribers[0]?.passbookNo)">Save changes</button>
                                 </td>
                             </tr>
                         </tbody>
@@ -321,23 +328,22 @@
                             </div> -->
                             <div class="me-1">
                                 <button type="button" class="btn view-btn-red"
-                                  (click)="openConfirmationModal(filteredSubscribers[0]?.subscriberId)" 
-                                  *ngIf="canCreate && filteredSubscribers[0]?.subscriberId && filteredSubscribers[0]?.auctionStatus !== 'Prized'">
-                                  Remove from Group
+                                    (click)="openConfirmationModal(filteredSubscribers[0]?.subscriberId)"
+                                    *ngIf="canCreate && filteredSubscribers[0]?.subscriberId && filteredSubscribers[0]?.auctionStatus !== 'Prized'">
+                                    Remove from Group
                                 </button>
-                              </div> 
+                            </div>
                             <div class="ms-1">
                                 <button type="button" class="btn view-btn px-4"
                                     (click)="closeTicket('close')">Cancel</button>
                                 <!--(click)="auctionEntry(specificChitData?._id)"-->
                             </div>
 
+                        </div>
                     </div>
-                </div>
-                <button type="button" class="btn view-btn my-3"
-                (click)="subPage(link)">Payment Detail</button>
+                    <button type="button" class="btn view-btn my-3" (click)="subPage(link)">Payment Detail</button>
 
-            </div>
+                </div>
             </div>
             <div class="card details p-3 mt-4" *ngIf="isSubscriberListVisible">
 
@@ -362,16 +368,14 @@
                                             <div class="col-lg-3 col-md-3 pe-0">
                                                 <div class="profile-container">
                                                     <!-- If Profile Image Exists, Show Image -->
-                                                    <img *ngIf="subscriber.subscriberProfile" 
-                                                         [src]="subscriber.subscriberProfile" 
-                                                         class="rounded-circle align-self-center mb-2" 
-                                                         width="75" height="75" 
-                                                         alt="Subscriber Image">
-                                                  
+                                                    <img *ngIf="subscriber.subscriberProfile"
+                                                        [src]="subscriber.subscriberProfile"
+                                                        class="rounded-circle align-self-center mb-2" width="75"
+                                                        height="75" alt="Subscriber Image">
+
                                                     <!-- If No Image, Show First Letter in a Circle -->
-                                                    <div *ngIf="!subscriber.subscriberProfile" 
-                                                         class="profile-initial">
-                                                      {{ getFirstLetter(subscriber.subscriberName) }}
+                                                    <div *ngIf="!subscriber.subscriberProfile" class="profile size">
+                                                        {{ getFirstLetter(subscriber.subscriberName) }}
                                                     </div>
                                                 </div>
                                                 <!-- <img class="profile-list-img" [src]="subscriber.subscriberProfile"
@@ -392,8 +396,7 @@
                                         </div>
 
                                         <!-- Subscriber Detail Section (Visible when selected) -->
-                                        <div *ngIf="selectedSubscriberId === subscriber?.subscriberId && subscriberDetail?.Subscriber?.subscriberId" 
-
+                                        <div *ngIf="selectedSubscriberId === subscriber?.subscriberId && subscriberDetail?.Subscriber?.subscriberId"
                                             class="subscriber-details">
                                             <h5 class="title text-center fw-bold fs-4 my-4">Subscriber Details</h5>
                                             <div class="text-center">
@@ -423,7 +426,7 @@
                                                         <td><strong>Contact No</strong></td>
                                                         <td>{{subscriberDetail.Subscriber.contact}}</td>
                                                     </tr>
-                                                     <tr>
+                                                    <tr>
                                                         <td><strong>Route Id</strong></td>
                                                         <td>{{subscriberDetail.Subscriber.routeId}}</td>
                                                     </tr>
@@ -474,72 +477,74 @@
 </div>
 
 <div *ngIf="showDetails">
-    <div class="modal fade" id="redeemDetailsModal" tabindex="-1" class="modal" role="dialog" [ngClass]="{'d-block': showDetails}">
-      <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">Bid History</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" (click)="closeModel()"></button>
-          </div>
-          <div class="modal-body">
-            <div class="row">
-              <div class="col-lg-6">
-                <p><strong>Name:</strong> {{ chitDetail?.subscriberName }}</p>
-              </div>
+    <div class="modal fade" id="redeemDetailsModal" tabindex="-1" class="modal" role="dialog"
+        [ngClass]="{'d-block': showDetails}">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Bid History</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
+                        (click)="closeModel()"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <p><strong>Name:</strong> {{ chitDetail?.subscriberName }}</p>
+                        </div>
 
-              <div class="col-lg-6">
-                <p><strong>Date:</strong> {{ chitDetail?.date |  date: 'dd-MM-YYYY' }}</p>
-              </div>
-              <div class="col-lg-6">
-                <p><strong>Passbook Number:</strong> {{ chitDetail?.passbookNumber }}</p>
-              </div>
-              <div class="col-lg-6">
-                <p><strong>Prized Amount:</strong> {{ chitDetail?.prizedAmount }}</p>
-              </div>
-              <div class="col-lg-6">
-                <p><strong>Group ID:</strong> {{ datas?.groupId }}</p>
-              </div>
-              <div class="col-lg-6">
-                <p><strong>Location:</strong> {{ chitDetail?.location }}</p>
-              </div>
-  
-              <div class="col-lg-6">
-                <p><strong>Winning Bid:</strong> {{ chitDetail?.winningBid }}</p>
-              </div>
+                        <div class="col-lg-6">
+                            <p><strong>Date:</strong> {{ chitDetail?.date | date: 'dd-MM-YYYY' }}</p>
+                        </div>
+                        <div class="col-lg-6">
+                            <p><strong>Passbook Number:</strong> {{ chitDetail?.passbookNumber }}</p>
+                        </div>
+                        <div class="col-lg-6">
+                            <p><strong>Prized Amount:</strong> {{ chitDetail?.prizedAmount }}</p>
+                        </div>
+                        <div class="col-lg-6">
+                            <p><strong>Group ID:</strong> {{ datas?.groupId }}</p>
+                        </div>
+                        <div class="col-lg-6">
+                            <p><strong>Location:</strong> {{ chitDetail?.location }}</p>
+                        </div>
 
-              <div class="col-lg-6">
-                <!-- <p><strong>Occupation:</strong> {{ chitDetail?.occupation }}</p> -->
-              </div>
+                        <div class="col-lg-6">
+                            <p><strong>Winning Bid:</strong> {{ chitDetail?.winningBid }}</p>
+                        </div>
 
-            </div>
-          </div>
-          <!-- <div class="modal-footer">
+                        <div class="col-lg-6">
+                            <!-- <p><strong>Occupation:</strong> {{ chitDetail?.occupation }}</p> -->
+                        </div>
+
+                    </div>
+                </div>
+                <!-- <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" (click)="close()">Close</button>
           </div> -->
+            </div>
         </div>
-      </div>
     </div>
-  
-  </div>
+
+</div>
 
 
-  <div class="modal fade show" tabindex="-1" role="dialog" [ngClass]="{'d-block': isConfirmationModalOpen}">
-  <div class="modal-dialog modal-dialog-centered" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Are you Sure?</h5>
-        <!-- <button type="button" class="close" aria-label="Close" (click)="closeConfirmationModal()">
+<div class="modal fade show" tabindex="-1" role="dialog" [ngClass]="{'d-block': isConfirmationModalOpen}">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Are you Sure?</h5>
+                <!-- <button type="button" class="close" aria-label="Close" (click)="closeConfirmationModal()">
           <span aria-hidden="true">&times;</span>
         </button> -->
-      </div>
-      <div class="modal-body text-center" >
-        <p>Are you sure you want to delete<strong></strong>?</p>
-      </div>
-      <div class="modal-footer justify-content-center">
-        <button type="button" class="btn btn-primary" (click)="confirm()">Yes</button>
-        <button type="button" class="btn btn-primary" (click)="cancel()">No</button>
+            </div>
+            <div class="modal-body text-center">
+                <p>Are you sure you want to delete<strong></strong>?</p>
+            </div>
+            <div class="modal-footer justify-content-center">
+                <button type="button" class="btn btn-primary" (click)="confirm()">Yes</button>
+                <button type="button" class="btn btn-primary" (click)="cancel()">No</button>
 
-      </div>
+            </div>
+        </div>
     </div>
-  </div>
 </div>

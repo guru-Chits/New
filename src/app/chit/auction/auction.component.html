@@ -65,9 +65,10 @@
                     </option>
 
                   </select>
-                   <div *ngIf="auctionForm.get('auctionType')?.touched && auctionForm.get('auctionType')?.invalid" class="text-danger">
-                  Auction Type is required
-                </div>
+                  <div *ngIf="auctionForm.get('auctionType')?.touched && auctionForm.get('auctionType')?.invalid"
+                    class="text-danger">
+                    Auction Type is required
+                  </div>
                 </div>
               </div>
             </div>
@@ -418,22 +419,28 @@
   </div>
 </div>
 
-<div class="modal fade show" id="auctionModal" tabindex="-1" role="dialog" [ngClass]="{'d-block': invoiceGen}">
+<div class="modal fade show invoiceGen" id="auctionModal" tabindex="-1" role="dialog"
+  [ngClass]="{'d-block': invoiceGen}">
   <div class="modal-dialog modal-lg modal-dialog-centered">
-    <div class="modal-content p-2">
+    <div class="modal-content p-4">
       <div class="popup-body">
-        <div class="text-center pb-2 fs-4 fw-bold">
-          Invoice Details
-        </div>
-        <div class="d-flex justify-content-end py-2">
-          <button class="btn mx-3 btn-success popup-btn" (click)="print()">
-            <img src="../../../assets/popup/printer.svg" alt="" width="20px" height="20px"> Generate Receipt</button>
-          <button class="btn me-3 btn-success popup-btn" (click)="downloadAsPDF()">
-            <img src="../../../assets/popup/download.svg" alt="" width="20px" height="20px"> Download</button>
+        <div class="position-relative pb-2">
+
+          <!-- Centered Title -->
+          <div class="fs-4 fw-bold text-center">
+            Invoice Details
+          </div>
+
+          <!-- Close Button on Right -->
+          <button type="button" class="btn next-btn px-4 py-2 fw-bold position-absolute end-0 top-0" (click)="close()">
+            Close
+          </button>
+
         </div>
         <div class="border border-dark" id="print-section">
-          <div class="popup-header">
+          <div class="popup-header d-flex flex-column align-items-center text-center">
             <img src="../../../assets/navbar/brand.svg" alt="" width="100px" height="90px">
+
             <div class="d-flex flex-column justify-content-center align-items-center">
               <p class="fs-5 fw-bold m-0">Guru Chits Private Limited</p>
               <span>Auction Invoice</span>
@@ -483,8 +490,11 @@
           </div>
         </div>
       </div>
-      <div class="d-flex justify-content-end py-4">
-        <button type="button" class="btn next-btn px-4 py-2 fw-bold" (click)="close()">Close</button>
+      <div class="d-flex justify-content-end py-2">
+        <button class="btn mx-3 btn-success popup-btn" (click)="print()">
+          <img src="../../../assets/popup/printer.svg" alt="" width="20px" height="20px"> Generate Receipt</button>
+        <button class="btn me-3 btn-success popup-btn" (click)="downloadAsPDF()">
+          <img src="../../../assets/popup/download.svg" alt="" width="20px" height="20px"> Download</button>
       </div>
     </div>
   </div>
@@ -545,21 +555,31 @@
   <div class="modal-dialog modal-lg modal-dialog-centered">
     <div class="modal-content p-2">
       <div class="popup-body">
-        <div class="text-center pb-2 fs-4 fw-bold">
-          Invoice Details
+
+        <div class="position-relative pb-4">
+
+          <!-- Centered Title -->
+          <div class="fs-4 fw-bold text-center">
+            Invoice Details
+          </div>
+
+          <!-- Close Button on Right -->
+          <button type="button" class="btn next-btn px-4 py-2 fw-bold position-absolute end-0 top-0"
+            (click)="closeInvoice()">
+            Close
+          </button>
+
         </div>
-        <div class="d-flex justify-content-end py-2">
-          <button class="btn mx-3 btn-success popup-btn" (click)="printDetails()">
-            <img src="../../../assets/popup/printer.svg" alt="" width="20px" height="20px"> Generate Receipt</button>
-          <button class="btn me-3 btn-success popup-btn" (click)="download()">
-            <img src="../../../assets/popup/download.svg" alt="" width="20px" height="20px"> Download</button>
-        </div>
+
         <div class="border border-dark" id="download-section">
           <div class="popup-header">
-            <img src="../../../assets/navbar/brand.svg" alt="" width="100px" height="90px">
-            <div class="d-flex flex-column justify-content-center align-items-center">
-              <p class="fs-5 fw-bold m-0">Guru Chits Private Limited</p>
-              <span>Auction Invoice</span>
+            <div class="popup-header d-flex flex-column align-items-center text-center">
+              <img src="../../../assets/navbar/brand.svg" alt="" width="100px" height="90px">
+
+              <div class="d-flex flex-column justify-content-center align-items-center">
+                <p class="fs-5 fw-bold m-0">Guru Chits Private Limited</p>
+                <span>Auction Invoice</span>
+              </div>
             </div>
           </div>
           <hr class="border border-dark m-0">
@@ -605,9 +625,13 @@
           </div>
         </div>
       </div>
-      <div class="d-flex justify-content-end py-4">
-        <button type="button" class="btn next-btn px-4 py-2 fw-bold" (click)="closeInvoice()">Close</button>
+      <div class="d-flex justify-content-end py-2">
+        <button class="btn mx-3 btn-success popup-btn" (click)="printDetails()">
+          <img src="../../../assets/popup/printer.svg" alt="" width="20px" height="20px"> Generate Receipt</button>
+        <button class="btn me-3 btn-success popup-btn" (click)="download()">
+          <img src="../../../assets/popup/download.svg" alt="" width="20px" height="20px"> Download</button>
       </div>
+
     </div>
   </div>
 </div>

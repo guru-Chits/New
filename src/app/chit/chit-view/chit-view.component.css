@@ -230,3 +230,7 @@
   text-transform: uppercase;
   border: 2px solid #ccc;
 }
+.size{
+    width: 45px;
+    height: 45px;
+}

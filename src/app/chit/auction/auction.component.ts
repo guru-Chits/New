@@ -1073,16 +1073,11 @@ export class AuctionComponent implements OnInit {
 
   print() {
     const printContent = document.getElementById('print-section').innerHTML;
-    const originalContent = document.body.innerHTML;
-
-    // Replace body content with modal content
-    document.body.innerHTML = printContent;
-
-    // Trigger print
-    window.print();
-
-    // Revert body content
-    document.body.innerHTML = originalContent;
+    const printWindow = window.open('', '_blank');
+    printWindow.document.write('<html><head><title>Print</title></head><body>' + printContent + '</body></html>');
+    printWindow.document.close();
+    printWindow.print();
+    printWindow.close();
   }
 
 
@@ -1112,7 +1107,7 @@ export class AuctionComponent implements OnInit {
     this.closeModel()
   }
   closeInvoice() {
-    this.invoiceClick = false
+    this.invoiceClick = !this.invoiceClick
     this.chitDetail = {}
     this.datas = {}
 
@@ -1135,10 +1130,10 @@ export class AuctionComponent implements OnInit {
   invoice() {
     this.isConfirmationModalOpen = false;
 
-    this.invoiceGen = true
+    this.invoiceGen = !this.invoiceGen
   }
   close() {
-    this.invoiceGen = false
+    this.invoiceGen = !this.invoiceGen
     setTimeout(() => {
       this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
         this.router.navigate([`/chit/auction/${this.objId}`]);
@@ -1217,17 +1212,11 @@ export class AuctionComponent implements OnInit {
 
   printDetails() {
     const printContent = document.getElementById('download-section').innerHTML;
-    const originalContent = document.body.innerHTML;
-
-    // Replace body content with modal content
-    document.body.innerHTML = printContent;
-
-    // Trigger print
-    window.print();
-
-    // Revert body content
-    document.body.innerHTML = originalContent;
-
+    const printWindow = window.open('', '_blank');
+    printWindow.document.write('<html><head><title>Print</title></head><body>' + printContent + '</body></html>');
+    printWindow.document.close();
+    printWindow.print();
+    printWindow.close();
   }
   download() {
     const element = document.getElementById('download-section');

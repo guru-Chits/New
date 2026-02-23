@@ -419,7 +419,7 @@
   </div>
 </div>
 
-<div class="modal fade show invoiceGen" id="auctionModal" tabindex="-1" role="dialog"
+<div class="modal fade show invoiceGen" *ngIf="invoiceGen" tabindex="-1" role="dialog"
   [ngClass]="{'d-block': invoiceGen}">
   <div class="modal-dialog modal-lg modal-dialog-centered">
     <div class="modal-content p-4">
@@ -551,7 +551,7 @@
 </div>
 <div>
 </div>
-<div class="modal fade show" id="auctionModal" tabindex="-1" role="dialog" [ngClass]="{'d-block': invoiceClick}">
+<div class="modal fade show" id="auctionModal" tabindex="-1" *ngIf="invoiceClick" role="dialog" [ngClass]="{'d-block': invoiceClick}">
   <div class="modal-dialog modal-lg modal-dialog-centered">
     <div class="modal-content p-2">
       <div class="popup-body">

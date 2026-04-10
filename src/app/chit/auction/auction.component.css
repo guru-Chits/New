@@ -318,3 +318,16 @@ input::placeholder {
   text-transform: uppercase;
   border: 2px solid #ccc;
 }
+/* Disabled options */
+select option:disabled {
+  color: #9ca3af;      
+  cursor: not-allowed;
+  font-weight: 400;
+}
+
+/* Enabled options */
+select option:not(:disabled) {
+  color: #000;
+  font-weight: 500;        
+  cursor: pointer;
+}

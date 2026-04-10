@@ -44,19 +44,19 @@
                     (change)="onAuctionTypeChange($event)" formControlName="auctionType">
                     <option value="" disabled selected>Select Auction Type</option>
 
-                    <option value="regularChit" [disabled]="!noReg && !tknMonth">
+                    <option value="regularChit" [disabled]="noReg || tknMonth">
                       Regular Chit
                     </option>
 
-                    <option value="profitChit" [disabled]="!regularFirst && noReg && !tknMonth && !lastProfit">
+                    <option value="profitChit" [disabled]="regularFirst || !noReg || tknMonth || lastProfit">
                       Profit Chit
                     </option>
 
-                    <option value="purchase" [disabled]="!regularFirst && noReg && !tknMonth">
+                    <option value="purchase" [disabled]="regularFirst || !noReg || tknMonth">
                       Purchase
                     </option>
 
-                    <option value="tknCompany" [disabled]="!regularFirst && !noReg && !tknMonth">
+                    <option value="tknCompany" [disabled]="regularFirst || noReg || tknMonth">
                       TKN Company
                     </option>
 
@@ -184,8 +184,14 @@
               </div>
               <div class="col-lg-3">
                 <button class="btn btn-primary px-2 py-2" *ngIf="regular || profitChit || extraPayments"
-                  [disabled]="!purchase || !auctionStart || !auctionForm.valid || isSubmitted || !extraPayments"
-                  (click)="onSubmit()" data-bs-toggle="modal" data-bs-target="#auctionModal">
+[disabled]="
+  !purchase || 
+  !auctionStart || 
+  !auctionForm.valid || 
+  isSubmitted || 
+  (!profitChit && !regular && !extraPayments)
+
+  "                  (click)="onSubmit()" data-bs-toggle="modal" data-bs-target="#auctionModal">
                   Redeem TKN A/C
                 </button>
               </div>

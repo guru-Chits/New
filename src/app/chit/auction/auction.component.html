@@ -52,7 +52,7 @@
                       Profit Chit
                     </option>
 
-                    <option value="purchase" [disabled]="regularFirst || noReg || tknMonth">
+                    <option value="purchase" [disabled]="regularFirst || !noReg || tknMonth">
                       Purchase
                     </option>
 
@@ -184,8 +184,14 @@
               </div>
               <div class="col-lg-3">
                 <button class="btn btn-primary px-2 py-2" *ngIf="regular || profitChit || extraPayments"
-                  [disabled]="!purchase || !auctionStart || !auctionForm.valid || isSubmitted || !extraPayments"
-                  (click)="onSubmit()" data-bs-toggle="modal" data-bs-target="#auctionModal">
+[disabled]="
+  !purchase || 
+  !auctionStart || 
+  !auctionForm.valid || 
+  isSubmitted || 
+  (!profitChit && !regular && !extraPayments)
+
+  "                  (click)="onSubmit()" data-bs-toggle="modal" data-bs-target="#auctionModal">
                   Redeem TKN A/C
                 </button>
               </div>
